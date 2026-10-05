@@ -4940,25 +4940,39 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .ventilation-metric { display: grid; align-content: start; gap: 4px; min-width: 0; min-height: 56px; padding: 9px 10px; border: 1px solid rgba(119, 158, 159, .13); border-radius: 9px; background: rgba(3, 11, 14, .38); }
 .ventilation-metric > span, .ventilation-heat-pair > div > span { color: #94a9a9; font-size: 10px; line-height: 1.45; }
 .anvil-role-ventilation-metric-value { display: block; color: #d6e9e3; font-size: 13px; font-weight: 760; overflow-wrap: anywhere; }
+.anvil-role-ventilation-metric-label { display: block; color: #94a9a9; font-size: 10px; line-height: 1.45; }
 .ventilation-heat-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .ventilation-heat-pair > div { display: grid; gap: 7px; padding: 11px; border: 1px solid rgba(88, 193, 150, .17); border-radius: 10px; background: rgba(18, 67, 53, .16); }
 .anvil-role-ventilation-heat-value { color: #9fe4c5; font-size: 19px; font-weight: 800; }
-.anvil-role-ventilation-result-note { display: block; padding: 10px 11px; border-radius: 8px; color: #9aaead; background: rgba(4, 12, 16, .4); font-size: 8px; line-height: 1.55; }
+.anvil-role-ventilation-result-note { display: block; padding: 10px 11px; border-radius: 8px; color: #9aaead; background: rgba(4, 12, 16, .4); font-size: 11px; line-height: 1.55; overflow-wrap: anywhere; }
 .ventilation-explainer, .ventilation-process { display: grid; gap: 13px; padding: clamp(16px, 2.2vw, 24px); border: 1px solid rgba(127, 165, 169, .14); border-radius: 15px; background: linear-gradient(150deg, rgba(15, 26, 31, .92), rgba(9, 16, 20, .94)); }
+.anvil-role-ventilation-explainer, .anvil-role-ventilation-process, .anvil-role-ventilation-faq, .anvil-role-ventilation-media { display: grid; gap: 13px; min-width: 0; padding: clamp(16px, 2.2vw, 24px); border: 1px solid rgba(127, 165, 169, .14); border-radius: 15px; background: linear-gradient(150deg, rgba(15, 26, 31, .92), rgba(9, 16, 20, .94)); }
 .ventilation-section-heading { display: grid; gap: 3px; }
 .ventilation-info-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.anvil-role-ventilation-info-card, .anvil-role-ventilation-process-card { display: grid; align-content: start; gap: 8px; min-width: 0; padding: 16px; border: 1px solid rgba(122, 160, 160, .13); border-radius: 11px; background: rgba(4, 12, 16, .38); }
+.anvil-role-ventilation-info-title, .anvil-role-ventilation-process-title { display: block; color: #d8e9e5; font-size: 14px; font-weight: 700; }
+.anvil-role-ventilation-info-text, .anvil-role-ventilation-process-text { display: block; color: #9aafaf; font-size: 11px; line-height: 1.6; }
+.anvil-role-ventilation-process-number { display: block; color: #64d5a7; font-size: 10px; font-weight: 850; letter-spacing: .12em; }
 .ventilation-info-grid article, .ventilation-process-steps > div { display: grid; align-content: start; gap: 8px; min-width: 0; padding: 16px; border: 1px solid rgba(122, 160, 160, .13); border-radius: 11px; background: rgba(4, 12, 16, .38); }
 .ventilation-info-index, .ventilation-process-steps b { color: #64d5a7; font-size: 10px; font-weight: 850; letter-spacing: .12em; }
 .ventilation-info-grid h3 { margin: 0; color: #d8e9e5; font-size: 14px; }
 .ventilation-info-grid p, .ventilation-process-steps span { margin: 0; color: #9aafaf; font-size: 11px; line-height: 1.6; }
 .ventilation-process-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
 .ventilation-process-steps strong { color: #d4e6e2; font-size: 12px; }
+.anvil-role-ventilation-faq-list { display: grid; gap: 8px; }
+.anvil-role-ventilation-faq-item { display: grid; gap: 6px; padding: 13px 14px; border: 1px solid rgba(122, 160, 160, .13); border-radius: 10px; background: rgba(4, 12, 16, .38); }
+.anvil-role-ventilation-faq-question { display: block; color: #d8e9e5; font-size: 13px; font-weight: 700; }
+.anvil-role-ventilation-faq-answer { display: block; color: #9aafaf; font-size: 11px; line-height: 1.6; }
+.anvil-role-ventilation-media-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.anvil-role-ventilation-page-image-card { display: grid; gap: 6px; min-width: 0; }
+.anvil-role-ventilation-page-image { display: block; width: 100%; max-height: 260px; object-fit: cover; border-radius: 10px; }
+.anvil-role-ventilation-image-caption { color: #9aafaf; font-size: 11px; }
 .ventilation-disclaimer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 18px; border: 1px solid rgba(216, 177, 103, .17); border-radius: 12px; background: rgba(64, 48, 21, .17); }
 .ventilation-disclaimer > div { display: grid; gap: 4px; }
 .ventilation-disclaimer strong { color: #e5ca91; font-size: 12px; }
 .ventilation-disclaimer span { max-width: 950px; color: #c1b79d; font-size: 11px; line-height: 1.55; }
 @media (max-width: 1080px) { .ventilation-workspace { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 760px) { .ventilation-hero { grid-template-columns: minmax(0, 1fr); } .ventilation-info-grid, .ventilation-process-steps { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .ventilation-hero { grid-template-columns: minmax(0, 1fr); } .ventilation-info-grid, .ventilation-process-steps, .anvil-role-ventilation-media-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) { .ventilation-fields-three, .ventilation-fields-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ventilation-field > .anvil-label { min-height: 0; } .ventilation-panel-heading { flex-direction: column; } .anvil-role-ventilation-purpose { flex-basis: auto; width: 100%; } .ventilation-metric-grid { grid-template-columns: minmax(0, 1fr); } .ventilation-disclaimer { align-items: stretch; flex-direction: column; } .ventilation-disclaimer .anvil-button > button { width: 100%; } }
 .ventilation-select-field { display: grid; gap: 5px; min-width: 0; }
 .ventilation-hero__note-content { display: grid; gap: 11px; min-width: 0; }

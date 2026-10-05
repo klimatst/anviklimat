@@ -96,7 +96,15 @@ class AdminSettings(AdminSettingsTemplate):
         result.get("route", "Маршрут не задан"), ready
       )
       self.media_storage_destination.text = result.get("destination", "")
-      self.media_storage_credentials.text = result.get("credentials", "")
+      missing = result.get("cloudinary_missing", [])
+      missing_text = (
+        " Не хватает Cloudinary: {}."
+        .format(", ".join(missing))
+        if missing else ""
+      )
+      self.media_storage_credentials.text = (
+        result.get("credentials", "") + missing_text
+      )
     else:
       self.media_storage_status.text = result.get("message", "Статус недоступен")
       self.media_storage_destination.text = "Маршрут фото недоступен."

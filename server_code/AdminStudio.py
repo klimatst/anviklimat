@@ -497,12 +497,13 @@ SETTINGS_SECTIONS = [
     _number("ventilation.duct_rounding_step", "Шаг округления размера, мм", 5, 1, 100),
     _number("ventilation.heat_capacity", "Коэффициент тепла", 0.335, 0, 10),
     _number("ventilation.recovery_default", "Рекуперация по умолчанию, %", 70, 0, 100),
+    _number("ventilation.cooling_capacity_per_unit", "Холодопроизводительность одного блока, кВт", 8, 0.1, 1000),
     _text("ventilation.formula_notes", "Пояснение формул", "V = S × H; Q = max(V × n, N × q); сечение = Q / (3600 × v).", maximum=600)),
   _section("ventilation.prices", "Вентиляция", "Вентиляция · цены и тарифы",
     "Все цены предварительной сметы редактируются здесь. Валюта — рубли; значения не используются другими калькуляторами.",
     _number("ventilation.price_equipment_base", "Базовая стоимость оборудования, ₽", 20000, 0, 100000000),
     _number("ventilation.price_automation", "Автоматика и электрика, ₽", 40000, 0, 100000000),
-    _number("ventilation.price_ducts_m2", "Воздуховоды за м² площади, ₽", 155, 0, 1000000),
+    _number("ventilation.price_ducts_m2", "Воздуховоды за погонный метр, ₽", 155, 0, 1000000),
     _number("ventilation.price_grille", "Одна решётка, ₽", 480, 0, 1000000),
     _number("ventilation.price_diffuser", "Один диффузор, ₽", 650, 0, 1000000),
     _number("ventilation.price_fan", "Один вентилятор, ₽", 18000, 0, 100000000),
@@ -510,6 +511,7 @@ SETTINGS_SECTIONS = [
     _number("ventilation.price_filter", "Фильтр, ₽", 6500, 0, 10000000),
     _number("ventilation.price_silencer", "Шумоглушитель, ₽", 8500, 0, 10000000),
     _number("ventilation.price_valve", "Клапан, ₽", 3200, 0, 10000000),
+    _number("ventilation.price_cooling", "Охлаждающий блок, ₽", 45000, 0, 100000000),
     _number("ventilation.price_materials_percent", "Расходные материалы, %", 15, 0, 100),
     _number("ventilation.installation_percent", "Монтаж оборудования, %", 50, 0, 300),
     _number("ventilation.duct_installation_percent", "Монтаж воздуховодов, %", 80, 0, 300),
@@ -518,13 +520,13 @@ SETTINGS_SECTIONS = [
   _section("ventilation.types", "Вентиляция", "Вентиляция · типы и оборудование",
     "Добавляйте, отключайте и редактируйте типы помещений и систем через JSON. Поля name, code, air_changes и factor обязательны для расчёта.",
     _text("ventilation.room_types_json", "Типы помещений · JSON", '[{"code":"office","name":"Офисы","air_changes":2.5,"factor":1.5},{"code":"shop","name":"Магазины и ТЦ","air_changes":1.5,"factor":1.2},{"code":"production","name":"Производства","air_changes":2.5,"factor":1.0},{"code":"residential","name":"Квартиры и дома","air_changes":2.0,"factor":1.5}]', maximum=12000, kind="textarea"),
-    _text("ventilation.system_types_json", "Типы вентиляции · JSON", '[{"code":"supply_exhaust","name":"Приточно-вытяжная","share":1.0,"enabled":true},{"code":"supply","name":"Приточная","share":0.6,"enabled":true},{"code":"exhaust","name":"Вытяжная","share":0.4,"enabled":true},{"code":"recovery","name":"С рекуперацией","share":1.0,"enabled":true},{"code":"cooling","name":"С охлаждением","share":1.0,"enabled":true}]', maximum=12000, kind="textarea"),
-    _text("ventilation.equipment_json", "Оборудование · JSON", '[{"code":"fan","name":"Вентилятор","price_key":"ventilation.price_fan","enabled":true},{"code":"recovery","name":"Рекуператор","price_key":"ventilation.price_recovery","enabled":true},{"code":"filter","name":"Фильтр","price_key":"ventilation.price_filter","enabled":true},{"code":"silencer","name":"Шумоглушитель","price_key":"ventilation.price_silencer","enabled":true},{"code":"valve","name":"Клапан","price_key":"ventilation.price_valve","enabled":true}]', maximum=12000, kind="textarea"),
+    _text("ventilation.system_types_json", "Типы вентиляции · JSON", '[{"code":"supply_exhaust","name":"Приточно-вытяжная","description":"Одновременно подаёт и удаляет воздух, поддерживая баланс потоков.","mode":"balanced","share":1.0,"enabled":true,"features":[]},{"code":"supply","name":"Приточная","description":"Подаёт наружный воздух с фильтрацией и подготовкой по проекту.","mode":"supply","share":0.6,"enabled":true,"features":[]},{"code":"exhaust","name":"Вытяжная","description":"Удаляет загрязнённый воздух, запахи и избыток влаги.","mode":"exhaust","share":0.4,"enabled":true,"features":[]},{"code":"recovery","name":"С рекуперацией","description":"Передаёт тепло удаляемого воздуха приточному потоку.","mode":"balanced","share":1.0,"enabled":true,"features":["recovery"]},{"code":"cooling","name":"С охлаждением","description":"Добавляет охлаждающий блок в предварительную смету системы.","mode":"balanced","share":1.0,"enabled":true,"features":["cooling"]}]', maximum=12000, kind="textarea"),
+    _text("ventilation.equipment_json", "Оборудование · JSON", '[{"code":"fan","name":"Вентилятор","price_key":"ventilation.price_fan","enabled":true},{"code":"recovery","name":"Рекуператор","price_key":"ventilation.price_recovery","enabled":true},{"code":"cooling","name":"Охлаждающий блок","price_key":"ventilation.price_cooling","enabled":true},{"code":"filter","name":"Фильтр","price_key":"ventilation.price_filter","enabled":true},{"code":"silencer","name":"Шумоглушитель","price_key":"ventilation.price_silencer","enabled":true},{"code":"valve","name":"Клапан","price_key":"ventilation.price_valve","enabled":true},{"code":"grille","name":"Решётка","price_key":"ventilation.price_grille","enabled":true},{"code":"diffuser","name":"Диффузор","price_key":"ventilation.price_diffuser","enabled":true},{"code":"automation","name":"Автоматика","price_key":"ventilation.price_automation","enabled":true}]', maximum=12000, kind="textarea"),
     _text("ventilation.custom_fields_json", "Пользовательские поля · JSON", '[]', maximum=12000, kind="textarea"),
     _text("ventilation.custom_units_json", "Пользовательские единицы · JSON", '[]', maximum=8000, kind="textarea")),
   _section("ventilation.results", "Вентиляция", "Вентиляция · результаты и порядок",
-    "Управляйте видимостью, единицами и порядком карточек результатов через JSON.",
-    _text("ventilation.result_schema_json", "Схема результатов · JSON", '[{"key":"volume","label":"Объём помещения","unit":"м³","visible":true,"order":10},{"key":"air_exchange","label":"Необходимый воздухообмен","unit":"м³/ч","visible":true,"order":20},{"key":"supply","label":"Приточный расход","unit":"м³/ч","visible":true,"order":30},{"key":"exhaust","label":"Вытяжной расход","unit":"м³/ч","visible":true,"order":40},{"key":"fan","label":"Производительность установки","unit":"м³/ч","visible":true,"order":50},{"key":"duct","label":"Сечение воздуховода","unit":"мм","visible":true,"order":60},{"key":"equipment_cost","label":"Оборудование","unit":"₽","visible":true,"order":70},{"key":"installation_cost","label":"Монтаж","unit":"₽","visible":true,"order":80},{"key":"total","label":"Итого","unit":"₽","visible":true,"order":90}]', maximum=16000, kind="textarea"),
+    "Управляйте подписями, единицами, видимостью и порядком карточек. Итоговая стоимость всегда выделяется вверху страницы.",
+    _text("ventilation.result_schema_json", "Схема результатов · JSON", '[{"key":"volume","label":"Объём помещения","unit":"м³","visible":true,"order":10},{"key":"air_exchange","label":"Необходимый воздухообмен","unit":"м³/ч","visible":true,"order":20},{"key":"supply","label":"Приточный расход","unit":"м³/ч","visible":true,"order":30},{"key":"exhaust","label":"Вытяжной расход","unit":"м³/ч","visible":true,"order":40},{"key":"fan","label":"Производительность установки","unit":"м³/ч","visible":true,"order":50},{"key":"cooling_capacity","label":"Расчётная холодопроизводительность","unit":"кВт","visible":true,"order":55},{"key":"recovery_power","label":"Тепловая мощность рекуперации","unit":"кВт","visible":true,"order":57},{"key":"duct","label":"Сечение воздуховода","unit":"мм","visible":true,"order":60},{"key":"equipment_cost","label":"Оборудование","unit":"₽","visible":true,"order":70},{"key":"installation_cost","label":"Монтаж","unit":"₽","visible":true,"order":80},{"key":"additional_cost","label":"Дополнительные расходы","unit":"₽","visible":true,"order":85},{"key":"total","label":"Итого","unit":"₽","visible":true,"order":90}]', maximum=16000, kind="textarea"),
     _toggle("ventilation.show_breakdown", "Показывать расшифровку", True),
     _toggle("ventilation.show_prices", "Показывать цены по строкам", True),
     _toggle("ventilation.show_units", "Показывать единицы измерения", True)),
@@ -645,9 +647,9 @@ SETTINGS_SECTIONS = [
 
 
 SECRET_CATALOG = [
-  {"name": "CLOUDINARY_CLOUD_NAME", "provider": "Cloudinary", "label": "Cloud name", "hint": "Имя Cloudinary cloud", "kind": "text"},
-  {"name": "CLOUDINARY_API_KEY", "provider": "Cloudinary", "label": "API key", "hint": "Публичный ключ Cloudinary", "kind": "secret"},
-  {"name": "CLOUDINARY_API_SECRET", "provider": "Cloudinary", "label": "API secret", "hint": "Секрет Cloudinary", "kind": "secret"},
+  {"name": "CLOUDINARY_CLOUD_NAME", "provider": "Cloudinary", "label": "Имя облака", "hint": "Cloudinary Product Environment / cloud name", "kind": "text"},
+  {"name": "CLOUDINARY_API_KEY", "provider": "Cloudinary", "label": "API-ключ", "hint": "Публичный API-ключ Cloudinary", "kind": "secret"},
+  {"name": "CLOUDINARY_API_SECRET", "provider": "Cloudinary", "label": "API-секрет", "hint": "Секретный API Secret из Cloudinary. Key Name не подходит.", "kind": "secret"},
   {"name": "IMAGEKIT_PRIVATE_KEY", "provider": "ImageKit", "label": "Private key", "hint": "Секретный ключ загрузки ImageKit", "kind": "secret"},
   {"name": "IMAGEKIT_PUBLIC_KEY", "provider": "ImageKit", "label": "Public key", "hint": "Публичный ключ ImageKit", "kind": "text"},
   {"name": "IMAGEKIT_URL_ENDPOINT", "provider": "ImageKit", "label": "URL endpoint", "hint": "HTTPS endpoint CDN ImageKit", "kind": "url"},
@@ -1023,6 +1025,12 @@ def get_admin_media_storage_status():
   if imagekit_ready:
     ready_names.append("ImageKit")
   ready_text = ", ".join(ready_names) or "нет настроенного облака"
+  cloudinary_required = (
+    "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"
+  )
+  missing_cloudinary = [
+    name for name in cloudinary_required if not Config.get_secret(name)
+  ]
   media_counts = {}
   external_media_count = _count_rows("media_objects", cache=media_counts)
   product_media_count = _count_rows("product_media", cache=media_counts)
@@ -1049,6 +1057,7 @@ def get_admin_media_storage_status():
     "route": route,
     "external_enabled": external_enabled,
     "cloudinary_ready": cloudinary_ready,
+    "cloudinary_missing": missing_cloudinary,
     "imagekit_ready": imagekit_ready,
     "ready": ready_names,
     "dedupe": values.get("media.dedupe_by_checksum", True) is not False,
@@ -1056,6 +1065,7 @@ def get_admin_media_storage_status():
     "credentials": (
       "Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, "
       "CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. "
+      "Product Environment у Cloudinary используется как cloud name; Key Name не является API secret. "
       "Добавьте нужные ключи в этой панели или в Anvil → Services → Secrets. "
       "Ключи не передаются в браузер."
     )
@@ -1149,12 +1159,219 @@ def test_admin_secret_group(provider):
   ready = required.issubset(configured_names) if provider == "Cloudinary" else bool(
     required.intersection(configured_names)
   )
+  missing = sorted(required - configured_names)
   return {
     "ok": True, "provider": provider, "configured": configured,
-    "total": len(statuses), "ready": ready,
+    "total": len(statuses), "ready": ready, "missing": missing,
     "message": "Подключение готово к использованию по наличию ключей." if ready
-      else "Добавьте обязательный ключ в этом разделе."
+      else "Не настроены: {}.".format(", ".join(missing) or "обязательный ключ")
   }
+
+
+_VENTILATION_JSON_ARRAYS = {
+  "ventilation.room_types_json": "rooms",
+  "ventilation.system_types_json": "systems",
+  "ventilation.equipment_json": "equipment",
+  "ventilation.custom_fields_json": "fields",
+  "ventilation.custom_units_json": "units",
+  "ventilation.result_schema_json": "results",
+  "ventilation.advantages_json": "advantages",
+  "ventilation.process_json": "process",
+  "ventilation.faq_json": "faq",
+  "ventilation.images_json": "images"
+}
+_VENTILATION_RESULT_KEYS = {
+  "volume", "air_exchange", "supply", "exhaust", "fan", "duct",
+  "cooling_capacity", "recovery_power", "equipment_cost", "installation_cost",
+  "additional_cost", "total"
+}
+_VENTILATION_PRICE_KEYS = {
+  "ventilation.price_equipment_base", "ventilation.price_automation",
+  "ventilation.price_ducts_m2", "ventilation.price_grille",
+  "ventilation.price_diffuser", "ventilation.price_fan",
+  "ventilation.price_recovery", "ventilation.price_cooling",
+  "ventilation.price_filter", "ventilation.price_silencer",
+  "ventilation.price_valve"
+}
+_VENTILATION_EQUIPMENT_CODES = {
+  "fan", "recovery", "cooling", "filter", "silencer", "valve",
+  "grille", "diffuser", "automation"
+}
+
+
+def _normalise_ventilation_json_setting(key, value):
+  try:
+    rows = json.loads(value)
+  except (TypeError, ValueError):
+    return None, "Поле «{}» должно содержать корректный JSON-массив.".format(key)
+  if not isinstance(rows, list) or len(rows) > 200:
+    return None, "В поле «{}» ожидается массив не более чем из 200 элементов.".format(key)
+  kind = _VENTILATION_JSON_ARRAYS[key]
+  if kind in ("rooms", "systems", "equipment") and not rows:
+    return None, "В поле «{}» должен оставаться хотя бы один элемент.".format(key)
+
+  if kind == "fields":
+    normalised, error = _normalise_ventilation_custom_fields(rows)
+    if error:
+      return None, error
+    rows = normalised
+  elif kind in ("rooms", "systems", "equipment", "results"):
+    seen = set()
+    for row in rows:
+      if not isinstance(row, dict):
+        return None, "Каждая запись в «{}» должна быть объектом.".format(key)
+      code_key = "key" if kind == "results" else "code"
+      code = row.get(code_key)
+      name_key = "label" if kind == "results" else "name"
+      name = row.get(name_key)
+      if not isinstance(code, str) or not re.fullmatch(r"[a-z][a-z0-9_]{0,39}", code):
+        return None, "В поле «{}» указан некорректный код.".format(key)
+      if code in seen:
+        return None, "Код «{}» в поле «{}» повторяется.".format(code, key)
+      seen.add(code)
+      if code in ("__dict__", "__class__"):
+        return None, "В поле «{}» указан запрещённый код.".format(key)
+      if not isinstance(name, str) or not name.strip() or len(name) > 160:
+        return None, "В поле «{}» задайте подпись длиной до 160 символов.".format(key)
+      if kind == "rooms":
+        for field_name, minimum, maximum in (("air_changes", 0, 100), ("factor", 0, 20)):
+          raw_number = row.get(field_name)
+          if isinstance(raw_number, bool):
+            return None, "В поле «{}» проверьте числовое значение {}.".format(key, field_name)
+          try:
+            number = float(str(raw_number))
+          except (TypeError, ValueError):
+            return None, "В поле «{}» проверьте числовое значение {}.".format(key, field_name)
+          if not math.isfinite(number) or number < minimum or number > maximum:
+            return None, "Значение {} в поле «{}» должно быть от {} до {}.".format(
+              field_name, key, minimum, maximum
+            )
+          row[field_name] = number
+      elif kind == "systems":
+        raw_share = row.get("share")
+        if isinstance(raw_share, bool):
+          return None, "В поле «{}» проверьте долю стоимости.".format(key)
+        try:
+          share = float(str(raw_share))
+        except (TypeError, ValueError):
+          return None, "В поле «{}» проверьте долю стоимости.".format(key)
+        if not math.isfinite(share) or share < 0 or share > 10:
+          return None, "Доля стоимости вентиляции должна быть от 0 до 10." 
+        if not isinstance(row.get("enabled", True), bool):
+          return None, "В поле «{}» признак enabled должен быть логическим.".format(key)
+        features = row.get("features", [])
+        if (not isinstance(features, list)
+            or any(item not in ("recovery", "cooling") for item in features)
+            or len(set(features)) != len(features)):
+          return None, "В поле «{}» допустимы функции recovery и cooling.".format(key)
+        mode = row.get("mode")
+        if mode is None:
+          mode = {"supply": "supply", "exhaust": "exhaust"}.get(code, "balanced")
+        if mode not in ("balanced", "supply", "exhaust"):
+          return None, "Для типа «{}» выберите balanced, supply или exhaust.".format(name)
+        description = row.get("description", "")
+        if not isinstance(description, str) or len(description) > 500:
+          return None, "Описание типа вентиляции должно содержать до 500 символов." 
+        row["mode"] = mode
+        row["share"] = share
+      elif kind == "equipment":
+        if code not in _VENTILATION_EQUIPMENT_CODES:
+          return None, "В поле «{}» указан неизвестный элемент оборудования {}.".format(key, code)
+        if row.get("price_key") not in _VENTILATION_PRICE_KEYS:
+          return None, "В поле «{}» указана неизвестная цена оборудования.".format(key)
+        if not isinstance(row.get("enabled", True), bool):
+          return None, "В поле «{}» признак enabled должен быть логическим.".format(key)
+      else:
+        if code not in _VENTILATION_RESULT_KEYS:
+          return None, "В поле «{}» указан неизвестный результат {}.".format(key, code)
+        unit = row.get("unit", "")
+        if not isinstance(unit, str) or len(unit) > 30:
+          return None, "Единица результата «{}» должна содержать до 30 символов.".format(code)
+        if not isinstance(row.get("visible", True), bool):
+          return None, "Видимость результата «{}» должна быть Да или Нет.".format(code)
+        order = row.get("order", 0)
+        if isinstance(order, bool) or not isinstance(order, int) or order < 0:
+          return None, "Порядок результата «{}» должен быть неотрицательным целым числом.".format(code)
+  elif kind in ("advantages", "process", "faq"):
+    seen = set()
+    title_key, body_key = ("question", "answer") if kind == "faq" else ("title", "text")
+    for row in rows:
+      if not isinstance(row, dict):
+        return None, "Каждый элемент «{}» должен быть объектом.".format(key)
+      title = row.get(title_key)
+      body = row.get(body_key)
+      if not isinstance(title, str) or not title.strip() or len(title) > 160:
+        return None, "В поле «{}» проверьте заголовок.".format(key)
+      if title in seen:
+        return None, "Заголовок «{}» в поле «{}» повторяется.".format(title, key)
+      if not isinstance(body, str) or not body.strip() or len(body) > 2000:
+        return None, "В поле «{}» проверьте текст.".format(key)
+      seen.add(title)
+  elif kind == "images":
+    for row in rows:
+      image = row if isinstance(row, str) else row.get("url") if isinstance(row, dict) else None
+      if not isinstance(image, str) or len(image) > 1000 or not (
+        image.startswith("https://") or image.startswith("/_/theme/")
+      ):
+        return None, "Изображения должны быть HTTPS-ссылками или ресурсами темы Anvil." 
+      if isinstance(row, dict) and len(str(row.get("alt", ""))) > 240:
+        return None, "Подпись изображения должна содержать до 240 символов." 
+  elif kind == "units":
+    seen = set()
+    for row in rows:
+      if not isinstance(row, dict):
+        return None, "Каждая единица измерения должна быть объектом." 
+      code, title = row.get("code"), row.get("label")
+      if not isinstance(code, str) or not re.fullmatch(r"[a-z][a-z0-9_]{0,39}", code) or code in seen:
+        return None, "Коды единиц измерения должны быть уникальными." 
+      if not isinstance(title, str) or not title.strip() or len(title) > 30:
+        return None, "Название единицы должно содержать до 30 символов." 
+      seen.add(code)
+  return json.dumps(rows, ensure_ascii=False, separators=(",", ":")), None
+
+
+def _ventilation_settings_consistency(settings):
+  ranges = (
+    ("ventilation.area_min", "ventilation.area_max", "ventilation.default_area", "площади"),
+    ("ventilation.height_min", "ventilation.height_max", "ventilation.default_height", "высоты")
+  )
+  for minimum_key, maximum_key, default_key, label in ranges:
+    minimum = settings[minimum_key]
+    maximum = settings[maximum_key]
+    default = settings[default_key]
+    if minimum > maximum:
+      return "Минимум {} не может превышать максимум.".format(label)
+    if default < minimum or default > maximum:
+      return "Значение {} по умолчанию должно находиться между минимумом и максимумом.".format(label)
+  minimum = settings["ventilation.people_min"]
+  maximum = settings["ventilation.people_max"]
+  default = settings["ventilation.default_people"]
+  if minimum > maximum:
+    return "Минимум людей не может превышать максимум."
+  if default < minimum or default > maximum:
+    return "Количество людей по умолчанию должно находиться между минимумом и максимумом."
+  return None
+
+
+def _check_ventilation_settings_patch(checked, state=None):
+  coupled = {
+    "ventilation.area_min", "ventilation.area_max", "ventilation.default_area",
+    "ventilation.height_min", "ventilation.height_max", "ventilation.default_height",
+    "ventilation.people_min", "ventilation.people_max", "ventilation.default_people"
+  }
+  if not coupled.intersection(checked):
+    return None
+  candidate = {
+    field["key"]: field["default"]
+    for section in SETTINGS_SECTIONS if section["id"].startswith("ventilation.")
+    for field in section["fields"]
+  }
+  state = state if isinstance(state, dict) else _state()
+  current = state.get("settings", {})
+  if isinstance(current, dict):
+    candidate.update({key: value for key, value in current.items() if key in candidate})
+  candidate.update({key: value for key, value in checked.items() if key in candidate})
+  return _ventilation_settings_consistency(candidate)
 
 
 def _validate_value(field, value):
@@ -1179,6 +1396,8 @@ def _validate_value(field, value):
       return None, "Значение «{}» должно быть от {} до {}.".format(
         field["label"], field["minimum"], field["maximum"]
       )
+    if field["key"] in ("ventilation.people_min", "ventilation.people_max", "ventilation.default_people") and not number.is_integer():
+      return None, "Значение «{}» должно быть целым числом.".format(field["label"])
     return int(number) if number.is_integer() else number, None
   maximum = field.get("maximum")
   if isinstance(maximum, bool) or not isinstance(maximum, int):
@@ -1200,6 +1419,8 @@ def _validate_value(field, value):
       return None, "В поле «{}» укажите HTTPS-ссылку или путь к ресурсу темы.".format(
         field["label"]
       )
+  if field["key"] in _VENTILATION_JSON_ARRAYS:
+    return _normalise_ventilation_json_setting(field["key"], value)
   return value, None
 
 
@@ -1223,6 +1444,10 @@ def save_admin_studio_section(section_id, values, enabled=True):
     if error:
       return {"ok": False, "message": error}
     checked[key] = value
+
+  consistency_error = _check_ventilation_settings_patch(checked)
+  if consistency_error:
+    return {"ok": False, "message": consistency_error}
 
   actor = Core.require_admin_user()
   core_values = Core.get_system_settings()
@@ -1291,10 +1516,14 @@ def _normalise_ventilation_custom_fields(fields):
     if not isinstance(raw_choices, list):
       raw_choices = []
     choices = [str(item).strip()[:80] for item in raw_choices if str(item).strip()][:50]
+    if len(set(choices)) != len(choices):
+      return None, "Варианты поля «{}» не должны повторяться.".format(label)
     if kind == "select" and not choices:
       return None, "Добавьте хотя бы один вариант для поля «{}».".format(label)
-    default = field.get("default", "")
+    default = field.get("default", False if kind == "bool" else "")
     if kind == "number" and default not in ("", None):
+      if isinstance(default, bool):
+        return None, "Значение по умолчанию поля «{}» должно быть числом.".format(label)
       try:
         default = float(default)
         if not math.isfinite(default):
@@ -1304,6 +1533,10 @@ def _normalise_ventilation_custom_fields(fields):
       except (TypeError, ValueError):
         return None, "Значение по умолчанию поля «{}» должно быть числом.".format(label)
     elif kind == "bool":
+      if isinstance(default, str) and default.strip().casefold() in ("", "false", "true"):
+        default = default.strip().casefold() == "true"
+      elif not isinstance(default, bool):
+        return None, "Значение по умолчанию поля «{}» должно быть Да или Нет.".format(label)
       default = bool(default)
     else:
       default = str(default or "")[:500]
@@ -1312,6 +1545,8 @@ def _normalise_ventilation_custom_fields(fields):
     for value, name in ((minimum, "минимум"), (maximum, "максимум")):
       if value in (None, ""):
         continue
+      if isinstance(value, bool):
+        return None, "Поле «{}»: {} должно быть числом.".format(label, name)
       try:
         number = float(value)
         if not math.isfinite(number):
@@ -1320,14 +1555,36 @@ def _normalise_ventilation_custom_fields(fields):
         return None, "Поле «{}»: {} должно быть числом.".format(label, name)
     if minimum not in (None, "") and maximum not in (None, "") and float(minimum) > float(maximum):
       return None, "Для поля «{}» минимум не может быть больше максимума.".format(label)
+    if kind == "number" and default not in ("", None):
+      numeric_default = float(str(default))
+      if minimum not in (None, "") and numeric_default < float(str(minimum)):
+        return None, "Значение по умолчанию поля «{}» ниже минимума.".format(label)
+      if maximum not in (None, "") and numeric_default > float(str(maximum)):
+        return None, "Значение по умолчанию поля «{}» выше максимума.".format(label)
+    if kind == "select" and default not in ("", None) and default not in choices:
+      return None, "Значение по умолчанию поля «{}» отсутствует в списке вариантов.".format(label)
+    required = field.get("required", False)
+    visible = field.get("visible", True)
+    if not isinstance(required, bool) or not isinstance(visible, bool):
+      return None, "Обязательность и видимость поля «{}» должны быть логическими значениями.".format(label)
+    raw_order = field.get("order", position * 10 + 10)
+    if isinstance(raw_order, bool):
+      return None, "Порядок поля «{}» должен быть неотрицательным целым числом.".format(label)
+    try:
+      numeric_order = float(str(raw_order))
+    except (TypeError, ValueError):
+      return None, "Порядок поля «{}» должен быть неотрицательным целым числом.".format(label)
+    if not math.isfinite(numeric_order) or numeric_order < 0 or not numeric_order.is_integer():
+      return None, "Порядок поля «{}» должен быть неотрицательным целым числом.".format(label)
+    order = int(numeric_order)
     result.append({
       "code": code, "label": label, "description": description, "unit": unit,
-      "type": kind, "required": bool(field.get("required", False)),
-      "visible": field.get("visible", True) is not False,
+      "type": kind, "required": required,
+      "visible": visible,
       "minimum": None if minimum in (None, "") else float(minimum),
       "maximum": None if maximum in (None, "") else float(maximum),
       "default": default, "choices": choices,
-      "order": int(field.get("order", position * 10 + 10))
+      "order": order
     })
     seen.add(code)
   return result, None
@@ -1411,8 +1668,11 @@ def import_ventilation_settings(payload):
     if error:
       return {"ok": False, "message": error}
     checked[key] = checked_value
-  actor = Core.require_admin_user()
   state = _state()
+  consistency_error = _check_ventilation_settings_patch(checked, state)
+  if consistency_error:
+    return {"ok": False, "message": consistency_error}
+  actor = Core.require_admin_user()
   settings = state.get("settings", {})
   if not isinstance(settings, dict):
     settings = {}
@@ -1466,6 +1726,21 @@ def restore_ventilation_backup(index):
   snapshot = backups[index].get("settings", {})
   if not isinstance(snapshot, dict):
     return {"ok": False, "message": "Резервная копия повреждена."}
+  allowed = {field["key"]: field for section in SETTINGS_SECTIONS
+             if section["id"].startswith("ventilation.")
+             for field in section["fields"]}
+  checked_snapshot = {}
+  for key, value in snapshot.items():
+    if key not in allowed:
+      return {"ok": False, "message": "Резервная копия содержит неизвестную настройку."}
+    checked_value, error = _validate_value(allowed[key], value)
+    if error:
+      return {"ok": False, "message": "Резервная копия повреждена: {}".format(error)}
+    checked_snapshot[key] = checked_value
+  snapshot = checked_snapshot
+  consistency_error = _check_ventilation_settings_patch(snapshot, state)
+  if consistency_error:
+    return {"ok": False, "message": "Резервная копия содержит противоречивые ограничения: {}".format(consistency_error)}
   settings = state.get("settings", {})
   if not isinstance(settings, dict):
     settings = {}

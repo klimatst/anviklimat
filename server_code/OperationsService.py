@@ -9,6 +9,7 @@ import anvil.server
 import anvil.users
 from anvil.tables import app_tables, order_by, query as q
 import Core
+import AdminStudio
 import EstimateEngine as Estimates
 
 
@@ -40,13 +41,14 @@ def _user():
   return anvil.users.get_user()
 
 
-def _text(value, label, maximum, required=False):
+def _text(value, label, maximum, required=False, trim=True):
   if value is None:
     value = ""
   if not isinstance(value, str):
     return None, "Проверьте поле «{}».".format(label)
-  value = value.strip()
-  if required and not value:
+  if trim:
+    value = value.strip()
+  if required and not value.strip():
     return None, "Заполните поле «{}».".format(label)
   if len(value) > maximum:
     return None, "Поле «{}» слишком длинное.".format(label)
@@ -120,28 +122,46 @@ def _project_label(project):
 @anvil.server.callable
 def submit_public_enquiry(payload):
   """Store a public contact request in the existing CRM tables."""
+  generic_error = AdminStudio.get_admin_studio_setting(
+    "forms.error_message", "Проверьте заполнение полей."
+  )
+  if not isinstance(generic_error, str) or not generic_error.strip():
+    generic_error = "Проверьте заполнение полей."
   if not isinstance(payload, dict):
-    return {"ok": False, "message": "Проверьте данные заявки."}
+    return {"ok": False, "message": generic_error}
+  trim_input = AdminStudio.get_admin_studio_setting("forms.trim_input", True) is not False
+  email_required = AdminStudio.get_admin_studio_setting("forms.contact_email", True) is not False
+  phone_required = AdminStudio.get_admin_studio_setting("forms.contact_phone", True) is not False
+  message_enabled = AdminStudio.get_admin_studio_setting("forms.lead_comment", True) is not False
+  message_limit = AdminStudio.get_admin_studio_setting("forms.message_limit", 1200)
+  if (isinstance(message_limit, bool)
+      or not isinstance(message_limit, (int, float))
+      or message_limit < 100 or message_limit > 5000):
+    message_limit = 1200
   fields = (
     ("name", "Имя", 120, True),
     ("company", "Компания", 160, False),
-    ("email", "Email", 160, False),
-    ("phone", "Телефон", 40, False),
-    ("message", "Описание задачи", 1000, True)
+    ("email", "Email", 160, email_required),
+    ("phone", "Телефон", 40, phone_required),
+    ("message", "Описание задачи", int(message_limit), message_enabled)
   )
   values = {}
   for key, label, maximum, required in fields:
-    value, error = _text(payload.get(key), label, maximum, required)
+    value, error = _text(
+      payload.get(key), label, maximum, required, trim=trim_input
+    )
     if error:
       return {"ok": False, "message": error}
     values[key] = value or ""
+  if not message_enabled:
+    values["message"] = ""
   values["email"] = values["email"].lower()
   if values["email"] and (
     "@" not in values["email"]
     or "." not in values["email"].rsplit("@", 1)[-1]
   ):
     return {"ok": False, "message": "Проверьте email."}
-  if not values["email"] and not values["phone"]:
+  if not values["email"].strip() and not values["phone"].strip():
     return {"ok": False, "message": "Укажите email или телефон для ответа."}
 
   topics = {
@@ -161,7 +181,7 @@ def submit_public_enquiry(payload):
   if topic not in topics:
     return {"ok": False, "message": "Выберите тему заявки."}
   now = datetime.now(timezone.utc)
-  name = values["company"] or values["name"]
+  name = values["company"].strip() or values["name"].strip()
   notes = "Заявка с сайта · {}\nКонтакт: {}\n\n{}".format(
     topics[topic], values["name"], values["message"]
   )

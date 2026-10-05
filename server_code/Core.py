@@ -310,11 +310,28 @@ def get_session_context():
 
 @anvil.server.callable
 def get_public_contact_details():
+  import AdminStudio
+
+  message_limit = AdminStudio.get_admin_studio_setting("forms.message_limit", 1200)
+  if (isinstance(message_limit, bool)
+      or not isinstance(message_limit, (int, float))
+      or message_limit < 100 or message_limit > 5000):
+    message_limit = 1200
   return {
     "organization_name": _setting_value("organization_name") or "ЭКО-КЛИМАТ",
     "contact_email": _setting_value("contact_email"),
     "contact_phone": _setting_value("contact_phone") or "+79257873848",
-    "contact_address": _setting_value("contact_address")
+    "contact_address": _setting_value("contact_address"),
+    "form": {
+      "email_required": AdminStudio.get_admin_studio_setting("forms.contact_email", True) is not False,
+      "phone_required": AdminStudio.get_admin_studio_setting("forms.contact_phone", True) is not False,
+      "message_enabled": AdminStudio.get_admin_studio_setting("forms.lead_comment", True) is not False,
+      "message_limit": int(message_limit),
+      "trim_input": AdminStudio.get_admin_studio_setting("forms.trim_input", True) is not False,
+      "error_message": AdminStudio.get_admin_studio_setting(
+        "forms.error_message", "Проверьте заполнение полей."
+      )
+    }
   }
 
 

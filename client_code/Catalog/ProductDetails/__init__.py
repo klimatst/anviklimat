@@ -12,6 +12,15 @@ class ProductDetails(ProductDetailsTemplate):
     self.order_message.text = ""
     self._product_id = None
     self.gallery_rows.visible = False
+    self._order_form_settings = anvil.server.call("get_catalog_order_form_settings")
+    self.order_panel.visible = self._order_form_settings.get("enabled", True) is not False
+    self.order_phone_box.placeholder = "Телефон{}".format(
+      " *" if self._order_form_settings.get("phone_required", True) else ""
+    )
+    self.order_email_box.placeholder = "Email{}".format(
+      " *" if self._order_form_settings.get("email_required", False) else ""
+    )
+    self.order_comment_box.visible = self._order_form_settings.get("comment_enabled", True) is not False
 
   def _price_text(self, value, currency):
     if value is None or value == "":

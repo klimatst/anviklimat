@@ -7,6 +7,7 @@ import anvil.server
 from anvil.tables import app_tables, order_by, query as q
 import Core
 import Analytics
+import AdminStudio
 
 
 ORDER_STATUSES = {
@@ -18,13 +19,14 @@ ORDER_STATUSES = {
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 
-def _clean_text(value, label, maximum, required=False):
+def _clean_text(value, label, maximum, required=False, trim=True):
   if value is None:
     value = ""
   if not isinstance(value, str):
     return None, "Проверьте поле «{}» и повторите отправку.".format(label)
-  value = value.strip()
-  if required and not value:
+  if trim:
+    value = value.strip()
+  if required and not value.strip():
     return None, "Заполните поле «{}».".format(label)
   if len(value) > maximum:
     return None, "Поле «{}» слишком длинное.".format(label)
@@ -32,7 +34,29 @@ def _clean_text(value, label, maximum, required=False):
 
 
 @anvil.server.callable
+def get_catalog_order_form_settings():
+  return _catalog_order_form_settings()
+
+
+def _catalog_order_form_settings():
+  message_limit = AdminStudio.get_admin_studio_setting("forms.message_limit", 1200)
+  if (isinstance(message_limit, bool)
+      or not isinstance(message_limit, (int, float))
+      or message_limit < 100 or message_limit > 5000):
+    message_limit = 1200
+  return {
+    "enabled": AdminStudio.get_admin_studio_setting("orders.accept_public", True) is not False,
+    "phone_required": AdminStudio.get_admin_studio_setting("orders.require_phone", True) is not False,
+    "email_required": AdminStudio.get_admin_studio_setting("orders.require_email", False) is True,
+    "comment_enabled": AdminStudio.get_admin_studio_setting("forms.lead_comment", True) is not False,
+    "comment_limit": int(message_limit)
+  }
+
+
+@anvil.server.callable
 def create_catalog_order(product_id, quantity, customer_name, phone, email="", comment=""):
+  if AdminStudio.get_admin_studio_setting("orders.accept_public", True) is False:
+    return {"ok": False, "message": "Приём заявок через каталог временно отключён."}
   if not isinstance(product_id, str) or not product_id or len(product_id) > 100:
     return {"ok": False, "message": "Не удалось определить товар. Обновите каталог и повторите заказ."}
 
@@ -47,20 +71,32 @@ def create_catalog_order(product_id, quantity, customer_name, phone, email="", c
   if isinstance(quantity, str) and str(parsed_quantity) != quantity.strip():
     return {"ok": False, "message": "Количество должно быть целым числом от 1 до 999."}
 
-  customer_name, error = _clean_text(customer_name, "имя", 120, required=True)
+  form_settings = _catalog_order_form_settings()
+  trim_input = AdminStudio.get_admin_studio_setting("forms.trim_input", True) is not False
+  customer_name, error = _clean_text(
+    customer_name, "имя", 120, required=True, trim=trim_input
+  )
   if error:
     return {"ok": False, "message": error}
-  phone, error = _clean_text(phone, "телефон", 40)
+  phone, error = _clean_text(phone, "телефон", 40, trim=trim_input)
   if error:
     return {"ok": False, "message": error}
-  email, error = _clean_text(email, "email", 160)
+  email, error = _clean_text(email, "email", 160, trim=trim_input)
   if error:
     return {"ok": False, "message": error}
-  comment, error = _clean_text(comment, "комментарий", 1000)
+  comment, error = _clean_text(
+    comment, "комментарий", form_settings["comment_limit"], trim=trim_input
+  )
   if error:
     return {"ok": False, "message": error}
   if not phone and not email:
     return {"ok": False, "message": "Укажите телефон или email для связи."}
+  if form_settings["phone_required"] and not phone:
+    return {"ok": False, "message": "Укажите телефон для связи."}
+  if form_settings["email_required"] and not email:
+    return {"ok": False, "message": "Укажите email для связи."}
+  if not form_settings["comment_enabled"]:
+    comment = ""
   if phone and sum(character.isdigit() for character in phone) < 7:
     return {"ok": False, "message": "Проверьте номер телефона."}
   if email and not EMAIL_RE.fullmatch(email):
@@ -84,6 +120,9 @@ def create_catalog_order(product_id, quantity, customer_name, phone, email="", c
   price = app_tables.product_prices.get(product=product)
   now = datetime.now(timezone.utc)
   sale_price = price["sale_price"] if price is not None else None
+  initial_status = AdminStudio.get_admin_studio_setting("orders.initial_status", "new")
+  if initial_status not in ("new", "processing"):
+    initial_status = "new"
   order = app_tables.catalog_orders.add_row(
     product=product,
     product_name=product_name[:160],
@@ -100,7 +139,7 @@ def create_catalog_order(product_id, quantity, customer_name, phone, email="", c
     phone=phone or "",
     email=email or "",
     comment=comment or "",
-    status="new",
+    status=initial_status,
     created_at=now,
     updated_at=now
   )
@@ -115,10 +154,16 @@ def create_catalog_order(product_id, quantity, customer_name, phone, email="", c
     created_at=now
   )
   Analytics.notify_telegram_order(order)
+  success_title = AdminStudio.get_admin_studio_setting("orders.success_title", "Заявка отправлена")
+  success_message = AdminStudio.get_admin_studio_setting(
+    "orders.success_message", "Мы свяжемся с вами для уточнения деталей."
+  )
   return {
     "ok": True,
     "order_id": order.get_id(),
-    "message": "Заявка №{} принята. Мы свяжемся с вами.".format(order.get_id()[-8:])
+    "message": "{} · №{}. {}".format(
+      success_title, order.get_id()[-8:], success_message
+    )
   }
 
 
