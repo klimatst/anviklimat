@@ -2725,6 +2725,8 @@ def upload_xlsx_catalog_chunk(upload_id, chunk_index, chunk_data):
   if (isinstance(chunk_index, bool) or not isinstance(chunk_index, int)
       or chunk_index < 0):
     return {"ok": False, "message": "Проверьте номер части XLSX."}
+  if isinstance(chunk_data, anvil.Media):
+    chunk_data = chunk_data.get_bytes()
   if not isinstance(chunk_data, bytes) or not 1 <= len(chunk_data) <= XLSX_UPLOAD_CHUNK_BYTES:
     return {"ok": False, "message": "Размер части XLSX должен быть от 1 байта до 4 МБ."}
   import_row = app_tables.imports.get_by_id(upload_id)
@@ -3748,3 +3750,82 @@ def save_pdf_catalog_draft(draft_id, products=None, action="save"):
     "ok": True,
     "message": "Черновик утверждён. Добавлено/обновлено: {}; без изменений: {}.".format(imported, skipped)
   }
+
+
+def _import_image_library(import_row):
+  """Return the public image URLs discovered for an import draft."""
+  checkpoint = import_row["checkpoint"] or {}
+  rows = _pdf_draft_rows(import_row)
+  items = []
+  seen = set()
+  for index, product in enumerate(rows, start=1):
+    urls = product.get("image_urls", [])
+    if not isinstance(urls, list):
+      urls = []
+    if not urls and product.get("image_url"):
+      urls = [product["image_url"]]
+    if isinstance(product.get("extra_image_urls"), str):
+      urls.extend(product["extra_image_urls"].splitlines())
+    for image_url in urls:
+      image_url = image_url.strip() if isinstance(image_url, str) else image_url
+      if not isinstance(image_url, str) or not image_url.startswith("https://") or image_url in seen:
+        continue
+      seen.add(image_url)
+      title = "{} {}".format(product.get("brand", ""), product.get("model", "")).strip()
+      items.append({"url": image_url, "title": title or "Изображение импорта {}".format(index),
+                    "category": product.get("category_code", "Импорт") or "Импорт",
+                    "source": "{}: {}".format(import_row["format"].upper(), import_row["source_name"])})
+  for image in checkpoint.get("unassigned_images", []) if isinstance(checkpoint.get("unassigned_images"), list) else []:
+    image_url = image.get("url") if isinstance(image, dict) else ""
+    if not isinstance(image_url, str) or not image_url.startswith("https://") or image_url in seen:
+      continue
+    seen.add(image_url)
+    items.append({"url": image_url, "title": image.get("name", "Изображение импорта"),
+                  "category": "Импорт", "source": "{}: {}".format(import_row["format"].upper(), import_row["source_name"])})
+  return items[:500]
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def transfer_import_images_to_site(draft_id, publish=True):
+  user = Core.require_permission("import.manage")
+  if user is None:
+    raise anvil.server.PermissionDenied("Недостаточно прав для переноса изображений.")
+  if not isinstance(draft_id, str) or not draft_id:
+    return {"ok": False, "message": "Выберите черновик импорта."}
+  if not isinstance(publish, bool):
+    return {"ok": False, "message": "Проверьте режим публикации изображений."}
+  import_row = app_tables.imports.get_by_id(draft_id)
+  if import_row is None or import_row["format"] not in ("pdf", "xlsx"):
+    return {"ok": False, "message": "Черновик импорта не найден."}
+  images = _import_image_library(import_row)
+  if not images:
+    return {"ok": False, "message": "В этом импорте нет доступных HTTPS-изображений."}
+  existing = {row["image_url"] for row in app_tables.gallery_items.search()
+              if row["image_url"]}
+  now = datetime.now(timezone.utc)
+  sort_order = max([int(row["sort_order"] or 0) for row in app_tables.gallery_items.search()] or [0]) + 1
+  transferred = 0
+  for image in images:
+    if image["url"] in existing:
+      continue
+    cast(Any, app_tables.gallery_items).add_row(
+      title=image["title"][:120], description=("Фото из импорта каталога: " + image["source"])[:500],
+      image_url=image["url"], thumbnail_url=image["url"],
+      alt_text=image["title"][:160], category=image["category"][:120],
+      location="", completed_at="", sort_order=sort_order,
+      featured=False, published=publish, created_at=now, updated_at=now,
+      updated_by=user
+    )
+    sort_order += 1
+    existing.add(image["url"])
+    transferred += 1
+  Core.log_audit(
+    actor=user, action="import.images.transferred_to_site", entity_type="import",
+    entity_id=draft_id, details={"transferred": transferred, "published": publish},
+    created_at=now
+  )
+  return {"ok": True, "transferred": transferred,
+          "message": "На сайт перенесено изображений: {}. {}".format(
+            transferred, "Они опубликованы в галерее." if publish else "Они сохранены как черновики галереи."
+          )}

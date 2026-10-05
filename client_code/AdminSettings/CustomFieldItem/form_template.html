@@ -1,0 +1,11 @@
+<anvil-form container="ColumnPanel" prop:role="studio-extension-row">
+  <div class="studio-extension-row__main">
+    <anvil-component type="Label" name="custom_field_title" prop:role="studio-extension-title" bind:text="self.item['label']"></anvil-component>
+    <anvil-component type="Label" name="custom_field_type" prop:role="studio-extension-type" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="custom_field_code" prop:role="studio-extension-description" bind:text="self.item['code']"></anvil-component>
+    <anvil-component type="Label" name="custom_field_required" prop:role="studio-extension-description" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="custom_field_visibility" prop:role="studio-extension-description" prop:text=""></anvil-component>
+  </div>
+  <anvil-component type="Button" name="edit_button" prop:role="secondary-button" prop:text="Изменить"></anvil-component>
+  <anvil-component type="Button" name="delete_button" prop:role="secondary-button" prop:text="Удалить"></anvil-component>
+</anvil-form>

@@ -1,5 +1,5 @@
 from ._anvil_designer import ImportEngineTemplate
-from anvil import handle
+from anvil import BlobMedia, confirm, handle
 import anvil.server
 from anvil.js.window import Uint8Array, crypto
 from .. import Access
@@ -181,6 +181,12 @@ class ImportEngine(ImportEngineTemplate):
     self.add_pdf_product_button.visible = editable
     self.save_pdf_draft_button.visible = editable
     self.approve_pdf_draft_button.visible = editable
+    transfer_ready = result.get("status") not in (
+      "pdf_processing", "xlsx_uploading", "xlsx_processing", "xlsx_images_processing"
+    )
+    self.transfer_images_button.visible = transfer_ready and bool(
+      result.get("image_count") or result.get("image_uploaded") or result.get("unassigned_images")
+    )
     self.reject_pdf_draft_button.visible = editable
     self.refresh_pdf_status_button.visible = processing
     self.pause_pdf_button.visible = bool(result.get("pause_available"))
@@ -386,9 +392,13 @@ class ImportEngine(ImportEngineTemplate):
           end = min(total_size, offset + chunk_size)
           chunk_buffer = browser_file.slice(offset, end).arrayBuffer()
           chunk_data = bytes(Uint8Array(chunk_buffer))
+          chunk_media = BlobMedia(
+            "application/octet-stream", chunk_data,
+            name="xlsx-{}-{}.part".format(self._xlsx_upload_id, chunk_index)
+          )
           current_result = anvil.server.call(
             "upload_xlsx_catalog_chunk", self._xlsx_upload_id,
-            chunk_index, chunk_data
+            chunk_index, chunk_media
           )
           if not current_result["ok"]:
             self.xlsx_upload_progress.text = current_result["message"]
@@ -455,6 +465,22 @@ class ImportEngine(ImportEngineTemplate):
   @handle("approve_pdf_draft_button", "click")
   def approve_pdf_draft_button_click(self, **event_args):
     self._save_pdf_draft("approve")
+
+  @handle("transfer_images_button", "click")
+  def transfer_images_button_click(self, **event_args):
+    if not self._pdf_draft_id:
+      return
+    if not confirm(
+      "Все найденные HTTPS-фото этого импорта будут добавлены в галерею сайта и опубликованы. Продолжить?",
+      title="Перенести фото на сайт", buttons=["Перенести", "Отмена"], role="warning"
+    ):
+      return
+    self.transfer_images_button.enabled = False
+    try:
+      result = anvil.server.call("transfer_import_images_to_site", self._pdf_draft_id, True)
+    finally:
+      self.transfer_images_button.enabled = True
+    self.pdf_review_message.text = result.get("message", "")
 
   @handle("reject_pdf_draft_button", "click")
   def reject_pdf_draft_button_click(self, **event_args):

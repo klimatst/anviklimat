@@ -2,6 +2,7 @@ from ._anvil_designer import AdminSettingsTemplate
 from anvil import confirm, handle
 from anvil.js.window import document
 import anvil.server
+import json
 
 from .. import Access, AdminExtensions
 
@@ -37,6 +38,8 @@ class AdminSettings(AdminSettingsTemplate):
     self._selected_secret_name = None
     self._selected_section_id = None
     self._editing_extension_id = None
+    self._custom_fields = []
+    self._editing_custom_field_code = None
     self._initial_view = properties.get("start_tab", "settings")
     self._initial_section_id = properties.get("start_section")
     self._initial_open_editor = bool(properties.get("open_editor"))
@@ -158,7 +161,7 @@ class AdminSettings(AdminSettingsTemplate):
   def _refresh_secret_rows(self):
     self.secret_rows.items = self._filtered_secrets()
 
-  def _select_secret(self, secret_name):
+  def _select_secret(self, secret_name, open_editor=False):
     item = next((row for row in self._secrets if row["name"] == secret_name), None)
     if item is None:
       return
@@ -168,7 +171,10 @@ class AdminSettings(AdminSettingsTemplate):
     self.secret_hint.text = item["hint"]
     self.secret_value_box.text = ""
     self.secret_value_box.hide_text = item.get("kind") == "secret"
-    self.secrets_status.text = "{} · новое значение заменит текущее".format(item["display"])
+    self.secret_editor_status.text = "{} · новое значение заменит текущее".format(
+      item["display"]
+    )
+    self.secret_editor_overlay.visible = open_editor
 
   @handle("secret_provider_filter", "change")
   def secret_provider_filter_change(self, **event_args):
@@ -181,7 +187,7 @@ class AdminSettings(AdminSettingsTemplate):
   @handle("secret_rows", "x-edit-secret")
   def secret_rows_edit_secret(self, secret, **event_args):
     if isinstance(secret, dict):
-      self._select_secret(secret.get("name"))
+      self._select_secret(secret.get("name"), open_editor=True)
 
   @handle("secret_rows", "x-clear-secret")
   def secret_rows_clear_secret(self, secret_name, **event_args):
@@ -192,19 +198,21 @@ class AdminSettings(AdminSettingsTemplate):
     name = self._selected_secret_name
     value = (self.secret_value_box.text or "").strip()
     if not name or not value:
-      self.secrets_status.text = "Выберите секрет и введите новое значение."
+      self.secret_editor_status.text = "Выберите секрет и введите новое значение."
       return
     self.save_secret_button.enabled = False
     try:
       result = anvil.server.call("save_admin_secret", name, value)
     finally:
       self.save_secret_button.enabled = True
-    self.secrets_status.text = result["message"]
+    self.secret_editor_status.text = result["message"]
     if result["ok"]:
       self._load_secrets()
       self._select_secret(name)
+      self.secret_editor_overlay.visible = False
+      self.secrets_status.text = result["message"]
 
-  def _clear_secret(self, secret_name):
+  def _clear_secret(self, secret_name, close_editor=False):
     item = next((row for row in self._secrets if row["name"] == secret_name), None)
     if item is None:
       return
@@ -218,14 +226,25 @@ class AdminSettings(AdminSettingsTemplate):
       result = anvil.server.call("clear_admin_secret", secret_name)
     finally:
       self.clear_secret_button.enabled = True
-    self.secrets_status.text = result["message"]
     self._load_secrets()
     self._select_secret(secret_name)
+    self.secrets_status.text = result["message"]
+    self.secret_editor_status.text = result["message"]
+    if close_editor and result["ok"]:
+      self.secret_editor_overlay.visible = False
 
   @handle("clear_secret_button", "click")
   def clear_secret_button_click(self, **event_args):
     if self._selected_secret_name:
-      self._clear_secret(self._selected_secret_name)
+      self._clear_secret(self._selected_secret_name, close_editor=True)
+
+  @handle("close_secret_editor_button", "click")
+  def close_secret_editor_button_click(self, **event_args):
+    self.secret_editor_overlay.visible = False
+
+  @handle("cancel_secret_edit_button", "click")
+  def cancel_secret_edit_button_click(self, **event_args):
+    self.secret_editor_overlay.visible = False
 
   @handle("test_secret_group_button", "click")
   def test_secret_group_button_click(self, **event_args):
@@ -290,6 +309,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.editor_section_title.text = section["title"]
     self.editor_section_description.text = section["description"]
     self.settings_fields.items = self._draft_fields
+    self.ventilation_tools.visible = section["id"].startswith("ventilation.")
     self.settings_status.text = ""
     self.settings_workspace.visible = False
     self.settings_tab.enabled = False
@@ -305,6 +325,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.settings_editor_overlay.visible = False
     self._draft_fields = []
     self.settings_fields.items = []
+    self.ventilation_tools.visible = False
     self.settings_workspace.visible = True
     self.settings_tab.enabled = True
     self.widgets_tab.enabled = True
@@ -526,6 +547,188 @@ class AdminSettings(AdminSettingsTemplate):
       section["enabled"] = self.module_enabled.checked
       self._show_sections(self._filtered_sections())
 
+  def _load_custom_fields(self):
+    result = anvil.server.call("get_ventilation_custom_fields")
+    if not result.get("ok"):
+      self.custom_fields_status.text = result.get("message", "Не удалось загрузить поля.")
+      return
+    self._custom_fields = [dict(item) for item in result.get("fields", [])]
+    self.custom_field_rows.items = self._custom_fields
+    self.custom_fields_status.text = "Полей: {} · изменения сохраняются отдельно от формул и цен.".format(
+      len(self._custom_fields)
+    )
+
+  def _clear_custom_field_editor(self):
+    self._editing_custom_field_code = None
+    self.custom_field_editor_title.text = "Новое поле"
+    self.custom_field_code_box.text = ""
+    self.custom_field_label_box.text = ""
+    self.custom_field_description_box.text = ""
+    self.custom_field_unit_box.text = ""
+    self.custom_field_type_dropdown.items = [
+      ("Текст", "text"), ("Число", "number"), ("Список", "select"), ("Да / нет", "bool")
+    ]
+    self.custom_field_type_dropdown.selected_value = "text"
+    self.custom_field_choices_box.text = ""
+    self.custom_field_default_box.text = ""
+    self.custom_field_min_box.text = ""
+    self.custom_field_max_box.text = ""
+    self.custom_field_order_box.text = str((len(self._custom_fields) + 1) * 10)
+    self.custom_field_required_box.checked = False
+    self.custom_field_visible_box.checked = True
+    self.custom_field_editor_status.text = ""
+
+  def _open_custom_field_editor(self, field=None):
+    self._clear_custom_field_editor()
+    if isinstance(field, dict):
+      self._editing_custom_field_code = field.get("code")
+      self.custom_field_editor_title.text = "Изменить поле"
+      self.custom_field_code_box.text = field.get("code", "")
+      self.custom_field_label_box.text = field.get("label", "")
+      self.custom_field_description_box.text = field.get("description", "")
+      self.custom_field_unit_box.text = field.get("unit", "")
+      self.custom_field_type_dropdown.selected_value = field.get("type", "text")
+      self.custom_field_choices_box.text = ", ".join(field.get("choices", []))
+      self.custom_field_default_box.text = str(field.get("default", ""))
+      self.custom_field_min_box.text = "" if field.get("minimum") is None else str(field.get("minimum"))
+      self.custom_field_max_box.text = "" if field.get("maximum") is None else str(field.get("maximum"))
+      self.custom_field_order_box.text = str(field.get("order", 10))
+      self.custom_field_required_box.checked = bool(field.get("required"))
+      self.custom_field_visible_box.checked = field.get("visible", True) is not False
+    self.custom_field_editor_overlay.visible = True
+
+  def _close_custom_field_editor(self):
+    self.custom_field_editor_overlay.visible = False
+    self._clear_custom_field_editor()
+
+  @handle("manage_custom_fields_button", "click")
+  def manage_custom_fields_button_click(self, **event_args):
+    self._load_custom_fields()
+    self.custom_fields_overlay.visible = True
+
+  @handle("close_custom_fields_button", "click")
+  def close_custom_fields_button_click(self, **event_args):
+    self.custom_fields_overlay.visible = False
+
+  @handle("new_custom_field_button", "click")
+  def new_custom_field_button_click(self, **event_args):
+    self._open_custom_field_editor()
+
+  @handle("close_custom_field_editor_button", "click")
+  def close_custom_field_editor_button_click(self, **event_args):
+    self._close_custom_field_editor()
+
+  @handle("cancel_custom_field_button", "click")
+  def cancel_custom_field_button_click(self, **event_args):
+    self._close_custom_field_editor()
+
+  @handle("custom_field_rows", "x-edit-custom-field")
+  def custom_field_rows_edit(self, field, **event_args):
+    self._open_custom_field_editor(field)
+
+  @handle("custom_field_rows", "x-delete-custom-field")
+  def custom_field_rows_delete(self, code, **event_args):
+    if not code:
+      return
+    if not confirm("Поле «{}» будет удалено из калькулятора.".format(code),
+                   title="Удалить поле?", buttons=["Удалить", "Отмена"], role="warning"):
+      return
+    self._custom_fields = [item for item in self._custom_fields if item.get("code") != code]
+    result = anvil.server.call("save_ventilation_custom_fields", self._custom_fields)
+    self.custom_fields_status.text = result.get("message", "")
+    if result.get("ok"):
+      self._load_custom_fields()
+
+  @handle("save_custom_field_button", "click")
+  def save_custom_field_button_click(self, **event_args):
+    code = (self.custom_field_code_box.text or "").strip().lower()
+    field = {
+      "code": code,
+      "label": (self.custom_field_label_box.text or "").strip(),
+      "description": (self.custom_field_description_box.text or "").strip(),
+      "unit": (self.custom_field_unit_box.text or "").strip(),
+      "type": self.custom_field_type_dropdown.selected_value or "text",
+      "choices": [item.strip() for item in (self.custom_field_choices_box.text or "").split(",") if item.strip()],
+      "default": self.custom_field_default_box.text or "",
+      "minimum": (self.custom_field_min_box.text or "").strip() or None,
+      "maximum": (self.custom_field_max_box.text or "").strip() or None,
+      "order": (self.custom_field_order_box.text or "10").strip() or "10",
+      "required": bool(self.custom_field_required_box.checked),
+      "visible": bool(self.custom_field_visible_box.checked)
+    }
+    updated = [dict(item) for item in self._custom_fields
+               if item.get("code") != self._editing_custom_field_code and item.get("code") != code]
+    updated.append(field)
+    result = anvil.server.call("save_ventilation_custom_fields", updated)
+    self.custom_field_editor_status.text = result.get("message", "")
+    if result.get("ok"):
+      self._custom_fields = [dict(item) for item in result.get("fields", updated)]
+      self.custom_field_rows.items = self._custom_fields
+      self._close_custom_field_editor()
+      self.custom_fields_status.text = "Поле сохранено. Полей: {}.".format(len(self._custom_fields))
+
+  def _open_ventilation_exchange(self, mode="import"):
+    self.ventilation_exchange_box.text = ""
+    self.ventilation_exchange_status.text = (
+      "Вставьте JSON и нажмите «Импортировать»." if mode == "import" else
+      "Подготовка экспорта…"
+    )
+    self.apply_ventilation_import_button.visible = mode == "import"
+    self.ventilation_exchange_overlay.visible = True
+    if mode == "export":
+      result = anvil.server.call("export_ventilation_settings")
+      if result.get("ok"):
+        self.ventilation_exchange_box.text = json.dumps(result, ensure_ascii=False, indent=2)
+        self.ventilation_exchange_status.text = "Экспорт готов. Скопируйте JSON и сохраните его в резервном файле."
+      else:
+        self.ventilation_exchange_status.text = result.get("message", "Экспорт недоступен.")
+
+  @handle("export_ventilation_button", "click")
+  def export_ventilation_button_click(self, **event_args):
+    self._open_ventilation_exchange("export")
+
+  @handle("import_ventilation_button", "click")
+  def import_ventilation_button_click(self, **event_args):
+    self._open_ventilation_exchange("import")
+
+  @handle("backup_ventilation_button", "click")
+  def backup_ventilation_button_click(self, **event_args):
+    result = anvil.server.call("backup_ventilation_settings")
+    self.settings_status.text = result.get("message", "")
+
+  @handle("restore_ventilation_button", "click")
+  def restore_ventilation_button_click(self, **event_args):
+    backups = anvil.server.call("list_ventilation_backups").get("backups", [])
+    if not backups:
+      self.settings_status.text = "Резервных копий пока нет."
+      return
+    label = backups[0].get("created_at", "последней копии")
+    if not confirm("Восстановить последнюю копию от {}?".format(label), title="Восстановить настройки", buttons=["Восстановить", "Отмена"], role="warning"):
+      return
+    result = anvil.server.call("restore_ventilation_backup", 0)
+    self.settings_status.text = result.get("message", "")
+
+  @handle("close_ventilation_exchange_button", "click")
+  def close_ventilation_exchange_button_click(self, **event_args):
+    self.ventilation_exchange_overlay.visible = False
+
+  @handle("cancel_ventilation_exchange_button", "click")
+  def cancel_ventilation_exchange_button_click(self, **event_args):
+    self.ventilation_exchange_overlay.visible = False
+
+  @handle("apply_ventilation_import_button", "click")
+  def apply_ventilation_import_button_click(self, **event_args):
+    try:
+      payload = json.loads(self.ventilation_exchange_box.text or "")
+    except (TypeError, ValueError):
+      self.ventilation_exchange_status.text = "Введите корректный JSON."
+      return
+    result = anvil.server.call("import_ventilation_settings", payload)
+    self.ventilation_exchange_status.text = result.get("message", "")
+    if result.get("ok"):
+      self.ventilation_exchange_overlay.visible = False
+      self._load_studio()
+
   @handle("widget_search", "change")
   def widget_search_change(self, **event_args):
     self.widget_rows.items = self._filtered_widgets()
@@ -581,7 +784,7 @@ class AdminSettings(AdminSettingsTemplate):
   @handle("new_extension_button", "click")
   def new_extension_button_click(self, **event_args):
     self._clear_extension_editor()
-    self.extension_editor.visible = True
+    self.extension_editor_overlay.visible = True
 
   def _clear_extension_editor(self):
     self._editing_extension_id = None
@@ -610,7 +813,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.extension_code_box.text = extension["code"]
     self.extension_enabled_checkbox.checked = bool(extension["enabled"])
     self.extension_save_button.text = "Сохранить изменения"
-    self.extension_editor.visible = True
+    self.extension_editor_overlay.visible = True
 
   @handle("extension_rows", "x-delete-extension")
   def extension_rows_delete(self, extension_id, **event_args):
@@ -657,7 +860,7 @@ class AdminSettings(AdminSettingsTemplate):
 
   @handle("extension_cancel_button", "click")
   def extension_cancel_button_click(self, **event_args):
-    self.extension_editor.visible = False
+    self.extension_editor_overlay.visible = False
     self._clear_extension_editor()
 
   @handle("extension_rows", "x-extension-toggle")
@@ -682,7 +885,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.extension_rows.items = self._extensions
     AdminExtensions.apply_saved_extensions(force=True)
     if close_editor:
-      self.extension_editor.visible = False
+      self.extension_editor_overlay.visible = False
       self._clear_extension_editor()
 
   @handle("home_button", "click")

@@ -8,8 +8,7 @@ import json
 
 PROFILES = [
   ("Кондиционеры", "ac"),
-  ("VRV / VRF", "vrf_vrv"),
-  ("Вентиляция", "ventilation")
+  ("VRV / VRF", "vrf_vrv")
 ]
 
 
@@ -33,8 +32,7 @@ class Calculations(CalculationsTemplate):
     self._room_type_titles = {code: title for title, code in setup["room_types"]}
     self.profile_buttons = {
       "ac": self.ac_tab_button,
-      "vrf_vrv": self.vrf_tab_button,
-      "ventilation": self.ventilation_tab_button
+      "vrf_vrv": self.vrf_tab_button
     }
     self.room_type_dropdown.items = setup["room_types"]
     self.room_type_dropdown.selected_value = "apartment"
@@ -44,7 +42,6 @@ class Calculations(CalculationsTemplate):
     self.exposure_dropdown.selected_value = "normal"
     self._set_defaults()
     self.vrf_fields.visible = False
-    self.ventilation_fields.visible = False
     self.formula_tools_panel.visible = False
     self.formula_tools_button.visible = self._can_edit_formulas
     self.history_panel.visible = False
@@ -66,9 +63,7 @@ class Calculations(CalculationsTemplate):
       "room_name_box": "Помещение 1", "area_box": "", "height_box": "",
       "people_box": "", "equipment_heat_box": "",
       "indoor_units_box": "", "route_length_box": "",
-      "height_difference_box": "", "air_changes_box": "",
-      "fresh_air_box": "", "air_velocity_box": "",
-      "supply_balance_box": "", "exhaust_balance_box": ""
+      "height_difference_box": ""
     }
     for name, value in defaults.items():
       getattr(self, name).text = value
@@ -77,8 +72,7 @@ class Calculations(CalculationsTemplate):
     names = (
       "room_name_box", "area_box", "height_box", "people_box",
       "equipment_heat_box", "indoor_units_box", "route_length_box",
-      "height_difference_box", "air_changes_box", "fresh_air_box",
-      "air_velocity_box", "supply_balance_box", "exhaust_balance_box",
+      "height_difference_box",
       "room_type_dropdown", "floor_type_dropdown", "exposure_dropdown"
     )
     for name in names:
@@ -131,7 +125,6 @@ class Calculations(CalculationsTemplate):
     self._profile = profile
     self.profile_title.text = dict((code, title) for title, code in PROFILES)[profile]
     self.vrf_fields.visible = profile == "vrf_vrv"
-    self.ventilation_fields.visible = profile == "ventilation"
     for code, button in self.profile_buttons.items():
       button.role = "calculator-tab-active" if code == profile else "calculator-tab"
     self._set_context_message()
@@ -154,14 +147,6 @@ class Calculations(CalculationsTemplate):
         "indoor_unit_count": self.indoor_units_box.text or "",
         "route_length_m": self.route_length_box.text or "",
         "height_difference_m": self.height_difference_box.text or ""
-      })
-    if self._profile == "ventilation":
-      inputs.update({
-        "air_changes_per_hour": self.air_changes_box.text or "",
-        "fresh_air_m3_h_person": self.fresh_air_box.text or "",
-        "air_velocity_m_s": self.air_velocity_box.text or "",
-        "supply_balance_pct": self.supply_balance_box.text or "",
-        "exhaust_balance_pct": self.exhaust_balance_box.text or ""
       })
     return inputs
 
@@ -255,9 +240,6 @@ class Calculations(CalculationsTemplate):
     profile_units = {
       "indoor_unit_count": ("внутренних блока", "шт."),
       "route_length_m": ("трасса", "м"), "height_difference_m": ("перепад высот", "м"),
-      "air_changes_per_hour": ("кратность", "ч⁻¹"),
-      "fresh_air_m3_h_person": ("наружный воздух на человека", "м³/ч·чел."),
-      "air_velocity_m_s": ("скорость воздуха", "м/с")
     }
     for key, (label, unit) in profile_units.items():
       if key in inputs:
@@ -425,10 +407,6 @@ class Calculations(CalculationsTemplate):
   @handle("vrf_tab_button", "click")
   def vrf_tab_button_click(self, **event_args):
     self._set_profile("vrf_vrv")
-
-  @handle("ventilation_tab_button", "click")
-  def ventilation_tab_button_click(self, **event_args):
-    self._set_profile("ventilation")
 
   @handle("product_dropdown", "change")
   def product_dropdown_change(self, **event_args):

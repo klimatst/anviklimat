@@ -5,21 +5,20 @@
     <anvil-component type="Button" name="home_button" prop:text="Главная" prop:role="secondary-button"></anvil-component>
   </anvil-block>
   <anvil-block slot="title">
-    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Линейка холодильщика"></anvil-component>
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Расчёты кондиционеров и VRV / VRF"></anvil-component>
   </anvil-block>
   <anvil-block slot="content">
     <div class="calculator-view">
       <div class="calculator-heading">
         <div>
-          <anvil-component type="Label" name="calculator_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ЛИНЕЙКА ХОЛОДИЛЬЩИКА"></anvil-component>
-          <anvil-component type="Label" name="calculator_lede" prop:role="lede" prop:text="Каждая система рассчитывается отдельно. Неизвестные параметры будут оценены автоматически и отмечены в результате."></anvil-component>
+          <anvil-component type="Label" name="calculator_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ИНДИВИДУАЛЬНЫЙ ПОДБОР"></anvil-component>
+          <anvil-component type="Label" name="calculator_lede" prop:role="lede" prop:text="Расчёты мощности кондиционеров и VRV / VRF используют отдельные наборы параметров. Для вентиляции предусмотрена самостоятельная страница и отдельные показатели."></anvil-component>
         </div>
         <anvil-component type="Button" name="installation_button" prop:text="Перейти к расчёту монтажа →" prop:role="secondary-button"></anvil-component>
       </div>
       <div class="calculator-tabs">
         <anvil-component type="Button" name="ac_tab_button" prop:text="Кондиционеры" prop:role="calculator-tab-active"></anvil-component>
         <anvil-component type="Button" name="vrf_tab_button" prop:text="VRV / VRF" prop:role="calculator-tab"></anvil-component>
-        <anvil-component type="Button" name="ventilation_tab_button" prop:text="Вентиляция" prop:role="calculator-tab"></anvil-component>
       </div>
       <anvil-component type="Label" name="profile_title" prop:role="section-heading" prop:text="Кондиционеры"></anvil-component>
       <div class="calculator-grid">
@@ -41,16 +40,6 @@
               <div class="calculator-field"><anvil-component type="Label" name="indoor_units_label" prop:text="Внутренние блоки, шт."></anvil-component><anvil-component type="TextBox" name="indoor_units_box"></anvil-component></div>
               <div class="calculator-field"><anvil-component type="Label" name="route_length_label" prop:text="Длина трасс, м"></anvil-component><anvil-component type="TextBox" name="route_length_box"></anvil-component></div>
               <div class="calculator-field"><anvil-component type="Label" name="height_difference_label" prop:text="Перепад высот, м"></anvil-component><anvil-component type="TextBox" name="height_difference_box"></anvil-component></div>
-            </div>
-          </anvil-component>
-          <anvil-component type="ColumnPanel" name="ventilation_fields" prop:role="calculator-subpanel" prop:visible="false">
-            <anvil-component type="Label" name="ventilation_heading" prop:role="section-heading" prop:text="Параметры воздуха"></anvil-component>
-            <div class="calculator-fields calculator-fields-three">
-              <div class="calculator-field"><anvil-component type="Label" name="air_changes_label" prop:text="Кратность, ч⁻¹"></anvil-component><anvil-component type="TextBox" name="air_changes_box"></anvil-component></div>
-              <div class="calculator-field"><anvil-component type="Label" name="fresh_air_label" prop:text="Наружный воздух, м³/ч·чел."></anvil-component><anvil-component type="TextBox" name="fresh_air_box"></anvil-component></div>
-              <div class="calculator-field"><anvil-component type="Label" name="air_velocity_label" prop:text="Скорость воздуха, м/с"></anvil-component><anvil-component type="TextBox" name="air_velocity_box"></anvil-component></div>
-              <div class="calculator-field"><anvil-component type="Label" name="supply_balance_label" prop:text="Баланс притока, %"></anvil-component><anvil-component type="TextBox" name="supply_balance_box"></anvil-component></div>
-              <div class="calculator-field"><anvil-component type="Label" name="exhaust_balance_label" prop:text="Баланс вытяжки, %"></anvil-component><anvil-component type="TextBox" name="exhaust_balance_box"></anvil-component></div>
             </div>
           </anvil-component>
           <anvil-component type="Button" name="calculate_button" prop:text="Пересчитать" prop:role="primary-action"></anvil-component>

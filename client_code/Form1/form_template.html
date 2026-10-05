@@ -20,8 +20,8 @@
           <span class="metric-caption">с отбором по категориям и поиском</span>
         </div>
         <div>
-          <anvil-component type="Label" name="calculation_count" prop:role="metric-value" prop:text="0 инженерных расчётов"></anvil-component>
-          <span class="metric-caption">единый движок с источниками и версиями</span>
+          <anvil-component type="Label" name="calculation_count" prop:role="metric-value" prop:text="Раздельные инженерные расчёты"></anvil-component>
+          <span class="metric-caption">отдельные показатели для каждой системы</span>
         </div>
         <div>
           <anvil-component type="Label" name="news_status" prop:role="metric-value" prop:text="Новости и публикации"></anvil-component>
@@ -72,9 +72,10 @@
         <div class="tool-copy">
           <anvil-component type="Label" name="tools_eyebrow" prop:role="eyebrow" prop:text="ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ"></anvil-component>
           <anvil-component type="Label" name="tools_title" prop:role="section-heading" prop:text="Расчёты для подбора и монтажа"></anvil-component>
-          <anvil-component type="Label" name="tools_description" prop:role="lede" prop:text="Подбор мощности климатической системы и предварительная оценка монтажных работ."></anvil-component>
+          <anvil-component type="Label" name="tools_description" prop:role="lede" prop:text="Самостоятельные инструменты для вентиляции, климатического оборудования и монтажных работ."></anvil-component>
         </div>
         <div class="tool-actions">
+          <anvil-component type="Button" name="ventilation_calculator_button" prop:text="Расчёт вентиляции" prop:role="primary-action"></anvil-component>
           <anvil-component type="Button" name="calculations_popup_button" prop:text="Открыть расчёты" prop:role="secondary-button"></anvil-component>
           <anvil-component type="Button" name="installation_popup_button" prop:text="Расчёт монтажа" prop:role="secondary-button"></anvil-component>
         </div>

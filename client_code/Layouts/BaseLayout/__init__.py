@@ -1,5 +1,6 @@
 from ._anvil_designer import BaseLayoutTemplate
 from anvil import handle
+from anvil.js.window import document
 import anvil.server
 import anvil.users
 from ... import Access, AdminExtensions, AdminNavigation, NewsCategories
@@ -11,6 +12,10 @@ SITE_THEME_CODES = ("blue", "graphite", "ice", "amber", "crimson", "violet")
 class BaseLayout(BaseLayoutTemplate):
   def __init__(self, **properties):
     super().__init__(**properties)
+    document_root = document.documentElement
+    if document_root is not None:
+      document_root.setAttribute("lang", "ru")
+      document_root.setAttribute("translate", "no")
     self._navigation_settings = {
       "catalog": True, "news": True, "projects": True, "account": True
     }
@@ -394,7 +399,7 @@ class BaseLayout(BaseLayoutTemplate):
   @handle("calc_ventilation_nav", "click")
   def calc_ventilation_nav_click(self, **event_args):
     self._close_dropdowns()
-    Access.open_window("Calculations", module_code="ventilation")
+    Access.open_window("VentilationCalculator")
 
   @handle("installation_tool_nav", "click")
   def installation_tool_nav_click(self, **event_args):

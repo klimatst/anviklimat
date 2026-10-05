@@ -30,6 +30,7 @@ MENU = {
     "intro": "Расчёты, коэффициенты, монтажные сметы и проекты.",
     "options": [
       ("Формулы и инженерные расчёты", "Calculations", {"window_title": "Формулы и коэффициенты", "window_key": "calculations:admin", "module_code": "engineering"}, "calculations.manage"),
+      ("Вентиляция · страница, формулы и цены", "AdminSettings", {"window_title": "Управление · Вентиляция", "start_section": "ventilation.page", "open_editor": True}, "calculations.manage"),
       ("Монтаж, работы и материалы", "InstallationCalculator", {"window_title": "Монтаж · расчёты"}, "installation.manage"),
       ("Проекты и системы", "Projects", {"window_title": "Проекты и системы"}, "projects.manage")
     ]

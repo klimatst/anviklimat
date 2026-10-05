@@ -35,7 +35,7 @@ def _toggle(key, label, default=False, hint=""):
   return _field(key, label, "bool", default, hint)
 
 
-def _number(key, label, default, minimum=0, maximum=1000, hint=""):
+def _number(key, label, default, minimum: Any = 0, maximum: Any = 1000, hint=""):
   return _field(key, label, "number", default, hint,
                 minimum=minimum, maximum=maximum)
 
@@ -452,6 +452,88 @@ SETTINGS_SECTIONS = [
     _toggle("media.dedupe_by_checksum", "Не загружать одинаковые файлы повторно", True),
     _number("media.upload_retries", "Повторов загрузки", 2, 0, 5),
     _text("media.folder_prefix", "Папка в облаке", "catalog/imports", maximum=80)),
+  _section("ventilation.page", "Вентиляция", "Вентиляция · страница и SEO",
+    "Тексты, видимость блоков и SEO отдельной страницы расчёта вентиляции.",
+    _text("ventilation.page_title", "Заголовок страницы", "Расчёт вентиляции", maximum=160),
+    _text("ventilation.page_description", "Описание страницы", "Предварительный расчёт стоимости оборудования и монтажа вентиляции.", maximum=400),
+    _text("ventilation.seo_title", "SEO Title", "Расчёт вентиляции · оборудование и монтаж", maximum=160),
+    _text("ventilation.seo_description", "SEO Description", "Рассчитайте воздухообмен, оборудование и ориентировочную стоимость монтажа вентиляции.", maximum=300),
+    _text("ventilation.seo_keywords", "SEO Keywords", "вентиляция, расчёт вентиляции, монтаж вентиляции, воздуховоды", maximum=300),
+    _text("ventilation.primary_button", "Текст основной кнопки", "Рассчитать стоимость", maximum=80),
+    _toggle("ventilation.show_types", "Показывать виды вентиляции", True),
+    _toggle("ventilation.show_process", "Показывать этапы монтажа", True),
+    _toggle("ventilation.show_faq", "Показывать FAQ", True),
+    _toggle("ventilation.show_media", "Показывать изображения", True)),
+  _section("ventilation.fields", "Вентиляция", "Вентиляция · поля и ограничения",
+    "Подписи, единицы, обязательность, порядок и допустимые значения исходных данных. Дополнительные поля добавляются JSON-списком в разделе «Пользовательские поля».",
+    _text("ventilation.label_area", "Подпись площади", "Площадь помещения", maximum=100),
+    _text("ventilation.label_length", "Подпись длины", "Длина помещения", maximum=100),
+    _text("ventilation.label_width", "Подпись ширины", "Ширина помещения", maximum=100),
+    _text("ventilation.label_height", "Подпись высоты", "Высота потолка", maximum=100),
+    _text("ventilation.label_people", "Подпись людей", "Количество людей", maximum=100),
+    _text("ventilation.label_duct_length", "Подпись длины воздуховодов", "Длина воздуховодов", maximum=120),
+    _text("ventilation.label_branches", "Подпись ответвлений", "Количество ответвлений", maximum=120),
+    _select("ventilation.unit_area", "Единица площади", "м²", [("м²", "м²"), ("ft²", "ft²")]),
+    _select("ventilation.unit_volume", "Единица объёма", "м³", [("м³", "м³"), ("ft³", "ft³")]),
+    _select("ventilation.unit_flow", "Единица расхода", "м³/ч", [("м³/ч", "м³/ч"), ("л/с", "л/с")]),
+    _number("ventilation.area_min", "Минимальная площадь", 10, 0.1, 100000),
+    _number("ventilation.area_max", "Максимальная площадь", 5000, 1, 1000000),
+    _number("ventilation.height_min", "Минимальная высота", 2, 0.5, 30),
+    _number("ventilation.height_max", "Максимальная высота", 7, 1, 100),
+    _number("ventilation.people_min", "Минимум людей", 1, 0, 100000),
+    _number("ventilation.people_max", "Максимум людей", 5000, 1, 1000000),
+    _number("ventilation.default_area", "Площадь по умолчанию", 120, 0.1, 100000),
+    _number("ventilation.default_height", "Высота по умолчанию", 2.75, 0.5, 30),
+    _number("ventilation.default_people", "Людей по умолчанию", 25, 0, 100000)),
+  _section("ventilation.rules", "Вентиляция", "Вентиляция · формулы и коэффициенты",
+    "Числовые нормы и правила расчёта. Изменения применяются сервером без изменения программного кода.",
+    _number("ventilation.people_airflow", "Расход на человека, м³/ч", 40, 0, 1000),
+    _number("ventilation.default_air_changes", "Кратность по умолчанию, 1/ч", 2.5, 0, 50),
+    _number("ventilation.supply_factor", "Поправка притока", 1.0, 0, 10),
+    _number("ventilation.exhaust_factor", "Поправка вытяжки", 1.0, 0, 10),
+    _number("ventilation.fan_reserve_percent", "Резерв производительности, %", 15, 0, 200),
+    _number("ventilation.duct_velocity", "Скорость в воздуховоде, м/с", 4, 0.1, 30),
+    _number("ventilation.rounding_step", "Шаг округления цены, ₽", 10, 1, 100000),
+    _number("ventilation.duct_rounding_step", "Шаг округления размера, мм", 5, 1, 100),
+    _number("ventilation.heat_capacity", "Коэффициент тепла", 0.335, 0, 10),
+    _number("ventilation.recovery_default", "Рекуперация по умолчанию, %", 70, 0, 100),
+    _text("ventilation.formula_notes", "Пояснение формул", "V = S × H; Q = max(V × n, N × q); сечение = Q / (3600 × v).", maximum=600)),
+  _section("ventilation.prices", "Вентиляция", "Вентиляция · цены и тарифы",
+    "Все цены предварительной сметы редактируются здесь. Валюта — рубли; значения не используются другими калькуляторами.",
+    _number("ventilation.price_equipment_base", "Базовая стоимость оборудования, ₽", 20000, 0, 100000000),
+    _number("ventilation.price_automation", "Автоматика и электрика, ₽", 40000, 0, 100000000),
+    _number("ventilation.price_ducts_m2", "Воздуховоды за м² площади, ₽", 155, 0, 1000000),
+    _number("ventilation.price_grille", "Одна решётка, ₽", 480, 0, 1000000),
+    _number("ventilation.price_diffuser", "Один диффузор, ₽", 650, 0, 1000000),
+    _number("ventilation.price_fan", "Один вентилятор, ₽", 18000, 0, 100000000),
+    _number("ventilation.price_recovery", "Рекуператор, ₽", 85000, 0, 100000000),
+    _number("ventilation.price_filter", "Фильтр, ₽", 6500, 0, 10000000),
+    _number("ventilation.price_silencer", "Шумоглушитель, ₽", 8500, 0, 10000000),
+    _number("ventilation.price_valve", "Клапан, ₽", 3200, 0, 10000000),
+    _number("ventilation.price_materials_percent", "Расходные материалы, %", 15, 0, 100),
+    _number("ventilation.installation_percent", "Монтаж оборудования, %", 50, 0, 300),
+    _number("ventilation.duct_installation_percent", "Монтаж воздуховодов, %", 80, 0, 300),
+    _number("ventilation.commissioning_percent", "Пусконаладка, % от монтажа", 10, 0, 100),
+    _number("ventilation.additional_percent", "Дополнительные расходы, %", 3, 0, 100)),
+  _section("ventilation.types", "Вентиляция", "Вентиляция · типы и оборудование",
+    "Добавляйте, отключайте и редактируйте типы помещений и систем через JSON. Поля name, code, air_changes и factor обязательны для расчёта.",
+    _text("ventilation.room_types_json", "Типы помещений · JSON", '[{"code":"office","name":"Офисы","air_changes":2.5,"factor":1.5},{"code":"shop","name":"Магазины и ТЦ","air_changes":1.5,"factor":1.2},{"code":"production","name":"Производства","air_changes":2.5,"factor":1.0},{"code":"residential","name":"Квартиры и дома","air_changes":2.0,"factor":1.5}]', maximum=12000, kind="textarea"),
+    _text("ventilation.system_types_json", "Типы вентиляции · JSON", '[{"code":"supply_exhaust","name":"Приточно-вытяжная","share":1.0,"enabled":true},{"code":"supply","name":"Приточная","share":0.6,"enabled":true},{"code":"exhaust","name":"Вытяжная","share":0.4,"enabled":true},{"code":"recovery","name":"С рекуперацией","share":1.0,"enabled":true},{"code":"cooling","name":"С охлаждением","share":1.0,"enabled":true}]', maximum=12000, kind="textarea"),
+    _text("ventilation.equipment_json", "Оборудование · JSON", '[{"code":"fan","name":"Вентилятор","price_key":"ventilation.price_fan","enabled":true},{"code":"recovery","name":"Рекуператор","price_key":"ventilation.price_recovery","enabled":true},{"code":"filter","name":"Фильтр","price_key":"ventilation.price_filter","enabled":true},{"code":"silencer","name":"Шумоглушитель","price_key":"ventilation.price_silencer","enabled":true},{"code":"valve","name":"Клапан","price_key":"ventilation.price_valve","enabled":true}]', maximum=12000, kind="textarea"),
+    _text("ventilation.custom_fields_json", "Пользовательские поля · JSON", '[]', maximum=12000, kind="textarea"),
+    _text("ventilation.custom_units_json", "Пользовательские единицы · JSON", '[]', maximum=8000, kind="textarea")),
+  _section("ventilation.results", "Вентиляция", "Вентиляция · результаты и порядок",
+    "Управляйте видимостью, единицами и порядком карточек результатов через JSON.",
+    _text("ventilation.result_schema_json", "Схема результатов · JSON", '[{"key":"volume","label":"Объём помещения","unit":"м³","visible":true,"order":10},{"key":"air_exchange","label":"Необходимый воздухообмен","unit":"м³/ч","visible":true,"order":20},{"key":"supply","label":"Приточный расход","unit":"м³/ч","visible":true,"order":30},{"key":"exhaust","label":"Вытяжной расход","unit":"м³/ч","visible":true,"order":40},{"key":"fan","label":"Производительность установки","unit":"м³/ч","visible":true,"order":50},{"key":"duct","label":"Сечение воздуховода","unit":"мм","visible":true,"order":60},{"key":"equipment_cost","label":"Оборудование","unit":"₽","visible":true,"order":70},{"key":"installation_cost","label":"Монтаж","unit":"₽","visible":true,"order":80},{"key":"total","label":"Итого","unit":"₽","visible":true,"order":90}]', maximum=16000, kind="textarea"),
+    _toggle("ventilation.show_breakdown", "Показывать расшифровку", True),
+    _toggle("ventilation.show_prices", "Показывать цены по строкам", True),
+    _toggle("ventilation.show_units", "Показывать единицы измерения", True)),
+  _section("ventilation.content", "Вентиляция", "Вентиляция · тексты и FAQ",
+    "Редактируйте блоки страницы, преимущества, этапы и вопросы без изменения кода.",
+    _text("ventilation.advantages_json", "Преимущества · JSON", '[{"title":"Расчёт по параметрам объекта","text":"Учитываются площадь, высота, люди и выбранный тип системы."},{"title":"Прозрачная смета","text":"Оборудование, воздуховоды, монтаж и дополнительные расходы показаны отдельно."}]', maximum=12000, kind="textarea"),
+    _text("ventilation.process_json", "Этапы работ · JSON", '[{"title":"Осмотр","text":"Уточнение назначения зон и ограничений объекта."},{"title":"Проектирование","text":"Подбор оборудования и трасс по расчётным расходам."},{"title":"Монтаж и запуск","text":"Установка, автоматика, проверка и наладка."}]', maximum=12000, kind="textarea"),
+    _text("ventilation.faq_json", "FAQ · JSON", '[{"question":"Что входит в систему вентиляции?","answer":"Оборудование, фильтры, автоматика, воздуховоды и воздухораспределители по проекту."},{"question":"Почему цена уточняется после обследования?","answer":"На итог влияют трассы, проходки, высотные работы, шумовые требования и строительная готовность."}]', maximum=12000, kind="textarea"),
+    _text("ventilation.images_json", "Изображения страницы · JSON", '[]', maximum=12000, kind="textarea")),
   _section("ai.models", "ИИ и интеграции", "Модели и режимы AI",
     "Выбор поведения AI Studio и импорта. Конкретные API, модели и ключи редактируются в разделе «Настроить модели и API».",
     _select("ai.default_slot", "Основная модель", "primary", [
@@ -974,8 +1056,8 @@ def get_admin_media_storage_status():
     "credentials": (
       "Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, "
       "CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. "
-      "Добавьте нужные секреты в Anvil → Services → Secrets. Ключи не "
-      "передаются в браузер."
+      "Добавьте нужные ключи в этой панели или в Anvil → Services → Secrets. "
+      "Ключи не передаются в браузер."
     )
   }
 
@@ -1177,6 +1259,221 @@ def save_admin_studio_section(section_id, values, enabled=True):
     {"section": section_id, "keys": list(checked), "enabled": enabled}
   )
   return {"ok": True, "message": "Настройки раздела сохранены."}
+
+
+_VENTILATION_CUSTOM_FIELD_TYPES = {"text", "number", "select", "bool"}
+
+
+def _normalise_ventilation_custom_fields(fields):
+  if not isinstance(fields, list) or len(fields) > 100:
+    return None, "Добавьте от 0 до 100 пользовательских полей."
+  result = []
+  seen = set()
+  for position, field in enumerate(fields):
+    if not isinstance(field, dict):
+      return None, "Каждое пользовательское поле должно быть объектом."
+    code = str(field.get("code", "")).strip().lower()
+    label = str(field.get("label", "")).strip()
+    if not re.fullmatch(r"[a-z][a-z0-9_]{1,39}", code):
+      return None, "Код поля должен содержать 2–40 латинских символов, цифр и _."
+    if code in seen:
+      return None, "Код поля «{}» повторяется.".format(code)
+    if not label or len(label) > 120:
+      return None, "Укажите название поля длиной до 120 символов."
+    kind = str(field.get("type", "text"))
+    if kind not in _VENTILATION_CUSTOM_FIELD_TYPES:
+      return None, "Для поля «{}» выбран неизвестный тип.".format(label)
+    unit = str(field.get("unit", "")).strip()[:30]
+    description = str(field.get("description", "")).strip()[:240]
+    raw_choices = field.get("choices", [])
+    if isinstance(raw_choices, str):
+      raw_choices = [item.strip() for item in raw_choices.split(",") if item.strip()]
+    if not isinstance(raw_choices, list):
+      raw_choices = []
+    choices = [str(item).strip()[:80] for item in raw_choices if str(item).strip()][:50]
+    if kind == "select" and not choices:
+      return None, "Добавьте хотя бы один вариант для поля «{}».".format(label)
+    default = field.get("default", "")
+    if kind == "number" and default not in ("", None):
+      try:
+        default = float(default)
+        if not math.isfinite(default):
+          raise ValueError
+        if default.is_integer():
+          default = int(default)
+      except (TypeError, ValueError):
+        return None, "Значение по умолчанию поля «{}» должно быть числом.".format(label)
+    elif kind == "bool":
+      default = bool(default)
+    else:
+      default = str(default or "")[:500]
+    minimum = field.get("minimum")
+    maximum = field.get("maximum")
+    for value, name in ((minimum, "минимум"), (maximum, "максимум")):
+      if value in (None, ""):
+        continue
+      try:
+        number = float(value)
+        if not math.isfinite(number):
+          raise ValueError
+      except (TypeError, ValueError):
+        return None, "Поле «{}»: {} должно быть числом.".format(label, name)
+    if minimum not in (None, "") and maximum not in (None, "") and float(minimum) > float(maximum):
+      return None, "Для поля «{}» минимум не может быть больше максимума.".format(label)
+    result.append({
+      "code": code, "label": label, "description": description, "unit": unit,
+      "type": kind, "required": bool(field.get("required", False)),
+      "visible": field.get("visible", True) is not False,
+      "minimum": None if minimum in (None, "") else float(minimum),
+      "maximum": None if maximum in (None, "") else float(maximum),
+      "default": default, "choices": choices,
+      "order": int(field.get("order", position * 10 + 10))
+    })
+    seen.add(code)
+  return result, None
+
+
+def _ventilation_settings_snapshot(state=None):
+  state = state or _state()
+  settings = state.get("settings", {})
+  if not isinstance(settings, dict):
+    settings = {}
+  snapshot = {}
+  for section in SETTINGS_SECTIONS:
+    if not section["id"].startswith("ventilation."):
+      continue
+    for field in section["fields"]:
+      if not field["key"].startswith("ventilation."):
+        continue
+      snapshot[field["key"]] = settings.get(field["key"], field["default"])
+  return snapshot
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def get_ventilation_custom_fields():
+  value = get_admin_studio_setting("ventilation.custom_fields_json", "[]")
+  try:
+    fields = json.loads(value) if isinstance(value, str) else []
+  except (TypeError, ValueError):
+    fields = []
+  normalised, error = _normalise_ventilation_custom_fields(fields)
+  return {"ok": error is None, "fields": normalised or [],
+          "message": error or "Пользовательские поля загружены."}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def save_ventilation_custom_fields(fields):
+  checked, error = _normalise_ventilation_custom_fields(fields)
+  if error:
+    return {"ok": False, "message": error}
+  actor = Core.require_admin_user()
+  state = _state()
+  settings = state.get("settings", {})
+  if not isinstance(settings, dict):
+    settings = {}
+  settings["ventilation.custom_fields_json"] = json.dumps(
+    checked, ensure_ascii=False, separators=(",", ":")
+  )
+  state["settings"] = settings
+  _save_state(state, actor, "settings.ventilation.custom_fields_update",
+              {"count": len(checked or [])})
+  return {"ok": True, "fields": checked,
+          "message": "Пользовательские поля вентиляции сохранены."}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def export_ventilation_settings():
+  return {"ok": True, "version": 1, "exported_at": datetime.now(timezone.utc).isoformat(),
+          "settings": _ventilation_settings_snapshot()}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def import_ventilation_settings(payload):
+  if not isinstance(payload, dict):
+    return {"ok": False, "message": "Импорт должен содержать объект настроек."}
+  incoming = payload.get("settings", payload)
+  if not isinstance(incoming, dict):
+    return {"ok": False, "message": "В файле импорта нет раздела settings."}
+  allowed = {field["key"]: field for section in SETTINGS_SECTIONS
+             if section["id"].startswith("ventilation.")
+             for field in section["fields"]}
+  unknown = [key for key in incoming if key not in allowed]
+  if unknown:
+    return {"ok": False, "message": "Файл содержит неизвестные настройки: {}.".format(
+      ", ".join(unknown[:5]))}
+  checked = {}
+  for key, value in incoming.items():
+    checked_value, error = _validate_value(allowed[key], value)
+    if error:
+      return {"ok": False, "message": error}
+    checked[key] = checked_value
+  actor = Core.require_admin_user()
+  state = _state()
+  settings = state.get("settings", {})
+  if not isinstance(settings, dict):
+    settings = {}
+  settings.update(checked)
+  state["settings"] = settings
+  _save_state(state, actor, "settings.ventilation.import",
+              {"keys": list(checked)})
+  return {"ok": True, "message": "Настройки вентиляции импортированы.",
+          "settings": _ventilation_settings_snapshot(state)}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def backup_ventilation_settings():
+  actor = Core.require_admin_user()
+  state = _state()
+  backups = state.get("ventilation_backups", [])
+  if not isinstance(backups, list):
+    backups = []
+  backup = {"created_at": datetime.now(timezone.utc).isoformat(),
+            "settings": _ventilation_settings_snapshot(state)}
+  backups.insert(0, backup)
+  state["ventilation_backups"] = backups[:20]
+  _save_state(state, actor, "settings.ventilation.backup",
+              {"count": len(state["ventilation_backups"])})
+  return {"ok": True, "message": "Резервная копия настроек создана.",
+          "backups": [{"created_at": item.get("created_at", "")} for item in state["ventilation_backups"]]}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def list_ventilation_backups():
+  backups = _state().get("ventilation_backups", [])
+  if not isinstance(backups, list):
+    backups = []
+  return {"ok": True, "backups": [{"created_at": item.get("created_at", ""),
+                                    "index": index}
+                                   for index, item in enumerate(backups)]}
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def restore_ventilation_backup(index):
+  if isinstance(index, bool) or not isinstance(index, int) or index < 0:
+    return {"ok": False, "message": "Выберите резервную копию."}
+  actor = Core.require_admin_user()
+  state = _state()
+  backups = state.get("ventilation_backups", [])
+  if not isinstance(backups, list) or index >= len(backups):
+    return {"ok": False, "message": "Резервная копия не найдена."}
+  snapshot = backups[index].get("settings", {})
+  if not isinstance(snapshot, dict):
+    return {"ok": False, "message": "Резервная копия повреждена."}
+  settings = state.get("settings", {})
+  if not isinstance(settings, dict):
+    settings = {}
+  settings.update(snapshot)
+  state["settings"] = settings
+  _save_state(state, actor, "settings.ventilation.restore",
+              {"index": index})
+  return {"ok": True, "message": "Настройки восстановлены из резервной копии."}
 
 
 @anvil.server.callable(require_user=True)

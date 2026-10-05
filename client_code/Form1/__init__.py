@@ -7,7 +7,7 @@ class Form1(Form1Template):
   def __init__(self, **properties):
     super().__init__(**properties)
     self.category_count.text = "Оборудование HVAC"
-    self.calculation_count.text = "Инженерные расчёты"
+    self.calculation_count.text = "Раздельные инженерные расчёты"
     self.news_status.text = "Новости и публикации"
     self.home_gallery_title.text = "Наши работы"
     self.home_gallery_intro.text = "Проекты по кондиционированию, вентиляции и инженерным системам."
@@ -56,6 +56,10 @@ class Form1(Form1Template):
       buttons=["Закрыть"],
       role="eco-calculator-dialog"
     )
+
+  @handle("ventilation_calculator_button", "click")
+  def ventilation_calculator_button_click(self, **event_args):
+    Access.open_window("VentilationCalculator")
 
   @handle("open_gallery_button", "click")
   def open_gallery_button_click(self, **event_args):

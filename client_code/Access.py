@@ -24,6 +24,7 @@ _ADMIN_FORM_TITLES = {
   "SiteMenu": "Меню сайта",
   "Gallery": "Галерея работ",
   "Calculations": "Инженерные расчёты",
+  "VentilationCalculator": "Расчёт вентиляции",
   "InstallationCalculator": "Монтаж и расчёты",
   "Projects": "Проекты и системы",
   "Operations": "Клиенты и обслуживание",

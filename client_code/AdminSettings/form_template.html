@@ -41,7 +41,7 @@
         <div class="studio-integration-guide">
           <strong>Куда отправляются фото импорта</strong>
           <anvil-component type="Label" name="media_storage_destination" prop:role="status-message" prop:text="Ручные фото карточек хранятся в Anvil Media; импорт PDF/XLSX отправляется в Cloudinary или ImageKit. Ссылки и контрольные суммы записываются отдельно."></anvil-component>
-          <anvil-component type="Label" name="media_storage_credentials" prop:role="status-message" prop:text="Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. Добавьте секреты в Anvil → Services → Secrets."></anvil-component>
+          <anvil-component type="Label" name="media_storage_credentials" prop:role="status-message" prop:text="Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. Добавьте ключи в этой панели или в Anvil → Services → Secrets."></anvil-component>
         </div>
         <div class="studio-integration-actions">
           <anvil-component type="Button" name="open_media_settings_button" prop:role="secondary-button" prop:text="Фото и хранилище"></anvil-component>
@@ -68,16 +68,22 @@
         </div>
         <anvil-component type="Label" name="secret_policy" prop:role="studio-warning" prop:text=""></anvil-component>
         <anvil-component type="RepeatingPanel" name="secret_rows" prop:role="studio-secret-list" prop:item_template="Minimal_Theme_4.AdminSettings.SecretItem"></anvil-component>
-        <anvil-component type="ColumnPanel" name="secret_editor" prop:role="studio-secret-editor">
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="secret_editor_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="secret_editor" prop:role="studio-secret-modal">
           <div class="studio-drawer-heading">
             <div>
               <anvil-component type="Label" name="secret_provider_label" prop:role="eyebrow" prop:text="Выберите ключ"></anvil-component>
               <anvil-component type="Label" name="secret_name_label" prop:role="studio-subheading" prop:text=""></anvil-component>
             </div>
+            <anvil-component type="Button" name="close_secret_editor_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
           </div>
           <anvil-component type="Label" name="secret_hint" prop:role="studio-section-description" prop:text=""></anvil-component>
           <anvil-component type="TextBox" name="secret_value_box" prop:placeholder="Новое значение секрета" prop:hide_text="true"></anvil-component>
           <div class="studio-secret-editor-actions">
+            <anvil-component type="Label" name="secret_editor_status" prop:role="studio-status" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="cancel_secret_edit_button" prop:role="secondary-button" prop:text="Отмена"></anvil-component>
             <anvil-component type="Button" name="clear_secret_button" prop:role="secondary-button" prop:text="Удалить значение"></anvil-component>
             <anvil-component type="Button" name="save_secret_button" prop:role="primary-action" prop:text="Сохранить секрет"></anvil-component>
           </div>
@@ -122,12 +128,82 @@
           </div>
           <anvil-component type="Label" name="editor_section_description" prop:role="studio-section-description" prop:text="Изменения сохраняются только после нажатия кнопки ниже."></anvil-component>
           <anvil-component type="CheckBox" name="module_enabled" prop:text="Категория активна"></anvil-component>
+          <anvil-component type="ColumnPanel" name="ventilation_tools" prop:role="studio-ventilation-tools" prop:visible="false">
+            <anvil-component type="Label" name="ventilation_tools_hint" prop:role="studio-section-description" prop:text="Для страницы вентиляции доступны отдельные редакторы полей, обмена и резервных копий."></anvil-component>
+            <anvil-component type="Button" name="manage_custom_fields_button" prop:role="secondary-button" prop:text="Управление полями вентиляции"></anvil-component>
+            <anvil-component type="Button" name="export_ventilation_button" prop:role="secondary-button" prop:text="Экспорт JSON"></anvil-component>
+            <anvil-component type="Button" name="import_ventilation_button" prop:role="secondary-button" prop:text="Импорт JSON"></anvil-component>
+            <anvil-component type="Button" name="backup_ventilation_button" prop:role="secondary-button" prop:text="Создать резервную копию"></anvil-component>
+            <anvil-component type="Button" name="restore_ventilation_button" prop:role="secondary-button" prop:text="Восстановить копию"></anvil-component>
+          </anvil-component>
           <anvil-component type="RepeatingPanel" name="settings_fields" prop:role="studio-field-list" prop:item_template="Minimal_Theme_4.AdminSettings.SettingFieldItem"></anvil-component>
           <div class="studio-save-row">
             <anvil-component type="Label" name="settings_status" prop:role="studio-status" prop:text=""></anvil-component>
             <anvil-component type="Button" name="reset_settings_button" prop:role="secondary-button" prop:text="Исходные значения"></anvil-component>
             <anvil-component type="Button" name="cancel_settings_editor_button" prop:role="secondary-button" prop:text="Отменить"></anvil-component>
             <anvil-component type="Button" name="save_section_button" prop:role="primary-action" prop:text="Сохранить категорию"></anvil-component>
+          </div>
+        </anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="custom_fields_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="custom_fields_modal" prop:role="studio-settings-modal">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="custom_fields_eyebrow" prop:role="eyebrow" prop:text="ВЕНТИЛЯЦИЯ · ПОЛЯ"></anvil-component>
+              <anvil-component type="Label" name="custom_fields_title" prop:role="studio-subheading" prop:text="Пользовательские поля"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="close_custom_fields_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="custom_fields_status" prop:role="studio-status" prop:text="Добавляйте поля без изменения кода."></anvil-component>
+          <anvil-component type="RepeatingPanel" name="custom_field_rows" prop:role="studio-extension-list" prop:item_template="Minimal_Theme_4.AdminSettings.CustomFieldItem"></anvil-component>
+          <anvil-component type="Button" name="new_custom_field_button" prop:role="primary-action" prop:text="Добавить поле"></anvil-component>
+        </anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="custom_field_editor_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="custom_field_editor" prop:role="studio-settings-modal">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="custom_field_editor_eyebrow" prop:role="eyebrow" prop:text="РЕДАКТОР ПОЛЯ"></anvil-component>
+              <anvil-component type="Label" name="custom_field_editor_title" prop:role="studio-subheading" prop:text="Новое поле"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="close_custom_field_editor_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
+          </div>
+          <anvil-component type="TextBox" name="custom_field_code_box" prop:placeholder="Код, например room_count"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_label_box" prop:placeholder="Название поля"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_description_box" prop:placeholder="Подсказка или описание"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_unit_box" prop:placeholder="Единица измерения, например м³"></anvil-component>
+          <anvil-component type="DropDown" name="custom_field_type_dropdown"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_choices_box" prop:placeholder="Варианты списка через запятую (для типа «Список»)"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_default_box" prop:placeholder="Значение по умолчанию"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_min_box" prop:placeholder="Минимум (необязательно)"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_max_box" prop:placeholder="Максимум (необязательно)"></anvil-component>
+          <anvil-component type="TextBox" name="custom_field_order_box" prop:placeholder="Порядок, например 10"></anvil-component>
+          <anvil-component type="CheckBox" name="custom_field_required_box" prop:text="Обязательное поле"></anvil-component>
+          <anvil-component type="CheckBox" name="custom_field_visible_box" prop:text="Показывать в калькуляторе"></anvil-component>
+          <div class="studio-save-row">
+            <anvil-component type="Label" name="custom_field_editor_status" prop:role="studio-status" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="cancel_custom_field_button" prop:role="secondary-button" prop:text="Отмена"></anvil-component>
+            <anvil-component type="Button" name="save_custom_field_button" prop:role="primary-action" prop:text="Сохранить поле"></anvil-component>
+          </div>
+        </anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="ventilation_exchange_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="ventilation_exchange_modal" prop:role="studio-settings-modal">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="ventilation_exchange_eyebrow" prop:role="eyebrow" prop:text="ВЕНТИЛЯЦИЯ · ОБМЕН НАСТРОЙКАМИ"></anvil-component>
+              <anvil-component type="Label" name="ventilation_exchange_title" prop:role="studio-subheading" prop:text="Импорт, экспорт и резервные копии"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="close_ventilation_exchange_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
+          </div>
+          <anvil-component type="TextArea" name="ventilation_exchange_box" prop:role="studio-code-editor" prop:placeholder="Вставьте JSON, экспортированный из этого раздела"></anvil-component>
+          <anvil-component type="Label" name="ventilation_exchange_status" prop:role="studio-status" prop:text="Экспорт можно сохранить в файл проекта. Импорт проверяется на сервере."></anvil-component>
+          <div class="studio-save-row">
+            <anvil-component type="Button" name="cancel_ventilation_exchange_button" prop:role="secondary-button" prop:text="Отмена"></anvil-component>
+            <anvil-component type="Button" name="apply_ventilation_import_button" prop:role="primary-action" prop:text="Импортировать"></anvil-component>
           </div>
         </anvil-component>
       </anvil-component>
@@ -163,8 +239,10 @@
         <anvil-component type="RepeatingPanel" name="extension_rows" prop:role="studio-extension-list" prop:item_template="Minimal_Theme_4.AdminSettings.ExtensionItem"></anvil-component>
         <div class="studio-extension-footer"><span class="studio-extension-footer__mark">JS / CSS</span><span>Подключённые модули применяются к сайту после сохранения и доступны в журнале.</span></div>
         <anvil-component type="Label" name="extensions_status" prop:role="studio-status" prop:text=""></anvil-component>
+      </anvil-component>
 
-        <anvil-component type="ColumnPanel" name="extension_editor" prop:role="studio-extension-drawer" prop:visible="false">
+      <anvil-component type="ColumnPanel" name="extension_editor_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="extension_editor" prop:role="studio-extension-modal">
           <div class="studio-drawer-heading">
             <div>
               <anvil-component type="Label" name="extension_editor_eyebrow" prop:role="eyebrow" prop:text="РЕДАКТОР МОДУЛЯ"></anvil-component>
