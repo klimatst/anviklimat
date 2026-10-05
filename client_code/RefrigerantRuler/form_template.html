@@ -1,0 +1,71 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="calculations_button" prop:text="Калькуляторы" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Линейка холодильщика"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="refrigerant-ruler-view">
+      <div class="ruler-intro">
+        <anvil-component type="Label" name="ruler_eyebrow" prop:role="eyebrow" prop:text="СЕРВИСНЫЙ СПРАВОЧНИК · PT"></anvil-component>
+        <anvil-component type="Label" name="ruler_lede" prop:role="lede" prop:text="Выберите хладагент и получите температуру насыщения по давлению или давление по температуре."></anvil-component>
+      </div>
+
+      <div class="ruler-select-card">
+        <div>
+          <anvil-component type="Label" name="refrigerant_label" prop:text="Хладагент"></anvil-component>
+          <anvil-component type="DropDown" name="refrigerant_dropdown"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="refrigerant_info" prop:role="status-message" prop:text=""></anvil-component>
+      </div>
+
+      <div class="calculator-tabs ruler-mode-tabs">
+        <anvil-component type="Button" name="pressure_mode_button" prop:text="Давление → температура" prop:role="calculator-tab-active"></anvil-component>
+        <anvil-component type="Button" name="temperature_mode_button" prop:text="Температура → давление" prop:role="calculator-tab"></anvil-component>
+      </div>
+
+      <div class="ruler-grid">
+        <anvil-component type="ColumnPanel" name="ruler_inputs_panel" prop:role="calculator-card">
+          <anvil-component type="Label" name="ruler_inputs_heading" prop:role="section-heading" prop:text="Исходное значение"></anvil-component>
+          <div class="calculator-field ruler-field">
+            <anvil-component type="Label" name="pressure_input_label" prop:text="Давление, бар изб."></anvil-component>
+            <anvil-component type="TextBox" name="pressure_input" prop:placeholder="Например, 4.20"></anvil-component>
+            <input class="ruler-slider" type="range" min="-1" max="80" step="0.01" value="0" aria-label="Давление манометра, бар изб." anvil:dom-node="pressure_slider" anvil:on-dom:change="self.pressure_slider_change">
+          </div>
+          <div class="calculator-field ruler-field">
+            <anvil-component type="Label" name="temperature_input_label" prop:text="Температура насыщения, °C"></anvil-component>
+            <anvil-component type="TextBox" name="temperature_input" prop:placeholder="Например, −10.0"></anvil-component>
+            <input class="ruler-slider" type="range" min="-80" max="90" step="0.1" value="0" aria-label="Температура насыщения, градусы Цельсия" anvil:dom-node="temperature_slider" anvil:on-dom:change="self.temperature_slider_change">
+          </div>
+          <anvil-component type="Label" name="ruler_limits" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Button" name="ruler_calculate_button" prop:text="Пересчитать" prop:role="primary-action"></anvil-component>
+          <anvil-component type="Label" name="ruler_message" prop:role="status-message" prop:text=""></anvil-component>
+        </anvil-component>
+
+        <anvil-component type="ColumnPanel" name="ruler_result_panel" prop:role="calculator-result">
+          <anvil-component type="Label" name="ruler_result_eyebrow" prop:role="eyebrow" prop:text="РЕЗУЛЬТАТ ПО НАСЫЩЕНИЮ"></anvil-component>
+          <anvil-component type="Label" name="ruler_result_name" prop:role="calculator-result-value" prop:text="—"></anvil-component>
+          <div class="ruler-result-pair">
+            <div class="ruler-result-cell">
+              <anvil-component type="Label" name="ruler_pressure_caption" prop:text="Давление манометра"></anvil-component>
+              <anvil-component type="Label" name="ruler_pressure_value" prop:role="ruler-value" prop:text="—"></anvil-component>
+            </div>
+            <div class="ruler-result-cell">
+              <anvil-component type="Label" name="ruler_temperature_caption" prop:text="Температура насыщения"></anvil-component>
+              <anvil-component type="Label" name="ruler_temperature_value" prop:role="ruler-value" prop:text="—"></anvil-component>
+            </div>
+          </div>
+          <anvil-component type="Label" name="ruler_absolute_pressure" prop:role="calculator-product-summary" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="ruler_zone" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="ruler_critical_data" prop:role="calculator-source" prop:text=""></anvil-component>
+        </anvil-component>
+      </div>
+
+      <div class="ruler-source-note">
+        <anvil-component type="Label" name="ruler_caveat" prop:role="status-message" prop:text="Оценочная сервисная PT-линейка. Для точной заправки и проектирования используйте заводскую таблицу конкретного хладагента."></anvil-component>
+        <a href="https://texnomag.ru/apps/fridge_ruler" target="_blank" rel="noopener noreferrer">Описание исходной методики</a>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

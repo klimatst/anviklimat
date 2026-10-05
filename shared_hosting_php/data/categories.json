@@ -1,0 +1,714 @@
+[
+  {
+    "id": "[1113050,9666291743]",
+    "code": "vrf-vrv",
+    "title": "VRV / VRF",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/vrv-vrf.jpg"
+  },
+  {
+    "id": "[1113050,9669203537]",
+    "code": "vrf-vrv-outdoor-units",
+    "title": "Наружные блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203538]",
+    "code": "vrf-vrv-indoor-units",
+    "title": "Внутренние блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203539]",
+    "code": "vrf-vrv-wall-units",
+    "title": "Настенные внутренние блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203540]",
+    "code": "vrf-vrv-cassette-units",
+    "title": "Кассетные внутренние блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203541]",
+    "code": "vrf-vrv-duct-units",
+    "title": "Канальные внутренние блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203542]",
+    "code": "vrf-vrv-floor-ceiling-units",
+    "title": "Напольно-потолочные блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203543]",
+    "code": "vrf-vrv-branch-selectors",
+    "title": "Селекторные блоки",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203544]",
+    "code": "vrf-vrv-controllers",
+    "title": "Пульты и системы управления",
+    "parent_id": "[1113050,9666291743]",
+    "parent_code": "vrf-vrv",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291744]",
+    "code": "ventilation",
+    "title": "Вентиляция",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/ventilation.jpg"
+  },
+  {
+    "id": "[1113050,9669203545]",
+    "code": "ventilation-ahu",
+    "title": "Приточно-вытяжные установки",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203546]",
+    "code": "ventilation-supply-units",
+    "title": "Приточные установки",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203547]",
+    "code": "ventilation-exhaust-units",
+    "title": "Вытяжные установки",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203548]",
+    "code": "ventilation-fans",
+    "title": "Вентиляторы",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203549]",
+    "code": "ventilation-heat-recovery",
+    "title": "Рекуператоры",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203550]",
+    "code": "ventilation-air-ducts",
+    "title": "Воздуховоды",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203551]",
+    "code": "ventilation-fittings",
+    "title": "Фасонные элементы",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203552]",
+    "code": "ventilation-grilles-diffusers",
+    "title": "Решётки и диффузоры",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203553]",
+    "code": "ventilation-dampers",
+    "title": "Воздушные клапаны",
+    "parent_id": "[1113050,9666291744]",
+    "parent_code": "ventilation",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291745]",
+    "code": "air-conditioning",
+    "title": "Кондиционеры",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/conditioners.jpg"
+  },
+  {
+    "id": "[1113050,9669203528]",
+    "code": "air-conditioning-split-systems",
+    "title": "Сплит-системы",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203529]",
+    "code": "air-conditioning-multi-split",
+    "title": "Мульти-сплит",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203530]",
+    "code": "air-conditioning-wall",
+    "title": "Настенные кондиционеры",
+    "parent_id": "[1113050,9669203528]",
+    "parent_code": "air-conditioning-split-systems",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203531]",
+    "code": "air-conditioning-cassette",
+    "title": "Кассетные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203532]",
+    "code": "air-conditioning-duct",
+    "title": "Канальные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203533]",
+    "code": "air-conditioning-floor-ceiling",
+    "title": "Напольно-потолочные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203534]",
+    "code": "air-conditioning-column",
+    "title": "Колонные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203535]",
+    "code": "air-conditioning-portable",
+    "title": "Мобильные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203536]",
+    "code": "air-conditioning-precision",
+    "title": "Прецизионные кондиционеры",
+    "parent_id": "[1113050,9666291745]",
+    "parent_code": "air-conditioning",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291746]",
+    "code": "humidification",
+    "title": "Системы увлажнения",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/ventilation.jpg"
+  },
+  {
+    "id": "[1113050,9666291759]",
+    "code": "humidification-steam",
+    "title": "Паровые",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291760]",
+    "code": "humidification-electrode",
+    "title": "Электродные",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291761]",
+    "code": "humidification-ten",
+    "title": "ТЭН",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291762]",
+    "code": "humidification-gas",
+    "title": "Газовые",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291763]",
+    "code": "humidification-ultrasonic",
+    "title": "Ультразвуковые",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291764]",
+    "code": "humidification-adiabatic",
+    "title": "Адиабатические",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291765]",
+    "code": "humidification-high-pressure",
+    "title": "Высокого давления",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291766]",
+    "code": "humidification-evaporative",
+    "title": "Испарительные",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291767]",
+    "code": "humidification-duct",
+    "title": "Канальные",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291768]",
+    "code": "humidification-room",
+    "title": "Комнатные",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291769]",
+    "code": "humidification-industrial",
+    "title": "Промышленные",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291770]",
+    "code": "humidification-ahu",
+    "title": "Для AHU",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291771]",
+    "code": "humidification-water-treatment",
+    "title": "Водоподготовка",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291772]",
+    "code": "humidification-reverse-osmosis",
+    "title": "Обратный осмос",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291773]",
+    "code": "humidification-filters",
+    "title": "Фильтры",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291774]",
+    "code": "humidification-pumps",
+    "title": "Насосы",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291775]",
+    "code": "humidification-valves",
+    "title": "Клапаны",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291776]",
+    "code": "humidification-sensors",
+    "title": "Датчики",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291777]",
+    "code": "humidification-controllers",
+    "title": "Контроллеры",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291778]",
+    "code": "humidification-bms",
+    "title": "BMS",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291779]",
+    "code": "humidification-distributors",
+    "title": "Распределители",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291780]",
+    "code": "humidification-nozzles",
+    "title": "Форсунки",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291781]",
+    "code": "humidification-piping",
+    "title": "Трубопроводы",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291782]",
+    "code": "humidification-drainage",
+    "title": "Дренаж",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291783]",
+    "code": "humidification-installation",
+    "title": "Монтаж",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291784]",
+    "code": "humidification-service",
+    "title": "Сервис",
+    "parent_id": "[1113050,9666291746]",
+    "parent_code": "humidification",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291747]",
+    "code": "dehumidification",
+    "title": "Осушение",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/ventilation.jpg"
+  },
+  {
+    "id": "[1113050,9666291748]",
+    "code": "air-quality",
+    "title": "Качество воздуха",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/ventilation.jpg"
+  },
+  {
+    "id": "[1113050,9666291749]",
+    "code": "refrigeration",
+    "title": "Холодильное оборудование",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/refrigeration.jpg"
+  },
+  {
+    "id": "[1113050,9669203554]",
+    "code": "refrigeration-chillers",
+    "title": "Чиллеры",
+    "parent_id": "[1113050,9666291749]",
+    "parent_code": "refrigeration",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203555]",
+    "code": "refrigeration-fan-coils",
+    "title": "Фанкойлы",
+    "parent_id": "[1113050,9666291749]",
+    "parent_code": "refrigeration",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291750]",
+    "code": "heating",
+    "title": "Отопление",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/vrv-vrf.jpg"
+  },
+  {
+    "id": "[1113050,9666602289]",
+    "code": "materials-copper-tube",
+    "title": "Медная труба",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602290]",
+    "code": "materials-insulation",
+    "title": "Изоляция",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602291]",
+    "code": "materials-cable",
+    "title": "Кабель",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602292]",
+    "code": "materials-drainage",
+    "title": "Дренаж",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602293]",
+    "code": "materials-fasteners",
+    "title": "Крепёж",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602294]",
+    "code": "materials-brackets",
+    "title": "Кронштейны",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602295]",
+    "code": "materials-sleeves",
+    "title": "Гильзы",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602296]",
+    "code": "materials-sealant",
+    "title": "Герметик",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602297]",
+    "code": "materials-corrugated",
+    "title": "Гофра",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602298]",
+    "code": "materials-ducts",
+    "title": "Воздуховоды",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602299]",
+    "code": "materials-fittings",
+    "title": "Фасонные элементы",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602300]",
+    "code": "materials-grilles",
+    "title": "Решётки / диффузоры",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602301]",
+    "code": "materials-valves",
+    "title": "Клапаны",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666602302]",
+    "code": "materials-consumables",
+    "title": "Расходники для монтажа",
+    "parent_id": "[1113050,9666291757]",
+    "parent_code": "materials",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291751]",
+    "code": "heat-pumps",
+    "title": "Тепловые насосы",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/vrv-vrf.jpg"
+  },
+  {
+    "id": "[1113050,9669203556]",
+    "code": "heat-pumps-air-air",
+    "title": "Тепловые насосы воздух — воздух",
+    "parent_id": "[1113050,9666291751]",
+    "parent_code": "heat-pumps",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203557]",
+    "code": "heat-pumps-air-water",
+    "title": "Тепловые насосы воздух — вода",
+    "parent_id": "[1113050,9666291751]",
+    "parent_code": "heat-pumps",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203558]",
+    "code": "heat-pumps-ground-water",
+    "title": "Геотермальные тепловые насосы",
+    "parent_id": "[1113050,9666291751]",
+    "parent_code": "heat-pumps",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203559]",
+    "code": "heat-pumps-monoblock",
+    "title": "Тепловые насосы моноблок",
+    "parent_id": "[1113050,9666291751]",
+    "parent_code": "heat-pumps",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9669203560]",
+    "code": "heat-pumps-split",
+    "title": "Тепловые насосы сплит-системы",
+    "parent_id": "[1113050,9666291751]",
+    "parent_code": "heat-pumps",
+    "image_url": ""
+  },
+  {
+    "id": "[1113050,9666291752]",
+    "code": "hydronics",
+    "title": "Гидравлика",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/materials.jpg"
+  },
+  {
+    "id": "[1113050,9666291753]",
+    "code": "electrical",
+    "title": "Электрика",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/materials.jpg"
+  },
+  {
+    "id": "[1113050,9666291754]",
+    "code": "automation-bms",
+    "title": "Автоматика и BMS",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/ventilation.jpg"
+  },
+  {
+    "id": "[1113050,9666291755]",
+    "code": "installation",
+    "title": "Монтаж",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/materials.jpg"
+  },
+  {
+    "id": "[1113050,9666291756]",
+    "code": "tools",
+    "title": "Инструменты",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/refrigeration.jpg"
+  },
+  {
+    "id": "[1113050,9666291757]",
+    "code": "materials",
+    "title": "Материалы",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/materials.jpg"
+  },
+  {
+    "id": "[1113050,9666291758]",
+    "code": "spare-parts",
+    "title": "Запасные части",
+    "parent_id": null,
+    "parent_code": null,
+    "image_url": "/static/images/catalog/refrigeration.jpg"
+  }
+]

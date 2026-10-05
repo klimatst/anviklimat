@@ -1,0 +1,8 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="room_name" bind:text="self.item['name']" prop:role="section-heading"></anvil-component>
+  <anvil-component type="Label" name="room_area" bind:text="self.item['area_label']"></anvil-component>
+  <anvil-component type="Label" name="room_height" bind:text="self.item['height_label']"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:text="Изменить" prop:role="secondary-button"></anvil-component>
+  <anvil-component type="Button" name="delete_button" prop:text="Удалить" prop:role="secondary-button"></anvil-component>
+  <anvil-component type="Label" name="room_status" prop:role="status-message" prop:text=""></anvil-component>
+</anvil-form>

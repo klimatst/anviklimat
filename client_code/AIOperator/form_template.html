@@ -1,0 +1,49 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="hvac-view">
+      <anvil-component type="ColumnPanel" name="provider_settings_panel" prop:role="card" prop:visible="false">
+        <div class="ai-provider-heading">
+          <anvil-component type="Label" name="provider_heading" prop:role="section-heading" prop:text="Модели и подключение API"></anvil-component>
+          <anvil-component type="Button" name="provider_refresh_button" prop:role="secondary-button" prop:text="Обновить модели"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="provider_models" prop:role="status-message" prop:text="В каждом API-подключении можно выбрать одну из пяти бесплатных vision-моделей OpenRouter. Выбор модели заполнит адрес API; сохраните ключ и проверьте соединение. Ключи остаются на сервере и не возвращаются в браузер."></anvil-component>
+        <div class="ai-provider-add-row">
+          <anvil-component type="TextBox" name="provider_add_name_box" prop:placeholder="Название нового API · например OpenRouter"></anvil-component>
+          <anvil-component type="Button" name="provider_add_button" prop:role="primary-action" prop:text="Добавить API"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="provider_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="provider_rows" prop:role="ai-provider-list" prop:item_template="Minimal_Theme_4.AIOperator.ProviderItem"></anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="chat_panel" prop:role="card">
+        <anvil-component type="Label" name="operator_intro" prop:role="lede" prop:text="Технический чат с контекстом диалога. Можно задавать вопросы, выбирать инженерный режим и прикреплять фотографии оборудования."></anvil-component>
+        <anvil-component type="Label" name="ai_status" prop:role="status-message" prop:text=""></anvil-component>
+        <div class="ai-chat-toolbar">
+          <anvil-component type="DropDown" name="operation_dropdown" prop:role="ai-chat-mode"></anvil-component>
+          <anvil-component type="Button" name="new_chat_button" prop:text="Новый диалог" prop:role="secondary-button"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="chat_empty_label" prop:role="ai-chat-empty" prop:text="Начните диалог: напишите задачу или приложите фото шильдика, оборудования либо монтажа."></anvil-component>
+        <anvil-component type="RepeatingPanel" name="chat_history" prop:role="ai-chat-history" prop:item_template="Minimal_Theme_4.AIOperator.ChatMessage"></anvil-component>
+        <div class="ai-chat-composer">
+          <div class="ai-chat-attachment-row">
+            <anvil-component type="FileLoader" name="image_loader" prop:file_types="image/jpeg,image/png,image/webp" prop:text="Прикрепить фото" prop:role="ai-chat-upload"></anvil-component>
+            <anvil-component type="Label" name="attachment_label" prop:role="ai-chat-attachment-label" prop:text="Фото не выбрано"></anvil-component>
+            <anvil-component type="Button" name="remove_attachment_button" prop:text="Убрать" prop:role="secondary-button"></anvil-component>
+          </div>
+          <anvil-component type="Image" name="attachment_preview" prop:role="ai-chat-attachment-preview" prop:visible="false"></anvil-component>
+          <anvil-component type="TextArea" name="question_box" prop:placeholder="Напишите сообщение… Можно уточнять ответ и продолжать обсуждение."></anvil-component>
+          <div class="ai-chat-send-row">
+            <anvil-component type="Label" name="chat_status" prop:role="status-message" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="send_button" prop:text="Отправить" prop:role="primary-action"></anvil-component>
+          </div>
+        </div>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="ИИ-чат"></anvil-component>
+  </anvil-block>
+</anvil-form>

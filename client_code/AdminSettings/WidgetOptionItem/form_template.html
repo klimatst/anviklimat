@@ -1,0 +1,14 @@
+<anvil-form container="ColumnPanel" prop:role="studio-widget-option">
+  <div class="studio-widget-option__top">
+    <anvil-component type="CheckBox" name="widget_enabled" writeback:checked="self.item['active']" prop:text=""></anvil-component>
+    <div class="studio-widget-option__copy">
+      <anvil-component type="Label" name="widget_title" prop:role="studio-widget-title" bind:text="self.item['label']"></anvil-component>
+      <anvil-component type="Label" name="widget_description" prop:role="studio-widget-description" bind:text="self.item['description']"></anvil-component>
+    </div>
+    <anvil-component type="Label" name="widget_group" prop:role="studio-widget-group" bind:text="self.item['group']"></anvil-component>
+  </div>
+  <div class="studio-widget-option__controls">
+    <anvil-component type="DropDown" name="widget_size" writeback:selected_value="self.item['size']"></anvil-component>
+    <anvil-component type="Button" name="widget_open_button" prop:role="studio-widget-open" prop:text="Открыть раздел"></anvil-component>
+  </div>
+</anvil-form>

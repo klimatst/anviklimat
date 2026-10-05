@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="product-media-card">
+  <anvil-component type="Image" name="preview_image" prop:role="product-media-preview" bind:source="self.item['url']" bind:visible="self.item['url']" bind:alt_text="self.item['alt_text']"></anvil-component>
+  <anvil-component type="Label" name="image_label" prop:role="catalog-photo-caption" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="primary_badge" prop:role="role-badge" prop:text="Главное изображение" prop:visible="false"></anvil-component>
+  <anvil-component type="Button" name="primary_button" prop:text="Сделать главным" prop:role="secondary-button"></anvil-component>
+  <anvil-component type="Button" name="delete_button" prop:text="Удалить" prop:role="secondary-button"></anvil-component>
+</anvil-form>

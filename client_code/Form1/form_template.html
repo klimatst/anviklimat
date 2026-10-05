@@ -1,0 +1,88 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="content">
+    <div class="landing-view">
+      <section class="landing-work-gallery">
+        <div class="landing-work-gallery__heading">
+          <div>
+            <anvil-component type="Label" name="home_gallery_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · РЕАЛИЗОВАННЫЕ РЕШЕНИЯ"></anvil-component>
+            <anvil-component type="Label" name="home_gallery_title" prop:role="section-heading" prop:text="Наши работы"></anvil-component>
+            <anvil-component type="Label" name="home_gallery_intro" prop:role="service-copy" prop:text=""></anvil-component>
+          </div>
+          <anvil-component type="Button" name="open_gallery_button" prop:text="Вся галерея →" prop:role="secondary-button"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="home_gallery_rows" prop:role="gallery-grid" prop:item_template="Minimal_Theme_4.Gallery.GalleryCard"></anvil-component>
+        <anvil-component type="Label" name="home_gallery_empty" prop:role="gallery-empty-state" prop:text="Скоро здесь появятся фотографии реализованных проектов." prop:visible="false"></anvil-component>
+      </section>
+
+      <section class="landing-overview">
+        <div>
+          <anvil-component type="Label" name="category_count" prop:role="metric-value" prop:text="0 направлений каталога"></anvil-component>
+          <span class="metric-caption">с отбором по категориям и поиском</span>
+        </div>
+        <div>
+          <anvil-component type="Label" name="calculation_count" prop:role="metric-value" prop:text="0 инженерных расчётов"></anvil-component>
+          <span class="metric-caption">единый движок с источниками и версиями</span>
+        </div>
+        <div>
+          <anvil-component type="Label" name="news_status" prop:role="metric-value" prop:text="Новости и публикации"></anvil-component>
+          <span class="metric-caption">контент из управляемой CMS</span>
+        </div>
+      </section>
+
+      <section class="landing-section">
+        <div class="section-intro">
+          <div>
+            <anvil-component type="Label" name="systems_eyebrow" prop:role="eyebrow" prop:text="НАПРАВЛЕНИЯ"></anvil-component>
+            <anvil-component type="Label" name="systems_title" prop:role="section-heading" prop:text="Инженерные системы"></anvil-component>
+          </div>
+          <anvil-component type="Button" name="catalog_all_button" prop:text="Весь каталог →" prop:role="secondary-button"></anvil-component>
+        </div>
+        <div class="system-cards">
+          <anvil-component type="ColumnPanel" name="vrf_card" prop:role="service-card">
+            <div class="system-card__image system-card__image--vrf"><img src="_/theme/catalog/vrv-vrf.jpg" alt="Оборудование направления VRV / VRF"></div>
+            <div class="system-card__body">
+              <span class="service-index">01 / ЦЕНТРАЛЬНЫЕ СИСТЕМЫ</span>
+              <anvil-component type="Label" name="vrf_title" prop:role="section-heading" prop:text="VRF / VRV"></anvil-component>
+              <anvil-component type="Label" name="vrf_copy" prop:role="service-copy" prop:text="Мультизональные системы для объектов со сложным зонированием."></anvil-component>
+              <anvil-component type="Button" name="vrf_button" prop:text="Оборудование →" prop:role="secondary-button"></anvil-component>
+            </div>
+          </anvil-component>
+          <anvil-component type="ColumnPanel" name="ventilation_card" prop:role="service-card">
+            <div class="system-card__image system-card__image--ventilation"><img src="_/theme/catalog/ventilation.jpg" alt="Приточно-вытяжная установка вентиляции"></div>
+            <div class="system-card__body">
+              <span class="service-index">02 / ВОЗДУХ</span>
+              <anvil-component type="Label" name="ventilation_title" prop:role="section-heading" prop:text="Вентиляция"></anvil-component>
+              <anvil-component type="Label" name="ventilation_copy" prop:role="service-copy" prop:text="Воздухообмен, обработка и управление микроклиматом."></anvil-component>
+              <anvil-component type="Button" name="ventilation_button" prop:text="Оборудование →" prop:role="secondary-button"></anvil-component>
+            </div>
+          </anvil-component>
+          <anvil-component type="ColumnPanel" name="conditioning_card" prop:role="service-card">
+            <div class="system-card__image"><img src="_/theme/catalog/conditioners.jpg" alt="Настенный кондиционер"></div>
+            <div class="system-card__body">
+              <span class="service-index">03 / КОМФОРТ</span>
+              <anvil-component type="Label" name="conditioning_title" prop:role="section-heading" prop:text="Кондиционирование"></anvil-component>
+              <anvil-component type="Label" name="conditioning_copy" prop:role="service-copy" prop:text="От бытовых решений до прецизионных систем охлаждения."></anvil-component>
+              <anvil-component type="Button" name="conditioning_button" prop:text="Оборудование →" prop:role="secondary-button"></anvil-component>
+            </div>
+          </anvil-component>
+        </div>
+      </section>
+
+      <section class="tool-band">
+        <div class="tool-copy">
+          <anvil-component type="Label" name="tools_eyebrow" prop:role="eyebrow" prop:text="ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ"></anvil-component>
+          <anvil-component type="Label" name="tools_title" prop:role="section-heading" prop:text="Расчёты для подбора и монтажа"></anvil-component>
+          <anvil-component type="Label" name="tools_description" prop:role="lede" prop:text="Подбор мощности климатической системы и предварительная оценка монтажных работ."></anvil-component>
+        </div>
+        <div class="tool-actions">
+          <anvil-component type="Button" name="calculations_popup_button" prop:text="Открыть расчёты" prop:role="secondary-button"></anvil-component>
+          <anvil-component type="Button" name="installation_popup_button" prop:text="Расчёт монтажа" prop:role="secondary-button"></anvil-component>
+        </div>
+      </section>
+
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="ЭКО-КЛИМАТ"></anvil-component>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="CheckBox" name="select_checkbox" prop:text="Включить в группу" writeback:checked="self.item['selected']"></anvil-component>
+  <anvil-component type="Label" name="node_name" prop:role="section-heading" bind:text="self.item['name']"></anvil-component>
+  <anvil-component type="Label" name="node_kind" bind:text="self.item['kind']"></anvil-component>
+  <anvil-component type="Label" name="node_product" bind:text="self.item['product_label']"></anvil-component>
+  <anvil-component type="Button" name="select_button" prop:text="Параметры узла" prop:role="secondary-button"></anvil-component>
+</anvil-form>

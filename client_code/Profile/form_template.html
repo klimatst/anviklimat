@@ -1,0 +1,29 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="content">
+    <div class="profile-view">
+      <anvil-component type="ColumnPanel" name="auth_panel" prop:role="card">
+        <anvil-component type="Label" name="auth_intro" prop:role="lede" prop:text="Войдите в личный кабинет по email. Для локальной админ-панели используйте отдельный вход."></anvil-component>
+        <anvil-component type="Label" name="auth_heading" prop:role="section-heading" prop:text="Войти"></anvil-component>
+        <anvil-component type="TextBox" name="login_box" prop:placeholder="Email"></anvil-component>
+        <anvil-component type="TextBox" name="password_box" prop:hide_text="true" prop:placeholder="Пароль"></anvil-component>
+        <anvil-component type="Button" name="login_button" prop:text="Войти" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="admin_access_button" prop:text="Вход администратора admin/admin" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="signup_heading" prop:role="section-heading" prop:text="Создать профиль"></anvil-component>
+        <anvil-component type="TextBox" name="signup_email_box" prop:placeholder="Электронная почта"></anvil-component>
+        <anvil-component type="TextBox" name="signup_password_box" prop:hide_text="true" prop:placeholder="Пароль, не менее 8 символов"></anvil-component>
+        <anvil-component type="Button" name="signup_button" prop:text="Создать профиль без подтверждения почты" prop:role="secondary-button"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="account_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="account_heading" prop:role="eyebrow" prop:text="ЛИЧНЫЙ КАБИНЕТ"></anvil-component>
+        <anvil-component type="Label" name="profile_email" prop:role="h1" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="profile_role" prop:role="role-badge" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="profile_description" prop:role="lede" prop:text="Роль назначается сервером при создании учётной записи."></anvil-component>
+        <anvil-component type="Button" name="logout_button" prop:text="Выйти" prop:role="secondary-button"></anvil-component>
+      </anvil-component>
+      <anvil-component type="Label" name="message_label" prop:role="status-message" prop:text=""></anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Профиль"></anvil-component>
+  </anvil-block>
+</anvil-form>

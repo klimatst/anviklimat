@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="page_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="page_slug" bind:text="self.item['slug']"></anvil-component>
+  <anvil-component type="Label" name="page_status" bind:text="self.item['status_title']"></anvil-component>
+  <anvil-component type="Label" name="page_updated" bind:text="self.item['updated_at']"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:text="Открыть страницу" prop:role="secondary-button"></anvil-component>
+</anvil-form>

@@ -1,0 +1,26 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="hvac-view">
+      <anvil-component type="ColumnPanel" name="backup_panel" prop:role="card">
+        <anvil-component type="Label" name="backup_intro" prop:role="lede" prop:text="Резервная копия шифруется секретом HVAC_BACKUP_KEY в настройках Anvil и сразу скачивается. Большие файлы не входят: сохраняются только ссылки и метаданные."></anvil-component>
+        <anvil-component type="Label" name="backup_scope" prop:role="status-message" prop:text="Включены каталог, проекты, CRM, сервис, сметы, CMS, формулы и настройки ИИ. Большие журналы аудита и ИИ не включаются."></anvil-component>
+        <anvil-component type="Button" name="create_backup_button" prop:text="Создать и скачать зашифрованную копию" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Label" name="backup_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="restore_panel" prop:role="card">
+        <anvil-component type="Label" name="restore_heading" prop:role="section-heading" prop:text="Проверка и восстановление"></anvil-component>
+        <anvil-component type="Label" name="restore_intro" prop:role="lede" prop:text="Перед записью проверяется ключ и контрольная сумма. Совпавшие строки обновляются, отсутствующие добавляются. Данные вне архива не удаляются."></anvil-component>
+        <anvil-component type="FileLoader" name="restore_file" prop:text="Выбрать зашифрованный архив" prop:file_types=".enc"></anvil-component>
+        <anvil-component type="Button" name="inspect_backup_button" prop:text="Проверить архив" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="restore_backup_button" prop:text="Восстановить объединением" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Label" name="restore_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Резервное копирование"></anvil-component>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,6 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="input_label" prop:role="section-heading" bind:text="self.item['label']"></anvil-component>
+  <anvil-component type="TextBox" name="input_value" prop:placeholder="Числовое значение" writeback:text="self.item['value']"></anvil-component>
+  <anvil-component type="Label" name="input_unit" bind:text="self.item['unit']"></anvil-component>
+  <anvil-component type="Label" name="input_required" bind:text="self.item['required_label']"></anvil-component>
+</anvil-form>

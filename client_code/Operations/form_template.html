@@ -1,0 +1,95 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="new_client_button" prop:text="Новый клиент" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="operations-view">
+      <anvil-component type="ColumnPanel" name="crm_panel" prop:role="card">
+        <anvil-component type="Label" name="crm_heading" prop:role="section-heading" prop:text="CRM: клиенты и контакты"></anvil-component>
+        <anvil-component type="Label" name="crm_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="client_rows" prop:item_template="Minimal_Theme_4.Operations.ClientItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="client_editor" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="client_editor_heading" prop:role="section-heading" prop:text="Карточка клиента"></anvil-component>
+        <anvil-component type="TextBox" name="client_name_box" prop:placeholder="Название организации или имя клиента"></anvil-component>
+        <anvil-component type="DropDown" name="client_type_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="client_tax_id_box" prop:placeholder="ИНН или регистрационный номер"></anvil-component>
+        <anvil-component type="TextBox" name="client_email_box" prop:placeholder="Почта клиента"></anvil-component>
+        <anvil-component type="TextBox" name="client_phone_box" prop:placeholder="Телефон клиента"></anvil-component>
+        <anvil-component type="TextBox" name="client_address_box" prop:placeholder="Адрес"></anvil-component>
+        <anvil-component type="TextArea" name="client_notes_box" prop:placeholder="Заметки"></anvil-component>
+        <anvil-component type="Label" name="contact_heading" prop:role="section-heading" prop:text="Контактное лицо"></anvil-component>
+        <anvil-component type="TextBox" name="client_contact_name_box" prop:placeholder="Имя контактного лица"></anvil-component>
+        <anvil-component type="TextBox" name="client_contact_role_box" prop:placeholder="Должность"></anvil-component>
+        <anvil-component type="TextBox" name="client_contact_email_box" prop:placeholder="Почта контакта"></anvil-component>
+        <anvil-component type="TextBox" name="client_contact_phone_box" prop:placeholder="Телефон контакта"></anvil-component>
+        <anvil-component type="Button" name="save_client_button" prop:text="Сохранить клиента" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="cancel_client_button" prop:text="Закрыть карточку" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="client_save_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="project_link_panel" prop:role="card">
+        <anvil-component type="Label" name="project_link_heading" prop:role="section-heading" prop:text="Клиент проекта"></anvil-component>
+        <anvil-component type="TextBox" name="project_search_box" prop:placeholder="Поиск проектов по названию или коду"></anvil-component>
+        <anvil-component type="Button" name="project_search_button" prop:text="Найти проекты" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="DropDown" name="project_link_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="project_client_dropdown"></anvil-component>
+        <anvil-component type="Button" name="link_project_button" prop:text="Назначить клиента проекту" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="project_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="tasks_panel" prop:role="card">
+        <anvil-component type="Label" name="tasks_heading" prop:role="section-heading" prop:text="Задачи CRM"></anvil-component>
+        <anvil-component type="DropDown" name="task_client_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="task_project_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="task_title_box" prop:placeholder="Название задачи"></anvil-component>
+        <anvil-component type="TextArea" name="task_description_box" prop:placeholder="Описание"></anvil-component>
+        <anvil-component type="TextBox" name="task_due_box" prop:placeholder="Срок, ГГГГ-ММ-ДД"></anvil-component>
+        <anvil-component type="DropDown" name="task_status_dropdown"></anvil-component>
+        <anvil-component type="Button" name="save_task_button" prop:text="Сохранить задачу" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="task_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="task_rows" prop:item_template="Minimal_Theme_4.Operations.TaskItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="estimate_panel" prop:role="card">
+        <anvil-component type="Label" name="estimate_heading" prop:role="section-heading" prop:text="Смета и предложение"></anvil-component>
+        <anvil-component type="DropDown" name="estimate_project_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="labor_cost_box" prop:placeholder="Стоимость работ"></anvil-component>
+        <anvil-component type="TextBox" name="consumables_cost_box" prop:placeholder="Расходные материалы"></anvil-component>
+        <anvil-component type="Button" name="build_estimate_button" prop:text="Рассчитать и сохранить смету" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Label" name="estimate_summary" prop:role="lede" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="estimate_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="quote_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="quote_heading" prop:role="section-heading" prop:text="Предложение по сохранённой смете"></anvil-component>
+        <anvil-component type="TextArea" name="quote_terms_box" prop:placeholder="Условия предложения"></anvil-component>
+        <anvil-component type="TextBox" name="quote_expiry_box" prop:placeholder="Действует до, ГГГГ-ММ-ДД"></anvil-component>
+        <anvil-component type="Button" name="create_quote_button" prop:text="Создать предложение" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="quote_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="quote_rows" prop:item_template="Minimal_Theme_4.Operations.QuoteItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="service_panel" prop:role="card">
+        <anvil-component type="Label" name="service_heading" prop:role="section-heading" prop:text="Сервисный журнал оборудования"></anvil-component>
+        <div class="user-search-row">
+          <anvil-component type="TextBox" name="service_project_search_box" prop:placeholder="Поиск доступных проектов"></anvil-component>
+          <anvil-component type="Button" name="service_project_search_button" prop:text="Найти" prop:role="secondary-button"></anvil-component>
+        </div>
+        <anvil-component type="DropDown" name="service_project_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="service_system_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="service_product_search_box" prop:placeholder="Поиск оборудования по модели или артикулу"></anvil-component>
+        <anvil-component type="Button" name="search_service_products_button" prop:text="Найти оборудование" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="DropDown" name="service_product_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="service_serial_box" prop:placeholder="Серийный номер"></anvil-component>
+        <anvil-component type="DropDown" name="service_type_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="service_status_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="service_scheduled_box" prop:placeholder="Плановая дата, ГГГГ-ММ-ДД"></anvil-component>
+        <anvil-component type="TextBox" name="service_completed_box" prop:placeholder="Дата выполнения, ГГГГ-ММ-ДД"></anvil-component>
+        <anvil-component type="TextArea" name="service_details_box" prop:placeholder="Измерения, ошибки, гарантия и обслуживание в JSON"></anvil-component>
+        <anvil-component type="Button" name="save_service_button" prop:text="Добавить запись обслуживания" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="service_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="service_rows" prop:item_template="Minimal_Theme_4.Operations.ServiceItem"></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Операции, CRM и сервис"></anvil-component>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,5 @@
+<anvil-form container="ColumnPanel" prop:role="pdf-page-image-item">
+  <anvil-component type="Image" name="preview_image" prop:role="pdf-page-image" prop:visible="false"></anvil-component>
+  <anvil-component type="Label" name="image_details" prop:role="pdf-image-details" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="image_url" prop:role="pdf-image-url" bind:text="self.item['url']"></anvil-component>
+</anvil-form>

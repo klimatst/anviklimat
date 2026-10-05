@@ -1,0 +1,73 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="orders_button" prop:text="Новые заявки" prop:role="primary-action" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="missing_images_button" prop:text="Товары без фото" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="configure_widgets_button" prop:text="Настроить виджеты" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="settings_button" prop:text="Центр настроек" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="diagnostics_button" prop:text="Системная диагностика" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="refresh_button" prop:text="Обновить" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Обзор проекта"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="admin-dashboard">
+      <section class="admin-dashboard-hero">
+        <div class="admin-dashboard-hero__copy">
+          <anvil-component type="Label" name="admin_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ЦЕНТР УПРАВЛЕНИЯ"></anvil-component>
+          <anvil-component type="Label" name="admin_intro" prop:role="lede" prop:text="Единый рабочий центр для каталога, контента, заявок и системных инструментов."></anvil-component>
+          <div class="admin-dashboard-hero__meta"><span class="admin-meta-chip">Живые данные проекта</span><span class="admin-meta-chip admin-meta-chip--quiet">Безопасное сохранение</span></div>
+        </div>
+        <div class="admin-dashboard-hero__signal">
+          <span class="admin-signal-ring"></span>
+          <div><strong>Состояние проекта</strong><anvil-component type="Label" name="analytics_updated" prop:role="role-badge" prop:text="Обновление…"></anvil-component></div>
+        </div>
+      </section>
+
+      <section class="admin-dashboard-shortcuts">
+        <div class="admin-dashboard-section-heading">
+          <div>
+            <anvil-component type="Label" name="shortcuts_eyebrow" prop:role="eyebrow" prop:text="БЫСТРЫЙ ДОСТУП"></anvil-component>
+            <anvil-component type="Label" name="shortcuts_heading" prop:role="section-heading" prop:text="Рабочие разделы"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="attention_summary" prop:role="dashboard-attention" prop:text="Загрузка состояния…"></anvil-component>
+        </div>
+        <div class="admin-dashboard-actions admin-dashboard-actions--cards">
+          <anvil-component type="Button" name="catalog_button" prop:text="Управление каталогом" prop:role="dashboard-shortcut" prop:visible="false"></anvil-component>
+          <anvil-component type="Button" name="content_button" prop:text="Страницы и контент" prop:role="dashboard-shortcut" prop:visible="false"></anvil-component>
+          <div class="admin-dashboard-action-note"><span>01</span><strong>Рабочие разделы</strong><small>Откройте раздел слева или начните с быстрого действия.</small></div>
+        </div>
+      </section>
+
+      <section class="admin-dashboard-metrics anvil-role-card">
+        <div class="admin-dashboard-section-heading">
+          <div>
+            <anvil-component type="Label" name="metrics_eyebrow" prop:role="eyebrow" prop:text="АКТУАЛЬНЫЕ ДАННЫЕ"></anvil-component>
+            <anvil-component type="Label" name="metrics_heading" prop:role="section-heading" prop:text="Мой рабочий стол"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="analytics_status" prop:role="status-message" prop:text="Загрузка сводки…"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="analytics_summary" prop:role="admin-metrics" prop:item_template="Minimal_Theme_4.AdminTools.MetricItem"></anvil-component>
+      </section>
+
+      <div class="admin-dashboard-lower">
+        <section class="admin-dashboard-note anvil-role-card">
+          <anvil-component type="Label" name="health_eyebrow" prop:role="eyebrow" prop:text="ТРЕБУЕТ ВНИМАНИЯ"></anvil-component>
+          <anvil-component type="Label" name="health_heading" prop:role="section-heading" prop:text="Что проверить"></anvil-component>
+          <anvil-component type="Label" name="attention_detail" prop:role="status-message" prop:text="Показатели панели рассчитываются на сервере по данным проекта."></anvil-component>
+          <div class="admin-dashboard-note__footer"><span class="admin-note-mark">!</span><span>Исправления открываются прямо из соответствующего раздела.</span></div>
+        </section>
+        <anvil-component type="ColumnPanel" name="audit_panel" prop:role="admin-audit-panel" prop:visible="false">
+          <anvil-component type="Label" name="audit_eyebrow" prop:role="eyebrow" prop:text="ИСТОРИЯ"></anvil-component>
+          <anvil-component type="Label" name="audit_heading" prop:role="section-heading" prop:text="Последние действия"></anvil-component>
+          <anvil-component type="Label" name="audit_summary" prop:role="admin-audit-list" prop:text=""></anvil-component>
+        </anvil-component>
+      </div>
+      <section class="admin-dashboard-footer-grid">
+        <div><span class="admin-footer-index">A</span><strong>Каталог и контент</strong><small>Товары, категории, изображения, страницы и документы.</small></div>
+        <div><span class="admin-footer-index">B</span><strong>Операции</strong><small>Заявки, пользователи, роли и журнал изменений.</small></div>
+        <div><span class="admin-footer-index">C</span><strong>Инструменты</strong><small>Импорт, диагностика, API и AI Studio.</small></div>
+      </section>
+    </div>
+  </anvil-block>
+</anvil-form>

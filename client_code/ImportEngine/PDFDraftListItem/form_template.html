@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="pdf-draft-list-item">
+  <anvil-component type="Label" name="source_label" prop:role="section-heading" bind:text="self.item['source_name']"></anvil-component>
+  <anvil-component type="Label" name="status_label" prop:text="" prop:role="role-badge"></anvil-component>
+  <anvil-component type="Label" name="count_label" prop:role="pdf-draft-count" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="created_label" bind:text="self.item['created_at']"></anvil-component>
+  <anvil-component type="Button" name="open_button" prop:text="Открыть черновик" prop:role="secondary-button"></anvil-component>
+</anvil-form>

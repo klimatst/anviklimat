@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="source_label" prop:role="section-heading" bind:text="self.item['source_name']"></anvil-component>
+  <anvil-component type="Label" name="status_label" bind:text="self.item['status']"></anvil-component>
+  <anvil-component type="Label" name="progress_label" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="created_label" bind:text="self.item['created_at']"></anvil-component>
+  <anvil-component type="Button" name="resume_button" prop:text="Выбрать для продолжения" prop:role="secondary-button"></anvil-component>
+</anvil-form>

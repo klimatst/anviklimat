@@ -1,0 +1,6 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="formula_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="module_title" bind:text="self.item['module_title']"></anvil-component>
+  <anvil-component type="Label" name="state_title" bind:text="self.item['state_title']"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:text="Изменить формулу" prop:role="secondary-button" bind:visible="self.item['can_edit']"></anvil-component>
+</anvil-form>

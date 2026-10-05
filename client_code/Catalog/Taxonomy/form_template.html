@@ -1,0 +1,85 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В админ-панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="taxonomy-view">
+      <anvil-component type="Label" name="taxonomy_intro" prop:role="lede" prop:text="Управляйте деревом каталога, брендами и производителями оборудования. Используемые записи защищены от случайного удаления."></anvil-component>
+      <anvil-component type="Label" name="taxonomy_message" prop:role="status-message" prop:text=""></anvil-component>
+      <div class="taxonomy-grid">
+        <anvil-component type="ColumnPanel" name="category_panel" prop:role="taxonomy-panel">
+          <anvil-component type="Label" name="category_list_heading" prop:role="section-heading" prop:text="Категории и подкатегории"></anvil-component>
+          <div class="taxonomy-actions">
+            <anvil-component type="Button" name="new_category_button" prop:text="Новая категория" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="new_subcategory_button" prop:text="Новая подкатегория" prop:role="secondary-button"></anvil-component>
+          </div>
+          <anvil-component type="RepeatingPanel" name="category_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.Taxonomy.CategoryAdminItem"></anvil-component>
+          <div class="taxonomy-editor">
+            <anvil-component type="Label" name="category_editor_heading" prop:role="section-heading" prop:text="Новая категория"></anvil-component>
+            <anvil-component type="TextBox" name="category_title_box" prop:placeholder="Название категории"></anvil-component>
+            <anvil-component type="DropDown" name="category_parent_dropdown"></anvil-component>
+            <anvil-component type="CheckBox" name="category_active_checkbox" prop:text="Показывать в каталоге"></anvil-component>
+            <anvil-component type="TextBox" name="category_order_box" prop:placeholder="Порядок отображения"></anvil-component>
+            <anvil-component type="TextArea" name="category_description_box" prop:placeholder="Описание категории для посетителей"></anvil-component>
+            <anvil-component type="TextBox" name="category_meta_title_box" prop:placeholder="SEO: заголовок страницы"></anvil-component>
+            <anvil-component type="TextArea" name="category_meta_description_box" prop:placeholder="SEO: описание страницы"></anvil-component>
+            <anvil-component type="FileLoader" name="category_image_file" prop:text="Загрузить изображение категории" prop:file_types=".jpg,.jpeg,.png,.webp"></anvil-component>
+            <anvil-component type="Image" name="category_image_preview" prop:role="catalog-category-image-preview" prop:visible="false"></anvil-component>
+            <anvil-component type="CheckBox" name="category_image_remove_checkbox" prop:text="Убрать собственное изображение категории"></anvil-component>
+            <div class="taxonomy-actions">
+              <anvil-component type="Button" name="save_category_button" prop:text="Сохранить категорию" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Button" name="category_delete_button" prop:text="Удалить" prop:role="danger-action" prop:visible="false"></anvil-component>
+            </div>
+            <anvil-component type="Label" name="category_message" prop:role="status-message" prop:text=""></anvil-component>
+          </div>
+          <anvil-component type="ColumnPanel" name="custom_fields_manager" prop:role="taxonomy-editor" prop:visible="false">
+            <anvil-component type="Label" name="custom_fields_heading" prop:role="section-heading" prop:text="Поля товаров этой категории"></anvil-component>
+            <anvil-component type="Label" name="custom_fields_help" prop:role="status-message" prop:text="Поля наследуются товарами вложенных категорий. Отключение поля сохраняет уже введённые значения."></anvil-component>
+            <anvil-component type="RepeatingPanel" name="field_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.Taxonomy.FieldDefinitionItem"></anvil-component>
+            <anvil-component type="Button" name="new_field_button" prop:text="Добавить поле товара" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="ColumnPanel" name="custom_field_editor" prop:role="taxonomy-field-editor" prop:visible="false">
+              <anvil-component type="Label" name="custom_field_editor_heading" prop:role="eyebrow" prop:text="НОВОЕ ПОЛЕ"></anvil-component>
+              <div class="catalog-document-form">
+                <anvil-component type="TextBox" name="custom_field_code_box" prop:placeholder="Код: refrigerant_type"></anvil-component>
+                <anvil-component type="TextBox" name="custom_field_title_box" prop:placeholder="Название поля"></anvil-component>
+                <anvil-component type="DropDown" name="custom_field_type_dropdown"></anvil-component>
+                <anvil-component type="TextBox" name="custom_field_unit_box" prop:placeholder="Единица измерения"></anvil-component>
+                <anvil-component type="TextArea" name="custom_field_choices_box" prop:placeholder="Варианты списка · по одному на строку"></anvil-component>
+                <anvil-component type="TextBox" name="custom_field_order_box" prop:placeholder="Порядок"></anvil-component>
+              </div>
+              <div class="taxonomy-actions">
+                <anvil-component type="CheckBox" name="custom_field_required_checkbox" prop:text="Обязательное поле"></anvil-component>
+                <anvil-component type="CheckBox" name="custom_field_public_checkbox" prop:text="Показывать посетителям"></anvil-component>
+                <anvil-component type="CheckBox" name="custom_field_enabled_checkbox" prop:text="Поле включено"></anvil-component>
+              </div>
+              <div class="taxonomy-actions">
+                <anvil-component type="Button" name="save_custom_field_button" prop:text="Сохранить поле" prop:role="primary-action"></anvil-component>
+                <anvil-component type="Button" name="disable_custom_field_button" prop:text="Отключить поле" prop:role="danger-action" prop:visible="false"></anvil-component>
+              </div>
+              <anvil-component type="Label" name="custom_field_message" prop:role="status-message" prop:text=""></anvil-component>
+            </anvil-component>
+          </anvil-component>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="brand_panel" prop:role="taxonomy-panel">
+          <anvil-component type="Label" name="brand_list_heading" prop:role="section-heading" prop:text="Бренды и марки"></anvil-component>
+          <div class="taxonomy-actions">
+            <anvil-component type="Button" name="new_brand_button" prop:text="Новый бренд" prop:role="secondary-button"></anvil-component>
+          </div>
+          <anvil-component type="RepeatingPanel" name="brand_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.Taxonomy.BrandAdminItem"></anvil-component>
+          <div class="taxonomy-editor">
+            <anvil-component type="Label" name="brand_editor_heading" prop:role="section-heading" prop:text="Новый бренд"></anvil-component>
+            <anvil-component type="TextBox" name="brand_name_box" prop:placeholder="Название производителя"></anvil-component>
+            <div class="taxonomy-actions">
+              <anvil-component type="Button" name="save_brand_button" prop:text="Сохранить бренд" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Button" name="brand_delete_button" prop:text="Удалить" prop:role="danger-action" prop:visible="false"></anvil-component>
+            </div>
+            <anvil-component type="Label" name="brand_message" prop:role="status-message" prop:text=""></anvil-component>
+          </div>
+        </anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Категории и бренды"></anvil-component>
+  </anvil-block>
+</anvil-form>

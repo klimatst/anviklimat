@@ -1,0 +1,35 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-series-card">
+  <div class="catalog-series-summary">
+    <div class="catalog-series-photo-wrap">
+      <anvil-component type="Image" name="series_image" prop:role="catalog-series-photo" prop:visible="false"></anvil-component>
+      <anvil-component type="Label" name="series_image_placeholder" prop:role="catalog-photo-placeholder" prop:text="Изображение серии не добавлено" prop:visible="true"></anvil-component>
+    </div>
+    <div class="catalog-series-copy">
+      <div class="catalog-series-title-line">
+        <anvil-component type="Label" name="series_title" prop:role="catalog-series-title" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="new_badge" prop:role="catalog-new-badge" prop:text="Новинка" prop:visible="false"></anvil-component>
+      </div>
+      <anvil-component type="Label" name="series_description" prop:role="catalog-series-description" prop:text="" prop:visible="false"></anvil-component>
+      <div class="catalog-series-meta">
+        <anvil-component type="Label" name="power_range" prop:role="catalog-series-power" prop:text="" prop:visible="false"></anvil-component>
+        <anvil-component type="Label" name="series_count" prop:role="catalog-series-count" prop:text=""></anvil-component>
+      </div>
+      <anvil-component type="ColumnPanel" name="documents_panel" prop:role="catalog-series-documents" prop:visible="false">
+        <anvil-component type="RepeatingPanel" name="document_rows" prop:role="catalog-document-list" prop:item_template="Minimal_Theme_4.Catalog.DocumentItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="Button" name="toggle_models_button" prop:text="Показать модели" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    </div>
+  </div>
+  <anvil-component type="ColumnPanel" name="models_panel" prop:role="catalog-series-models" prop:visible="false">
+    <div class="catalog-series-table-scroll">
+      <div class="catalog-series-table-header">
+        <anvil-component type="Label" name="model_header" prop:role="catalog-model-column-heading" prop:text="Модель / артикул"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="column_headings" prop:role="catalog-model-columns" prop:item_template="Minimal_Theme_4.Catalog.ColumnHeadingItem"></anvil-component>
+        <anvil-component type="Label" name="price_header" prop:role="catalog-model-column-heading" prop:text="Цена"></anvil-component>
+        <anvil-component type="Label" name="stock_header" prop:role="catalog-model-column-heading" prop:text="Наличие"></anvil-component>
+        <anvil-component type="Label" name="actions_header" prop:role="catalog-model-column-heading" prop:text="Действия"></anvil-component>
+      </div>
+      <anvil-component type="RepeatingPanel" name="model_rows" prop:role="catalog-series-model-list" prop:item_template="Minimal_Theme_4.Catalog.ModelRow"></anvil-component>
+    </div>
+  </anvil-component>
+</anvil-form>

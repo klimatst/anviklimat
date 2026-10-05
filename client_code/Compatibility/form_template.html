@@ -1,0 +1,35 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="new_rule_button" prop:text="Новое правило" prop:role="primary-action" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="projects_button" prop:text="Проекты" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="operations_button" prop:text="CRM и сервис" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="compatibility-view">
+      <anvil-component type="ColumnPanel" name="compatibility_panel" prop:role="card">
+        <anvil-component type="Label" name="compatibility_intro" prop:role="lede" prop:text="Единые правила совместимости, обязательных компонентов, альтернатив и запретов. Каждое правило хранит источник и версию."></anvil-component>
+        <anvil-component type="Label" name="compatibility_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="rule_rows" prop:item_template="Minimal_Theme_4.Compatibility.RuleItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="rule_editor" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="editor_heading" prop:role="section-heading" prop:text="Правило совместимости"></anvil-component>
+        <anvil-component type="TextBox" name="product_search_box" prop:placeholder="Поиск товаров по модели или артикулу"></anvil-component>
+        <anvil-component type="Button" name="product_search_button" prop:text="Найти товары" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="DropDown" name="product_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="compatible_product_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="type_dropdown"></anvil-component>
+        <anvil-component type="TextArea" name="rule_box" prop:placeholder="Уточняющее правило в JSON"></anvil-component>
+        <anvil-component type="TextBox" name="source_box" prop:placeholder="Источник правила"></anvil-component>
+        <anvil-component type="TextBox" name="version_box" prop:placeholder="Версия источника"></anvil-component>
+        <anvil-component type="DropDown" name="enabled_dropdown"></anvil-component>
+        <anvil-component type="Button" name="save_rule_button" prop:text="Сохранить правило" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="cancel_rule_button" prop:text="Закрыть редактор" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="rule_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Совместимость оборудования"></anvil-component>
+  </anvil-block>
+</anvil-form>

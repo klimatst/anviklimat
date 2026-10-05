@@ -1,0 +1,344 @@
+[
+  {
+    "code": "ac_room_load_kw",
+    "module": "ac",
+    "title": "Предварительная нагрузка помещения",
+    "expression": "area_m2 * area_kw_per_m2 * height_factor * room_factor * solar_factor * floor_factor + people_count * person_kw + equipment_kw",
+    "input_schema": {
+      "area_m2": {
+        "label": "Площадь",
+        "unit": "м²",
+        "minimum": 0.1
+      },
+      "height_factor": {
+        "label": "Отношение высоты к расчётной",
+        "unit": "—",
+        "minimum": 0.2,
+        "maximum": 4
+      },
+      "people_count": {
+        "label": "Люди",
+        "unit": "чел.",
+        "minimum": 0
+      },
+      "equipment_kw": {
+        "label": "Тепловыделение оборудования",
+        "unit": "кВт",
+        "minimum": 0
+      },
+      "room_factor": {
+        "label": "Коэффициент помещения",
+        "unit": "—",
+        "minimum": 0.1
+      },
+      "solar_factor": {
+        "label": "Коэффициент инсоляции",
+        "unit": "—",
+        "minimum": 0.1
+      },
+      "floor_factor": {
+        "label": "Коэффициент этажа",
+        "unit": "—",
+        "minimum": 0.1
+      }
+    },
+    "coefficients": {
+      "area_kw_per_m2": 0.1,
+      "design_height_m": 2.7,
+      "person_kw": 0.075,
+      "room_apartment": 1.0,
+      "room_house": 1.0,
+      "room_office": 1.05,
+      "room_kitchen": 1.1,
+      "room_shop": 1.05,
+      "room_restaurant": 1.1,
+      "room_server_room": 1.25,
+      "room_other": 1.0,
+      "solar_shade": 1.0,
+      "solar_normal": 1.1,
+      "solar_high": 1.2,
+      "floor_regular": 1.0,
+      "floor_top": 1.15
+    },
+    "output_unit": "кВт",
+    "source": "Предварительная оценка по правилу 100 Вт/м² с явным учётом высоты, назначения помещения, инсоляции, этажа, людей и заданного тепловыделения. Это эскизный подбор; проектную нагрузку определяют по расчёту теплопритоков и местным нормам.",
+    "version": "HVAC Studio 1.1"
+  },
+  {
+    "code": "ventilation_design_flow",
+    "module": "ventilation",
+    "title": "Расчётный расход вентиляции",
+    "expression": "max(volume_m3 * air_changes_per_hour, people_count * fresh_air_m3_h_person)",
+    "input_schema": {
+      "volume_m3": {
+        "label": "Объём помещения",
+        "unit": "м³",
+        "minimum": 0
+      },
+      "air_changes_per_hour": {
+        "label": "Кратность воздухообмена",
+        "unit": "ч⁻¹",
+        "minimum": 0
+      },
+      "people_count": {
+        "label": "Люди",
+        "unit": "чел.",
+        "minimum": 0
+      },
+      "fresh_air_m3_h_person": {
+        "label": "Наружный воздух на человека",
+        "unit": "м³/ч·чел.",
+        "minimum": 0
+      }
+    },
+    "coefficients": {
+      "default_air_changes_per_hour": 1.5,
+      "default_fresh_air_m3_h_person": 30.0
+    },
+    "output_unit": "м³/ч",
+    "source": "Расход принимается как максимум из объёма × заданная кратность и числа людей × заданный расход на человека. Проектные значения задаются применимыми местными нормами и заданием.",
+    "version": "HVAC Studio 1.1"
+  },
+  {
+    "code": "ventilation_duct_area",
+    "module": "ventilation",
+    "title": "Площадь сечения воздуховода",
+    "expression": "airflow_m3_h / (3600 * air_velocity_m_s)",
+    "input_schema": {
+      "airflow_m3_h": {
+        "label": "Расход воздуха",
+        "unit": "м³/ч",
+        "minimum": 0
+      },
+      "air_velocity_m_s": {
+        "label": "Расчётная скорость",
+        "unit": "м/с",
+        "minimum": 0.1,
+        "maximum": 40
+      }
+    },
+    "coefficients": {
+      "default_air_velocity_m_s": 4.0
+    },
+    "output_unit": "м²",
+    "source": "Уравнение неразрывности: площадь сечения = объёмный расход / скорость воздуха. Скорость задаёт инженер по акустике и потерям давления.",
+    "version": "HVAC Studio 1.1"
+  },
+  {
+    "code": "humidification_saturation_pressure",
+    "module": "humidification",
+    "title": "Давление насыщенного водяного пара",
+    "expression": "saturation_base_kpa * exp(saturation_slope * temperature_c / (temperature_c + saturation_offset_c))",
+    "input_schema": {
+      "temperature_c": {
+        "label": "Температура воздуха",
+        "unit": "°C",
+        "minimum": -40,
+        "maximum": 80
+      }
+    },
+    "coefficients": {
+      "saturation_base_kpa": 0.61094,
+      "saturation_slope": 17.625,
+      "saturation_offset_c": 243.04
+    },
+    "output_unit": "кПа",
+    "source": "Приближение Magnus–Tetens для давления насыщенного водяного пара над жидкой водой; не заменяет расчёт по точным психрометрическим данным.",
+    "version": "HVAC Studio 1.1"
+  },
+  {
+    "code": "humidification_humidity_ratio",
+    "module": "humidification",
+    "title": "Влагосодержание воздуха",
+    "expression": "molecular_ratio * vapor_pressure_kpa / (barometric_pressure_kpa - vapor_pressure_kpa)",
+    "input_schema": {
+      "vapor_pressure_kpa": {
+        "label": "Парциальное давление пара",
+        "unit": "кПа",
+        "minimum": 0
+      }
+    },
+    "coefficients": {
+      "molecular_ratio": 0.62198,
+      "barometric_pressure_kpa": 101.325
+    },
+    "output_unit": "кг/кг сухого воздуха",
+    "source": "Психрометрическое соотношение для влагосодержания влажного воздуха; давление принято 101,325 кПа и должно быть скорректировано для высоты над уровнем моря.",
+    "version": "HVAC Studio 1.1"
+  },
+  {
+    "code": "installation_work_cost",
+    "module": "installation",
+    "title": "Работы по монтажу",
+    "expression": "equipment_count * rate_per_unit * complexity_factor + route_length_m * route_rate_per_m * complexity_factor + floor_count * rate_per_floor",
+    "input_schema": {
+      "equipment_count": {
+        "label": "Количество оборудования",
+        "unit": "шт.",
+        "minimum": 0
+      },
+      "route_length_m": {
+        "label": "Длина трассы или воздуховода",
+        "unit": "м",
+        "minimum": 0
+      },
+      "complexity_factor": {
+        "label": "Коэффициент сложности",
+        "unit": "—",
+        "minimum": 0.1,
+        "maximum": 10
+      },
+      "floor_count": {
+        "label": "Этажность",
+        "unit": "этажей",
+        "minimum": 1
+      }
+    },
+    "coefficients": {
+      "rate_per_unit": 0.0,
+      "route_rate_per_m": 0.0,
+      "rate_per_floor": 0.0,
+      "difficulty_standard": 1.0,
+      "difficulty_limited_access": 1.25,
+      "difficulty_height_work": 1.5
+    },
+    "output_unit": "вал. ед.",
+    "source": "Предварительная смета по локальным тарифам в коэффициентах формулы ADMIN. Переменные расчёта отделены от расценок и коэффициентов.",
+    "version": "HVAC Studio 1.2"
+  },
+  {
+    "code": "air_sensible_load_kw",
+    "module": "ac",
+    "title": "Явная тепловая нагрузка воздуха",
+    "expression": "air_density * air_heat_capacity * airflow_m3_s * delta_t_k",
+    "input_schema": {
+      "airflow_m3_s": {
+        "label": "Расход воздуха",
+        "unit": "м³/с",
+        "minimum": 0
+      },
+      "delta_t_k": {
+        "label": "Разность температур",
+        "unit": "K",
+        "minimum": 0
+      }
+    },
+    "coefficients": {
+      "air_density": 1.2,
+      "air_heat_capacity": 1.006
+    },
+    "output_unit": "кВт",
+    "source": "ASHRAE Handbook—Fundamentals (2021), Psychrometrics: Q = ρ·cp·V̇·ΔT; dry-air design approximation ρ=1.2 kg/m³, cp=1.006 kJ/(kg·K).",
+    "version": "ASHRAE 2021 / HVAC Studio 1.0"
+  },
+  {
+    "code": "ventilation_airflow_ach",
+    "module": "ventilation",
+    "title": "Расход воздуха по кратности",
+    "expression": "room_volume_m3 * air_changes_per_hour",
+    "input_schema": {
+      "room_volume_m3": {
+        "label": "Объём помещения",
+        "unit": "м³",
+        "minimum": 0
+      },
+      "air_changes_per_hour": {
+        "label": "Расчётная кратность",
+        "unit": "ч⁻¹",
+        "minimum": 0
+      }
+    },
+    "coefficients": {},
+    "output_unit": "м³/ч",
+    "source": "Air-change definition: volumetric airflow = room volume × specified air changes per hour. Set the design rate from applicable local code and project requirements.",
+    "version": "HVAC Studio 1.0"
+  },
+  {
+    "code": "humidification_water_flow",
+    "module": "humidification",
+    "title": "Производительность увлажнения",
+    "expression": "air_density * airflow_m3_s * humidity_ratio_delta * 3600",
+    "input_schema": {
+      "airflow_m3_s": {
+        "label": "Расход воздуха",
+        "unit": "м³/с",
+        "minimum": 0
+      },
+      "humidity_ratio_delta": {
+        "label": "Прирост влагосодержания",
+        "unit": "кг/кг",
+        "minimum": 0
+      }
+    },
+    "coefficients": {
+      "air_density": 1.2
+    },
+    "output_unit": "кг/ч",
+    "source": "Moist-air mass balance: water rate = dry-air mass flow × humidity-ratio increase. Air density 1.2 kg/m³ is an explicit design approximation.",
+    "version": "HVAC Studio 1.0"
+  },
+  {
+    "code": "electrical_input_from_cop",
+    "module": "energy",
+    "title": "Электрическая мощность по COP",
+    "expression": "thermal_capacity_kw / cop",
+    "input_schema": {
+      "thermal_capacity_kw": {
+        "label": "Тепловая мощность",
+        "unit": "кВт",
+        "minimum": 0
+      },
+      "cop": {
+        "label": "COP при расчётных условиях",
+        "unit": "—",
+        "minimum": 1e-06
+      }
+    },
+    "coefficients": {},
+    "output_unit": "кВт",
+    "source": "Coefficient of performance definition: COP = delivered thermal power / electrical input power. Use manufacturer COP at the design point.",
+    "version": "HVAC Studio 1.0"
+  },
+  {
+    "code": "installation_cost_estimate",
+    "module": "installation",
+    "title": "Предварительная стоимость монтажа",
+    "expression": "equipment_cost + piping_length_m * piping_rate + labor_hours * hourly_rate + consumables_cost",
+    "input_schema": {
+      "equipment_cost": {
+        "label": "Оборудование по смете",
+        "unit": "вал. ед.",
+        "minimum": 0
+      },
+      "piping_length_m": {
+        "label": "Длина трассы",
+        "unit": "м",
+        "minimum": 0
+      },
+      "piping_rate": {
+        "label": "Монтаж трассы за метр",
+        "unit": "вал. ед./м",
+        "minimum": 0
+      },
+      "labor_hours": {
+        "label": "Трудоёмкость",
+        "unit": "ч",
+        "minimum": 0
+      },
+      "hourly_rate": {
+        "label": "Ставка работ за час",
+        "unit": "вал. ед./ч",
+        "minimum": 0
+      },
+      "consumables_cost": {
+        "label": "Расходные материалы",
+        "unit": "вал. ед.",
+        "minimum": 0
+      }
+    },
+    "coefficients": {},
+    "output_unit": "вал. ед.",
+    "source": "Parametric estimate using user-supplied equipment amount, installed length, labor hours, rates, and consumables; taxes, access equipment, and contingencies are excluded.",
+    "version": "HVAC Studio 1.0"
+  }
+]

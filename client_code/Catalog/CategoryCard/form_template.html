@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-category-card">
+  <anvil-component type="Image" name="category_image" prop:role="catalog-category-photo" prop:visible="false"></anvil-component>
+  <anvil-component type="Label" name="image_placeholder" prop:role="catalog-category-placeholder" prop:text="Категория оборудования" prop:visible="true"></anvil-component>
+  <anvil-component type="Label" name="category_kicker" prop:role="catalog-category-kicker" prop:text="РАЗДЕЛ КАТАЛОГА"></anvil-component>
+  <anvil-component type="Button" name="open_button" prop:role="catalog-category-title" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="category_description" prop:role="catalog-category-card-description" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="category_summary" prop:role="catalog-category-meta" bind:text="self.item['summary']"></anvil-component>
+  <anvil-component type="Button" name="category_action_button" prop:text="Открыть раздел" prop:role="catalog-category-action"></anvil-component>
+</anvil-form>

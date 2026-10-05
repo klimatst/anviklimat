@@ -1,0 +1,8 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="task_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="task_status" bind:text="self.item['status_title']"></anvil-component>
+  <anvil-component type="Label" name="task_due" bind:text="self.item['due_label']"></anvil-component>
+  <anvil-component type="Label" name="task_client" bind:text="self.item['client_title']"></anvil-component>
+  <anvil-component type="Label" name="task_project" bind:text="self.item['project_title']"></anvil-component>
+  <anvil-component type="Button" name="complete_button" prop:text="Отметить выполненной" prop:role="secondary-button" bind:visible="self.item['can_complete']"></anvil-component>
+</anvil-form>

@@ -1,0 +1,8 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="quote_number" prop:role="section-heading" bind:text="self.item['number']"></anvil-component>
+  <anvil-component type="Label" name="quote_total" bind:text="self.item['total_label']"></anvil-component>
+  <anvil-component type="Label" name="quote_status" bind:text="self.item['status_title']"></anvil-component>
+  <anvil-component type="Label" name="quote_expiry" bind:text="self.item['expires_label']"></anvil-component>
+  <anvil-component type="Button" name="send_button" prop:text="Отметить отправленным" prop:role="secondary-button" bind:visible="self.item['can_send']"></anvil-component>
+  <anvil-component type="Button" name="approve_button" prop:text="Согласовать" prop:role="secondary-button" bind:visible="self.item['can_approve']"></anvil-component>
+</anvil-form>

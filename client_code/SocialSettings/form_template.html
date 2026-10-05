@@ -1,0 +1,39 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В админ-панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="social-settings-view">
+      <anvil-component type="Label" name="social_intro" prop:role="lede" prop:text="Каналы связи, ссылки на сообщества и тестовая отправка сводки. Токены остаются в Anvil Secrets."></anvil-component>
+      <div class="social-settings-grid">
+        <anvil-component type="ColumnPanel" name="telegram_panel" prop:role="social-settings-panel">
+          <anvil-component type="Label" name="telegram_heading" prop:role="section-heading" prop:text="Telegram"></anvil-component>
+          <anvil-component type="Label" name="telegram_status" prop:role="status-message" prop:text="Токен бота настраивается только через Anvil Secrets."></anvil-component>
+          <anvil-component type="TextBox" name="telegram_chat_id_box" prop:placeholder="Числовой ID чата или @канал"></anvil-component>
+          <anvil-component type="Label" name="telegram_chat_targets_label" prop:text="Дополнительные чаты · до 4, по одному ID на строку"></anvil-component>
+          <anvil-component type="TextArea" name="telegram_chat_targets_box" prop:role="social-chat-targets" prop:placeholder="-1001234567890&#10;@service_channel"></anvil-component>
+          <div class="social-settings-actions">
+            <anvil-component type="Button" name="save_telegram_button" prop:text="Сохранить получателя" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="save_telegram_targets_button" prop:text="Сохранить список чатов" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="send_report_button" prop:text="Отправить тестовую сводку" prop:role="primary-action"></anvil-component>
+          </div>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="channels_panel" prop:role="social-settings-panel">
+          <anvil-component type="Label" name="channels_heading" prop:role="section-heading" prop:text="Российские площадки"></anvil-component>
+          <anvil-component type="Label" name="channels_intro" prop:role="status-message" prop:text="Укажите публичные страницы компании."></anvil-component>
+          <div class="social-channel-fields">
+            <anvil-component type="TextBox" name="vk_url_box" prop:placeholder="ВКонтакте · https://vk.com/..."></anvil-component>
+            <anvil-component type="TextBox" name="ok_url_box" prop:placeholder="Одноклассники · https://ok.ru/..."></anvil-component>
+            <anvil-component type="TextBox" name="dzen_url_box" prop:placeholder="Дзен · https://dzen.ru/..."></anvil-component>
+            <anvil-component type="TextBox" name="max_url_box" prop:placeholder="MAX · https://max.ru/..."></anvil-component>
+          </div>
+          <anvil-component type="Button" name="save_social_links_button" prop:text="Сохранить ссылки" prop:role="primary-action"></anvil-component>
+        </anvil-component>
+      </div>
+      <anvil-component type="Label" name="social_message" prop:role="status-message" prop:text=""></anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Социальные сети"></anvil-component>
+  </anvil-block>
+</anvil-form>

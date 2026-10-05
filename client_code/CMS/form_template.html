@@ -1,0 +1,82 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="new_page_button" prop:text="Новая страница" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="cms-view">
+      <anvil-component type="ColumnPanel" name="page_list_panel" prop:role="card">
+        <anvil-component type="Label" name="cms_intro" prop:role="lede" prop:text="Универсальный CMS: черновик, предпросмотр, публикация и независимое включение модулей."></anvil-component>
+        <anvil-component type="Label" name="cms_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="page_rows" prop:item_template="Minimal_Theme_4.CMS.PageItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="page_editor" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="page_editor_heading" prop:role="section-heading" prop:text="Страница CMS"></anvil-component>
+        <anvil-component type="TextBox" name="page_title_box" prop:placeholder="Название страницы"></anvil-component>
+        <anvil-component type="TextBox" name="page_slug_box" prop:placeholder="Адрес: hvac-services"></anvil-component>
+        <anvil-component type="Label" name="page_content_heading" prop:role="section-heading" prop:text="Публикация и карточка статьи"></anvil-component>
+        <div class="cms-fields-grid">
+          <div class="calculator-field"><anvil-component type="Label" name="publish_date_label" prop:text="Дата публикации · ДД.ММ.ГГГГ"></anvil-component><anvil-component type="TextBox" name="publish_date_box" prop:placeholder="02.10.2026"></anvil-component></div>
+          <div class="calculator-field"><anvil-component type="Label" name="news_category_label" prop:text="Рубрика новостей"></anvil-component><anvil-component type="DropDown" name="news_category_dropdown"></anvil-component></div>
+          <div class="calculator-field"><anvil-component type="Label" name="seo_title_label" prop:text="Заголовок для поиска"></anvil-component><anvil-component type="TextBox" name="seo_title_box" prop:placeholder="Короткий заголовок для поисковой выдачи"></anvil-component></div>
+          <div class="calculator-field cms-fields-wide"><anvil-component type="Label" name="excerpt_label" prop:text="Краткое описание для списка новостей"></anvil-component><anvil-component type="TextArea" name="excerpt_box" prop:placeholder="Короткий анонс статьи"></anvil-component></div>
+          <div class="calculator-field cms-fields-wide"><anvil-component type="Label" name="seo_description_label" prop:text="Описание для поисковой выдачи"></anvil-component><anvil-component type="TextArea" name="seo_description_box" prop:placeholder="Краткое описание страницы для поисковых систем"></anvil-component></div>
+          <div class="calculator-field"><anvil-component type="Label" name="keywords_label" prop:text="Ключевые слова"></anvil-component><anvil-component type="TextBox" name="keywords_box" prop:placeholder="кондиционер, монтаж, VRF"></anvil-component></div>
+          <div class="calculator-field"><anvil-component type="Label" name="canonical_url_label" prop:text="Канонический адрес"></anvil-component><anvil-component type="TextBox" name="canonical_url_box" prop:placeholder="Необязательно"></anvil-component></div>
+          <div class="calculator-field cms-fields-wide"><anvil-component type="Label" name="social_image_url_label" prop:text="Ссылка на изображение для соцсетей"></anvil-component><anvil-component type="TextBox" name="social_image_url_box" prop:placeholder="HTTPS URL изображения"></anvil-component></div>
+        </div>
+        <anvil-component type="Label" name="advanced_settings_heading" prop:role="section-heading" prop:text="Дополнительные параметры страницы · JSON"></anvil-component>
+        <anvil-component type="TextArea" name="page_settings_box" prop:placeholder="Дополнительные короткие настройки в JSON"></anvil-component>
+        <anvil-component type="Label" name="page_status_label" prop:role="eyebrow" prop:text=""></anvil-component>
+        <anvil-component type="Button" name="save_page_button" prop:text="Сохранить черновик" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="preview_button" prop:text="Предпросмотр" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="publish_button" prop:text="Опубликовать" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Label" name="page_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="Button" name="new_module_button" prop:text="Добавить модуль" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="module_rows" prop:item_template="Minimal_Theme_4.CMS.ModuleItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="module_editor" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="module_editor_heading" prop:role="section-heading" prop:text="Редактор блока страницы"></anvil-component>
+        <div class="cms-module-toolbar">
+          <anvil-component type="DropDown" name="module_editor_mode" prop:role="cms-editor-mode"></anvil-component>
+          <anvil-component type="DropDown" name="module_type_dropdown"></anvil-component>
+          <anvil-component type="TextBox" name="module_position_box" prop:placeholder="Позиция в списке"></anvil-component>
+          <anvil-component type="DropDown" name="module_enabled_dropdown"></anvil-component>
+        </div>
+        <anvil-component type="ColumnPanel" name="module_visual_panel" prop:role="cms-editor-panel">
+          <anvil-component type="Label" name="module_visual_heading" prop:role="eyebrow" prop:text="ВИЗУАЛЬНЫЕ ПОЛЯ"></anvil-component>
+          <anvil-component type="TextBox" name="module_title_box" prop:placeholder="Заголовок блока"></anvil-component>
+          <anvil-component type="TextArea" name="module_text_box" prop:placeholder="Текст, описание или подпись"></anvil-component>
+          <div class="cms-module-fields-grid">
+            <anvil-component type="TextBox" name="module_image_url_box" prop:placeholder="Ссылка на изображение · HTTPS"></anvil-component>
+            <anvil-component type="TextBox" name="module_image_alt_box" prop:placeholder="Описание изображения"></anvil-component>
+            <anvil-component type="TextBox" name="module_link_label_box" prop:placeholder="Текст кнопки или ссылки"></anvil-component>
+            <anvil-component type="TextBox" name="module_url_box" prop:placeholder="Адрес ссылки"></anvil-component>
+            <anvil-component type="DropDown" name="module_alignment_dropdown"></anvil-component>
+            <anvil-component type="DropDown" name="module_style_dropdown"></anvil-component>
+          </div>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="module_html_panel" prop:role="cms-editor-panel" prop:visible="false">
+          <anvil-component type="Label" name="module_html_heading" prop:role="eyebrow" prop:text="HTML-КОД И ПРЕДПРОСМОТР"></anvil-component>
+          <anvil-component type="TextArea" name="module_html_box" prop:role="cms-html-source" prop:placeholder="Введите HTML-разметку блока"></anvil-component>
+          <anvil-component type="RichText" name="module_html_preview" prop:role="cms-rich-preview"></anvil-component>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="module_json_panel" prop:role="cms-editor-panel" prop:visible="false">
+          <anvil-component type="Label" name="module_json_heading" prop:role="eyebrow" prop:text="РАСШИРЕННЫЕ ПАРАМЕТРЫ JSON"></anvil-component>
+          <anvil-component type="TextArea" name="module_content_box" prop:role="cms-json-source" prop:placeholder="JSON содержимого блока"></anvil-component>
+        </anvil-component>
+        <anvil-component type="Button" name="save_module_button" prop:text="Сохранить блок" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="cancel_module_button" prop:text="Закрыть редактор" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="module_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="preview_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="preview_title" prop:role="h1" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="preview_meta" prop:role="lede" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="preview_rows" prop:item_template="Minimal_Theme_4.CMS.PreviewItem"></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Управление контентом"></anvil-component>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,180 @@
+<div class="site-shell eco-site-shell">
+  <header class="site-header premium-header eco-header">
+    <div class="eco-header__system">
+      <svg viewBox="0 0 1000 112" preserveAspectRatio="none" aria-hidden="true" class="eco-header__route-map">
+        <path d="M135 42 C170 42 168 10 200 10 H880 C910 10 916 42 950 42" class="eco-header__pipe-glow eco-header__pipe-glow--hot"></path>
+        <path d="M135 42 C170 42 168 10 200 10 H880 C910 10 916 42 950 42" class="eco-header__pipe eco-header__pipe--hot"></path>
+        <path d="M135 42 C170 42 168 10 200 10 H880 C910 10 916 42 950 42" class="eco-header__flow eco-header__flow--hot"></path>
+      </svg>
+      <div aria-label="Внутренний блок ЭКО-Климат" class="eco-header__unit eco-header__unit--indoor">
+      <svg viewBox="0 0 230 112" role="img" aria-hidden="true">
+        <defs>
+          <linearGradient id="eco-header-indoor-case" x1="0" y1="0" x2="0.1" y2="1">
+            <stop offset="0" stop-color="#586973"></stop>
+            <stop offset=".18" stop-color="#34434c"></stop>
+            <stop offset=".58" stop-color="#202b32"></stop>
+            <stop offset="1" stop-color="#10171c"></stop>
+          </linearGradient>
+          <linearGradient id="eco-header-indoor-face" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#394851"></stop>
+            <stop offset=".25" stop-color="#29363e"></stop>
+            <stop offset="1" stop-color="#182127"></stop>
+          </linearGradient>
+          <filter id="eco-header-case-shadow" x="-20%" y="-20%" width="140%" height="160%">
+            <feGaussianBlur stdDeviation="3"></feGaussianBlur>
+          </filter>
+        </defs>
+        <path d="M14 18Q14 8 25 8H202Q216 8 216 19V48Q216 57 206 60H23Q14 57 14 49Z" fill="url(#eco-header-indoor-case)" stroke="#758b95" stroke-width="1.4"></path>
+        <path d="M20 18Q20 12 27 12H201Q210 12 210 20V40Q115 46 20 40Z" fill="url(#eco-header-indoor-face)" stroke="#536a74" stroke-width=".8"></path>
+        <path d="M24 17Q115 12 205 17" fill="none" stroke="#d4e5e9" stroke-opacity=".25" stroke-width="1.2"></path>
+          <circle cx="202" cy="21" r="2.5" fill="#53b797"></circle>
+      </svg>
+        <anvil-component type="Button" name="home_nav" prop:text="ЭКО-КЛИМАТ" prop:role="header-brand-home"></anvil-component>
+      </div>
+      <div class="eco-header__tools">
+        <div class="site-search eco-search">
+          <anvil-component type="TextBox" name="search_box" prop:role="site-search" prop:placeholder="Поиск оборудования и услуг"></anvil-component>
+          <anvil-component type="Button" name="search_button" prop:text="Найти" prop:role="search-action"></anvil-component>
+        </div>
+        <div class="eco-header__utility site-header-actions">
+          <div class="eco-header__contact"><a href="tel:+79257873848">+79257873848</a></div>
+          <anvil-component type="Button" name="admin_panel_nav" prop:text="Админ-панель" prop:role="header-admin"></anvil-component>
+          <anvil-component type="Button" name="profile_nav" prop:text="Войти" prop:role="account-action"></anvil-component>
+        </div>
+      </div>
+      <div aria-label="Наружный климатический блок" class="eco-header__unit eco-header__unit--outdoor">
+        <svg viewBox="0 0 104 78" role="img" aria-hidden="true">
+          <defs><linearGradient id="eco-header-outdoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#303c45"></stop><stop offset="1" stop-color="#121a20"></stop></linearGradient></defs>
+          <rect x="9" y="5" width="86" height="68" rx="9" fill="url(#eco-header-outdoor)" stroke="#58717b" stroke-width="1.5"></rect>
+          <rect x="15" y="11" width="74" height="56" rx="6" fill="#202a31" stroke="#40545d"></rect>
+          <circle cx="52" cy="39" r="22" fill="#26343c" stroke="#77939d" stroke-width="1.4"></circle>
+          <circle cx="52" cy="39" r="3" fill="#53b797"></circle>
+          <path d="M52 36c-5-11-2-15 2-15 5 0 6 7 2 15m-1 6c11-5 15-2 15 2 0 5-7 6-15 2m-6-1c5 11 2 15-2 15-5 0-6-7-2-15m1-6c-11 5-15 2-15-2 0-5 7-6 15-2" fill="#7b9ba6" class="eco-header__fan"></path>
+          <circle cx="79" cy="17" r="2" fill="#53b797"></circle>
+          <path d="M18 71v4m68-4v4" stroke="#86a5af" stroke-width="2"></path>
+        </svg>
+        <span>VRV / VRF</span>
+      </div>
+    </div>
+  </header>
+  <nav class="site-categories eco-navigation" aria-label="Разделы ЭКО-КЛИМАТ">
+    <div class="eco-navigation__inner">
+      <anvil-component type="Button" name="home_menu_nav" prop:text="Главная" prop:role="category-link"></anvil-component>
+      <div class="eco-menu-group eco-menu-group--catalog" anvil:on-dom:mouseenter="self.catalog_menu_mouse_enter" anvil:on-dom:mouseleave="self.catalog_menu_mouse_leave">
+        <anvil-component type="Button" name="catalog_nav" prop:text="Каталог ▾" prop:role="category-link"></anvil-component>
+        <anvil-component type="ColumnPanel" name="catalog_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="Label" name="catalog_menu_heading" prop:role="eco-nav-heading" prop:text="ОБОРУДОВАНИЕ ПО НАПРАВЛЕНИЯМ"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="nav_catalog_tree" prop:role="eco-nav-tree" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
+        </anvil-component>
+      </div>
+      <div class="eco-menu-group eco-menu-group--calculators" anvil:on-dom:mouseenter="self.calculators_menu_mouse_enter" anvil:on-dom:mouseleave="self.calculators_menu_mouse_leave">
+        <anvil-component type="Button" name="calculators_nav" prop:text="Калькуляторы ▾" prop:role="category-link"></anvil-component>
+        <anvil-component type="ColumnPanel" name="calculators_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="Label" name="calculators_heading" prop:role="eco-nav-heading" prop:text="РАСЧЁТЫ И ИНСТРУМЕНТЫ"></anvil-component>
+          <anvil-component type="Label" name="calculators_group_heading" prop:role="eco-nav-subheading" prop:text="Расчёт мощности"></anvil-component>
+          <anvil-component type="Button" name="calc_ac_nav" prop:text="Кондиционеры" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="Button" name="calc_vrf_nav" prop:text="VRV / VRF" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="Button" name="calc_ventilation_nav" prop:text="Вентиляция" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="Label" name="calculators_tools_heading" prop:role="eco-nav-subheading" prop:text="Монтаж и сервис"></anvil-component>
+          <anvil-component type="Button" name="installation_tool_nav" prop:text="Расчёт стоимости монтажа" prop:role="eco-nav-item"></anvil-component>
+        </anvil-component>
+      </div>
+      <anvil-component type="Button" name="ruler_nav" prop:text="Линейка холодильщика" prop:role="category-link"></anvil-component>
+      <anvil-component type="Button" name="installation_nav" prop:text="Монтаж" prop:role="category-link"></anvil-component>
+      <div class="eco-menu-group eco-menu-group--news" anvil:on-dom:mouseenter="self.news_menu_mouse_enter" anvil:on-dom:mouseleave="self.news_menu_mouse_leave">
+        <anvil-component type="Button" name="news_nav" prop:text="Новости ▾" prop:role="category-link"></anvil-component>
+        <anvil-component type="ColumnPanel" name="news_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="Label" name="news_menu_heading" prop:role="eco-nav-heading" prop:text="НОВОСТИ И МАТЕРИАЛЫ"></anvil-component>
+          <anvil-component type="Button" name="news_all_nav" prop:text="Все новости" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="nav_news_tree" prop:role="eco-nav-tree" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
+        </anvil-component>
+      </div>
+      <div class="eco-menu-group eco-menu-group--service" anvil:on-dom:mouseenter="self.service_menu_mouse_enter" anvil:on-dom:mouseleave="self.service_menu_mouse_leave">
+        <anvil-component type="Button" name="service_nav" prop:text="Сервис ▾" prop:role="category-link"></anvil-component>
+        <anvil-component type="ColumnPanel" name="service_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="Label" name="service_menu_heading" prop:role="eco-nav-heading" prop:text="ЧТО НУЖНО СДЕЛАТЬ?"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="nav_service_tree" prop:role="eco-nav-tree" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
+        </anvil-component>
+      </div>
+      <anvil-component type="Button" name="ai_nav" prop:text="ИИ-помощник" prop:role="category-link" prop:visible="false"></anvil-component>
+      <anvil-component type="Button" name="projects_nav" prop:text="Проекты" prop:role="category-link" prop:visible="false"></anvil-component>
+      <div class="eco-menu-group eco-menu-group--custom" anvil:on-dom:mouseenter="self.custom_site_menu_mouse_enter" anvil:on-dom:mouseleave="self.custom_site_menu_mouse_leave">
+        <anvil-component type="Button" name="custom_site_menu_nav" prop:text="Разделы ▾" prop:role="category-link" prop:visible="false"></anvil-component>
+        <anvil-component type="ColumnPanel" name="custom_site_menu_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="RepeatingPanel" name="nav_custom_site_menu" prop:role="eco-nav-tree" prop:item_template="Minimal_Theme_4.SiteMenuItem"></anvil-component>
+        </anvil-component>
+      </div>
+    </div>
+  </nav>
+  <div class="eco-page-frame">
+    <aside class="eco-admin-sidebar-wrap">
+      <anvil-component type="ColumnPanel" name="admin_global_sidebar" prop:role="admin-persistent-sidebar" prop:visible="false">
+        <div class="admin-sidebar-brand">
+          <span class="admin-sidebar-brand__mark">ЭК</span>
+          <div><strong>ЭКО-КЛИМАТ</strong><small>ПАНЕЛЬ УПРАВЛЕНИЯ</small></div>
+        </div>
+        <div class="admin-sidebar-context">
+          <span class="admin-sidebar-context__dot"></span>
+          <div><strong>Рабочая среда</strong><small>Данные сайта и каталога</small></div>
+        </div>
+        <anvil-component type="Button" name="admin_dashboard_nav" prop:text="Обзор проекта" prop:role="admin-dashboard-nav"></anvil-component>
+        <anvil-component type="Label" name="admin_global_nav_label" prop:role="eyebrow" prop:text="РАЗДЕЛЫ"></anvil-component>
+        <div class="admin-sidebar-menu">
+          <anvil-component type="Button" name="admin_catalog_nav" prop:text="Каталог и импорт" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_content_nav" prop:text="Контент и галерея" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_engineering_nav" prop:text="Инженерные инструменты" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_operations_nav" prop:text="Клиенты и сервис" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_social_nav" prop:text="Соцсети и каналы" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_system_nav" prop:text="Пользователи и система" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_ai_nav" prop:text="ИИ и интеграции" prop:role="admin-nav"></anvil-component>
+        </div>
+        <anvil-component type="ColumnPanel" name="admin_global_subnav" prop:role="admin-subnav" prop:visible="false">
+          <div class="admin-subnav__handle"><span></span><span></span><span></span></div>
+          <anvil-component type="Label" name="admin_global_picker_eyebrow" prop:role="eyebrow" prop:text="РАЗДЕЛ"></anvil-component>
+          <anvil-component type="Label" name="admin_global_picker_title" prop:role="section-heading" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="admin_global_picker_intro" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="RepeatingPanel" name="admin_global_picker_rows" prop:role="admin-picker-options" prop:item_template="Minimal_Theme_4.AdminTools.ToolOptionItem"></anvil-component>
+          <anvil-component type="Button" name="admin_global_close_button" prop:text="Закрыть окно" prop:role="secondary-button"></anvil-component>
+        </anvil-component>
+        <div class="admin-sidebar-footer">
+          <span>CMS · v2</span><span>Серверные права включены</span>
+        </div>
+      </anvil-component>
+    </aside>
+    <div class="eco-page-column">
+      <main class="page-main eco-main">
+        <anvil-component type="ColumnPanel" name="admin_topbar" prop:role="admin-topbar" prop:visible="false">
+          <div class="admin-topbar__identity">
+            <anvil-component type="Label" name="admin_topbar_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · CMS"></anvil-component>
+            <anvil-component type="Label" name="admin_breadcrumb" prop:role="h1" prop:text="Обзор проекта"></anvil-component>
+            <span class="admin-topbar__trail">Управление сайтом · каталогом · заявками</span>
+          </div>
+          <div class="admin-topbar__tools">
+            <span class="admin-system-status"><span></span> Система в сети</span>
+            <div class="admin-global-search">
+              <anvil-component type="TextBox" name="admin_search_box" prop:role="admin-global-search-box" prop:placeholder="Поиск по товарам, страницам, заявкам…"></anvil-component>
+              <anvil-component type="Button" name="admin_search_button" prop:role="primary-action" prop:text="Найти"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="admin_profile_button" prop:text="Профиль" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="admin_global_home_button" prop:text="На сайт" prop:role="secondary-button"></anvil-component>
+          </div>
+        </anvil-component>
+        <div class="page-heading-row">
+          <div class="page-title-wrap"><anvil-slot name="title" placeholder="Заголовок раздела"></anvil-slot></div>
+          <div class="page-actions"><anvil-slot name="actions"></anvil-slot></div>
+        </div>
+        <anvil-slot name="content" placeholder="Содержимое раздела"></anvil-slot>
+      </main>
+      <footer class="site-footer eco-footer">
+        <div class="eco-footer__brand">
+          <span aria-hidden="true" class="eco-brand__symbol">ЭК</span>
+          <strong>ЭКО-Климат</strong>
+          <span>КЛИМАТИЧЕСКАЯ ИНЖЕНЕРИЯ</span>
+        </div>
+        <p>Кондиционирование, мультизональные VRV / VRF-системы, проектирование и сервис.</p>
+        <div class="eco-footer__contact"><span>ИНЖЕНЕРНАЯ ЛИНИЯ</span><a href="tel:+79257873848">+79257873848</a></div>
+        <small>© ЭКО-Климат · Климат под инженерным контролем</small>
+      </footer>
+    </div>
+  </div>
+</div>

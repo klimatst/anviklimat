@@ -1,0 +1,25 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-product-card">
+  <anvil-component type="CheckBox" name="select_checkbox" prop:text="Выбрать для пакетной цены" prop:role="catalog-select-checkbox" writeback:checked="self.item['selected']" bind:visible="self.item['can_edit']" bind:enabled="self.item['can_select']"></anvil-component>
+  <div class="catalog-product-photo-frame">
+    <anvil-component type="Image" name="product_image" prop:role="catalog-product-photo" bind:source="self.item['image_url']" bind:alt_text="self.item['image_alt']" bind:visible="self.item['image_url']"></anvil-component>
+    <anvil-component type="Label" name="image_placeholder" prop:role="catalog-photo-placeholder" prop:text="Фото модели не добавлено" bind:visible="self.item['image_missing']"></anvil-component>
+    <anvil-component type="Label" name="image_caption" prop:role="catalog-photo-caption" bind:text="self.item['image_caption']"></anvil-component>
+  </div>
+  <div class="catalog-product-info">
+    <anvil-component type="Label" name="brand_label" prop:role="catalog-product-brand" bind:text="self.item['brand']"></anvil-component>
+    <anvil-component type="Label" name="model_label" prop:role="catalog-product-title" bind:text="self.item['model']"></anvil-component>
+    <anvil-component type="Label" name="type_label" prop:role="catalog-product-type" bind:text="self.item['type']" bind:visible="self.item['type']"></anvil-component>
+    <anvil-component type="Label" name="category_label" prop:role="catalog-product-category" bind:text="self.item['category']"></anvil-component>
+    <anvil-component type="Label" name="subcategory_label" prop:role="catalog-product-category" bind:text="self.item['subcategory']" bind:visible="self.item['subcategory']"></anvil-component>
+    <anvil-component type="Label" name="sku_label" prop:role="catalog-product-sku" bind:text="self.item['sku']" bind:visible="self.item['sku']"></anvil-component>
+  </div>
+  <div class="catalog-product-commercial">
+    <anvil-component type="Label" name="price_label" prop:role="catalog-product-price" bind:text="self.item['price_label']"></anvil-component>
+    <anvil-component type="Label" name="stock_label" prop:role="catalog-product-stock" bind:text="self.item['stock_label']"></anvil-component>
+  </div>
+  <div class="catalog-product-actions">
+    <anvil-component type="Button" name="order_button" prop:text="Заказать" prop:role="primary-action" bind:visible="self.item['active']"></anvil-component>
+    <anvil-component type="Button" name="details_button" prop:text="Подробнее о товаре" prop:role="catalog-details-action" bind:visible="self.item['active']"></anvil-component>
+    <anvil-component type="Button" name="edit_button" prop:text="Изменить" prop:role="secondary-button" bind:visible="self.item['can_edit']"></anvil-component>
+  </div>
+</anvil-form>

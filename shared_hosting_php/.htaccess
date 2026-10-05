@@ -1,0 +1,5 @@
+Options -Indexes
+DirectoryIndex index.php
+<FilesMatch "^(README.*|INSTALL.*|.*\.md|.*\.json|.*\.sql|.*\.txt)$">
+  Require all denied
+</FilesMatch>

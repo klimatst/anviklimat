@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-tree-node">
+  <div class="catalog-tree-entry">
+    <anvil-component type="Image" name="category_image" prop:role="catalog-tree-image" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="open_category_button" prop:role="catalog-tree-link" prop:text="Категория"></anvil-component>
+    <anvil-component type="Label" name="category_count" prop:role="catalog-tree-count" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="expand_button" prop:text="›" prop:role="catalog-tree-expand"></anvil-component>
+  </div>
+  <anvil-component type="RepeatingPanel" name="category_children" prop:role="catalog-tree-flyout" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
+</anvil-form>

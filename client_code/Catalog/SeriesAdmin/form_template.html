@@ -1,0 +1,50 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="new_series_button" prop:text="Новая серия" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="sync_series_button" prop:text="Связать из характеристик" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="К каталогу" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="catalog-series-admin">
+      <anvil-component type="Label" name="series_status" prop:role="status-message" prop:text=""></anvil-component>
+      <div class="catalog-series-admin__grid">
+        <anvil-component type="ColumnPanel" name="series_list_panel" prop:role="taxonomy-panel">
+          <anvil-component type="Label" name="series_list_heading" prop:role="section-heading" prop:text="Серии и линейки"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="series_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.SeriesAdminItem"></anvil-component>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="series_editor_panel" prop:role="taxonomy-panel">
+          <anvil-component type="Label" name="series_editor_heading" prop:role="section-heading" prop:text="Новая серия"></anvil-component>
+          <anvil-component type="TextBox" name="title_box" prop:placeholder="Название серии"></anvil-component>
+          <anvil-component type="DropDown" name="category_dropdown"></anvil-component>
+          <anvil-component type="TextArea" name="description_box" prop:placeholder="Описание серии"></anvil-component>
+          <anvil-component type="TextBox" name="power_range_box" prop:placeholder="Диапазон мощности / производительности"></anvil-component>
+          <anvil-component type="DropDown" name="status_dropdown"></anvil-component>
+          <anvil-component type="CheckBox" name="is_new_checkbox" prop:text="Показывать отметку «Новинка»"></anvil-component>
+          <anvil-component type="CheckBox" name="active_checkbox" prop:text="Показывать серию в каталоге"></anvil-component>
+          <anvil-component type="TextBox" name="sort_order_box" prop:placeholder="Порядок отображения"></anvil-component>
+          <anvil-component type="FileLoader" name="image_file" prop:text="Изображение серии" prop:file_types=".jpg,.jpeg,.png,.webp,.gif"></anvil-component>
+          <anvil-component type="Image" name="image_preview" prop:role="catalog-series-image-preview" prop:visible="false"></anvil-component>
+          <div class="catalog-series-admin__actions">
+            <anvil-component type="Button" name="save_series_button" prop:text="Сохранить серию" prop:role="primary-action"></anvil-component>
+            <anvil-component type="Button" name="series_delete_button" prop:text="Удалить" prop:role="danger-action" prop:visible="false"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="series_message" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="ColumnPanel" name="document_panel" prop:role="catalog-document-manager" prop:visible="false">
+            <anvil-component type="Label" name="document_heading" prop:role="section-heading" prop:text="Документация серии"></anvil-component>
+            <anvil-component type="RepeatingPanel" name="document_rows" prop:role="catalog-document-list" prop:item_template="Minimal_Theme_4.Catalog.DocumentItem"></anvil-component>
+            <anvil-component type="TextBox" name="document_title_box" prop:placeholder="Название документа"></anvil-component>
+            <anvil-component type="DropDown" name="document_kind_dropdown"></anvil-component>
+            <anvil-component type="FileLoader" name="document_file" prop:text="PDF, DOCX или ZIP" prop:file_types=".pdf,.doc,.docx,.zip"></anvil-component>
+            <anvil-component type="TextBox" name="document_url_box" prop:placeholder="Или безопасная ссылка на документ"></anvil-component>
+            <anvil-component type="TextBox" name="document_order_box" prop:placeholder="Порядок документа" prop:text="0"></anvil-component>
+            <anvil-component type="Button" name="add_document_button" prop:text="Добавить документ" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Label" name="document_message" prop:role="status-message" prop:text=""></anvil-component>
+          </anvil-component>
+        </anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Серии оборудования"></anvil-component>
+  </anvil-block>
+</anvil-form>

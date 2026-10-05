@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="service_equipment" prop:role="section-heading" bind:text="self.item['equipment']"></anvil-component>
+  <anvil-component type="Label" name="service_serial" bind:text="self.item['serial']"></anvil-component>
+  <anvil-component type="Label" name="service_type" bind:text="self.item['service_type_title']"></anvil-component>
+  <anvil-component type="Label" name="service_status" bind:text="self.item['status_title']"></anvil-component>
+  <anvil-component type="Label" name="service_date" bind:text="self.item['scheduled_label']"></anvil-component>
+  <anvil-component type="Label" name="service_completed_date" bind:text="self.item['completed_label']"></anvil-component>
+  <anvil-component type="Label" name="service_details" bind:text="self.item['details_label']"></anvil-component>
+</anvil-form>

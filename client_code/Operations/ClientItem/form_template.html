@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="client_name" prop:role="section-heading" bind:text="self.item['name']"></anvil-component>
+  <anvil-component type="Label" name="client_type" bind:text="self.item['display_type']"></anvil-component>
+  <anvil-component type="Label" name="client_email" bind:text="self.item['email']"></anvil-component>
+  <anvil-component type="Label" name="client_phone" bind:text="self.item['phone']"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:text="Открыть карточку" prop:role="secondary-button"></anvil-component>
+</anvil-form>

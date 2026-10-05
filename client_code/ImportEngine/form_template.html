@@ -1,0 +1,90 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В каталог" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="catalog-view">
+      <anvil-component type="ColumnPanel" name="import_panel" prop:role="card">
+        <anvil-component type="Label" name="import_intro" prop:role="lede" prop:text="Порционный импорт CSV/XLSX/XML/JSON обновляет каталог после проверки строк. PDF обрабатывается отдельно и попадает в каталог только после ручного утверждения черновика."></anvil-component>
+        <anvil-component type="DropDown" name="source_type_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="source_name_box" prop:placeholder="Название источника или файла"></anvil-component>
+        <anvil-component type="FileLoader" name="file_loader" prop:text="Выбрать файл" prop:file_types=".csv,.xlsx,.xml,.json,.pdf"></anvil-component>
+        <anvil-component type="TextBox" name="source_url_box" prop:placeholder="Публичный HTTPS-адрес / лента данных"></anvil-component>
+        <anvil-component type="TextBox" name="secret_ref_box" prop:placeholder="Имя секрета API в настройках Anvil (не сам ключ)"></anvil-component>
+        <anvil-component type="DropDown" name="format_dropdown"></anvil-component>
+        <anvil-component type="Button" name="preview_button" prop:text="Проверить данные и дубли" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="preview_summary" prop:role="status-message" prop:text="Перед запуском сначала проверьте первые строки и распознанные поля."></anvil-component>
+        <anvil-component type="Label" name="mapping_summary" prop:role="import-field-mapping" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="preview_rows" prop:role="import-preview-rows" prop:item_template="Minimal_Theme_4.ImportEngine.ImportPreviewItem"></anvil-component>
+        <anvil-component type="Button" name="start_button" prop:text="Импортировать проверенный источник" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="continue_button" prop:text="Продолжить следующий пакет" prop:role="secondary-button" prop:visible="false"></anvil-component>
+        <anvil-component type="Label" name="progress_label" prop:role="section-heading" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="import_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="pdf_intake_panel" prop:role="admin-panel">
+        <anvil-component type="Label" name="pdf_intake_heading" prop:role="section-heading" prop:text="Импорт в черновики каталога"></anvil-component>
+        <anvil-component type="Label" name="pdf_intake_intro" prop:role="lede" prop:text="PDF обрабатывается по страницам. Большие XLSX передаются последовательными частями до 4 МБ; обработка книги сохраняет строки пакетами. Каталог изменится только после вашего утверждения черновика."></anvil-component>
+        <div class="xlsx-upload-panel">
+          <div class="xlsx-upload-copy">
+            <strong>Большой каталог XLSX</strong>
+            <span>Книги до 1 ГБ · листы и встроенные фото · пауза и продолжение · автоматического добавления в каталог нет</span>
+          </div>
+          <input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" anvil:dom-node="xlsx_file_input" anvil:on-dom:change="self.xlsx_file_change">
+          <div class="xlsx-upload-actions">
+            <anvil-component type="Button" name="xlsx_upload_button" prop:text="Загрузить / продолжить XLSX" prop:role="primary-action" prop:enabled="false"></anvil-component>
+            <anvil-component type="Button" name="xlsx_pause_button" prop:text="Пауза после части" prop:role="secondary-button" prop:visible="false"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="xlsx_file_label" prop:role="status-message" prop:text="Файл не выбран"></anvil-component>
+          <anvil-component type="Label" name="xlsx_upload_progress" prop:role="status-message" prop:text=""></anvil-component>
+        </div>
+        <div class="pdf-intake-actions">
+          <anvil-component type="FileLoader" name="pdf_file_loader" prop:text="Выбрать PDF" prop:file_types=".pdf" prop:multiple="true"></anvil-component>
+          <anvil-component type="Button" name="parse_pdf_button" prop:text="Обработать в черновики" prop:role="primary-action"></anvil-component>
+          <anvil-component type="Label" name="pdf_intake_message" prop:role="status-message" prop:text="Для распознавания сканов PDF нужен подключённый мультимодальный ИИ. Изображения загружаются в Cloudinary с резервом ImageKit; ключи задаются только в серверных настройках Anvil."></anvil-component>
+        </div>
+        <div class="pdf-draft-workspace">
+          <div class="pdf-draft-list-panel">
+            <anvil-component type="Label" name="pdf_drafts_heading" prop:role="section-heading" prop:text="Черновики и история PDF / XLSX"></anvil-component>
+            <anvil-component type="Button" name="refresh_pdf_drafts_button" prop:text="Обновить список" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="RepeatingPanel" name="pdf_draft_rows" prop:role="pdf-draft-list" prop:item_template="Minimal_Theme_4.ImportEngine.PDFDraftListItem"></anvil-component>
+          </div>
+          <anvil-component type="ColumnPanel" name="pdf_review_panel" prop:role="card" prop:visible="false">
+            <anvil-component type="Label" name="pdf_review_heading" prop:role="section-heading" prop:text="Проверка перед добавлением"></anvil-component>
+            <anvil-component type="Label" name="pdf_review_warnings" prop:role="status-message" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="refresh_pdf_status_button" prop:text="Обновить прогресс" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <anvil-component type="Button" name="pause_pdf_button" prop:text="Остановить после страницы" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <anvil-component type="Button" name="resume_pdf_button" prop:text="Продолжить с checkpoint" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <anvil-component type="Button" name="retry_pdf_button" prop:text="Повторить ошибки" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <anvil-component type="RepeatingPanel" name="pdf_product_rows" prop:role="pdf-draft-products" prop:item_template="Minimal_Theme_4.ImportEngine.PDFDraftItem"></anvil-component>
+            <div class="pdf-review-actions">
+              <anvil-component type="Button" name="add_pdf_product_button" prop:text="Добавить строку товара" prop:role="secondary-button"></anvil-component>
+              <anvil-component type="Button" name="save_pdf_draft_button" prop:text="Сохранить черновик" prop:role="secondary-button"></anvil-component>
+              <anvil-component type="Button" name="approve_pdf_draft_button" prop:text="Утвердить и добавить товары" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Button" name="reject_pdf_draft_button" prop:text="Отклонить черновик" prop:role="secondary-button"></anvil-component>
+              <anvil-component type="Button" name="close_pdf_review_button" prop:text="Свернуть проверку" prop:role="secondary-button"></anvil-component>
+            </div>
+            <anvil-component type="Label" name="pdf_review_message" prop:role="status-message" prop:text=""></anvil-component>
+            <anvil-component type="Label" name="catalog_file_summary" prop:role="status-message" prop:text=""></anvil-component>
+            <anvil-component type="ColumnPanel" name="pdf_source_panel" prop:role="card">
+              <anvil-component type="Label" name="pdf_source_heading" prop:role="section-heading" prop:text="Просмотр страниц исходного PDF"></anvil-component>
+              <anvil-component type="Label" name="pdf_page_summary" prop:role="status-message" prop:text=""></anvil-component>
+              <anvil-component type="DropDown" name="pdf_page_dropdown"></anvil-component>
+              <anvil-component type="TextArea" name="pdf_source_text" prop:role="pdf-source-text" prop:enabled="false"></anvil-component>
+              <anvil-component type="Label" name="pdf_page_images_label" prop:role="status-message" prop:text="Облачные изображения страницы"></anvil-component>
+              <anvil-component type="RepeatingPanel" name="pdf_page_images" prop:role="pdf-page-images" prop:item_template="Minimal_Theme_4.ImportEngine.PDFPageImageItem"></anvil-component>
+              <anvil-component type="Label" name="unassigned_images_label" prop:text="Изображения без однозначного товара"></anvil-component>
+              <anvil-component type="TextArea" name="unassigned_images_box" prop:role="pdf-source-text" prop:enabled="false"></anvil-component>
+            </anvil-component>
+          </anvil-component>
+        </div>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="history_panel" prop:role="card">
+        <anvil-component type="Label" name="history_heading" prop:role="section-heading" prop:text="Последние импорты"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="import_rows" prop:item_template="Minimal_Theme_4.ImportEngine.ImportItem"></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Импорт каталога"></anvil-component>
+  </anvil-block>
+</anvil-form>

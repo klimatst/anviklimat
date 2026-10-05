@@ -1,0 +1,18 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="content">
+    <div class="profile-view">
+      <anvil-component type="ColumnPanel" name="login_panel" prop:role="card">
+        <anvil-component type="Label" name="login_intro" prop:role="lede" prop:text="Локальный вход администратора. Введите указанные данные."></anvil-component>
+        <anvil-component type="Label" name="login_heading" prop:role="section-heading" prop:text="Администратор"></anvil-component>
+        <anvil-component type="TextBox" name="login_box" prop:placeholder="Логин"></anvil-component>
+        <anvil-component type="TextBox" name="password_box" prop:hide_text="true" prop:placeholder="Пароль"></anvil-component>
+        <anvil-component type="Button" name="login_button" prop:text="Войти" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="home_button" prop:text="На главную" prop:role="secondary-button"></anvil-component>
+      </anvil-component>
+      <anvil-component type="Label" name="message_label" prop:role="status-message" prop:text=""></anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Вход администратора"></anvil-component>
+  </anvil-block>
+</anvil-form>

@@ -1,0 +1,10 @@
+<anvil-form container="ColumnPanel" prop:role="studio-field-card">
+  <div class="studio-field-copy">
+    <anvil-component type="Label" name="field_title" prop:role="studio-field-title" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="field_hint" prop:role="studio-field-hint" prop:text=""></anvil-component>
+  </div>
+  <anvil-component type="TextBox" name="text_input" writeback:text="self.item['value']" prop:placeholder="Введите значение"></anvil-component>
+  <anvil-component type="TextArea" name="long_input" writeback:text="self.item['value']" prop:placeholder="Введите текст"></anvil-component>
+  <anvil-component type="DropDown" name="choice_input" writeback:selected_value="self.item['value']"></anvil-component>
+  <anvil-component type="CheckBox" name="boolean_input" writeback:checked="self.item['value']" prop:text="Включено"></anvil-component>
+</anvil-form>

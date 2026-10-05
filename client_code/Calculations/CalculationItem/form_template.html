@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="history_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="history_result" bind:text="self.item['display_result']"></anvil-component>
+  <anvil-component type="Label" name="history_version" bind:text="self.item['display_version']"></anvil-component>
+  <anvil-component type="Label" name="history_context" bind:text="self.item['display_context']"></anvil-component>
+  <anvil-component type="Label" name="history_date" bind:text="self.item['created_at']"></anvil-component>
+</anvil-form>

@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="news-article-card">
+  <anvil-component type="Label" name="category_label" prop:role="news-card-category" bind:text="self.item['category']"></anvil-component>
+  <anvil-component type="Label" name="date_label" prop:role="news-card-date" bind:text="self.item['date']"></anvil-component>
+  <anvil-component type="Label" name="title_label" prop:role="news-card-title" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="excerpt_label" prop:role="news-card-excerpt" bind:text="self.item['excerpt']"></anvil-component>
+  <anvil-component type="Button" name="read_button" prop:text="Читать новость" prop:role="news-card-action"></anvil-component>
+</anvil-form>

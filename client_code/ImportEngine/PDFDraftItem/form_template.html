@@ -1,0 +1,93 @@
+<anvil-form container="ColumnPanel" prop:role="pdf-draft-product">
+  <div class="pdf-draft-product__heading">
+    <anvil-component type="Label" name="model_heading" prop:role="section-heading" bind:text="self.item['model']"></anvil-component>
+    <anvil-component type="Label" name="confidence_label" prop:role="role-badge" prop:text=""></anvil-component>
+  </div>
+  <div class="pdf-draft-fields">
+    <div>
+      <anvil-component type="Label" name="brand_label" prop:text="Бренд"></anvil-component>
+      <anvil-component type="TextBox" name="brand_box" writeback:text="self.item['brand']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="model_label" prop:text="Модель · обязательное поле"></anvil-component>
+      <anvil-component type="TextBox" name="model_box" writeback:text="self.item['model']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="sku_label" prop:text="Артикул"></anvil-component>
+      <anvil-component type="TextBox" name="sku_box" writeback:text="self.item['sku']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="type_label" prop:text="Тип оборудования"></anvil-component>
+      <anvil-component type="TextBox" name="type_box" writeback:text="self.item['type']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="category_label" prop:text="Категория"></anvil-component>
+      <anvil-component type="DropDown" name="category_dropdown" writeback:selected_value="self.item['category_code']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="subcategory_label" prop:text="Подкатегория"></anvil-component>
+      <anvil-component type="DropDown" name="subcategory_dropdown" writeback:selected_value="self.item['subcategory_code']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="price_label" prop:text="Цена"></anvil-component>
+      <anvil-component type="TextBox" name="price_box" prop:placeholder="Например, 125000" writeback:text="self.item['sale_price']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="purchase_price_label" prop:text="Закупочная цена"></anvil-component>
+      <anvil-component type="TextBox" name="purchase_price_box" writeback:text="self.item['purchase_price']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="special_price_label" prop:text="Специальная цена"></anvil-component>
+      <anvil-component type="TextBox" name="special_price_box" writeback:text="self.item['special_price']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="discount_label" prop:text="Скидка · %"></anvil-component>
+      <anvil-component type="TextBox" name="discount_box" writeback:text="self.item['discount']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="markup_label" prop:text="Наценка"></anvil-component>
+      <anvil-component type="TextBox" name="markup_box" writeback:text="self.item['markup']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="installation_price_label" prop:text="Цена монтажа"></anvil-component>
+      <anvil-component type="TextBox" name="installation_price_box" writeback:text="self.item['installation_price']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="currency_label" prop:text="Валюта"></anvil-component>
+      <anvil-component type="TextBox" name="currency_box" prop:placeholder="RUB" writeback:text="self.item['currency']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="quantity_label" prop:text="Остаток / количество"></anvil-component>
+      <anvil-component type="TextBox" name="quantity_box" writeback:text="self.item['quantity']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="minimum_stock_label" prop:text="Минимальный остаток"></anvil-component>
+      <anvil-component type="TextBox" name="minimum_stock_box" writeback:text="self.item['minimum_stock']"></anvil-component>
+    </div>
+    <div>
+      <anvil-component type="Label" name="series_label" prop:text="Серия"></anvil-component>
+      <anvil-component type="TextBox" name="series_box" prop:placeholder="Название или код серии" writeback:text="self.item['series']"></anvil-component>
+    </div>
+  </div>
+  <anvil-component type="Label" name="description_label" prop:text="Описание из документа"></anvil-component>
+  <anvil-component type="TextArea" name="description_box" writeback:text="self.item['description']"></anvil-component>
+  <anvil-component type="Label" name="specs_label" prop:text="Все характеристики и единицы измерения · JSON"></anvil-component>
+  <anvil-component type="TextArea" name="specs_box" writeback:text="self.item['specs_json']"></anvil-component>
+  <div class="pdf-draft-images">
+    <anvil-component type="Label" name="pdf_media_picker_label" prop:text="Фото, найденные в этом PDF"></anvil-component>
+    <anvil-component type="DropDown" name="media_image_dropdown"></anvil-component>
+    <div class="pdf-draft-images__actions">
+      <anvil-component type="Button" name="set_primary_image_button" prop:text="Сделать главным фото" prop:role="secondary-button"></anvil-component>
+      <anvil-component type="Button" name="add_gallery_image_button" prop:text="Добавить в галерею" prop:role="secondary-button"></anvil-component>
+    </div>
+    <anvil-component type="Image" name="product_image" prop:role="pdf-draft-image" prop:visible="false"></anvil-component>
+    <anvil-component type="Label" name="image_url_label" prop:text="Главное фото · внешняя облачная ссылка"></anvil-component>
+    <anvil-component type="TextBox" name="image_url_box" prop:placeholder="https://..." writeback:text="self.item['image_url']"></anvil-component>
+    <anvil-component type="Label" name="extra_images_label" prop:text="Дополнительные фото · по одной ссылке на строку"></anvil-component>
+    <anvil-component type="TextArea" name="extra_images_box" writeback:text="self.item['extra_image_urls']"></anvil-component>
+  </div>
+  <anvil-component type="Label" name="documents_label" prop:text="Документы · JSON [{title, url}]"></anvil-component>
+  <anvil-component type="TextArea" name="documents_box" writeback:text="self.item['documents_json']"></anvil-component>
+  <anvil-component type="Label" name="evidence_label" prop:role="pdf-draft-evidence" prop:text=""></anvil-component>
+  <anvil-component type="Button" name="remove_button" prop:text="Убрать из черновика" prop:role="secondary-button"></anvil-component>
+</anvil-form>

@@ -1,0 +1,8 @@
+<anvil-form container="ColumnPanel" prop:role="site-menu-public-item">
+  <div class="site-menu-public-heading">
+    <anvil-component type="Image" name="site_menu_image" prop:role="site-menu-public-image" prop:visible="false"></anvil-component>
+    <anvil-component type="Link" name="site_menu_link" prop:role="site-menu-public-link" prop:text="Раздел"></anvil-component>
+    <anvil-component type="Button" name="expand_children_button" prop:role="site-menu-expand" prop:text="Показать вложенные ссылки"></anvil-component>
+  </div>
+  <anvil-component type="RepeatingPanel" name="site_menu_children" prop:role="site-menu-public-children" prop:item_template="Minimal_Theme_4.SiteMenuItem.ChildItem" prop:visible="false"></anvil-component>
+</anvil-form>

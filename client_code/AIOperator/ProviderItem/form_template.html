@@ -1,0 +1,27 @@
+<anvil-form container="ColumnPanel" prop:role="ai-provider-card">
+  <anvil-component type="Label" name="slot_label" prop:role="section-heading" prop:text="Слот ИИ"></anvil-component>
+  <anvil-component type="DropDown" name="provider_dropdown"></anvil-component>
+  <anvil-component type="DropDown" name="model_preset_dropdown"></anvil-component>
+  <anvil-component type="TextBox" name="model_box" prop:placeholder="Название модели"></anvil-component>
+  <anvil-component type="TextBox" name="endpoint_box" prop:placeholder="HTTPS-адрес API /chat/completions"></anvil-component>
+  <div class="ai-provider-option"><anvil-component type="Label" name="priority_label" prop:text="Порядок · меньше = раньше"></anvil-component><anvil-component type="TextBox" name="priority_box" prop:placeholder="50"></anvil-component></div>
+  <div class="ai-provider-options">
+    <div class="ai-provider-option"><anvil-component type="Label" name="temperature_label" prop:text="Температура · 0–2"></anvil-component><anvil-component type="TextBox" name="temperature_box" prop:placeholder="Авто"></anvil-component></div>
+    <div class="ai-provider-option"><anvil-component type="Label" name="top_p_label" prop:text="Top P · 0–1"></anvil-component><anvil-component type="TextBox" name="top_p_box" prop:placeholder="Авто"></anvil-component></div>
+    <div class="ai-provider-option"><anvil-component type="Label" name="max_tokens_label" prop:text="Максимум токенов · 0 = авто"></anvil-component><anvil-component type="TextBox" name="max_tokens_box" prop:placeholder="0"></anvil-component></div>
+    <div class="ai-provider-option"><anvil-component type="Label" name="timeout_label" prop:text="Тайм-аут · 0 = авто"></anvil-component><anvil-component type="TextBox" name="timeout_box" prop:placeholder="0 секунд"></anvil-component></div>
+    <div class="ai-provider-option"><anvil-component type="Label" name="frequency_penalty_label" prop:text="Штраф частоты · −2…2"></anvil-component><anvil-component type="TextBox" name="frequency_penalty_box" prop:placeholder="Авто"></anvil-component></div>
+    <div class="ai-provider-option"><anvil-component type="Label" name="presence_penalty_label" prop:text="Штраф новизны · −2…2"></anvil-component><anvil-component type="TextBox" name="presence_penalty_box" prop:placeholder="Авто"></anvil-component></div>
+  </div>
+  <anvil-component type="TextBox" name="api_key_box" prop:hide_text="true" prop:placeholder="Новый ключ API · пустое поле сохраняет текущий"></anvil-component>
+  <anvil-component type="Label" name="api_key_status" prop:role="status-message" prop:text=""></anvil-component>
+  <anvil-component type="CheckBox" name="clear_api_key_checkbox" prop:text="Удалить сохранённый ключ"></anvil-component>
+  <anvil-component type="TextBox" name="secret_ref_box" prop:placeholder="Старое имя секрета Anvil (если используется)"></anvil-component>
+  <anvil-component type="CheckBox" name="enabled_checkbox" prop:text="Включён"></anvil-component>
+  <div class="ai-provider-actions">
+    <anvil-component type="Button" name="save_button" prop:text="Сохранить API и модель" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="test_button" prop:text="Проверить подключение" prop:role="secondary-button"></anvil-component>
+  </div>
+  <anvil-component type="Button" name="delete_button" prop:text="Удалить API" prop:role="secondary-button" prop:visible="false"></anvil-component>
+  <anvil-component type="Label" name="save_message" prop:role="status-message" prop:text=""></anvil-component>
+</anvil-form>

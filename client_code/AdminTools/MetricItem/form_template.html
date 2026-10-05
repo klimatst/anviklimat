@@ -1,0 +1,5 @@
+<anvil-form container="ColumnPanel" prop:role="admin-metric-card">
+  <anvil-component type="Label" name="metric_value" prop:role="admin-metric-value" bind:text="self.item['value']"></anvil-component>
+  <anvil-component type="Label" name="metric_label" prop:role="admin-metric-label" bind:text="self.item['label']"></anvil-component>
+  <anvil-component type="Button" name="open_metric_button" prop:role="admin-metric-open" prop:text="Открыть →"></anvil-component>
+</anvil-form>

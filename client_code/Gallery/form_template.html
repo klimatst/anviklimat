@@ -1,0 +1,75 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Галерея работ"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="gallery-page">
+      <section class="gallery-heading">
+        <div>
+          <anvil-component type="Label" name="gallery_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ОБЪЕКТЫ И РЕШЕНИЯ"></anvil-component>
+          <anvil-component type="Label" name="gallery_title_label" prop:role="section-heading" prop:text="Наши работы"></anvil-component>
+          <anvil-component type="Label" name="gallery_intro_label" prop:role="service-copy" prop:text=""></anvil-component>
+        </div>
+      </section>
+
+      <anvil-component type="ColumnPanel" name="gallery_editor_console" prop:role="gallery-admin-console" prop:visible="false">
+        <div class="gallery-admin-heading">
+          <div>
+            <anvil-component type="Label" name="gallery_admin_eyebrow" prop:role="eyebrow" prop:text="РЕДАКТОР ГАЛЕРЕИ"></anvil-component>
+            <anvil-component type="Label" name="gallery_admin_heading" prop:role="section-heading" prop:text="Настройки и карточки проектов"></anvil-component>
+          </div>
+          <anvil-component type="Button" name="new_item_button" prop:text="Новая работа +" prop:role="primary-action"></anvil-component>
+        </div>
+        <div class="gallery-admin-columns">
+          <anvil-component type="ColumnPanel" name="gallery_settings_panel" prop:role="gallery-admin-panel">
+            <anvil-component type="Label" name="settings_heading" prop:role="section-heading" prop:text="Оформление и хранение"></anvil-component>
+            <div class="gallery-settings-fields">
+              <div class="gallery-field"><anvil-component type="Label" name="settings_title_label" prop:text="Заголовок"></anvil-component><anvil-component type="TextBox" name="settings_title_box"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="storage_provider_label" prop:text="Медиасервер"></anvil-component><anvil-component type="TextBox" name="storage_provider_box" prop:placeholder="Например, CDN или S3"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="settings_intro_label" prop:text="Описание галереи"></anvil-component><anvil-component type="TextArea" name="settings_intro_box"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="storage_base_url_label" prop:text="Базовый HTTPS URL внешнего хранилища"></anvil-component><anvil-component type="TextBox" name="storage_base_url_box" prop:placeholder="https://images.example.ru/projects/"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="items_per_page_label" prop:text="Фото на странице"></anvil-component><anvil-component type="TextBox" name="items_per_page_box"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="columns_label" prop:text="Колонки"></anvil-component><anvil-component type="DropDown" name="columns_dropdown"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="ratio_label" prop:text="Формат фото"></anvil-component><anvil-component type="DropDown" name="ratio_dropdown"></anvil-component></div>
+            </div>
+            <div class="gallery-checks">
+              <anvil-component type="CheckBox" name="show_locations_check" prop:text="Показывать адреса объектов"></anvil-component>
+              <anvil-component type="CheckBox" name="show_dates_check" prop:text="Показывать даты завершения"></anvil-component>
+              <anvil-component type="CheckBox" name="featured_first_check" prop:text="Сначала избранные проекты"></anvil-component>
+            </div>
+            <anvil-component type="Label" name="storage_help_label" prop:role="status-message" prop:text="Фото могут оставаться на внешнем сервере: укажите полный HTTPS URL или путь относительно базового адреса."></anvil-component>
+            <anvil-component type="Button" name="save_settings_button" prop:text="Сохранить настройки" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Label" name="settings_status" prop:role="status-message" prop:text=""></anvil-component>
+          </anvil-component>
+
+          <anvil-component type="ColumnPanel" name="gallery_item_editor" prop:role="gallery-admin-panel">
+            <anvil-component type="Label" name="item_editor_heading" prop:role="section-heading" prop:text="Новая работа"></anvil-component>
+            <div class="gallery-item-fields">
+              <div class="gallery-field"><anvil-component type="Label" name="item_title_label" prop:text="Название проекта"></anvil-component><anvil-component type="TextBox" name="item_title_box"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="item_category_label" prop:text="Направление"></anvil-component><anvil-component type="TextBox" name="item_category_box" prop:placeholder="Кондиционирование, вентиляция…"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="item_location_label" prop:text="Город или объект"></anvil-component><anvil-component type="TextBox" name="item_location_box"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="item_completed_label" prop:text="Дата завершения"></anvil-component><anvil-component type="TextBox" name="item_completed_box" prop:placeholder="2026"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="item_image_url_label" prop:text="Основная фотография · HTTPS URL или путь на медиасервере"></anvil-component><anvil-component type="TextBox" name="item_image_url_box" prop:placeholder="https://images.example.ru/object-01.jpg"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="item_thumbnail_url_label" prop:text="Миниатюра · необязательно"></anvil-component><anvil-component type="TextBox" name="item_thumbnail_url_box"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="item_alt_text_label" prop:text="Описание фото для доступности"></anvil-component><anvil-component type="TextBox" name="item_alt_text_box"></anvil-component></div>
+              <div class="gallery-field gallery-field--wide"><anvil-component type="Label" name="item_description_label" prop:text="Описание проекта"></anvil-component><anvil-component type="TextArea" name="item_description_box"></anvil-component></div>
+              <div class="gallery-field"><anvil-component type="Label" name="item_sort_label" prop:text="Порядок показа"></anvil-component><anvil-component type="TextBox" name="item_sort_order_box"></anvil-component></div>
+            </div>
+            <div class="gallery-checks">
+              <anvil-component type="CheckBox" name="item_featured_check" prop:text="Избранный проект"></anvil-component>
+              <anvil-component type="CheckBox" name="item_published_check" prop:text="Опубликовано"></anvil-component>
+            </div>
+            <div class="gallery-editor-actions">
+              <anvil-component type="Button" name="save_item_button" prop:text="Сохранить карточку" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Button" name="item_delete_button" prop:text="Удалить" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            </div>
+            <anvil-component type="Label" name="item_status" prop:role="status-message" prop:text=""></anvil-component>
+          </anvil-component>
+        </div>
+      </anvil-component>
+
+      <anvil-component type="RepeatingPanel" name="gallery_rows" prop:role="gallery-grid" prop:item_template="Minimal_Theme_4.Gallery.GalleryCard"></anvil-component>
+      <anvil-component type="Label" name="gallery_empty_label" prop:role="gallery-empty-state" prop:text="Фотографии проектов появятся здесь после добавления карточек в галерею." prop:visible="false"></anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

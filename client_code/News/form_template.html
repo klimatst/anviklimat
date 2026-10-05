@@ -1,0 +1,22 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="На главную" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="news-view">
+      <anvil-component type="ColumnPanel" name="news_panel" prop:role="card">
+        <anvil-component type="Label" name="news_intro" prop:role="lede" prop:text="Новости и опубликованные материалы."></anvil-component>
+        <anvil-component type="Label" name="category_label" prop:role="eyebrow" prop:text="РУБРИКА"></anvil-component>
+        <anvil-component type="DropDown" name="category_dropdown"></anvil-component>
+        <anvil-component type="Label" name="news_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="news_cards" prop:role="news-card-grid" prop:item_template="Minimal_Theme_4.News.ArticleCard"></anvil-component>
+      </anvil-component>
+    </div>
+    <anvil-component type="ColumnPanel" name="article_details_overlay" prop:role="news-article-overlay" prop:visible="false">
+      <anvil-component type="Minimal_Theme_4.News.ArticleDetails" name="article_details_form"></anvil-component>
+    </anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Новости"></anvil-component>
+  </anvil-block>
+</anvil-form>

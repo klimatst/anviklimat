@@ -1,0 +1,36 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="content">
+    <div class="contacts-view">
+      <section class="contact-details">
+        <anvil-component type="ColumnPanel" name="contact_details_card" prop:role="card">
+          <anvil-component type="Label" name="contact_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ"></anvil-component>
+          <anvil-component type="Label" name="contact_organization" prop:role="h1" prop:text="ЭКО-КЛИМАТ"></anvil-component>
+          <anvil-component type="Label" name="contact_email_label" prop:text="Электронная почта"></anvil-component>
+          <anvil-component type="Label" name="contact_email" prop:role="contact-value" prop:text="Не опубликован"></anvil-component>
+          <anvil-component type="Label" name="contact_phone_label" prop:text="Телефон"></anvil-component>
+          <anvil-component type="Label" name="contact_phone" prop:role="contact-value" prop:text="Не опубликован"></anvil-component>
+          <a class="contact-phone-link" href="tel:+79257873848">Позвонить: +79257873848</a>
+          <anvil-component type="Label" name="contact_address_label" prop:text="Адрес"></anvil-component>
+          <anvil-component type="Label" name="contact_address" prop:role="contact-value" prop:text="Не опубликован"></anvil-component>
+          <anvil-component type="Label" name="contact_note" prop:role="status-message" prop:text="Публичный номер ЭКО-КЛИМАТ указан выше. Актуальные адрес и электронная почта публикуются в настройках сайта."></anvil-component>
+        </anvil-component>
+      </section>
+      <section class="contact-form-wrap">
+        <anvil-component type="ColumnPanel" name="contact_form" prop:role="card">
+          <anvil-component type="Label" name="contact_form_heading" prop:role="section-heading" prop:text="Обсудить инженерную задачу"></anvil-component>
+          <anvil-component type="TextBox" name="name_box" prop:placeholder="Ваше имя *"></anvil-component>
+          <anvil-component type="TextBox" name="company_box" prop:placeholder="Компания / объект"></anvil-component>
+          <anvil-component type="TextBox" name="email_box" prop:placeholder="Электронная почта"></anvil-component>
+          <anvil-component type="TextBox" name="phone_box" prop:placeholder="Телефон"></anvil-component>
+          <anvil-component type="DropDown" name="topic_dropdown"></anvil-component>
+          <anvil-component type="TextArea" name="message_box" prop:placeholder="Задача, объект и условия *"></anvil-component>
+          <anvil-component type="Button" name="submit_button" prop:text="Отправить заявку" prop:role="primary-action"></anvil-component>
+          <anvil-component type="Label" name="form_message" prop:role="status-message" prop:text=""></anvil-component>
+        </anvil-component>
+      </section>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Контакты"></anvil-component>
+  </anvil-block>
+</anvil-form>

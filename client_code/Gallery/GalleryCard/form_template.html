@@ -1,0 +1,18 @@
+<anvil-form container="ColumnPanel" prop:role="gallery-card">
+  <div class="gallery-card__image">
+    <anvil-component type="Image" name="project_image" prop:role="gallery-image" bind:source="self.item['image_url']" bind:alt_text="self.item['alt_text']" bind:visible="self.item['image_url']"></anvil-component>
+    <anvil-component type="Label" name="no_image_label" prop:role="gallery-no-image" prop:text="Фото не задано" bind:visible="not self.item['image_url']"></anvil-component>
+    <anvil-component type="Label" name="feature_badge" prop:role="gallery-feature-badge" prop:text="ИЗБРАННЫЙ ПРОЕКТ" bind:visible="self.item['featured']"></anvil-component>
+    <anvil-component type="Label" name="draft_badge" prop:role="gallery-draft-badge" prop:text="ЧЕРНОВИК" bind:visible="not self.item['published']"></anvil-component>
+  </div>
+  <div class="gallery-card__body">
+    <div class="gallery-card__meta">
+      <anvil-component type="Label" name="category_label" prop:role="gallery-category" bind:text="self.item['category']" bind:visible="self.item['category']"></anvil-component>
+      <anvil-component type="Label" name="date_label" prop:role="gallery-meta" bind:text="self.item['completed_at']" bind:visible="self.item['show_date']"></anvil-component>
+    </div>
+    <anvil-component type="Label" name="title_label" prop:role="gallery-card-title" bind:text="self.item['title']"></anvil-component>
+    <anvil-component type="Label" name="location_label" prop:role="gallery-meta" bind:text="self.item['location']" bind:visible="self.item['show_location']"></anvil-component>
+    <anvil-component type="Label" name="description_label" prop:role="gallery-card-description" bind:text="self.item['description']" bind:visible="self.item['description']"></anvil-component>
+    <anvil-component type="Button" name="edit_button" prop:text="Редактировать" prop:role="gallery-edit-button" bind:visible="self.item['can_edit']"></anvil-component>
+  </div>
+</anvil-form>

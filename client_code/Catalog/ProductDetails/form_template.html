@@ -1,0 +1,65 @@
+---
+custom_component: true
+events:
+- name: close
+---
+<anvil-form container="ColumnPanel" prop:role="catalog-product-dialog">
+  <div class="catalog-detail-dialog-header">
+    <anvil-component type="Label" name="dialog_eyebrow" prop:role="eyebrow" prop:text="КАРТОЧКА ОБОРУДОВАНИЯ"></anvil-component>
+    <anvil-component type="Button" name="close_button" prop:text="Закрыть" prop:role="secondary-button"></anvil-component>
+  </div>
+  <anvil-component type="Label" name="status_label" prop:role="status-message" prop:text=""></anvil-component>
+  <anvil-component type="ColumnPanel" name="product_content" prop:role="catalog-product-content">
+    <div class="catalog-detail-summary">
+      <div class="catalog-detail-image-wrap">
+        <anvil-component type="Image" name="product_image" prop:role="catalog-detail-photo"></anvil-component>
+        <anvil-component type="Label" name="image_placeholder" prop:role="catalog-photo-placeholder" prop:text="Фото модели не добавлено" prop:visible="true"></anvil-component>
+        <anvil-component type="Label" name="image_caption" prop:role="catalog-photo-caption" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="gallery_rows" prop:role="catalog-product-gallery" prop:visible="false" prop:item_template="Minimal_Theme_4.Catalog.ProductDetails.GalleryThumb"></anvil-component>
+      </div>
+      <div class="catalog-detail-copy">
+        <anvil-component type="Label" name="product_title" prop:role="h1" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="product_type" prop:role="section-heading" prop:text=""></anvil-component>
+        <div class="catalog-detail-facts">
+          <anvil-component type="Label" name="product_category" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="product_sku" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="series_summary" prop:role="catalog-detail-series" prop:text="" prop:visible="false"></anvil-component>
+          <anvil-component type="Label" name="product_price" prop:role="catalog-detail-price" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="product_stock" prop:text=""></anvil-component>
+        </div>
+        <anvil-component type="Label" name="product_updated" prop:role="status-message" prop:text=""></anvil-component>
+      </div>
+    </div>
+    <anvil-component type="Label" name="description_heading" prop:role="section-heading" prop:text="Описание"></anvil-component>
+    <anvil-component type="Label" name="product_description" prop:role="catalog-detail-description" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="series_description" prop:role="catalog-detail-description" prop:text="" prop:visible="false"></anvil-component>
+    <anvil-component type="Label" name="specs_heading" prop:role="section-heading" prop:text="Характеристики"></anvil-component>
+    <anvil-component type="Label" name="product_specs" prop:role="catalog-detail-specs" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="sources_heading" prop:role="section-heading" prop:text="Источники" prop:visible="false"></anvil-component>
+    <anvil-component type="Label" name="product_sources" prop:role="catalog-detail-sources" prop:text="" prop:visible="false"></anvil-component>
+    <anvil-component type="ColumnPanel" name="documents_panel" prop:role="catalog-series-documents" prop:visible="false">
+      <anvil-component type="Label" name="documents_heading" prop:role="section-heading" prop:text="Документация"></anvil-component>
+      <anvil-component type="RepeatingPanel" name="document_rows" prop:role="catalog-document-list" prop:item_template="Minimal_Theme_4.Catalog.DocumentItem"></anvil-component>
+    </anvil-component>
+    <anvil-component type="ColumnPanel" name="order_panel" prop:role="catalog-order-request">
+      <anvil-component type="Label" name="order_heading" prop:role="section-heading" prop:text="Заказать товар"></anvil-component>
+      <anvil-component type="Label" name="order_intro" prop:role="status-message" prop:text="Оставьте контакт, и мы подтвердим цену, наличие и условия доставки."></anvil-component>
+      <anvil-component type="TextBox" name="order_name_box" prop:placeholder="Ваше имя"></anvil-component>
+      <anvil-component type="TextBox" name="order_phone_box" prop:placeholder="Телефон"></anvil-component>
+      <anvil-component type="TextBox" name="order_email_box" prop:placeholder="Email"></anvil-component>
+      <anvil-component type="TextBox" name="order_quantity_box" prop:placeholder="Количество"></anvil-component>
+      <anvil-component type="TextArea" name="order_comment_box" prop:placeholder="Комментарий к заказу"></anvil-component>
+      <anvil-component type="Button" name="order_button" prop:text="Отправить заявку" prop:role="primary-action"></anvil-component>
+      <anvil-component type="Label" name="order_message" prop:role="status-message" prop:text=""></anvil-component>
+    </anvil-component>
+    <anvil-component type="ColumnPanel" name="admin_pricing" prop:role="catalog-detail-admin-pricing" prop:visible="false">
+      <anvil-component type="Label" name="admin_pricing_heading" prop:role="section-heading" prop:text="Внутренние данные"></anvil-component>
+      <anvil-component type="Label" name="purchase_price" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="special_price" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="discount" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="markup" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="installation_price" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="minimum_stock" prop:text=""></anvil-component>
+    </anvil-component>
+  </anvil-component>
+</anvil-form>

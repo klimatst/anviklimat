@@ -1,0 +1,1834 @@
+allow_embedding: false
+correct_dependency_ids: {}
+db_schema:
+  ai_providers:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: slot
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: provider
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: model
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: endpoint
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: secret_ref
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: options
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: enabled
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: priority
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: api_key
+      type: string
+    indexes: []
+    server: full
+    title: Поставщики AI
+  ai_usage:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: provider
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: actor
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: operation
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: request_hash
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: tokens
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: response
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Использование AI
+  audit_logs:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: actor
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: action
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: entity_type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: entity_id
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: details
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Журнал аудита
+  bom:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: system
+      target: systems
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: line_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: kind
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: quantity
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: unit
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: properties
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Спецификации материалов
+  brands:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: name_key
+      type: string
+    indexes: []
+    server: full
+    title: Бренды
+  calculations:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: formula
+      target: formulas
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: system
+      target: systems
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: inputs
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: coefficients
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: units
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: result
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_by
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: details
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Расчёты
+  catalog_categories:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: parent
+      target: catalog_categories
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: active
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: image
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: meta_title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: meta_description
+      type: string
+    indexes: []
+    server: full
+    title: Категории каталога
+  catalog_documents:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: kind
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: series
+      target: catalog_series
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: file
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Документы каталога
+  catalog_orders:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: product_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: category_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: subcategory_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: series_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: model
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: sku
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: quantity
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: unit_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: price_known
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: currency
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: customer_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: phone
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: email
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: comment
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Заказы каталога
+  catalog_series:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: category
+      target: catalog_categories
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: is_new
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: power_range
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: image
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: active
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Серии каталога
+  cms_modules:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: page
+      target: cms_pages
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: position
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: content
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: enabled
+      type: bool
+    indexes: []
+    server: full
+    title: CMS-модули
+  cms_pages:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: slug
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: settings
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_by
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: CMS-страницы
+  compatibility:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: compatible_product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: rule
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: enabled
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Совместимость оборудования
+  crm_clients:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: client_type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: tax_id
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: email
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: phone
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: address
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: notes
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: assigned_to
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: CRM-клиенты
+  crm_contacts:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: client
+      target: crm_clients
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: role
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: email
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: phone
+      type: string
+    indexes: []
+    server: full
+    title: Контакты клиентов
+  crm_tasks:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: client
+      target: crm_clients
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: due_at
+      type: date
+    - admin_ui: {}
+      client_hidden: null
+      name: assigned_to
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: CRM-задачи
+  estimate_lines:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: estimate
+      target: estimates
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: line_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: quantity
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: unit
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: unit_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: currency
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: line_total
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: snapshot
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Позиции смет
+  estimates:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: currency
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: materials_cost
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: labor_cost
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: consumables_cost
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: total
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: details
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_by
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Сметы
+  formulas:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: module
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: expression
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: input_schema
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: coefficients
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: output_unit
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: enabled
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_by
+      target: users
+      type: link_single
+    indexes: []
+    server: full
+    title: Формулы расчётов
+  gallery_items:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: image_url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: thumbnail_url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: alt_text
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: category
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: location
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: completed_at
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: featured
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: published
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_by
+      target: users
+      type: link_single
+    indexes: []
+    server: full
+    title: Галерея работ
+  import_logs:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: import
+      target: imports
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: level
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: message
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: record_number
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: details
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Журнал импорта
+  imports:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: source_type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source_url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: format
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: checkpoint
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: source_file
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: total
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: processed
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: imported
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: skipped
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: created_by
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Пакетные импорты
+  media_objects:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: file_id
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: size
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: checksum
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Метаданные файлов
+  objects:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: object_type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: address
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: parameters
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: created_by
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Объекты
+  pdf_draft_items:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: import
+      target: imports
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: position
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: data
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Строки черновиков PDF
+  pdf_draft_pages:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: import
+      target: imports
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: page_number
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: text
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: image_assets
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Страницы PDF-черновиков
+  product_media:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: file_id
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: file
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: alt_text
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: is_primary
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: size
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: checksum
+      type: string
+    indexes: []
+    server: full
+    title: Медиа товаров
+  product_prices:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: purchase_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: sale_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: special_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: discount
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: markup
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: currency
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: installation_price
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Цены товаров
+  product_sources:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: url
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: publisher
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: manual_fields
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: import_identity_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: checked_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Источники товаров
+  product_specs:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: key_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: value
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: unit
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: source
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: visible
+      type: bool
+    indexes: []
+    server: full
+    title: Характеристики товаров
+  product_stock:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: quantity
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: minimum_stock
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Остатки товаров
+  products:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: identity_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: brand
+      target: brands
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: model
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: sku
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: sku_key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: category
+      target: catalog_categories
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: subcategory
+      target: catalog_categories
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: series
+      target: catalog_series
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: description
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: active
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Товары
+  projects:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: client
+      target: crm_clients
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: object
+      target: objects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: owner
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Проекты
+  quotes:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: client
+      target: crm_clients
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: estimate
+      target: estimates
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: number
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: expires_at
+      type: date
+    - admin_ui: {}
+      client_hidden: null
+      name: terms
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: total
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: currency
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: estimate_version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Предложения
+  roles:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: code
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: permissions
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Роли
+  rooms:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: object
+      target: objects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: area
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: height
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: parameters
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Помещения
+  service:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: system
+      target: systems
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: serial
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: service_type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: details
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: scheduled_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: completed_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: assigned_to
+      target: users
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Сервисное обслуживание
+  system_components:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: system
+      target: systems
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: product
+      target: products
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: parent
+      target: system_components
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: kind
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: quantity
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: product_snapshot
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: properties
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: position_x
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: position_y
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: sort_order
+      type: number
+    indexes: []
+    server: full
+    title: Компоненты систем
+  system_connections:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: system
+      target: systems
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: source_component
+      target: system_components
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: target_component
+      target: system_components
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: properties
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Связи систем
+  system_settings:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: key
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: value
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_by
+      target: users
+      type: link_single
+    indexes: []
+    server: full
+    title: Настройки системы
+  systems:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: project
+      target: projects
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: type
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: title
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: parameters
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: status
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: version
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: updated_at
+      type: datetime
+    indexes: []
+    server: full
+    title: HVAC-системы
+  users:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: email
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: enabled
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: signed_up
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: password_hash
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: confirmed_email
+      type: bool
+    - admin_ui: {}
+      client_hidden: null
+      name: remembered_logins
+      type: simpleObject
+    - admin_ui: {}
+      client_hidden: null
+      name: role
+      target: roles
+      type: link_single
+    - admin_ui: {width: 200}
+      client_hidden: null
+      name: last_login
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: n_password_failures
+      type: number
+    - admin_ui: {}
+      client_hidden: false
+      name: permissions
+      type: simpleObject
+    indexes: []
+    server: full
+    title: Users
+  xlsx_upload_chunks:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: import
+      target: imports
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: chunk_index
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: content
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: byte_count
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: sha256
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Части загрузки XLSX
+dependencies: []
+metadata: {description: 'ЭКО-КЛИМАТ: оборудование, проектирование инженерных систем и монтаж.', logo_img: 'asset:pwa-icon.svg', title: ЭКО-КЛИМАТ — оборудование и монтаж}
+name: Clone of Clone of Clone of Clone of Minimal Theme 4
+native_deps:
+  head_html: |
+    <meta name="description" content="ЭКО-КЛИМАТ: климатическое оборудование, расчёты, проектирование и монтаж.">
+    <meta http-equiv="content-language" content="ru">
+    <meta name="google" content="notranslate">
+    <meta name="theme-color" content="#0a1015">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>
+      document.documentElement.lang = 'ru';
+      document.documentElement.setAttribute('translate', 'no');
+      document.documentElement.classList.add('notranslate');
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/service-worker.js', {scope: '/'});
+        });
+      }
+    </script>
+package_name: Minimal_Theme_4
+runtime_options:
+  client_version: '3'
+  server_spec: {base: python310-minimal}
+  version: 3
+secrets:
+  new_key:
+    type: key
+    value:
+      XP4OZXKPNOJ6KODN: {? '' : 7NZmVZ8GTYQ7hWE0uH8jZa3vVtrvqsIiN7ANWmm2LmI+eAC/vrfHmqOQBKr2W/N/tSg7/Ir3jxkup2zG6qhGoV939nv/XDmYQJ/YDFNQwkDDjt2DI86YK5nprmubpzcVyX+wbWFscRdKA6p/3F5OsoSchaYOvoKMwK7cBCS6VNpl2j+3Oli60H4HAeE+wdnGwInBvQ4S27nmdINUTpDSyxE=}
+  new_secret:
+    type: secret
+    value: {XP4OZXKPNOJ6KODN: ''}
+services:
+- client_config: {enable_v2: true}
+  server_config: {}
+  source: /runtime/services/tables.yml
+- client_config: {allow_signup: true, confirm_email: false, require_secure_passwords: false, use_email: true}
+  server_config: {user_table: users}
+  source: /runtime/services/anvil/users.yml
+- client_config: {}
+  server_config: {}
+  source: /runtime/services/anvil/secrets.yml
+- client_config: {}
+  server_config: {}
+  source: /runtime/services/anvil/email.yml
+startup: {module: Form1, type: form}
+uplink_visible: true

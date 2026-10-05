@@ -1,0 +1,10 @@
+<anvil-form container="ColumnPanel" prop:role="studio-extension-row">
+  <div class="studio-extension-row__main">
+    <anvil-component type="Label" name="extension_title" prop:role="studio-extension-title" bind:text="self.item['title']"></anvil-component>
+    <anvil-component type="Label" name="extension_type" prop:role="studio-extension-type" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="extension_description" prop:role="studio-extension-description" bind:text="self.item['description']"></anvil-component>
+  </div>
+  <anvil-component type="CheckBox" name="extension_enabled" writeback:checked="self.item['enabled']" prop:text="Активно"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:role="secondary-button" prop:text="Открыть редактор"></anvil-component>
+  <anvil-component type="Button" name="delete_button" prop:role="secondary-button" prop:text="Удалить"></anvil-component>
+</anvil-form>

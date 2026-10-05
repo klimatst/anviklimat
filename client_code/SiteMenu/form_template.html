@@ -1,0 +1,46 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В админ-панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Меню сайта"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="site-menu-manager">
+      <anvil-component type="Label" name="menu_intro" prop:role="lede" prop:text="Настройте дополнительные ссылки сайта. Ссылки каталога, новостей и сервисных разделов используют свои редакторы и настройки видимости."></anvil-component>
+      <anvil-component type="Label" name="menu_count" prop:role="status-message" prop:text=""></anvil-component>
+      <div class="site-menu-grid">
+        <anvil-component type="ColumnPanel" name="menu_list_panel" prop:role="admin-panel">
+          <div class="site-menu-heading">
+            <anvil-component type="Label" name="menu_list_title" prop:role="section-heading" prop:text="Пункты меню"></anvil-component>
+            <anvil-component type="Label" name="menu_list_hint" prop:role="status-message" prop:text="Меняйте порядок стрелками. Вложенность ограничена одним уровнем."></anvil-component>
+          </div>
+          <div class="site-menu-actions">
+            <anvil-component type="Button" name="new_root_button" prop:text="Новая ссылка" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="new_child_button" prop:text="Вложенная ссылка" prop:role="secondary-button"></anvil-component>
+          </div>
+          <anvil-component type="RepeatingPanel" name="menu_rows" prop:role="site-menu-list" prop:item_template="Minimal_Theme_4.SiteMenu.MenuItem"></anvil-component>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="menu_editor_panel" prop:role="admin-panel">
+          <anvil-component type="Label" name="menu_editor_heading" prop:role="section-heading" prop:text="Новый пункт меню"></anvil-component>
+          <anvil-component type="TextBox" name="menu_title_box" prop:placeholder="Название пункта"></anvil-component>
+          <anvil-component type="TextBox" name="menu_url_box" prop:placeholder="HTTPS-ссылка или путь сайта"></anvil-component>
+          <anvil-component type="DropDown" name="parent_dropdown"></anvil-component>
+          <anvil-component type="TextBox" name="menu_image_url_box" prop:placeholder="HTTPS-ссылка или путь к изображению"></anvil-component>
+          <div class="site-menu-editor-options">
+            <anvil-component type="TextBox" name="sort_order_box" prop:placeholder="Порядок отображения"></anvil-component>
+            <anvil-component type="CheckBox" name="enabled_checkbox" prop:text="Показывать на сайте"></anvil-component>
+          </div>
+          <anvil-component type="Link" name="menu_preview_link" prop:role="site-menu-preview-link" prop:text="Предпросмотр ссылки" prop:visible="false"></anvil-component>
+          <anvil-component type="Image" name="menu_preview_image" prop:role="site-menu-preview-image" prop:visible="false"></anvil-component>
+          <div class="site-menu-actions site-menu-editor-actions">
+            <anvil-component type="Button" name="save_menu_button" prop:text="Сохранить меню" prop:role="primary-action"></anvil-component>
+            <anvil-component type="Button" name="cancel_edit_button" prop:text="Отмена" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="delete_item_button" prop:text="Удалить пункт" prop:role="danger-action" prop:visible="false"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="menu_message" prop:role="status-message" prop:text=""></anvil-component>
+        </anvil-component>
+      </div>
+    </div>
+  </anvil-block>
+</anvil-form>

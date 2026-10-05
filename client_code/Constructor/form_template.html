@@ -1,0 +1,85 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="save_graph_button" prop:text="Сохранить схему" prop:role="primary-action" prop:enabled="false"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="К проектам" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="constructor-view">
+      <anvil-component type="Label" name="system_type_label" prop:role="eyebrow" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="constructor_message" prop:role="status-message" prop:text=""></anvil-component>
+      <anvil-component type="ColumnPanel" name="canvas_panel" prop:role="card">
+        <anvil-component type="Canvas" name="system_canvas" prop:width="900" prop:height="480" prop:background="#161b22" prop:foreground="#c8d1da"></anvil-component>
+        <anvil-component type="Button" name="zoom_out_button" prop:text="−" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="zoom_label" prop:text="Масштаб: 100%"></anvil-component>
+        <anvil-component type="Button" name="zoom_in_button" prop:text="+" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="pan_left_button" prop:text="Сдвинуть влево" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="pan_right_button" prop:text="Сдвинуть вправо" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="pan_up_button" prop:text="Сдвинуть вверх" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="pan_down_button" prop:text="Сдвинуть вниз" prop:role="secondary-button"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="tools_panel" prop:role="card">
+        <anvil-component type="Label" name="component_library_heading" prop:role="section-heading" prop:text="Библиотека компонентов"></anvil-component>
+        <anvil-component type="DropDown" name="node_kind_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="new_node_name_box" prop:placeholder="Название узла"></anvil-component>
+        <anvil-component type="Button" name="add_node_button" prop:text="Добавить узел" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="node_rows" prop:item_template="Minimal_Theme_4.Constructor.NodeItem"></anvil-component>
+        <anvil-component type="Button" name="undo_button" prop:text="Отменить" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+        <anvil-component type="Button" name="redo_button" prop:text="Повторить" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+        <anvil-component type="TextBox" name="group_name_box" prop:placeholder="Название группы"></anvil-component>
+        <anvil-component type="Button" name="group_button" prop:text="Сгруппировать выбранные" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="ungroup_button" prop:text="Разгруппировать" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="delete_node_button" prop:text="Удалить выбранный узел" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="duplicate_node_button" prop:text="Дублировать узел" prop:role="secondary-button"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="node_editor" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="node_editor_heading" prop:role="section-heading" prop:text="Параметры узла"></anvil-component>
+        <anvil-component type="Label" name="selected_product_label" prop:text="Товар каталога не привязан"></anvil-component>
+        <anvil-component type="Button" name="show_products_button" prop:text="Выбрать товар каталога" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="TextBox" name="node_name_box" prop:placeholder="Название"></anvil-component>
+        <anvil-component type="DropDown" name="node_kind_editor_dropdown"></anvil-component>
+        <anvil-component type="TextBox" name="node_quantity_box" prop:placeholder="Количество"></anvil-component>
+        <anvil-component type="TextBox" name="node_x_box" prop:placeholder="Положение X"></anvil-component>
+        <anvil-component type="TextBox" name="node_y_box" prop:placeholder="Положение Y"></anvil-component>
+        <anvil-component type="TextArea" name="node_properties_box" prop:placeholder="Параметры узла в JSON"></anvil-component>
+        <anvil-component type="Button" name="save_node_button" prop:text="Применить параметры" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="node_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="catalog_product_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="TextBox" name="product_search_box" prop:placeholder="Поиск по модели или артикулу"></anvil-component>
+        <anvil-component type="Button" name="search_products_button" prop:text="Найти товары" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="DropDown" name="product_dropdown"></anvil-component>
+        <anvil-component type="Button" name="bind_product_button" prop:text="Привязать выбранный товар" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="product_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="connections_panel" prop:role="card">
+        <anvil-component type="Button" name="show_connect_button" prop:text="Добавить связь" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="show_disconnect_button" prop:text="Удалить связь" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="ColumnPanel" name="connect_panel" prop:visible="false">
+          <anvil-component type="DropDown" name="target_node_dropdown"></anvil-component>
+          <anvil-component type="DropDown" name="connection_type_dropdown"></anvil-component>
+          <anvil-component type="Button" name="connect_button" prop:text="Соединить узлы" prop:role="secondary-button"></anvil-component>
+        </anvil-component>
+        <anvil-component type="ColumnPanel" name="disconnect_panel" prop:visible="false">
+          <anvil-component type="DropDown" name="connection_dropdown"></anvil-component>
+          <anvil-component type="TextArea" name="connection_properties_box" prop:placeholder="Параметры трассы и BOM в JSON"></anvil-component>
+          <anvil-component type="Button" name="save_connection_properties_button" prop:text="Сохранить параметры связи в черновике" prop:role="secondary-button"></anvil-component>
+          <anvil-component type="Button" name="disconnect_button" prop:text="Разъединить" prop:role="secondary-button"></anvil-component>
+        </anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="engineering_panel" prop:role="card">
+        <anvil-component type="Label" name="engineering_heading" prop:role="section-heading" prop:text="Инженерная проверка"></anvil-component>
+        <anvil-component type="Button" name="check_compatibility_button" prop:text="Проверить совместимость" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="check_routing_button" prop:text="Проверить маршруты" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Button" name="generate_bom_button" prop:text="Сформировать спецификацию BOM" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Label" name="engineering_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="bom_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="bom_heading" prop:role="section-heading" prop:text="Спецификация системы"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="bom_rows" prop:item_template="Minimal_Theme_4.Constructor.BomItem"></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Конструктор системы"></anvil-component>
+  </anvil-block>
+</anvil-form>

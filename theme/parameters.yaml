@@ -1,0 +1,73 @@
+color_scheme:
+  colors:
+  - {color: '#24d4ed', name: Primary}
+  - {color: '#090d12', name: Background}
+  - {color: '#141c23', name: Surface}
+  - {color: '#e7f0f3', name: Text}
+  - {color: '#91a4ad', name: Muted}
+  - {color: '#2b3a44', name: Border}
+  - {color: '#0797b2', name: Primary Dark}
+  - {color: 'rgba(36, 212, 237, 0.25)', name: Focus Ring}
+  - {color: '#10171d', name: Control Background}
+  - {color: '#17232b', name: Control Background Hover}
+  - {color: '#202c34', name: Control Disabled}
+  - {color: '#18232b', name: Surface Muted}
+roles:
+- components: [Button]
+  name: secondary-button
+- components: [Label]
+  name: eyebrow
+- components: [Label]
+  name: h1
+- components: [Label]
+  name: lede
+- components: [ColumnPanel]
+  display_in_toolbox: true
+  name: card
+  title: Card
+- components: [Button]
+  name: primary-action
+- components: [Label]
+  name: role-badge
+- components: [Label]
+  name: status-message
+- components: [Label]
+  name: section-heading
+- components: [Button]
+  name: nav-button
+- components: [Button]
+  name: nav-login
+- components: [Button]
+  name: admin-nav
+- components: [Button]
+  name: brand-mark
+- components: [Button]
+  name: search-action
+- components: [Button]
+  name: header-admin
+- components: [Button]
+  name: category-link
+- components: [ColumnPanel]
+  name: admin-tile
+- components: [Label]
+  name: admin-tile-code
+- components: [Label]
+  name: admin-tile-title
+- components: [Label]
+  name: admin-tile-copy
+- components: [Label]
+  name: admin-metrics
+- components: [Label]
+  name: admin-audit-list
+- components: [ColumnPanel]
+  name: service-card
+- components: [Label]
+  name: service-copy
+- components: [Label]
+  name: contact-value
+- components: [Label]
+  name: bootstrap-notice
+- components: [Label]
+  name: metric-value
+- components: [ColumnPanel]
+  name: admin-settings

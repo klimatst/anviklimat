@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="system_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="system_type" bind:text="self.item['type_title']"></anvil-component>
+  <anvil-component type="Label" name="system_version" bind:text="self.item['version']"></anvil-component>
+  <anvil-component type="Button" name="open_button" prop:text="Открыть конструктор" prop:role="secondary-button"></anvil-component>
+  <anvil-component type="Button" name="calculations_button" prop:text="Расчёты системы" prop:role="secondary-button"></anvil-component>
+</anvil-form>

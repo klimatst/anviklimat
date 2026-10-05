@@ -1,0 +1,1276 @@
+{
+  "brands": [
+    "Daikin",
+    "Mitsubishi Electric",
+    "Mitsubishi Heavy Industries",
+    "Panasonic",
+    "Toshiba",
+    "LG",
+    "Haier",
+    "Midea",
+    "Gree",
+    "Hisense"
+  ],
+  "products": [
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Daikin",
+      "model": "ДЕМО · AC-01",
+      "sku": "DEMO-AC-01",
+      "identity_key": "demo|demo-ac-01",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 49900,
+      "purchase_price": 33932.0,
+      "special_price": 47405.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "2.5",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "25",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Mitsubishi Electric",
+      "model": "ДЕМО · AC-02",
+      "sku": "DEMO-AC-02",
+      "identity_key": "demo|demo-ac-02",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 54400,
+      "purchase_price": 36992.0,
+      "special_price": 51680.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "3.0",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "30",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Mitsubishi Heavy Industries",
+      "model": "ДЕМО · AC-03",
+      "sku": "DEMO-AC-03",
+      "identity_key": "demo|demo-ac-03",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 58900,
+      "purchase_price": 40052.0,
+      "special_price": 55955.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "3.5",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "35",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Panasonic",
+      "model": "ДЕМО · AC-04",
+      "sku": "DEMO-AC-04",
+      "identity_key": "demo|demo-ac-04",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 63400,
+      "purchase_price": 43112.0,
+      "special_price": 60230.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 5,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "4.0",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "40",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Toshiba",
+      "model": "ДЕМО · AC-05",
+      "sku": "DEMO-AC-05",
+      "identity_key": "demo|demo-ac-05",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 67900,
+      "purchase_price": 46172.0,
+      "special_price": 64505.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 6,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "4.5",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "45",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "LG",
+      "model": "ДЕМО · AC-06",
+      "sku": "DEMO-AC-06",
+      "identity_key": "demo|demo-ac-06",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 72400,
+      "purchase_price": 49232.0,
+      "special_price": 68780.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 7,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "5.0",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "50",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Haier",
+      "model": "ДЕМО · AC-07",
+      "sku": "DEMO-AC-07",
+      "identity_key": "demo|demo-ac-07",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 76900,
+      "purchase_price": 52292.0,
+      "special_price": 73055.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 1,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "5.5",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "55",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Midea",
+      "model": "ДЕМО · AC-08",
+      "sku": "DEMO-AC-08",
+      "identity_key": "demo|demo-ac-08",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 81400,
+      "purchase_price": 55352.0,
+      "special_price": 77330.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "6.0",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "60",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Gree",
+      "model": "ДЕМО · AC-09",
+      "sku": "DEMO-AC-09",
+      "identity_key": "demo|demo-ac-09",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 85900,
+      "purchase_price": 58412.0,
+      "special_price": 81605.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "6.5",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "65",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "air-conditioning",
+      "subcategory_code": "air-conditioning-wall",
+      "brand": "Hisense",
+      "model": "ДЕМО · AC-10",
+      "sku": "DEMO-AC-10",
+      "identity_key": "demo|demo-ac-10",
+      "type": "DEMO air-conditioning-wall",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 90400,
+      "purchase_price": 61472.0,
+      "special_price": 85880.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/conditioners.jpg",
+      "specifications": [
+        [
+          "Холодопроизводительность",
+          "7.0",
+          "кВт"
+        ],
+        [
+          "Рекомендуемая площадь",
+          "70",
+          "м²"
+        ],
+        [
+          "Хладагент",
+          "R32",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-outdoor-units",
+      "brand": "Daikin",
+      "model": "ДЕМО · VRF-01",
+      "sku": "DEMO-VRF-01",
+      "identity_key": "demo|demo-vrf-01",
+      "type": "DEMO vrf-vrv-outdoor-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 219900,
+      "purchase_price": 149532.0,
+      "special_price": 208905.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-outdoor-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "10",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "6",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-indoor-units",
+      "brand": "Mitsubishi Electric",
+      "model": "ДЕМО · VRF-02",
+      "sku": "DEMO-VRF-02",
+      "identity_key": "demo|demo-vrf-02",
+      "type": "DEMO vrf-vrv-indoor-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 284900,
+      "purchase_price": 193732.0,
+      "special_price": 270655.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-indoor-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "12",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "8",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-wall-units",
+      "brand": "Mitsubishi Heavy Industries",
+      "model": "ДЕМО · VRF-03",
+      "sku": "DEMO-VRF-03",
+      "identity_key": "demo|demo-vrf-03",
+      "type": "DEMO vrf-vrv-wall-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 349900,
+      "purchase_price": 237932.0,
+      "special_price": 332405.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-wall-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "14",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "10",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-cassette-units",
+      "brand": "Panasonic",
+      "model": "ДЕМО · VRF-04",
+      "sku": "DEMO-VRF-04",
+      "identity_key": "demo|demo-vrf-04",
+      "type": "DEMO vrf-vrv-cassette-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 414900,
+      "purchase_price": 282132.0,
+      "special_price": 394155.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 5,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-cassette-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "16",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "12",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-duct-units",
+      "brand": "Toshiba",
+      "model": "ДЕМО · VRF-05",
+      "sku": "DEMO-VRF-05",
+      "identity_key": "demo|demo-vrf-05",
+      "type": "DEMO vrf-vrv-duct-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 479900,
+      "purchase_price": 326332.0,
+      "special_price": 455905.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 6,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-duct-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "18",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "14",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-floor-ceiling-units",
+      "brand": "LG",
+      "model": "ДЕМО · VRF-06",
+      "sku": "DEMO-VRF-06",
+      "identity_key": "demo|demo-vrf-06",
+      "type": "DEMO vrf-vrv-floor-ceiling-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 544900,
+      "purchase_price": 370532.0,
+      "special_price": 517655.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 7,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-floor-ceiling-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "20",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "16",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-branch-selectors",
+      "brand": "Haier",
+      "model": "ДЕМО · VRF-07",
+      "sku": "DEMO-VRF-07",
+      "identity_key": "demo|demo-vrf-07",
+      "type": "DEMO vrf-vrv-branch-selectors",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 609900,
+      "purchase_price": 414732.0,
+      "special_price": 579405.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 1,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-branch-selectors",
+          ""
+        ],
+        [
+          "Производительность",
+          "22",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "18",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-controllers",
+      "brand": "Midea",
+      "model": "ДЕМО · VRF-08",
+      "sku": "DEMO-VRF-08",
+      "identity_key": "demo|demo-vrf-08",
+      "type": "DEMO vrf-vrv-controllers",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 674900,
+      "purchase_price": 458932.0,
+      "special_price": 641155.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-controllers",
+          ""
+        ],
+        [
+          "Производительность",
+          "24",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "20",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-outdoor-units",
+      "brand": "Gree",
+      "model": "ДЕМО · VRF-09",
+      "sku": "DEMO-VRF-09",
+      "identity_key": "demo|demo-vrf-09",
+      "type": "DEMO vrf-vrv-outdoor-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 739900,
+      "purchase_price": 503132.0,
+      "special_price": 702905.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-outdoor-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "26",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "22",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "vrf-vrv",
+      "subcategory_code": "vrf-vrv-indoor-units",
+      "brand": "Hisense",
+      "model": "ДЕМО · VRF-10",
+      "sku": "DEMO-VRF-10",
+      "identity_key": "demo|demo-vrf-10",
+      "type": "DEMO vrf-vrv-indoor-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 804900,
+      "purchase_price": 547332.0,
+      "special_price": 764655.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/vrv-vrf.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "vrf-vrv-indoor-units",
+          ""
+        ],
+        [
+          "Производительность",
+          "28",
+          "кВт"
+        ],
+        [
+          "Подключаемые блоки",
+          "24",
+          "шт."
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-ahu",
+      "brand": "Daikin",
+      "model": "ДЕМО · VENT-01",
+      "sku": "DEMO-VENT-01",
+      "identity_key": "demo|demo-vent-01",
+      "type": "DEMO ventilation-ahu",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 35900,
+      "purchase_price": 24412.0,
+      "special_price": 34105.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-ahu",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "400",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-supply-units",
+      "brand": "Mitsubishi Electric",
+      "model": "ДЕМО · VENT-02",
+      "sku": "DEMO-VENT-02",
+      "identity_key": "demo|demo-vent-02",
+      "type": "DEMO ventilation-supply-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 49900,
+      "purchase_price": 33932.0,
+      "special_price": 47405.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-supply-units",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "550",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-exhaust-units",
+      "brand": "Mitsubishi Heavy Industries",
+      "model": "ДЕМО · VENT-03",
+      "sku": "DEMO-VENT-03",
+      "identity_key": "demo|demo-vent-03",
+      "type": "DEMO ventilation-exhaust-units",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 63900,
+      "purchase_price": 43452.0,
+      "special_price": 60705.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-exhaust-units",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "700",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-fans",
+      "brand": "Panasonic",
+      "model": "ДЕМО · VENT-04",
+      "sku": "DEMO-VENT-04",
+      "identity_key": "demo|demo-vent-04",
+      "type": "DEMO ventilation-fans",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 77900,
+      "purchase_price": 52972.0,
+      "special_price": 74005.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 5,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-fans",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "850",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-heat-recovery",
+      "brand": "Toshiba",
+      "model": "ДЕМО · VENT-05",
+      "sku": "DEMO-VENT-05",
+      "identity_key": "demo|demo-vent-05",
+      "type": "DEMO ventilation-heat-recovery",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 91900,
+      "purchase_price": 62492.0,
+      "special_price": 87305.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 6,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-heat-recovery",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1000",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-air-ducts",
+      "brand": "LG",
+      "model": "ДЕМО · VENT-06",
+      "sku": "DEMO-VENT-06",
+      "identity_key": "demo|demo-vent-06",
+      "type": "DEMO ventilation-air-ducts",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 105900,
+      "purchase_price": 72012.0,
+      "special_price": 100605.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 7,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-air-ducts",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1150",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-fittings",
+      "brand": "Haier",
+      "model": "ДЕМО · VENT-07",
+      "sku": "DEMO-VENT-07",
+      "identity_key": "demo|demo-vent-07",
+      "type": "DEMO ventilation-fittings",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 119900,
+      "purchase_price": 81532.0,
+      "special_price": 113905.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 1,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-fittings",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1300",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-grilles-diffusers",
+      "brand": "Midea",
+      "model": "ДЕМО · VENT-08",
+      "sku": "DEMO-VENT-08",
+      "identity_key": "demo|demo-vent-08",
+      "type": "DEMO ventilation-grilles-diffusers",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 133900,
+      "purchase_price": 91052.0,
+      "special_price": 127205.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 2,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-grilles-diffusers",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1450",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-dampers",
+      "brand": "Gree",
+      "model": "ДЕМО · VENT-09",
+      "sku": "DEMO-VENT-09",
+      "identity_key": "demo|demo-vent-09",
+      "type": "DEMO ventilation-dampers",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 147900,
+      "purchase_price": 100572.0,
+      "special_price": 140505.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 3,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-dampers",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1600",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    },
+    {
+      "category_code": "ventilation",
+      "subcategory_code": "ventilation-ahu",
+      "brand": "Hisense",
+      "model": "ДЕМО · VENT-10",
+      "sku": "DEMO-VENT-10",
+      "identity_key": "demo|demo-vent-10",
+      "type": "DEMO ventilation-ahu",
+      "description": "Временная демонстрационная запись для проверки каталога, фото и карточки товара. Цена, наличие и характеристики указаны только для теста; не использовать для продажи или расчётов.",
+      "sale_price": 161900,
+      "purchase_price": 110092.0,
+      "special_price": 153805.0,
+      "discount": 5,
+      "markup": 25,
+      "currency": "RUB",
+      "installation_price": 6500,
+      "quantity": 4,
+      "minimum_stock": 2,
+      "image": "/static/images/catalog/ventilation.jpg",
+      "specifications": [
+        [
+          "Тип оборудования",
+          "ventilation-ahu",
+          ""
+        ],
+        [
+          "Расход воздуха",
+          "1750",
+          "м³/ч"
+        ],
+        [
+          "Фильтр",
+          "G4 · демо",
+          ""
+        ],
+        [
+          "Данные",
+          "ДЕМО · проверить перед использованием",
+          ""
+        ]
+      ]
+    }
+  ]
+}

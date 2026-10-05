@@ -1,0 +1,184 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Центр настроек"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="На Dashboard" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="admin-settings-studio">
+      <section class="studio-hero">
+        <div class="studio-hero__copy">
+          <anvil-component type="Label" name="studio_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · КОНСТРУКТОР СИСТЕМЫ"></anvil-component>
+          <anvil-component type="Label" name="studio_intro" prop:role="lede" prop:text="Настраивайте сайт, каталог, Dashboard, интеграции и расширения из единого центра управления."></anvil-component>
+          <div class="studio-hero__path"><span>Сайт</span><i>→</i><span>Проект</span><i>→</i><span>Рабочая среда</span></div>
+        </div>
+        <div class="studio-hero-stats">
+          <anvil-component type="Label" name="section_count" prop:role="studio-count" prop:text="Загрузка категорий…"></anvil-component>
+          <anvil-component type="Label" name="widget_count" prop:role="studio-count" prop:text="Загрузка виджетов…"></anvil-component>
+        </div>
+      </section>
+
+      <nav class="studio-tabs" aria-label="Инструменты центра настроек">
+        <anvil-component type="Button" name="settings_tab" prop:role="studio-tab-active" prop:text="Настройки сайта и проекта"></anvil-component>
+        <anvil-component type="Button" name="widgets_tab" prop:role="studio-tab" prop:text="Библиотека виджетов"></anvil-component>
+        <anvil-component type="Button" name="extensions_tab" prop:role="studio-tab" prop:text="Модули и скрипты"></anvil-component>
+        <anvil-component type="Button" name="ai_tools_tab" prop:role="studio-tab" prop:text="AI Studio · инструменты"></anvil-component>
+      </nav>
+      <div class="studio-command-bar"><span class="studio-command-bar__title">Конфигурация проекта</span><span class="studio-command-bar__hint">Изменения применяются только после сохранения выбранного раздела</span><span class="studio-command-bar__state"><i></i> Серверные настройки</span></div>
+      <section class="studio-integration-strip">
+        <div class="studio-integration-copy">
+          <span class="studio-integration-copy__eyebrow">КЛЮЧЕВЫЕ ПОДКЛЮЧЕНИЯ</span>
+          <strong>Настройки, которые влияют на работу сайта</strong>
+          <small>Фото, API и AI редактируются через рабочие разделы. Секреты остаются на сервере Anvil.</small>
+        </div>
+        <div class="studio-integration-status">
+          <span class="studio-integration-status__dot"></span>
+          <div><strong>Медиахранилище</strong><anvil-component type="Label" name="media_storage_status" prop:role="status-message" prop:text="Проверяю…"></anvil-component></div>
+          <anvil-component type="Button" name="refresh_media_status_button" prop:role="icon-button" prop:text="↻"></anvil-component>
+        </div>
+        <div class="studio-integration-actions">
+          <anvil-component type="Button" name="open_media_settings_button" prop:role="secondary-button" prop:text="Фото и хранилище"></anvil-component>
+          <anvil-component type="Button" name="open_api_settings_button" prop:role="secondary-button" prop:text="API и модели"></anvil-component>
+          <anvil-component type="Button" name="open_ai_settings_button" prop:role="primary-action" prop:text="AI Studio"></anvil-component>
+        </div>
+      </section>
+
+      <anvil-component type="ColumnPanel" name="settings_workspace" prop:role="studio-settings-workspace">
+        <aside class="studio-section-rail">
+          <div class="studio-rail-heading">
+            <anvil-component type="Label" name="section_list_heading" prop:role="studio-subheading" prop:text="Категории настроек"></anvil-component>
+            <anvil-component type="TextBox" name="settings_search" prop:placeholder="Найти настройку или раздел"></anvil-component>
+            <anvil-component type="DropDown" name="settings_group_filter" prop:role="studio-group-filter"></anvil-component>
+          </div>
+          <anvil-component type="RepeatingPanel" name="settings_sections" prop:role="studio-section-list" prop:item_template="Minimal_Theme_4.AdminSettings.SectionItem"></anvil-component>
+        </aside>
+
+        <main class="studio-settings-main">
+          <div class="studio-section-heading">
+            <div>
+              <anvil-component type="Label" name="section_group" prop:role="studio-section-group" prop:text=""></anvil-component>
+              <anvil-component type="Label" name="section_title" prop:role="studio-section-title" prop:text="Выберите раздел"></anvil-component>
+              <anvil-component type="Label" name="section_description" prop:role="studio-section-description" prop:text=""></anvil-component>
+              <anvil-component type="Label" name="section_summary" prop:role="studio-section-summary" prop:text=""></anvil-component>
+            </div>
+            <anvil-component type="Button" name="edit_settings_button" prop:role="primary-action" prop:text="Открыть редактор"></anvil-component>
+          </div>
+          <div class="studio-category-summary">
+            <anvil-component type="Label" name="settings_overview" prop:role="studio-section-description" prop:text="Выберите категорию слева, затем откройте редактор. Поиск находит как разделы, так и отдельные параметры."></anvil-component>
+            <div class="studio-summary-points"><span>Параметры сгруппированы по задачам</span><span>Изменения записываются в журнал</span><span>Доступ проверяется на сервере</span></div>
+          </div>
+        </main>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="settings_editor_overlay" prop:role="studio-modal-overlay" prop:visible="false">
+        <anvil-component type="ColumnPanel" name="settings_editor" prop:role="studio-settings-modal">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="settings_editor_eyebrow" prop:role="eyebrow" prop:text="РЕДАКТОР НАСТРОЕК"></anvil-component>
+              <anvil-component type="Label" name="editor_section_title" prop:role="studio-subheading" prop:text="Параметры категории"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="close_settings_editor_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="editor_section_description" prop:role="studio-section-description" prop:text="Изменения сохраняются только после нажатия кнопки ниже."></anvil-component>
+          <anvil-component type="CheckBox" name="module_enabled" prop:text="Категория активна"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="settings_fields" prop:role="studio-field-list" prop:item_template="Minimal_Theme_4.AdminSettings.SettingFieldItem"></anvil-component>
+          <div class="studio-save-row">
+            <anvil-component type="Label" name="settings_status" prop:role="studio-status" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="reset_settings_button" prop:role="secondary-button" prop:text="Исходные значения"></anvil-component>
+            <anvil-component type="Button" name="cancel_settings_editor_button" prop:role="secondary-button" prop:text="Отменить"></anvil-component>
+            <anvil-component type="Button" name="save_section_button" prop:role="primary-action" prop:text="Сохранить категорию"></anvil-component>
+          </div>
+        </anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="widgets_workspace" prop:role="studio-widgets-workspace" prop:visible="false">
+        <div class="studio-workspace-heading">
+          <div>
+            <anvil-component type="Label" name="widgets_eyebrow" prop:role="eyebrow" prop:text="РАБОЧИЙ СТОЛ"></anvil-component>
+            <anvil-component type="Label" name="widgets_heading" prop:role="studio-section-title" prop:text="Библиотека виджетов"></anvil-component>
+            <anvil-component type="Label" name="widgets_description" prop:role="studio-section-description" prop:text="Выберите карточки, которые будут показаны на Dashboard, и настройте размер."></anvil-component>
+          </div>
+          <anvil-component type="TextBox" name="widget_search" prop:placeholder="Найти виджет по названию или данным"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="widget_rows" prop:role="studio-widget-grid" prop:item_template="Minimal_Theme_4.AdminSettings.WidgetOptionItem"></anvil-component>
+        <div class="studio-empty-hint">Включайте только те карточки, которые нужны вашей рабочей команде. Размер виджета можно менять для каждого элемента.</div>
+        <div class="studio-save-row">
+          <anvil-component type="Label" name="widgets_status" prop:role="studio-status" prop:text=""></anvil-component>
+          <anvil-component type="Button" name="default_widgets_button" prop:role="secondary-button" prop:text="Вернуть базовый набор"></anvil-component>
+          <anvil-component type="Button" name="save_widgets_button" prop:role="primary-action" prop:text="Сохранить рабочий стол"></anvil-component>
+        </div>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="extensions_workspace" prop:role="studio-extensions-workspace" prop:visible="false">
+        <div class="studio-workspace-heading">
+          <div>
+            <anvil-component type="Label" name="extensions_eyebrow" prop:role="eyebrow" prop:text="РАСШИРЕНИЯ ПРОЕКТА"></anvil-component>
+            <anvil-component type="Label" name="extensions_heading" prop:role="studio-section-title" prop:text="Собственные модули и скрипты"></anvil-component>
+            <anvil-component type="Label" name="extensions_intro" prop:role="studio-section-description" prop:text="Создавайте браузерные модули оформления CSS и поведения JavaScript."></anvil-component>
+          </div>
+          <anvil-component type="Button" name="new_extension_button" prop:role="primary-action" prop:text="Добавить модуль"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="extension_safety_note" prop:role="studio-warning" prop:text="Активный JavaScript выполняется в браузере каждого посетителя сайта. Добавляйте только проверенный код. Серверные Python-модули подключаются через редактор проекта Anvil."></anvil-component>
+        <anvil-component type="RepeatingPanel" name="extension_rows" prop:role="studio-extension-list" prop:item_template="Minimal_Theme_4.AdminSettings.ExtensionItem"></anvil-component>
+        <div class="studio-extension-footer"><span class="studio-extension-footer__mark">JS / CSS</span><span>Подключённые модули применяются к сайту после сохранения и доступны в журнале.</span></div>
+        <anvil-component type="Label" name="extensions_status" prop:role="studio-status" prop:text=""></anvil-component>
+
+        <anvil-component type="ColumnPanel" name="extension_editor" prop:role="studio-extension-drawer" prop:visible="false">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="extension_editor_eyebrow" prop:role="eyebrow" prop:text="РЕДАКТОР МОДУЛЯ"></anvil-component>
+              <anvil-component type="Label" name="extension_editor_title" prop:role="studio-subheading" prop:text="Настройки и код"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="extension_cancel_button" prop:role="secondary-button" prop:text="Закрыть"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="extension_title_label" prop:text="Название модуля"></anvil-component>
+          <anvil-component type="TextBox" name="extension_title_box" prop:placeholder="Например, стиль страницы контактов"></anvil-component>
+          <anvil-component type="Label" name="extension_description_label" prop:text="Описание"></anvil-component>
+          <anvil-component type="TextBox" name="extension_description_box" prop:placeholder="Для чего используется этот модуль"></anvil-component>
+          <anvil-component type="Label" name="extension_type_label" prop:text="Тип кода"></anvil-component>
+          <anvil-component type="DropDown" name="extension_type_dropdown"></anvil-component>
+          <anvil-component type="Label" name="extension_code_label" prop:text="Код · до 12 000 символов"></anvil-component>
+          <anvil-component type="TextArea" name="extension_code_box" prop:role="studio-code-editor" prop:placeholder="Введите CSS или JavaScript без внешних тегов"></anvil-component>
+          <anvil-component type="CheckBox" name="extension_enabled_checkbox" prop:text="Включить на сайте"></anvil-component>
+          <div class="studio-save-row">
+            <anvil-component type="Label" name="extension_editor_status" prop:role="studio-status" prop:text=""></anvil-component>
+            <anvil-component type="Button" name="extension_save_button" prop:role="primary-action" prop:text="Добавить расширение"></anvil-component>
+          </div>
+        </anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="ai_tools_workspace" prop:role="studio-ai-tools-workspace" prop:visible="false">
+        <div class="studio-workspace-heading">
+          <div>
+            <anvil-component type="Label" name="ai_tools_eyebrow" prop:role="eyebrow" prop:text="AI STUDIO · ЧЕРНОВИКИ ДЛЯ ПРОВЕРКИ"></anvil-component>
+            <anvil-component type="Label" name="ai_tools_heading" prop:role="studio-section-title" prop:text="Инструменты сайта, каталога и инженерной команды"></anvil-component>
+            <anvil-component type="Label" name="ai_tools_intro" prop:role="studio-section-description" prop:text="Выберите помощника, добавьте исходные данные и получите черновик для проверки."></anvil-component>
+          </div>
+        </div>
+        <div class="studio-ai-tool-picker">
+          <anvil-component type="DropDown" name="ai_tool_group" prop:role="studio-tool-select"></anvil-component>
+          <anvil-component type="DropDown" name="ai_tool_picker" prop:role="studio-tool-select"></anvil-component>
+        </div>
+        <div class="studio-ai-flow"><span>1 · Выберите задачу</span><i>→</i><span>2 · Добавьте данные</span><i>→</i><span>3 · Проверьте черновик</span></div>
+        <anvil-component type="Label" name="ai_tool_description" prop:role="studio-section-description" prop:text=""></anvil-component>
+        <anvil-component type="Label" name="ai_privacy_hint" prop:role="studio-warning" prop:text="Перед отправкой удалите пароли, API-ключи и лишние персональные данные. Текст обрабатывает настроенный серверный AI-провайдер; результат нужно проверить вручную."></anvil-component>
+        <div class="studio-ai-tool-editors">
+          <div class="studio-ai-tool-input">
+            <anvil-component type="Label" name="ai_tool_input_label" prop:role="studio-subheading" prop:text="Исходные данные"></anvil-component>
+            <anvil-component type="TextArea" name="ai_tool_input_box" prop:role="studio-ai-textarea" prop:placeholder="Добавьте текст или данные для обработки"></anvil-component>
+          </div>
+          <div class="studio-ai-tool-output">
+            <anvil-component type="Label" name="ai_tool_output_label" prop:role="studio-subheading" prop:text="Результат · редактируемый черновик"></anvil-component>
+            <anvil-component type="TextArea" name="ai_tool_output_box" prop:role="studio-ai-textarea" prop:placeholder="Результат появится здесь; его можно исправить перед использованием"></anvil-component>
+          </div>
+        </div>
+        <div class="studio-save-row">
+          <anvil-component type="Label" name="ai_tools_status" prop:role="studio-status" prop:text=""></anvil-component>
+          <anvil-component type="Button" name="clear_ai_tool_button" prop:role="secondary-button" prop:text="Очистить"></anvil-component>
+          <anvil-component type="Button" name="run_ai_tool_button" prop:role="primary-action" prop:text="Создать черновик"></anvil-component>
+        </div>
+      </anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

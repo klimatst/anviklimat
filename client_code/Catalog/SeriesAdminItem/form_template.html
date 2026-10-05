@@ -1,0 +1,5 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-series-admin-row">
+  <anvil-component type="Button" name="edit_button" prop:role="taxonomy-row-action" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="series_meta" prop:role="taxonomy-row-meta" bind:text="self.item['category_title']"></anvil-component>
+  <anvil-component type="Label" name="series_counts" prop:role="taxonomy-row-meta" bind:text="self.item['product_count']"></anvil-component>
+</anvil-form>

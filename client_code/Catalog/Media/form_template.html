@@ -1,0 +1,22 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="refresh_button" prop:text="Обновить" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="catalog-media-view">
+      <anvil-component type="Label" name="media_intro" prop:role="lede" prop:text="Очередь показывает только активные модели без собственного изображения. Фото категорий не подставляются в карточки товаров."></anvil-component>
+      <div class="catalog-toolbar">
+        <anvil-component type="TextBox" name="search_box" prop:role="catalog-search" prop:placeholder="Бренд, модель или артикул"></anvil-component>
+        <anvil-component type="Button" name="search_button" prop:text="Найти" prop:role="primary-action"></anvil-component>
+      </div>
+      <anvil-component type="Label" name="media_message" prop:role="status-message" prop:text=""></anvil-component>
+      <anvil-component type="ColumnPanel" name="media_panel" prop:role="catalog-missing-media-list">
+        <anvil-component type="RepeatingPanel" name="missing_product_rows" prop:item_template="Minimal_Theme_4.Catalog.Media.MissingProductItem"></anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Медиа каталога"></anvil-component>
+  </anvil-block>
+</anvil-form>

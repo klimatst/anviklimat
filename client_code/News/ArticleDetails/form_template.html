@@ -1,0 +1,14 @@
+---
+custom_component: true
+events:
+- name: close
+---
+<anvil-form container="ColumnPanel" prop:role="news-article-dialog">
+  <div class="news-article-dialog-header">
+    <anvil-component type="Label" name="article_date" prop:role="news-article-date" prop:text=""></anvil-component>
+    <anvil-component type="Button" name="close_button" prop:text="Закрыть" prop:role="secondary-button"></anvil-component>
+  </div>
+  <anvil-component type="Label" name="article_title" prop:role="h1" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="article_excerpt" prop:role="news-article-excerpt" prop:text=""></anvil-component>
+  <anvil-component type="RepeatingPanel" name="article_sections" prop:role="news-article-sections" prop:item_template="Minimal_Theme_4.News.ArticleSectionItem"></anvil-component>
+</anvil-form>

@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="project_title" prop:role="section-heading" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="project_code" bind:text="self.item['code']"></anvil-component>
+  <anvil-component type="Label" name="object_name" bind:text="self.item['object_name']"></anvil-component>
+  <anvil-component type="Label" name="project_status" bind:text="self.item['status_title']"></anvil-component>
+  <anvil-component type="Button" name="open_button" prop:text="Открыть проект" prop:role="secondary-button"></anvil-component>
+</anvil-form>

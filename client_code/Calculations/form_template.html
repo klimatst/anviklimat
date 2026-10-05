@@ -1,0 +1,130 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="formula_tools_button" prop:text="Формулы администратора" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="refrigerant_ruler_button" prop:text="Линейка хладагента" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="Главная" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Линейка холодильщика"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="calculator-view">
+      <div class="calculator-heading">
+        <div>
+          <anvil-component type="Label" name="calculator_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ЛИНЕЙКА ХОЛОДИЛЬЩИКА"></anvil-component>
+          <anvil-component type="Label" name="calculator_lede" prop:role="lede" prop:text="Каждая система рассчитывается отдельно. Неизвестные параметры будут оценены автоматически и отмечены в результате."></anvil-component>
+        </div>
+        <anvil-component type="Button" name="installation_button" prop:text="Перейти к расчёту монтажа →" prop:role="secondary-button"></anvil-component>
+      </div>
+      <div class="calculator-tabs">
+        <anvil-component type="Button" name="ac_tab_button" prop:text="Кондиционеры" prop:role="calculator-tab-active"></anvil-component>
+        <anvil-component type="Button" name="vrf_tab_button" prop:text="VRV / VRF" prop:role="calculator-tab"></anvil-component>
+        <anvil-component type="Button" name="ventilation_tab_button" prop:text="Вентиляция" prop:role="calculator-tab"></anvil-component>
+      </div>
+      <anvil-component type="Label" name="profile_title" prop:role="section-heading" prop:text="Кондиционеры"></anvil-component>
+      <div class="calculator-grid">
+        <anvil-component type="ColumnPanel" name="parameters_panel" prop:role="calculator-card">
+          <anvil-component type="Label" name="parameters_heading" prop:role="section-heading" prop:text="Параметры объекта"></anvil-component>
+          <div class="calculator-fields calculator-fields-two">
+            <div class="calculator-field"><anvil-component type="Label" name="room_name_label" prop:text="Помещение"></anvil-component><anvil-component type="TextBox" name="room_name_box" prop:placeholder="Например, переговорная"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="area_label" prop:text="Площадь, м² · обязательно"></anvil-component><anvil-component type="TextBox" name="area_box" prop:placeholder="Укажите площадь"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="height_label" prop:text="Высота, м · можно не указывать"></anvil-component><anvil-component type="TextBox" name="height_box" prop:placeholder="Автооценка по коэффициенту формулы"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="people_label" prop:text="Люди, чел. · можно не указывать"></anvil-component><anvil-component type="TextBox" name="people_box" prop:placeholder="Будет оценено по площади"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="equipment_heat_label" prop:text="Тепловыделение, кВт · можно не указывать"></anvil-component><anvil-component type="TextBox" name="equipment_heat_box" prop:placeholder="Если неизвестно — 0 кВт"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="room_type_label" prop:text="Тип помещения"></anvil-component><anvil-component type="DropDown" name="room_type_dropdown"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="floor_type_label" prop:text="Расположение этажа"></anvil-component><anvil-component type="DropDown" name="floor_type_dropdown"></anvil-component></div>
+            <div class="calculator-field"><anvil-component type="Label" name="exposure_label" prop:text="Инсоляция"></anvil-component><anvil-component type="DropDown" name="exposure_dropdown"></anvil-component></div>
+          </div>
+          <anvil-component type="ColumnPanel" name="vrf_fields" prop:role="calculator-subpanel" prop:visible="false">
+            <anvil-component type="Label" name="vrf_heading" prop:role="section-heading" prop:text="Параметры VRV / VRF"></anvil-component>
+            <div class="calculator-fields calculator-fields-three">
+              <div class="calculator-field"><anvil-component type="Label" name="indoor_units_label" prop:text="Внутренние блоки, шт."></anvil-component><anvil-component type="TextBox" name="indoor_units_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="route_length_label" prop:text="Длина трасс, м"></anvil-component><anvil-component type="TextBox" name="route_length_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="height_difference_label" prop:text="Перепад высот, м"></anvil-component><anvil-component type="TextBox" name="height_difference_box"></anvil-component></div>
+            </div>
+          </anvil-component>
+          <anvil-component type="ColumnPanel" name="ventilation_fields" prop:role="calculator-subpanel" prop:visible="false">
+            <anvil-component type="Label" name="ventilation_heading" prop:role="section-heading" prop:text="Параметры воздуха"></anvil-component>
+            <div class="calculator-fields calculator-fields-three">
+              <div class="calculator-field"><anvil-component type="Label" name="air_changes_label" prop:text="Кратность, ч⁻¹"></anvil-component><anvil-component type="TextBox" name="air_changes_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="fresh_air_label" prop:text="Наружный воздух, м³/ч·чел."></anvil-component><anvil-component type="TextBox" name="fresh_air_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="air_velocity_label" prop:text="Скорость воздуха, м/с"></anvil-component><anvil-component type="TextBox" name="air_velocity_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="supply_balance_label" prop:text="Баланс притока, %"></anvil-component><anvil-component type="TextBox" name="supply_balance_box"></anvil-component></div>
+              <div class="calculator-field"><anvil-component type="Label" name="exhaust_balance_label" prop:text="Баланс вытяжки, %"></anvil-component><anvil-component type="TextBox" name="exhaust_balance_box"></anvil-component></div>
+            </div>
+          </anvil-component>
+          <anvil-component type="Button" name="calculate_button" prop:text="Пересчитать" prop:role="primary-action"></anvil-component>
+          <anvil-component type="Label" name="calculation_message" prop:role="status-message" prop:text=""></anvil-component>
+        </anvil-component>
+
+        <anvil-component type="ColumnPanel" name="result_panel" prop:role="calculator-result" prop:visible="false">
+          <anvil-component type="Label" name="result_subtitle" prop:role="eyebrow" prop:text="Результат"></anvil-component>
+          <anvil-component type="Label" name="result_value" prop:role="calculator-result-value" prop:text="—"></anvil-component>
+          <anvil-component type="Label" name="result_capacity_btu" prop:role="calculator-result-secondary" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="result_inputs" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="refrigerant_line_detail" prop:role="refrigerant-line-detail" prop:text="" prop:visible="false"></anvil-component>
+          <anvil-component type="Label" name="result_components_heading" prop:role="section-heading" prop:text="Нагрузка и линейка холодильщика"></anvil-component>
+          <anvil-component type="RepeatingPanel" name="result_rows" prop:item_template="Minimal_Theme_4.Calculations.CalculationItem"></anvil-component>
+          <anvil-component type="Label" name="catalog_heading" prop:role="section-heading" prop:text="Подбор оборудования из каталога"></anvil-component>
+          <anvil-component type="DropDown" name="product_dropdown"></anvil-component>
+          <anvil-component type="Label" name="catalog_status" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="recommendation_details" prop:role="calculator-product-summary" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="result_warning" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="result_source" prop:role="calculator-source" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="calculation_context" prop:role="status-message" prop:text=""></anvil-component>
+          <anvil-component type="Label" name="project_heading" prop:role="section-heading" prop:text="Проект и коммерческое предложение"></anvil-component>
+          <anvil-component type="DropDown" name="project_dropdown"></anvil-component>
+          <anvil-component type="Label" name="project_status" prop:role="status-message" prop:text=""></anvil-component>
+          <div class="pagination-actions"><anvil-component type="Button" name="project_previous_button" prop:text="← Предыдущие проекты" prop:role="secondary-button" prop:visible="false"></anvil-component><anvil-component type="Button" name="project_next_button" prop:text="Следующие проекты →" prop:role="secondary-button" prop:visible="false"></anvil-component></div>
+          <anvil-component type="TextArea" name="quote_terms_box" prop:placeholder="Условия КП (необязательно)"></anvil-component>
+          <div class="calculator-actions">
+            <anvil-component type="Button" name="save_calculation_button" prop:text="Сохранить расчёт" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="create_quote_button" prop:text="Создать КП" prop:role="primary-action"></anvil-component>
+          </div>
+          <div class="calculator-actions report-actions">
+            <anvil-component type="Button" name="download_report_button" prop:text="Скачать файл расчёта" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="TextBox" name="email_recipient_box" prop:placeholder="Почта получателя (по умолчанию — из профиля)"></anvil-component>
+            <anvil-component type="Button" name="email_report_button" prop:text="Отправить себе на почту" prop:role="secondary-button"></anvil-component>
+            <anvil-component type="Button" name="telegram_report_button" prop:text="Поделиться в Telegram" prop:role="secondary-button"></anvil-component>
+          </div>
+        </anvil-component>
+      </div>
+
+      <div class="calculator-history-toggle">
+        <anvil-component type="Button" name="history_toggle_button" prop:text="Мои расчёты" prop:role="secondary-button" prop:visible="false"></anvil-component>
+      </div>
+      <anvil-component type="ColumnPanel" name="history_panel" prop:role="calculator-card" prop:visible="false">
+        <div class="calculator-history-heading">
+          <anvil-component type="Label" name="history_heading" prop:role="section-heading" prop:text="Мои последние расчёты"></anvil-component>
+          <anvil-component type="Button" name="history_refresh_button" prop:text="Обновить" prop:role="secondary-button"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="calculation_history" prop:item_template="Minimal_Theme_4.Calculations.CalculationItem"></anvil-component>
+      </anvil-component>
+
+      <anvil-component type="ColumnPanel" name="formula_tools_panel" prop:role="calculator-card" prop:visible="false">
+            <anvil-component type="Label" name="formula_tools_heading" prop:role="section-heading" prop:text="Формулы и коэффициенты · администратор"></anvil-component>
+        <anvil-component type="DropDown" name="module_filter"></anvil-component>
+        <anvil-component type="Button" name="new_formula_button" prop:text="Добавить формулу" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="formula_rows" prop:item_template="Minimal_Theme_4.Calculations.FormulaItem"></anvil-component>
+        <anvil-component type="ColumnPanel" name="formula_editor" prop:role="calculator-subpanel" prop:visible="false">
+          <anvil-component type="Label" name="formula_editor_heading" prop:role="section-heading" prop:text="Редактор формулы"></anvil-component>
+          <anvil-component type="TextBox" name="formula_code_box" prop:placeholder="Уникальный код (латиницей)"></anvil-component>
+          <anvil-component type="DropDown" name="formula_module_dropdown"></anvil-component>
+          <anvil-component type="TextBox" name="formula_title_box" prop:placeholder="Название формулы"></anvil-component>
+          <anvil-component type="TextArea" name="formula_expression_box" prop:placeholder="Выражение формулы"></anvil-component>
+          <anvil-component type="TextArea" name="input_schema_box" prop:placeholder="JSON-схема входных параметров"></anvil-component>
+          <anvil-component type="TextArea" name="coefficients_box" prop:placeholder="JSON-коэффициенты"></anvil-component>
+          <anvil-component type="TextBox" name="output_unit_box" prop:placeholder="Единица результата"></anvil-component>
+          <anvil-component type="TextBox" name="source_box" prop:placeholder="Источник формулы"></anvil-component>
+          <anvil-component type="TextBox" name="version_box" prop:placeholder="Версия источника"></anvil-component>
+          <anvil-component type="DropDown" name="formula_enabled_dropdown"></anvil-component>
+          <div class="calculator-actions">
+            <anvil-component type="Button" name="save_formula_button" prop:text="Сохранить формулу" prop:role="primary-action"></anvil-component>
+            <anvil-component type="Button" name="cancel_formula_button" prop:text="Закрыть" prop:role="secondary-button"></anvil-component>
+          </div>
+          <anvil-component type="Label" name="formula_editor_message" prop:role="status-message" prop:text=""></anvil-component>
+        </anvil-component>
+      </anvil-component>
+    </div>
+  </anvil-block>
+</anvil-form>

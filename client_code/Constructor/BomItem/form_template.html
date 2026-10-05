@@ -1,0 +1,5 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="bom_description" prop:role="section-heading" bind:text="self.item['description']"></anvil-component>
+  <anvil-component type="Label" name="bom_quantity" bind:text="self.item['quantity_label']"></anvil-component>
+  <anvil-component type="Label" name="bom_kind" bind:text="self.item['kind']"></anvil-component>
+</anvil-form>

@@ -1,0 +1,15 @@
+<anvil-form container="ColumnPanel" prop:role="catalog-custom-field-card">
+  <div class="catalog-custom-field-heading">
+    <anvil-component type="Label" name="field_title" prop:role="section-heading" prop:text="Поле товара"></anvil-component>
+    <anvil-component type="Label" name="field_hint" prop:role="taxonomy-row-meta" prop:text=""></anvil-component>
+  </div>
+  <anvil-component type="TextBox" name="value_box" prop:placeholder="Введите значение"></anvil-component>
+  <anvil-component type="TextArea" name="rich_value_box" prop:placeholder="Введите текст или значения списка"></anvil-component>
+  <anvil-component type="DropDown" name="choice_dropdown"></anvil-component>
+  <anvil-component type="CheckBox" name="toggle_checkbox" prop:text="Включено"></anvil-component>
+  <anvil-component type="FileLoader" name="file_loader" prop:text="Загрузить файл" prop:multiple="false"></anvil-component>
+  <div class="catalog-custom-field-actions">
+    <anvil-component type="Button" name="save_button" prop:text="Сохранить значение" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Label" name="field_status" prop:role="status-message" prop:text=""></anvil-component>
+  </div>
+</anvil-form>

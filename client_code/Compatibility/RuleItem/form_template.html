@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="product_label" prop:role="section-heading" bind:text="self.item['product']"></anvil-component>
+  <anvil-component type="Label" name="compatible_product_label" bind:text="self.item['compatible_product']"></anvil-component>
+  <anvil-component type="Label" name="type_label" bind:text="self.item['type_title']"></anvil-component>
+  <anvil-component type="Label" name="source_label" bind:text="self.item['source']"></anvil-component>
+  <anvil-component type="Label" name="version_label" bind:text="self.item['version']"></anvil-component>
+  <anvil-component type="Label" name="enabled_label" bind:text="self.item['enabled_title']"></anvil-component>
+  <anvil-component type="Button" name="edit_button" prop:text="Изменить правило" prop:role="secondary-button" bind:visible="self.item['can_edit']"></anvil-component>
+</anvil-form>

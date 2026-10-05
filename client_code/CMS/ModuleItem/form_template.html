@@ -1,0 +1,12 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="module_type" prop:role="section-heading" bind:text="self.item['type_title']"></anvil-component>
+  <anvil-component type="Label" name="module_content" bind:text="self.item['content_label']"></anvil-component>
+  <anvil-component type="Label" name="module_state" prop:role="eyebrow" bind:text="self.item['admin_state']"></anvil-component>
+  <div class="cms-module-actions">
+    <anvil-component type="Button" name="edit_button" prop:text="Редактировать" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="move_up_button" prop:text="↑" prop:role="secondary-button" prop:tooltip="Переместить выше"></anvil-component>
+    <anvil-component type="Button" name="move_down_button" prop:text="↓" prop:role="secondary-button" prop:tooltip="Переместить ниже"></anvil-component>
+    <anvil-component type="Button" name="toggle_button" prop:text="Вкл. / выкл." prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="delete_button" prop:text="Удалить" prop:role="danger-action"></anvil-component>
+  </div>
+</anvil-form>

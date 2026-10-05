@@ -1,0 +1,26 @@
+<anvil-form container="FlowPanel" prop:role="catalog-model-row">
+  <anvil-component type="CheckBox" name="select_checkbox" prop:text="Выбрать" prop:role="catalog-select-checkbox" prop:visible="false"></anvil-component>
+  <div class="catalog-model-identity">
+    <anvil-component type="Label" name="brand_label" prop:role="catalog-model-brand" prop:text=""></anvil-component>
+    <anvil-component type="Button" name="details_button" prop:role="catalog-model-title" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="sku_label" prop:role="catalog-model-sku" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="category_label" prop:role="catalog-model-category" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="series_label" prop:role="catalog-model-series" prop:text=""></anvil-component>
+  </div>
+  <anvil-component type="RepeatingPanel" name="spec_cells" prop:role="catalog-model-spec-cells" prop:item_template="Minimal_Theme_4.Catalog.ModelSpecItem"></anvil-component>
+  <anvil-component type="Label" name="price_label" prop:role="catalog-model-price" prop:text=""></anvil-component>
+  <anvil-component type="Label" name="stock_label" prop:role="catalog-model-stock" prop:text=""></anvil-component>
+  <anvil-component type="ColumnPanel" name="quick_panel" prop:role="catalog-inline-edit" prop:visible="false">
+    <anvil-component type="DropDown" name="category_dropdown" prop:placeholder="Категория"></anvil-component>
+    <anvil-component type="DropDown" name="series_dropdown" prop:placeholder="Серия"></anvil-component>
+    <anvil-component type="TextBox" name="price_box" prop:placeholder="Цена"></anvil-component>
+    <anvil-component type="TextBox" name="quantity_box" prop:placeholder="Остаток"></anvil-component>
+    <anvil-component type="CheckBox" name="active_checkbox" prop:text="Публикация"></anvil-component>
+    <anvil-component type="Button" name="quick_save_button" prop:text="Сохранить" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Label" name="quick_message" prop:role="status-message" prop:text=""></anvil-component>
+  </anvil-component>
+  <div class="catalog-model-actions">
+    <anvil-component type="Button" name="edit_button" prop:text="Изменить" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="order_button" prop:text="Заказать" prop:role="primary-action"></anvil-component>
+  </div>
+</anvil-form>

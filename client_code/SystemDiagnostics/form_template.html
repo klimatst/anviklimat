@@ -1,0 +1,38 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="В админ-панель" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="diagnostics_refresh_button" prop:text="Проверить снова" prop:role="primary-action"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Системная диагностика"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="admin-dashboard system-diagnostics-view">
+      <section class="admin-dashboard-hero">
+        <div>
+          <anvil-component type="Label" name="diagnostics_eyebrow" prop:role="eyebrow" prop:text="ПРОВЕРКА ДАННЫХ ПРОЕКТА"></anvil-component>
+          <anvil-component type="Label" name="diagnostics_intro" prop:role="lede" prop:text="Ошибки связей, незаполненные карточки, медиа и незавершённые импорты. Проверка ничего не изменяет."></anvil-component>
+        </div>
+        <anvil-component type="Label" name="diagnostics_status" prop:role="status-message" prop:text="Проверка данных…"></anvil-component>
+      </section>
+
+      <section class="admin-dashboard-metrics anvil-role-card">
+        <div class="admin-dashboard-section-heading">
+          <anvil-component type="Label" name="diagnostics_summary_heading" prop:role="section-heading" prop:text="Сводка по типам проблем"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="diagnostic_summary" prop:role="diagnostics-summary-grid" prop:item_template="Minimal_Theme_4.AdminTools.MetricItem"></anvil-component>
+      </section>
+
+      <section class="diagnostics-workspace anvil-role-card">
+        <div class="diagnostics-toolbar">
+          <anvil-component type="TextBox" name="diagnostics_search" prop:placeholder="Поиск по товарам, категориям и импортам"></anvil-component>
+          <anvil-component type="DropDown" name="diagnostics_severity"></anvil-component>
+          <anvil-component type="Button" name="diagnostics_search_button" prop:text="Найти" prop:role="secondary-button"></anvil-component>
+        </div>
+        <anvil-component type="RepeatingPanel" name="diagnostic_issues" prop:role="diagnostics-issue-list" prop:item_template="Minimal_Theme_4.SystemDiagnostics.IssueItem"></anvil-component>
+        <anvil-component type="Label" name="diagnostics_empty" prop:role="status-message" prop:text="По этому запросу проблем не найдено." prop:visible="false"></anvil-component>
+        <anvil-component type="Label" name="diagnostics_limit_note" prop:role="status-message" prop:text="Показаны первые 500 записей. Уточните поиск или выберите уровень проблемы." prop:visible="false"></anvil-component>
+      </section>
+    </div>
+  </anvil-block>
+</anvil-form>
