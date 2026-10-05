@@ -2481,7 +2481,8 @@ def start_pdf_catalog_draft(uploaded_file):
       and not (row["status"] == "pdf_approved" and checkpoint.get("needs_retry"))
     ):
       return {
-        "ok": True, "draft_id": row.get_id(), "products": row["total"] or 0,
+        "ok": True, "draft_id": row.get_id(), "upload_id": row.get_id(),
+        "products": row["total"] or 0,
         "status": row["status"],
         "message": "Этот PDF уже есть в импортах. Откройте его и проверьте текущий статус."
       }
@@ -2536,7 +2537,8 @@ def _start_xlsx_catalog_draft(uploaded_file, user):
       "xlsx_approved", "xlsx_rejected"
     ):
       return {
-        "ok": True, "draft_id": row.get_id(), "products": row["total"] or 0,
+        "ok": True, "draft_id": row.get_id(), "upload_id": row.get_id(),
+        "products": row["total"] or 0,
         "status": row["status"],
         "message": "Эта книга уже зарегистрирована. Откройте её черновик, чтобы продолжить работу."
       }

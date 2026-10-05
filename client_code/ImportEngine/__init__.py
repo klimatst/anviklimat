@@ -34,6 +34,9 @@ class ImportEngine(ImportEngineTemplate):
     self._xlsx_selected_file = None
     self._xlsx_upload_id = None
     self._xlsx_pause_requested = False
+    self._pdf_status_polling = False
+    self._pdf_status_poll_ticks = 0
+    self._pdf_status_refresh_busy = False
     self.xlsx_upload_button.enabled = False
     self.pdf_review_panel.visible = False
     self._load_pdf_drafts()
@@ -94,6 +97,42 @@ class ImportEngine(ImportEngineTemplate):
     result = anvil.server.call("get_pdf_catalog_drafts")
     self.pdf_draft_rows.items = result["rows"] if result["ok"] else []
 
+  def _start_pdf_status_polling(self):
+    """Refresh an asynchronously processed draft until it becomes editable."""
+    if not self._pdf_status_polling:
+      self._pdf_status_poll_ticks = 0
+      self._pdf_status_refresh_busy = False
+    self._pdf_status_polling = True
+    self.pdf_status_timer.interval = 2
+
+  def _stop_pdf_status_polling(self):
+    self._pdf_status_polling = False
+    self._pdf_status_refresh_busy = False
+    self.pdf_status_timer.interval = 0
+
+  @handle("pdf_status_timer", "tick")
+  def pdf_status_timer_tick(self, **event_args):
+    if not self._pdf_status_polling or not self._pdf_draft_id:
+      self._stop_pdf_status_polling()
+      return
+    if self._pdf_status_refresh_busy:
+      return
+    self._pdf_status_refresh_busy = True
+    self._pdf_status_poll_ticks += 1
+    try:
+      self._open_pdf_draft(self._pdf_draft_id)
+      self._load_pdf_drafts()
+      if not self.pdf_review_panel.visible:
+        self._stop_pdf_status_polling()
+      elif self._pdf_status_poll_ticks >= 90:
+        self.pdf_review_message.text = (
+          "Автоматическое обновление остановлено через 3 минуты. "
+          "Нажмите «Обновить прогресс», чтобы проверить состояние вручную."
+        )
+        self._stop_pdf_status_polling()
+    finally:
+      self._pdf_status_refresh_busy = False
+
   def _render_pdf_products(self):
     self.pdf_product_rows.items = self._pdf_products
     for row in self.pdf_product_rows.get_components():
@@ -103,6 +142,7 @@ class ImportEngine(ImportEngineTemplate):
   def _open_pdf_draft(self, draft_id):
     result = anvil.server.call("get_pdf_catalog_draft", draft_id)
     if not result["ok"]:
+      self._stop_pdf_status_polling()
       self.pdf_review_message.text = result["message"]
       return
     self._pdf_draft_id = result["id"]
@@ -177,6 +217,10 @@ class ImportEngine(ImportEngineTemplate):
     processing = result["status"] in (
       "pdf_processing", "xlsx_processing", "xlsx_images_processing"
     )
+    if processing:
+      self._start_pdf_status_polling()
+    else:
+      self._stop_pdf_status_polling()
     paused = result["status"] in ("pdf_paused", "xlsx_paused")
     self.add_pdf_product_button.visible = editable
     self.save_pdf_draft_button.visible = editable
@@ -261,10 +305,17 @@ class ImportEngine(ImportEngineTemplate):
         self.pdf_review_message.text += "\n" + "\n".join(details)
       return
     self.pdf_review_message.text = result["message"]
-    self._load_pdf_drafts()
     if action in ("approve", "reject"):
+      self._stop_pdf_status_polling()
+      self._load_pdf_drafts()
       self.pdf_review_panel.visible = False
       self._pdf_draft_id = None
+      return
+    # Re-read the saved rows from the server. This keeps newly added and
+    # removed lines visible even when the repeating panel reused old item forms.
+    self._open_pdf_draft(self._pdf_draft_id)
+    self._load_pdf_drafts()
+    self.pdf_review_message.text = result["message"]
 
   @handle("parse_pdf_button", "click")
   def parse_pdf_button_click(self, **event_args):
@@ -294,6 +345,7 @@ class ImportEngine(ImportEngineTemplate):
     if started_ids:
       self._load_pdf_drafts()
       self._open_pdf_draft(started_ids[-1])
+      self._start_pdf_status_polling()
 
   def xlsx_file_change(self, event):
     files = event.target.files
@@ -345,7 +397,8 @@ class ImportEngine(ImportEngineTemplate):
       if result["status"] != "xlsx_uploading":
         self.xlsx_upload_progress.text = result["message"]
         self._load_pdf_drafts()
-        self._open_pdf_draft(result["upload_id"])
+        self._open_pdf_draft(result.get("upload_id") or result.get("draft_id"))
+        self._start_pdf_status_polling()
         return
       chunk_size = int(result["chunk_size"])
       total_size = int(browser_file.size)
@@ -417,6 +470,7 @@ class ImportEngine(ImportEngineTemplate):
       if current_result and current_result.get("complete"):
         self._load_pdf_drafts()
         self._open_pdf_draft(self._xlsx_upload_id)
+        self._start_pdf_status_polling()
     finally:
       self.xlsx_upload_button.enabled = self._xlsx_selected_file is not None
       self.xlsx_pause_button.visible = False
@@ -488,6 +542,7 @@ class ImportEngine(ImportEngineTemplate):
 
   @handle("close_pdf_review_button", "click")
   def close_pdf_review_button_click(self, **event_args):
+    self._stop_pdf_status_polling()
     self.pdf_review_panel.visible = False
     self._pdf_draft_id = None
 
@@ -576,7 +631,7 @@ class ImportEngine(ImportEngineTemplate):
         self.file_loader.file, preview_token
       )
     finally:
-      self.start_button.enabled = False
+      self.start_button.enabled = True
     self._show_progress(result)
 
   @handle("preview_button", "click")

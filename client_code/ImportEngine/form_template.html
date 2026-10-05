@@ -19,8 +19,9 @@
         <anvil-component type="Button" name="start_button" prop:text="Импортировать проверенный источник" prop:role="primary-action"></anvil-component>
         <anvil-component type="Button" name="continue_button" prop:text="Продолжить следующий пакет" prop:role="secondary-button" prop:visible="false"></anvil-component>
         <anvil-component type="Label" name="progress_label" prop:role="section-heading" prop:text=""></anvil-component>
-        <anvil-component type="Label" name="import_message" prop:role="status-message" prop:text=""></anvil-component>
-      </anvil-component>
+      <anvil-component type="Label" name="import_message" prop:role="status-message" prop:text=""></anvil-component>
+      <anvil-component type="Timer" name="pdf_status_timer" prop:interval="0"></anvil-component>
+    </anvil-component>
       <anvil-component type="ColumnPanel" name="pdf_intake_panel" prop:role="admin-panel">
         <anvil-component type="Label" name="pdf_intake_heading" prop:role="section-heading" prop:text="Импорт в черновики каталога"></anvil-component>
         <anvil-component type="Label" name="pdf_intake_intro" prop:role="lede" prop:text="PDF обрабатывается по страницам. Большие XLSX передаются последовательными частями до 4 МБ; обработка книги сохраняет строки пакетами. Каталог изменится только после вашего утверждения черновика."></anvil-component>
