@@ -15,6 +15,7 @@ unique_ids:
     AdminAccess: '1790967318600.7116842455958617'
     AdminSettings: '1791196860563.2732230930162096'
     AdminSettings.ExtensionItem: '1791196782525.4744230952047904'
+    AdminSettings.SecretItem: '1791216375827.8221092782838506'
     AdminSettings.SectionItem: '1791196782526.8493363538975689'
     AdminSettings.SettingFieldItem: '1791196782528.4777255178464118'
     AdminSettings.WidgetOptionItem: '1791196782529.9714232198005391'

@@ -1,0 +1,10 @@
+<anvil-form container="ColumnPanel" prop:role="studio-secret-row">
+  <div class="studio-secret-row__copy">
+    <anvil-component type="Label" name="secret_provider" prop:role="studio-secret-provider" bind:text="self.item['provider']"></anvil-component>
+    <anvil-component type="Label" name="secret_title" prop:role="studio-secret-title" bind:text="self.item['label']"></anvil-component>
+    <anvil-component type="Label" name="secret_name" prop:role="studio-secret-name" bind:text="self.item['name']"></anvil-component>
+    <anvil-component type="Label" name="secret_status" prop:role="studio-secret-status" prop:text=""></anvil-component>
+  </div>
+  <anvil-component type="Button" name="edit_secret_button" prop:role="secondary-button" prop:text="Изменить"></anvil-component>
+  <anvil-component type="Button" name="clear_secret_button" prop:role="secondary-button" prop:text="Очистить"></anvil-component>
+</anvil-form>

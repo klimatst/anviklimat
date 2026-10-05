@@ -24,6 +24,7 @@
         <anvil-component type="Button" name="widgets_tab" prop:role="studio-tab" prop:text="Библиотека виджетов"></anvil-component>
         <anvil-component type="Button" name="extensions_tab" prop:role="studio-tab" prop:text="Модули и скрипты"></anvil-component>
         <anvil-component type="Button" name="ai_tools_tab" prop:role="studio-tab" prop:text="AI Studio · инструменты"></anvil-component>
+        <anvil-component type="Button" name="secrets_tab" prop:role="studio-tab" prop:text="Секреты и подключения"></anvil-component>
       </nav>
       <div class="studio-command-bar"><span class="studio-command-bar__title">Конфигурация проекта</span><span class="studio-command-bar__hint">Изменения применяются только после сохранения выбранного раздела</span><span class="studio-command-bar__state"><i></i> Серверные настройки</span></div>
       <section class="studio-integration-strip">
@@ -46,9 +47,42 @@
           <anvil-component type="Button" name="open_media_settings_button" prop:role="secondary-button" prop:text="Фото и хранилище"></anvil-component>
           <anvil-component type="Button" name="open_api_settings_button" prop:role="secondary-button" prop:text="Параметры API"></anvil-component>
           <anvil-component type="Button" name="open_provider_settings_button" prop:role="secondary-button" prop:text="Провайдеры и ключи"></anvil-component>
+          <anvil-component type="Button" name="open_secrets_button" prop:role="secondary-button" prop:text="Хранилище секретов"></anvil-component>
           <anvil-component type="Button" name="open_ai_settings_button" prop:role="primary-action" prop:text="AI Studio"></anvil-component>
         </div>
       </section>
+
+      <anvil-component type="ColumnPanel" name="secrets_workspace" prop:role="studio-secrets-workspace" prop:visible="false">
+        <div class="studio-workspace-heading">
+          <div>
+            <anvil-component type="Label" name="secrets_eyebrow" prop:role="eyebrow" prop:text="ЗАЩИЩЁННЫЕ ПОДКЛЮЧЕНИЯ"></anvil-component>
+            <anvil-component type="Label" name="secrets_heading" prop:role="studio-section-title" prop:text="Секреты, Cloudinary и ImageKit"></anvil-component>
+            <anvil-component type="Label" name="secrets_intro" prop:role="studio-section-description" prop:text="Добавляйте и меняйте ключи прямо из админки. Значения шифруются на сервере и не возвращаются в браузер."></anvil-component>
+          </div>
+          <anvil-component type="Label" name="secrets_status" prop:role="studio-status" prop:text=""></anvil-component>
+        </div>
+        <div class="studio-secret-toolbar">
+          <anvil-component type="TextBox" name="secret_search" prop:placeholder="Поиск подключения или ключа"></anvil-component>
+          <anvil-component type="DropDown" name="secret_provider_filter" prop:role="studio-group-filter"></anvil-component>
+          <anvil-component type="Button" name="test_secret_group_button" prop:role="secondary-button" prop:text="Проверить группу"></anvil-component>
+        </div>
+        <anvil-component type="Label" name="secret_policy" prop:role="studio-warning" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="secret_rows" prop:role="studio-secret-list" prop:item_template="Minimal_Theme_4.AdminSettings.SecretItem"></anvil-component>
+        <anvil-component type="ColumnPanel" name="secret_editor" prop:role="studio-secret-editor">
+          <div class="studio-drawer-heading">
+            <div>
+              <anvil-component type="Label" name="secret_provider_label" prop:role="eyebrow" prop:text="Выберите ключ"></anvil-component>
+              <anvil-component type="Label" name="secret_name_label" prop:role="studio-subheading" prop:text=""></anvil-component>
+            </div>
+          </div>
+          <anvil-component type="Label" name="secret_hint" prop:role="studio-section-description" prop:text=""></anvil-component>
+          <anvil-component type="TextBox" name="secret_value_box" prop:placeholder="Новое значение секрета" prop:hide_text="true"></anvil-component>
+          <div class="studio-secret-editor-actions">
+            <anvil-component type="Button" name="clear_secret_button" prop:role="secondary-button" prop:text="Удалить значение"></anvil-component>
+            <anvil-component type="Button" name="save_secret_button" prop:role="primary-action" prop:text="Сохранить секрет"></anvil-component>
+          </div>
+        </anvil-component>
+      </anvil-component>
 
       <anvil-component type="ColumnPanel" name="settings_workspace" prop:role="studio-settings-workspace">
         <aside class="studio-section-rail">

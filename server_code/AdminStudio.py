@@ -562,6 +562,31 @@ SETTINGS_SECTIONS = [
 ]
 
 
+SECRET_CATALOG = [
+  {"name": "CLOUDINARY_CLOUD_NAME", "provider": "Cloudinary", "label": "Cloud name", "hint": "Имя Cloudinary cloud", "kind": "text"},
+  {"name": "CLOUDINARY_API_KEY", "provider": "Cloudinary", "label": "API key", "hint": "Публичный ключ Cloudinary", "kind": "secret"},
+  {"name": "CLOUDINARY_API_SECRET", "provider": "Cloudinary", "label": "API secret", "hint": "Секрет Cloudinary", "kind": "secret"},
+  {"name": "IMAGEKIT_PRIVATE_KEY", "provider": "ImageKit", "label": "Private key", "hint": "Секретный ключ загрузки ImageKit", "kind": "secret"},
+  {"name": "IMAGEKIT_PUBLIC_KEY", "provider": "ImageKit", "label": "Public key", "hint": "Публичный ключ ImageKit", "kind": "text"},
+  {"name": "IMAGEKIT_URL_ENDPOINT", "provider": "ImageKit", "label": "URL endpoint", "hint": "HTTPS endpoint CDN ImageKit", "kind": "url"},
+  {"name": "OPENROUTER_API_KEY", "provider": "AI", "label": "OpenRouter API key", "hint": "Ключ провайдера моделей AI", "kind": "secret"},
+  {"name": "OPENAI_API_KEY", "provider": "AI", "label": "OpenAI API key", "hint": "Ключ OpenAI для совместимого API", "kind": "secret"},
+  {"name": "ANTHROPIC_API_KEY", "provider": "AI", "label": "Anthropic API key", "hint": "Ключ Anthropic для интеграции", "kind": "secret"},
+  {"name": "TELEGRAM_BOT_TOKEN", "provider": "Уведомления", "label": "Telegram bot token", "hint": "Токен Telegram-бота", "kind": "secret"},
+  {"name": "SMTP_USERNAME", "provider": "Почта", "label": "SMTP username", "hint": "Пользователь SMTP", "kind": "text"},
+  {"name": "SMTP_PASSWORD", "provider": "Почта", "label": "SMTP password", "hint": "Пароль SMTP", "kind": "secret"},
+  {"name": "GOOGLE_MAPS_API_KEY", "provider": "Карты", "label": "Google Maps API key", "hint": "Ключ карт и геокодирования", "kind": "secret"},
+  {"name": "SENTRY_DSN", "provider": "Диагностика", "label": "Sentry DSN", "hint": "Адрес сбора ошибок", "kind": "url"},
+  {"name": "WEBHOOK_SIGNING_SECRET", "provider": "Интеграции", "label": "Webhook signing secret", "hint": "Подпись входящих webhook", "kind": "secret"},
+  {"name": "ERP_API_KEY", "provider": "ERP", "label": "ERP API key", "hint": "Ключ учётной системы", "kind": "secret"},
+  {"name": "ERP_API_URL", "provider": "ERP", "label": "ERP API URL", "hint": "HTTPS адрес ERP API", "kind": "url"},
+  {"name": "PAYMENT_API_KEY", "provider": "Оплата", "label": "Payment API key", "hint": "Ключ платёжного сервиса", "kind": "secret"},
+  {"name": "PAYMENT_API_SECRET", "provider": "Оплата", "label": "Payment API secret", "hint": "Секрет платёжного сервиса", "kind": "secret"},
+  {"name": "SEARCH_API_KEY", "provider": "Поиск", "label": "Search API key", "hint": "Ключ внешнего поиска", "kind": "secret"}
+]
+_SECRET_BY_NAME = {item["name"]: item for item in SECRET_CATALOG}
+
+
 def _widget(widget_id, label, group, description, table, kind="count",
             filters=None, default=False):
   return {
@@ -952,6 +977,101 @@ def get_admin_media_storage_status():
       "Добавьте нужные секреты в Anvil → Services → Secrets. Ключи не "
       "передаются в браузер."
     )
+  }
+
+
+def _admin_secret_status(item):
+  name = item["name"]
+  managed = bool(Config.get_managed_secret(name))
+  native = False
+  try:
+    import anvil.secrets as secrets_service
+  except ImportError:
+    secrets_service = None
+  if secrets_service is not None:
+    try:
+      native = bool(secrets_service.get_secret(name))
+    except secrets_service.SecretError:
+      native = False
+  source = "Панельное хранилище" if managed else ("Anvil Secrets" if native else "Не настроен")
+  return {
+    **item,
+    "configured": managed or native,
+    "source": source,
+    "display": "Настроен · значение скрыто" if managed or native else "Не настроен"
+  }
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def get_admin_secrets():
+  Core.require_admin_user()
+  return {
+    "ok": True,
+    "secrets": [_admin_secret_status(item) for item in SECRET_CATALOG],
+    "policy": "Значения шифруются ключом приложения и никогда не возвращаются в браузер."
+  }
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def save_admin_secret(secret_name, secret_value):
+  actor = Core.require_admin_user()
+  item = _SECRET_BY_NAME.get(secret_name)
+  if item is None:
+    return {"ok": False, "message": "Выберите секрет из разрешённого списка."}
+  if item["kind"] == "url" and not (
+    isinstance(secret_value, str) and secret_value.startswith("https://")
+  ):
+    return {"ok": False, "message": "URL секрета должен начинаться с https://."}
+  result = Config.set_managed_secret(secret_name, secret_value, actor=actor)
+  if result["ok"]:
+    Core.log_audit(
+      actor=actor, action="settings.secret.saved", entity_type="secret",
+      entity_id=secret_name, details={"provider": item["provider"]},
+      created_at=datetime.now(timezone.utc)
+    )
+  return result
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def clear_admin_secret(secret_name):
+  actor = Core.require_admin_user()
+  if secret_name not in _SECRET_BY_NAME:
+    return {"ok": False, "message": "Выберите секрет из разрешённого списка."}
+  result = Config.clear_managed_secret(secret_name, actor=actor)
+  if result["ok"]:
+    Core.log_audit(
+      actor=actor, action="settings.secret.cleared", entity_type="secret",
+      entity_id=secret_name, details={}, created_at=datetime.now(timezone.utc)
+    )
+  return result
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def test_admin_secret_group(provider):
+  Core.require_admin_user()
+  names = [item["name"] for item in SECRET_CATALOG if item["provider"] == provider]
+  if not names:
+    return {"ok": False, "message": "Группа подключения не найдена."}
+  statuses = [_admin_secret_status(_SECRET_BY_NAME[name]) for name in names]
+  configured = sum(1 for item in statuses if item["configured"])
+  required = {
+    "Cloudinary": {"CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"},
+    "ImageKit": {"IMAGEKIT_PRIVATE_KEY"},
+    "AI": {"OPENROUTER_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"}
+  }.get(provider, set())
+  configured_names = {item["name"] for item in statuses if item["configured"]}
+  ready = required.issubset(configured_names) if provider == "Cloudinary" else bool(
+    required.intersection(configured_names)
+  )
+  return {
+    "ok": True, "provider": provider, "configured": configured,
+    "total": len(statuses), "ready": ready,
+    "message": "Подключение готово к использованию по наличию ключей." if ready
+      else "Добавьте обязательный ключ в этом разделе."
   }
 
 

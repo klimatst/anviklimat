@@ -128,6 +128,12 @@ class AdminTools(AdminToolsTemplate):
       return
     metric_id = str(metric.get("id") or "")
     title = str(metric.get("label") or "Рабочий раздел")
+    if metric_id == "settings_total":
+      Access.open_admin_window(
+        "AdminSettings", window_title="Центр настроек",
+        start_section="system.widgets", open_editor=True
+      )
+      return
     if metric_id == "media_without_source":
       Access.open_admin_window(
         "AdminSettings", window_title="Фото и хранилище",
@@ -136,7 +142,7 @@ class AdminTools(AdminToolsTemplate):
       return
     route = METRIC_ROUTES.get(metric_id)
     target = route[0] if route else METRIC_GROUP_ROUTES.get(
-      metric.get("group"), "AdminSettings"
+      str(metric.get("group") or ""), "AdminSettings"
     )
     if route:
       title = route[1]

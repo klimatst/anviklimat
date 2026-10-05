@@ -58,6 +58,7 @@ MENU = {
     "intro": "Модели, серверные ключи и инженерные AI-инструменты.",
     "admin_only": True,
     "options": [
+      ("Секреты и подключения", "AdminSettings", {"window_title": "Секреты и подключения", "start_tab": "secrets"}, None),
       ("AI Studio · редакторы сайта и каталога", "AdminSettings", {"window_title": "AI Studio", "start_tab": "ai_tools"}, None),
       ("Настроить модели и API", "AIOperator", {"window_title": "ИИ и модели"}, None)
     ]

@@ -33,6 +33,8 @@ class AdminSettings(AdminSettingsTemplate):
     self._saved_extensions = []
     self._draft_fields = []
     self._ai_tools = []
+    self._secrets = []
+    self._selected_secret_name = None
     self._selected_section_id = None
     self._editing_extension_id = None
     self._initial_view = properties.get("start_tab", "settings")
@@ -65,10 +67,12 @@ class AdminSettings(AdminSettingsTemplate):
       self._select_section(self._sections[0]["id"])
     self._load_integration_snapshot()
     initial_view = self._initial_view if self._initial_view in (
-      "settings", "widgets", "extensions", "ai_tools"
+      "settings", "widgets", "extensions", "ai_tools", "secrets"
     ) else "settings"
     if initial_view == "ai_tools":
       self._load_ai_tools()
+    if initial_view == "secrets":
+      self._load_secrets()
     self._show_view(initial_view)
     if initial_view == "settings" and self._initial_section_id:
       self._select_section(self._initial_section_id)
@@ -116,15 +120,133 @@ class AdminSettings(AdminSettingsTemplate):
     self._load_ai_tools()
     self._show_view("ai_tools")
 
+  @handle("open_secrets_button", "click")
+  def open_secrets_button_click(self, **event_args):
+    self._load_secrets()
+    self._show_view("secrets")
+
+  def _load_secrets(self):
+    result = anvil.server.call("get_admin_secrets")
+    if not result["ok"]:
+      self.secrets_status.text = result["message"]
+      return
+    self._secrets = result["secrets"]
+    providers = sorted({item["provider"] for item in self._secrets})
+    self.secret_provider_filter.items = [("Все подключения", "all")] + [
+      (provider, provider) for provider in providers
+    ]
+    if self.secret_provider_filter.selected_value not in ["all"] + providers:
+      self.secret_provider_filter.selected_value = "all"
+    self.secret_policy.text = result.get("policy", "")
+    self._refresh_secret_rows()
+    if self._secrets and self._selected_secret_name not in {
+      item["name"] for item in self._secrets
+    }:
+      self._select_secret(self._secrets[0]["name"])
+
+  def _filtered_secrets(self):
+    selected = self.secret_provider_filter.selected_value or "all"
+    term = str(self.secret_search.text or "").strip().lower()
+    rows = [item for item in self._secrets
+            if selected == "all" or item["provider"] == selected]
+    if not term:
+      return rows
+    return [item for item in rows if term in str(item["name"]).lower()
+            or term in str(item["label"]).lower()
+            or term in str(item["provider"]).lower()]
+
+  def _refresh_secret_rows(self):
+    self.secret_rows.items = self._filtered_secrets()
+
+  def _select_secret(self, secret_name):
+    item = next((row for row in self._secrets if row["name"] == secret_name), None)
+    if item is None:
+      return
+    self._selected_secret_name = secret_name
+    self.secret_name_label.text = item["name"]
+    self.secret_provider_label.text = "{} · {}".format(item["provider"], item["label"])
+    self.secret_hint.text = item["hint"]
+    self.secret_value_box.text = ""
+    self.secret_value_box.hide_text = item.get("kind") == "secret"
+    self.secrets_status.text = "{} · новое значение заменит текущее".format(item["display"])
+
+  @handle("secret_provider_filter", "change")
+  def secret_provider_filter_change(self, **event_args):
+    self._refresh_secret_rows()
+
+  @handle("secret_search", "change")
+  def secret_search_change(self, **event_args):
+    self._refresh_secret_rows()
+
+  @handle("secret_rows", "x-edit-secret")
+  def secret_rows_edit_secret(self, secret, **event_args):
+    if isinstance(secret, dict):
+      self._select_secret(secret.get("name"))
+
+  @handle("secret_rows", "x-clear-secret")
+  def secret_rows_clear_secret(self, secret_name, **event_args):
+    self._clear_secret(secret_name)
+
+  @handle("save_secret_button", "click")
+  def save_secret_button_click(self, **event_args):
+    name = self._selected_secret_name
+    value = (self.secret_value_box.text or "").strip()
+    if not name or not value:
+      self.secrets_status.text = "Выберите секрет и введите новое значение."
+      return
+    self.save_secret_button.enabled = False
+    try:
+      result = anvil.server.call("save_admin_secret", name, value)
+    finally:
+      self.save_secret_button.enabled = True
+    self.secrets_status.text = result["message"]
+    if result["ok"]:
+      self._load_secrets()
+      self._select_secret(name)
+
+  def _clear_secret(self, secret_name):
+    item = next((row for row in self._secrets if row["name"] == secret_name), None)
+    if item is None:
+      return
+    if not confirm(
+      "Удалить значение {} из зашифрованного хранилища панели?".format(secret_name),
+      title="Очистить секрет", buttons=["Очистить", "Отмена"], role="warning"
+    ):
+      return
+    self.clear_secret_button.enabled = False
+    try:
+      result = anvil.server.call("clear_admin_secret", secret_name)
+    finally:
+      self.clear_secret_button.enabled = True
+    self.secrets_status.text = result["message"]
+    self._load_secrets()
+    self._select_secret(secret_name)
+
+  @handle("clear_secret_button", "click")
+  def clear_secret_button_click(self, **event_args):
+    if self._selected_secret_name:
+      self._clear_secret(self._selected_secret_name)
+
+  @handle("test_secret_group_button", "click")
+  def test_secret_group_button_click(self, **event_args):
+    provider = self.secret_provider_filter.selected_value
+    if not provider or provider == "all":
+      self.secrets_status.text = "Выберите конкретное подключение для проверки."
+      return
+    result = anvil.server.call("test_admin_secret_group", provider)
+    self.secrets_status.text = result["message"]
+
   def _show_view(self, view_name):
     self.settings_workspace.visible = view_name == "settings"
     self.widgets_workspace.visible = view_name == "widgets"
     self.extensions_workspace.visible = view_name == "extensions"
     self.ai_tools_workspace.visible = view_name == "ai_tools"
+    self.secrets_workspace.visible = view_name == "secrets"
     self.settings_tab.role = "studio-tab-active" if view_name == "settings" else "studio-tab"
     self.widgets_tab.role = "studio-tab-active" if view_name == "widgets" else "studio-tab"
     self.extensions_tab.role = "studio-tab-active" if view_name == "extensions" else "studio-tab"
     self.ai_tools_tab.role = "studio-tab-active" if view_name == "ai_tools" else "studio-tab"
+    self.secrets_tab.role = "studio-tab-active" if view_name == "secrets" else "studio-tab"
 
   def _navigate_to_section(self, section_id, open_editor=False):
     self.settings_search.text = ""
@@ -174,6 +296,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.widgets_tab.enabled = False
     self.extensions_tab.enabled = False
     self.ai_tools_tab.enabled = False
+    self.secrets_tab.enabled = False
     self.settings_editor_overlay.visible = True
     self.settings_editor.visible = True
 
@@ -187,6 +310,7 @@ class AdminSettings(AdminSettingsTemplate):
     self.widgets_tab.enabled = True
     self.extensions_tab.enabled = True
     self.ai_tools_tab.enabled = True
+    self.secrets_tab.enabled = True
 
   def _filtered_sections(self):
     term = str(self.settings_search.text or "").strip().lower()
@@ -240,6 +364,11 @@ class AdminSettings(AdminSettingsTemplate):
   def ai_tools_tab_click(self, **event_args):
     self._load_ai_tools()
     self._show_view("ai_tools")
+
+  @handle("secrets_tab", "click")
+  def secrets_tab_click(self, **event_args):
+    self._load_secrets()
+    self._show_view("secrets")
 
   @handle("settings_search", "change")
   def settings_search_change(self, **event_args):
@@ -419,7 +548,8 @@ class AdminSettings(AdminSettingsTemplate):
         start_section="system.widgets", open_editor=True
       )
       return
-    target = WIDGET_GROUP_ROUTES.get(widget.get("group"), "AdminSettings")
+    group = str(widget.get("group") or "")
+    target = WIDGET_GROUP_ROUTES.get(group, "AdminSettings")
     properties = {"window_title": title}
     if target == "Operations":
       properties["section"] = "service" if widget_id.startswith("service_") else "crm"
