@@ -26,6 +26,19 @@ METRIC_ROUTES = {
   "settings_total": ("AdminSettings", "Центр настроек")
 }
 
+METRIC_GROUP_ROUTES = {
+  "Каталог": "Catalog",
+  "Медиа": "Catalog.Media",
+  "Заказы": "Catalog.Orders",
+  "Контент": "CMS",
+  "Рабочие процессы": "Operations",
+  "Проекты": "Projects",
+  "Пользователи": "AdminUsers",
+  "Интеграции": "AIOperator",
+  "Импорт и экспорт": "ImportEngine",
+  "Система": "SystemDiagnostics"
+}
+
 
 class AdminTools(AdminToolsTemplate):
   """The landing page for staff: live status, attention items and shortcuts."""
@@ -111,11 +124,26 @@ class AdminTools(AdminToolsTemplate):
 
   @handle("analytics_summary", "x-open-metric")
   def analytics_summary_open_metric(self, metric, **event_args):
-    metric_id = metric.get("id") if isinstance(metric, dict) else ""
-    target, title = METRIC_ROUTES.get(
-      metric_id, ("AdminSettings", "Центр настроек")
+    if not isinstance(metric, dict):
+      return
+    metric_id = str(metric.get("id") or "")
+    title = str(metric.get("label") or "Рабочий раздел")
+    if metric_id == "media_without_source":
+      Access.open_admin_window(
+        "AdminSettings", window_title="Фото и хранилище",
+        start_section="integrations.media.storage", open_editor=True
+      )
+      return
+    route = METRIC_ROUTES.get(metric_id)
+    target = route[0] if route else METRIC_GROUP_ROUTES.get(
+      metric.get("group"), "AdminSettings"
     )
-    Access.open_admin_window(target, window_title=title)
+    if route:
+      title = route[1]
+    properties = {"window_title": title}
+    if target == "Operations":
+      properties["section"] = "service" if metric_id.startswith("service_") else "crm"
+    Access.open_admin_window(target, **properties)
 
   @handle("orders_button", "click")
   def orders_button_click(self, **event_args):

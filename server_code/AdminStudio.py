@@ -66,7 +66,7 @@ _DENSITY = [("Компактно", "compact"), ("Стандартно", "standar
             ("Свободно", "spacious")]
 
 
-# 64 editable settings modules, organized around the actual site and its
+# 107 editable settings sections, organized around the actual site and its
 # existing catalogue, CMS, CRM, engineering and user-management features.
 SETTINGS_SECTIONS = [
   _section("site.identity", "Сайт", "Профиль сайта",
@@ -428,20 +428,15 @@ SETTINGS_SECTIONS = [
     _select("content.preview_mode", "Режим предпросмотра", "desktop", [("Компьютер", "desktop"), ("Телефон", "mobile")]),
     _toggle("content.preview_show_drafts", "Разрешить предпросмотр черновиков", True)),
   _section("media.policy", "Каталог", "Правила медиа",
-    "Размер изображений и требование заполнения подписи.",
-    _number("media.max_size_mb", "Максимальный размер, МБ", 12, 1, 40),
-    _toggle("media.require_alt", "Требовать текст подписи", False)),
+    "Максимальный размер изображения для ручной загрузки и импорта.",
+    _number("media.max_size_mb", "Максимальный размер, МБ", 12, 1, 40)),
   _section("integrations.webhooks", "Интеграции", "Веб-подключения",
     "Общие параметры внешних адресов и обработчиков.",
     _toggle("integrations.webhook_enabled", "Разрешить существующие обработчики", True),
     _number("integrations.timeout_seconds", "Тайм-аут, сек.", 10, 2, 60)),
   _section("integrations.api", "Интеграции", "API и внешние сервисы",
-    "Безопасные параметры подключения. Секреты и ключи задаются только в Anvil Secrets или редакторе API.",
-    _toggle("api.enabled", "Разрешить внешние API", True),
-    _number("api.timeout_seconds", "Тайм-аут API, сек.", 30, 5, 120),
-    _number("api.retry_count", "Повторных попыток", 2, 0, 5),
-    _toggle("api.log_requests", "Записывать результат запроса в журнал", False),
-    _toggle("api.reject_insecure", "Запрещать HTTP без HTTPS", True)),
+    "Главный переключатель публичного API проекта. Адреса моделей, ключи и параметры подключений редактируются в разделе «Провайдеры и ключи».",
+    _toggle("api.enabled", "Включить внешний API проекта", True)),
   _section("integrations.media.storage", "Интеграции", "Хранилище изображений",
     "Определяет, куда отправляются изображения из PDF/XLSX и каталога. Ключи хранятся только на сервере.",
     _select("media.storage_primary", "Основное хранилище", "auto", [
@@ -455,7 +450,6 @@ SETTINGS_SECTIONS = [
     ]),
     _toggle("media.external_uploads", "Загружать изображения во внешнее облако", True),
     _toggle("media.dedupe_by_checksum", "Не загружать одинаковые файлы повторно", True),
-    _toggle("media.keep_local_copy", "Сохранять копию в Anvil Files", False),
     _number("media.upload_retries", "Повторов загрузки", 2, 0, 5),
     _text("media.folder_prefix", "Папка в облаке", "catalog/imports", maximum=80)),
   _section("ai.models", "ИИ и интеграции", "Модели и режимы AI",
@@ -915,12 +909,32 @@ def get_admin_media_storage_status():
   elif primary == "imagekit":
     route = "ImageKit" + (" → " + fallback if fallback != "none" else "")
   else:
-    route = "Cloudinary → ImageKit"
+    route = "Cloudinary" + (" → " + fallback if fallback not in ("none", "cloudinary") else "")
   ready_names = []
   if cloudinary_ready:
     ready_names.append("Cloudinary")
   if imagekit_ready:
     ready_names.append("ImageKit")
+  ready_text = ", ".join(ready_names) or "нет настроенного облака"
+  media_counts = {}
+  external_media_count = _count_rows("media_objects", cache=media_counts)
+  product_media_count = _count_rows("product_media", cache=media_counts)
+  manual_media_note = (
+    "Ручные фото карточек хранятся в Data Table product_media (Anvil Media), "
+    "записей: {}. "
+  ).format(product_media_count if product_media_count is not None else "—")
+  if not external_enabled or primary == "none":
+    destination = manual_media_note + "Загрузка фото PDF/XLSX во внешнее облако отключена."
+  else:
+    destination = (
+      manual_media_note +
+      "Фото PDF/XLSX отправляются по маршруту {}. URL и контрольные суммы: "
+      "Data Table media_objects, записей: {}. Доступно: {}."
+    ).format(
+      route,
+      external_media_count if external_media_count is not None else "—",
+      ready_text
+    )
   return {
     "ok": True,
     "primary": primary,
@@ -931,7 +945,13 @@ def get_admin_media_storage_status():
     "imagekit_ready": imagekit_ready,
     "ready": ready_names,
     "dedupe": values.get("media.dedupe_by_checksum", True) is not False,
-    "secret_note": "Ключи не передаются в браузер. Настройте их в Anvil Secrets."
+    "destination": destination,
+    "credentials": (
+      "Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, "
+      "CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. "
+      "Добавьте нужные секреты в Anvil → Services → Secrets. Ключи не "
+      "передаются в браузер."
+    )
   }
 
 
@@ -958,12 +978,21 @@ def _validate_value(field, value):
         field["label"], field["minimum"], field["maximum"]
       )
     return int(number) if number.is_integer() else number, None
-  maximum = 2000 if kind == "textarea" else 500
+  maximum = field.get("maximum")
+  if isinstance(maximum, bool) or not isinstance(maximum, int):
+    maximum = 2000 if kind == "textarea" else 500
   if not isinstance(value, str) or len(value) > maximum:
     return None, "Проверьте текст поля «{}» (до {} символов).".format(
       field["label"], maximum
     )
   value = value.strip()
+  if field["key"] == "media.folder_prefix":
+    parts = value.strip("/").split("/")
+    if (not value or len(value) > 80 or any(
+      not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", part) for part in parts
+    )):
+      return None, "Укажите папку облака латинскими буквами, цифрами, дефисами и /."
+    value = "/".join(parts)
   if kind == "url" and value:
     if not (value.startswith("https://") or value.startswith("/_/theme/")):
       return None, "В поле «{}» укажите HTTPS-ссылку или путь к ресурсу темы.".format(

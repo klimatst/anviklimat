@@ -30,16 +30,22 @@
         <div class="studio-integration-copy">
           <span class="studio-integration-copy__eyebrow">КЛЮЧЕВЫЕ ПОДКЛЮЧЕНИЯ</span>
           <strong>Настройки, которые влияют на работу сайта</strong>
-          <small>Фото, API и AI редактируются через рабочие разделы. Секреты остаются на сервере Anvil.</small>
+          <small>107 категорий и более 260 параметров. Здесь открываются реальные редакторы фото, API и AI.</small>
         </div>
         <div class="studio-integration-status">
           <span class="studio-integration-status__dot"></span>
           <div><strong>Медиахранилище</strong><anvil-component type="Label" name="media_storage_status" prop:role="status-message" prop:text="Проверяю…"></anvil-component></div>
           <anvil-component type="Button" name="refresh_media_status_button" prop:role="icon-button" prop:text="↻"></anvil-component>
         </div>
+        <div class="studio-integration-guide">
+          <strong>Куда отправляются фото импорта</strong>
+          <anvil-component type="Label" name="media_storage_destination" prop:role="status-message" prop:text="Ручные фото карточек хранятся в Anvil Media; импорт PDF/XLSX отправляется в Cloudinary или ImageKit. Ссылки и контрольные суммы записываются отдельно."></anvil-component>
+          <anvil-component type="Label" name="media_storage_credentials" prop:role="status-message" prop:text="Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. Добавьте секреты в Anvil → Services → Secrets."></anvil-component>
+        </div>
         <div class="studio-integration-actions">
           <anvil-component type="Button" name="open_media_settings_button" prop:role="secondary-button" prop:text="Фото и хранилище"></anvil-component>
-          <anvil-component type="Button" name="open_api_settings_button" prop:role="secondary-button" prop:text="API и модели"></anvil-component>
+          <anvil-component type="Button" name="open_api_settings_button" prop:role="secondary-button" prop:text="Параметры API"></anvil-component>
+          <anvil-component type="Button" name="open_provider_settings_button" prop:role="secondary-button" prop:text="Провайдеры и ключи"></anvil-component>
           <anvil-component type="Button" name="open_ai_settings_button" prop:role="primary-action" prop:text="AI Studio"></anvil-component>
         </div>
       </section>

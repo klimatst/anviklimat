@@ -1,4 +1,5 @@
 import json
+from functools import wraps
 
 import anvil
 import anvil.server
@@ -68,6 +69,23 @@ def _body(max_bytes=MAX_API_BODY):
   return body, None
 
 
+def _api_route(path, **route_options):
+  """Register a versioned API route behind the admin-controlled API switch."""
+  def register(handler):
+    @wraps(handler)
+    def guarded_handler(*args, **kwargs):
+      import AdminStudio
+
+      if AdminStudio.get_admin_studio_setting("api.enabled", True) is False:
+        return _response({
+          "ok": False, "message": "Внешний API временно отключён администратором."
+        }, 503)
+      return handler(*args, **kwargs)
+
+    return route(path, **route_options)(guarded_handler)
+  return register
+
+
 @route("/manifest.webmanifest", methods=["GET"])
 def pwa_manifest():
   return HttpResponse(
@@ -95,7 +113,7 @@ def pwa_service_worker():
   )
 
 
-@route("/api/v1/catalog", methods=["GET"])
+@_api_route("/api/v1/catalog", methods=["GET"])
 def api_catalog():
   import CatalogService as Catalog
 
@@ -107,7 +125,7 @@ def api_catalog():
   return _result_response(result)
 
 
-@route("/api/v1/catalog/categories", methods=["GET", "POST"])
+@_api_route("/api/v1/catalog/categories", methods=["GET", "POST"])
 def api_catalog_categories():
   import CatalogService as Catalog
 
@@ -121,7 +139,7 @@ def api_catalog_categories():
   ))
 
 
-@route("/api/v1/catalog/product", methods=["GET", "POST", "PUT"])
+@_api_route("/api/v1/catalog/product", methods=["GET", "POST", "PUT"])
 def api_catalog_product():
   import CatalogService as Catalog
 
@@ -145,7 +163,7 @@ def api_catalog_product():
   return _result_response(Catalog.save_product(*sections, product_id))
 
 
-@route("/api/v1/catalog/prices/bulk", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/catalog/prices/bulk", authenticate_users=True, methods=["POST"])
 def api_catalog_bulk_prices():
   import CatalogService as Catalog
 
@@ -158,7 +176,7 @@ def api_catalog_bulk_prices():
   ))
 
 
-@route("/api/v1/catalog/specifications", authenticate_users=True, methods=["POST", "DELETE"])
+@_api_route("/api/v1/catalog/specifications", authenticate_users=True, methods=["POST", "DELETE"])
 def api_catalog_specifications():
   import CatalogService as Catalog
 
@@ -173,7 +191,7 @@ def api_catalog_specifications():
   ))
 
 
-@route("/api/v1/cms/page", methods=["GET"])
+@_api_route("/api/v1/cms/page", methods=["GET"])
 def api_published_cms_page():
   import CMSServer as CMS
 
@@ -183,14 +201,14 @@ def api_published_cms_page():
   return _result_response(CMS.get_published_cms_page(slug))
 
 
-@route("/api/v1/calculations", methods=["GET"])
+@_api_route("/api/v1/calculations", methods=["GET"])
 def api_calculations():
   import CalculationsService as Calculations
 
   return _result_response(Calculations.get_calculation_catalog())
 
 
-@route("/api/v1/calculations/run", methods=["POST"])
+@_api_route("/api/v1/calculations/run", methods=["POST"])
 def api_run_calculation():
   import CalculationsService as Calculations
 
@@ -207,7 +225,7 @@ def api_run_calculation():
   return _result_response(result)
 
 
-@route("/api/v1/projects", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/projects", authenticate_users=True, methods=["GET", "POST"])
 def api_projects():
   import ProjectsService as Projects
 
@@ -226,7 +244,7 @@ def api_projects():
   return _result_response(Projects.save_project(project_data, payload.get("project_id")))
 
 
-@route("/api/v1/project", authenticate_users=True, methods=["GET"])
+@_api_route("/api/v1/project", authenticate_users=True, methods=["GET"])
 def api_project_workspace():
   import ProjectsService as Projects
 
@@ -236,7 +254,7 @@ def api_project_workspace():
   return _result_response(Projects.get_project_workspace(project_id))
 
 
-@route("/api/v1/rooms", authenticate_users=True, methods=["POST", "DELETE"])
+@_api_route("/api/v1/rooms", authenticate_users=True, methods=["POST", "DELETE"])
 def api_project_rooms():
   import ProjectsService as Projects
 
@@ -255,7 +273,7 @@ def api_project_rooms():
   ))
 
 
-@route("/api/v1/systems", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/systems", authenticate_users=True, methods=["POST"])
 def api_create_system():
   import ConstructorService as Constructor
 
@@ -267,7 +285,7 @@ def api_create_system():
   ))
 
 
-@route("/api/v1/system/graph", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/system/graph", authenticate_users=True, methods=["GET", "POST"])
 def api_system_graph():
   import ConstructorService as Constructor
 
@@ -286,7 +304,7 @@ def api_system_graph():
   ))
 
 
-@route("/api/v1/compatibility", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/compatibility", authenticate_users=True, methods=["GET", "POST"])
 def api_compatibility():
   import Engineering
 
@@ -305,7 +323,7 @@ def api_compatibility():
   ))
 
 
-@route("/api/v1/system/compatibility/check", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/system/compatibility/check", authenticate_users=True, methods=["POST"])
 def api_check_system_compatibility():
   import Engineering
 
@@ -315,7 +333,7 @@ def api_check_system_compatibility():
   return _result_response(Engineering.validate_system_compatibility(payload.get("system_id")))
 
 
-@route("/api/v1/system/routing", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/system/routing", authenticate_users=True, methods=["POST"])
 def api_system_routing():
   import Engineering
 
@@ -325,7 +343,7 @@ def api_system_routing():
   return _result_response(Engineering.calculate_system_routing(payload.get("system_id")))
 
 
-@route("/api/v1/system/bom", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/system/bom", authenticate_users=True, methods=["GET", "POST"])
 def api_system_bom():
   import Engineering
 
@@ -340,7 +358,7 @@ def api_system_bom():
   return _result_response(Engineering.generate_system_bom(payload.get("system_id")))
 
 
-@route("/api/v1/crm/clients", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/crm/clients", authenticate_users=True, methods=["GET", "POST"])
 def api_crm_clients():
   import OperationsService as Operations
 
@@ -358,7 +376,7 @@ def api_crm_clients():
   ))
 
 
-@route("/api/v1/crm/tasks", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/crm/tasks", authenticate_users=True, methods=["GET", "POST"])
 def api_crm_tasks():
   import OperationsService as Operations
 
@@ -373,7 +391,7 @@ def api_crm_tasks():
   return _result_response(Operations.save_crm_task(task_data, payload.get("task_id")))
 
 
-@route("/api/v1/estimates", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/estimates", authenticate_users=True, methods=["GET", "POST"])
 def api_estimates():
   import OperationsService as Operations
 
@@ -390,7 +408,7 @@ def api_estimates():
   ))
 
 
-@route("/api/v1/quotes", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/quotes", authenticate_users=True, methods=["GET", "POST"])
 def api_quotes():
   import OperationsService as Operations
 
@@ -407,7 +425,7 @@ def api_quotes():
   ))
 
 
-@route("/api/v1/quotes/status", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/quotes/status", authenticate_users=True, methods=["POST"])
 def api_quote_status():
   import OperationsService as Operations
 
@@ -419,7 +437,7 @@ def api_quote_status():
   ))
 
 
-@route("/api/v1/service", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/service", authenticate_users=True, methods=["GET", "POST"])
 def api_service():
   import OperationsService as Operations
 
@@ -439,7 +457,7 @@ def api_service():
   ))
 
 
-@route("/api/v1/ai/operator", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/ai/operator", authenticate_users=True, methods=["POST"])
 def api_ai_operator():
   import AI
 
@@ -452,7 +470,7 @@ def api_ai_operator():
   return _result_response(AI.ai_operator(payload.get("operation"), context))
 
 
-@route("/api/v1/imports", authenticate_users=True, methods=["GET", "POST"])
+@_api_route("/api/v1/imports", authenticate_users=True, methods=["GET", "POST"])
 def api_imports():
   import ImportEngineService as ImportEngine
 
@@ -468,7 +486,7 @@ def api_imports():
   ))
 
 
-@route("/api/v1/imports/upload", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/imports/upload", authenticate_users=True, methods=["POST"])
 def api_import_upload():
   import ImportEngineService as ImportEngine
 
@@ -492,7 +510,7 @@ def api_import_upload():
   ))
 
 
-@route("/api/v1/imports/resume", authenticate_users=True, methods=["POST"])
+@_api_route("/api/v1/imports/resume", authenticate_users=True, methods=["POST"])
 def api_resume_import():
   import ImportEngineService as ImportEngine
 

@@ -3057,14 +3057,23 @@ def upload_product_images(product_id, uploaded_files):
       existing_bytes += row["file"].length
 
   allowed_types = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+  max_image_size_mb = AdminStudio.get_admin_studio_setting("media.max_size_mb", 12)
+  if isinstance(max_image_size_mb, bool) or not isinstance(max_image_size_mb, (int, float)):
+    max_image_size_mb = 12
+  max_image_bytes = int(max_image_size_mb * 1024 * 1024)
   checked_files = []
   for media in uploaded_files:
     if not isinstance(media, anvil.Media):
       return {"ok": False, "message": "Один из выбранных файлов не является изображением."}
     if media.content_type not in allowed_types:
       return {"ok": False, "message": "Поддерживаются только JPEG, PNG, WebP и GIF."}
-    if media.length <= 0 or media.length > 8 * 1024 * 1024:
-      return {"ok": False, "message": "Размер каждого изображения должен быть не более 8 МБ."}
+    if media.length <= 0 or media.length > max_image_bytes:
+      return {
+        "ok": False,
+        "message": "Размер каждого изображения должен быть не более {} МБ по настройке медиа.".format(
+          max_image_size_mb
+        )
+      }
     checked_files.append(media)
   if existing_bytes + sum(media.length for media in checked_files) > 40 * 1024 * 1024:
     return {"ok": False, "message": "Общий размер изображений для одного товара ограничен 40 МБ."}

@@ -4865,7 +4865,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .anvil-button.anvil-role-studio-widget-open > button { min-height: 29px; padding: 5px 8px; border: 1px solid rgba(99, 217, 169, .22); border-radius: 7px; color: #9ce4c8; background: rgba(99, 217, 169, .07); font-size: 8px; white-space: nowrap; }
 .anvil-button.anvil-role-studio-widget-open > button:hover { border-color: rgba(99, 217, 169, .48); color: #e6fff5; background: rgba(99, 217, 169, .15); }
 .anvil-button.anvil-role-icon-button > button { min-width: 30px; min-height: 30px; padding: 4px 7px; border-radius: 7px; font-size: 14px; }
-.studio-integration-strip { display: grid; grid-template-columns: minmax(210px, 1fr) minmax(210px, .85fr) auto; align-items: center; gap: 13px; margin: 0 0 13px; padding: 13px 15px; border: 1px solid rgba(118, 188, 172, .18); border-radius: 14px; background: linear-gradient(115deg, rgba(23, 52, 55, .7), rgba(15, 27, 33, .88)); }
+.studio-integration-strip { display: grid; grid-template-columns: minmax(160px, .82fr) minmax(200px, .78fr) minmax(270px, 1.4fr) auto; align-items: center; gap: 11px; margin: 0 0 13px; padding: 13px 15px; border: 1px solid rgba(118, 188, 172, .18); border-radius: 14px; background: linear-gradient(115deg, rgba(23, 52, 55, .7), rgba(15, 27, 33, .88)); }
 .studio-integration-copy { display: grid; gap: 4px; }
 .studio-integration-copy__eyebrow { color: #67d7aa; font-size: 7px; font-weight: 830; letter-spacing: .15em; }
 .studio-integration-copy strong { color: #d9eee8; font-size: 11px; }
@@ -4874,7 +4874,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .studio-integration-status__dot { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: #67d9aa; box-shadow: 0 0 0 4px rgba(103, 217, 170, .1); }
 .studio-integration-status strong { display: block; color: #c3ded5; font-size: 9px; }
 .studio-integration-status .anvil-role-status-message { display: block; max-width: 260px; margin-top: 3px; overflow-wrap: anywhere; color: #86aaa1; font-size: 8px; line-height: 1.4; }
+.studio-integration-guide { display: grid; min-width: 0; gap: 4px; padding: 8px 10px; border-left: 1px solid rgba(125, 178, 169, .16); }
+.studio-integration-guide strong { color: #c3ded5; font-size: 9px; }
+.studio-integration-guide .anvil-role-status-message { display: block; margin: 0; overflow-wrap: anywhere; color: #8fa9a4; font-size: 8px; line-height: 1.45; }
 .studio-integration-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
 .studio-integration-actions .anvil-button > button { min-height: 33px; padding: 6px 9px; border-radius: 8px; font-size: 8px; white-space: nowrap; }
-@media (max-width: 980px) { .studio-integration-strip { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .studio-integration-actions { grid-column: 1 / -1; justify-content: flex-start; } }
+@media (max-width: 980px) { .studio-integration-strip { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .studio-integration-guide, .studio-integration-actions { grid-column: 1 / -1; } .studio-integration-guide { border-left: 0; border-top: 1px solid rgba(125, 178, 169, .16); padding: 9px 0 0; } .studio-integration-actions { justify-content: flex-start; } }
 @media (max-width: 600px) { .studio-integration-strip { grid-template-columns: minmax(0, 1fr); } .studio-integration-actions { display: grid; grid-template-columns: minmax(0, 1fr); } .studio-integration-actions .anvil-button > button { width: 100%; } }

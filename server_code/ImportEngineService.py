@@ -96,6 +96,10 @@ class ImportInputError(Exception):
   pass
 
 
+class RetryableImportUploadError(ImportInputError):
+  """A temporary storage failure that can succeed on a later attempt."""
+
+
 def _admin_user():
   return Core.get_admin_user()
 
@@ -1297,13 +1301,28 @@ def _cloudinary_settings():
   return cloud_name, api_key, api_secret
 
 
+def _media_upload_folder(import_id):
+  prefix = AdminStudio.get_admin_studio_setting(
+    "media.folder_prefix", "catalog/imports"
+  )
+  if not isinstance(prefix, str):
+    raise ImportInputError("Проверьте папку облака в настройках медиахранилища.")
+  parts = prefix.strip("/").split("/")
+  if (not prefix or len(prefix) > 80 or any(
+    not re.fullmatch(r"[A-Za-z0-9_-]{1,40}", part) for part in parts
+  )):
+    raise ImportInputError("Проверьте папку облака в настройках медиахранилища.")
+  import_key = re.sub(r"[^A-Za-z0-9_-]", "", str(import_id))[:80] or "import"
+  return "/".join(parts + [import_key])
+
+
 def _cloudinary_upload(data, mime_type, import_id, digest):
   settings = _cloudinary_settings()
   if settings is None:
     return None
   cloud_name, api_key, api_secret = settings
   timestamp = str(int(datetime.now(timezone.utc).timestamp()))
-  folder = "catalog/pdf-imports/" + re.sub(r"[^A-Za-z0-9_-]", "", str(import_id))[:80]
+  folder = _media_upload_folder(import_id)
   public_id = digest[:48]
   signed_values = {"folder": folder, "public_id": public_id, "timestamp": timestamp}
   signature_text = "&".join(
@@ -1340,9 +1359,12 @@ def _cloudinary_upload(data, mime_type, import_id, digest):
     with urlopen(request, timeout=45) as response:
       result = json.loads(response.read(1024 * 1024).decode("utf-8"))
   except HTTPError as error:
-    raise ImportInputError("Cloudinary отклонил изображение (HTTP {}).".format(error.code))
+    error_type = RetryableImportUploadError if error.code >= 500 else ImportInputError
+    raise error_type("Cloudinary отклонил изображение (HTTP {}).".format(error.code))
   except (URLError, TimeoutError, OSError):
-    raise ImportInputError("Не удалось связаться с Cloudinary. Проверьте настройки облака.")
+    raise RetryableImportUploadError(
+      "Не удалось связаться с Cloudinary. Проверьте настройки облака."
+    )
   except (UnicodeDecodeError, json.JSONDecodeError):
     raise ImportInputError("Cloudinary вернул неподдерживаемый ответ.")
   secure_url = result.get("secure_url") if isinstance(result, dict) else None
@@ -1365,7 +1387,7 @@ def _imagekit_upload(data, mime_type, import_id, digest):
   if private_key is None:
     return None
   boundary = "----AnvilImageKitUpload{}".format(digest[:24])
-  folder = "/catalog/pdf-imports/" + re.sub(r"[^A-Za-z0-9_-]", "", str(import_id))[:80]
+  folder = "/" + _media_upload_folder(import_id)
   extension = mimetypes.guess_extension(mime_type) or ".img"
   filename = digest[:48] + extension
   fields = {
@@ -1396,9 +1418,10 @@ def _imagekit_upload(data, mime_type, import_id, digest):
     with urlopen(request, timeout=45) as response:
       result = json.loads(response.read(1024 * 1024).decode("utf-8"))
   except HTTPError as error:
-    raise ImportInputError("ImageKit отклонил изображение (HTTP {}).".format(error.code))
+    error_type = RetryableImportUploadError if error.code >= 500 else ImportInputError
+    raise error_type("ImageKit отклонил изображение (HTTP {}).".format(error.code))
   except (URLError, TimeoutError, OSError):
-    raise ImportInputError("Не удалось связаться с ImageKit.")
+    raise RetryableImportUploadError("Не удалось связаться с ImageKit.")
   except (UnicodeDecodeError, json.JSONDecodeError):
     raise ImportInputError("ImageKit вернул неподдерживаемый ответ.")
   secure_url = result.get("url") if isinstance(result, dict) else None
@@ -1408,6 +1431,13 @@ def _imagekit_upload(data, mime_type, import_id, digest):
 
 
 def _upload_pdf_image(data, mime_type, import_id, digest):
+  max_size_mb = AdminStudio.get_admin_studio_setting("media.max_size_mb", 12)
+  if isinstance(max_size_mb, bool) or not isinstance(max_size_mb, (int, float)):
+    max_size_mb = 12
+  if len(data) > int(max_size_mb * 1024 * 1024):
+    raise ImportInputError(
+      "Изображение превышает лимит {} МБ в настройках медиа.".format(max_size_mb)
+    )
   failures = []
   primary = AdminStudio.get_admin_studio_setting(
     "media.storage_primary", "auto"
@@ -1421,11 +1451,17 @@ def _upload_pdf_image(data, mime_type, import_id, digest):
   if not external_enabled or primary == "none":
     raise ImportInputError("Внешняя загрузка изображений отключена в настройках медиахранилища.")
   if primary == "auto":
-    providers = ["cloudinary", "imagekit"]
+    providers = ["cloudinary"]
+    if fallback not in ("none", "cloudinary"):
+      providers.append(fallback)
   else:
     providers = [primary]
     if fallback not in ("none", primary):
       providers.append(fallback)
+  retry_count = AdminStudio.get_admin_studio_setting("media.upload_retries", 2)
+  if isinstance(retry_count, bool) or not isinstance(retry_count, (int, float)):
+    retry_count = 2
+  retry_count = max(0, min(int(retry_count), 5))
   uploaders = {
     "cloudinary": (_cloudinary_settings, _cloudinary_upload),
     "imagekit": (_imagekit_settings, _imagekit_upload)
@@ -1434,10 +1470,17 @@ def _upload_pdf_image(data, mime_type, import_id, digest):
     settings_fn, upload_fn = uploaders.get(provider, (None, None))
     if settings_fn is None or settings_fn() is None:
       continue
-    try:
-      return upload_fn(data, mime_type, import_id, digest), provider
-    except ImportInputError as error:
-      failures.append(str(error))
+    for attempt in range(retry_count + 1):
+      try:
+        return upload_fn(data, mime_type, import_id, digest), provider
+      except RetryableImportUploadError as error:
+        if attempt < retry_count:
+          continue
+        failures.append(str(error))
+        break
+      except ImportInputError as error:
+        failures.append(str(error))
+        break
   if failures:
     raise ImportInputError("Облачная загрузка не удалась: {}".format(" ".join(failures)))
   raise ImportInputError(
@@ -1456,6 +1499,12 @@ def _record_external_media(digest, url, provider, mime_type, size):
     app_tables.media_objects.add_row(**values)
   else:
     row.update(**values)
+
+
+def _find_reusable_media(digest):
+  if AdminStudio.get_admin_studio_setting("media.dedupe_by_checksum", True) is False:
+    return None
+  return app_tables.media_objects.get(checksum=digest)
 
 
 def _pdf_draft_rows(import_row):
@@ -1595,7 +1644,7 @@ def _xlsx_draft_product(record, category_rows, image_context, warnings):
       image_context["limited"] = True
       image_context["failed"] = True
       continue
-    existing_media = app_tables.media_objects.get(checksum=digest)
+    existing_media = _find_reusable_media(digest)
     if existing_media is not None and existing_media["url"]:
       url = existing_media["url"]
       image_context["uploaded"] += 1
@@ -1842,7 +1891,7 @@ def _extract_page_images(page, page_number, import_id, seen, counters, warnings,
       if asset and asset not in assets:
         assets.append(dict(asset, page=page_number))
       continue
-    existing_media = app_tables.media_objects.get(checksum=digest)
+    existing_media = _find_reusable_media(digest)
     if existing_media is not None and existing_media["url"]:
       asset = {
         "page": page_number, "name": (getattr(image, "name", "") or "")[:120],
@@ -3107,7 +3156,7 @@ def _retry_xlsx_draft_images(import_row):
       if total > MAX_PDF_IMAGES or bytes_seen > MAX_PDF_TOTAL_IMAGE_BYTES:
         failed.append("Достигнут лимит загрузки изображений XLSX.")
         break
-      existing = app_tables.media_objects.get(checksum=digest)
+      existing = _find_reusable_media(digest)
       if existing is not None and existing["url"]:
         url = existing["url"]
       else:

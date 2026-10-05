@@ -6,27 +6,17 @@ import anvil.server
 from .. import Access, AdminExtensions
 
 
-WIDGET_ROUTES = {
-  "products_total": ("Catalog", "Каталог · товары"),
-  "products_active": ("Catalog", "Каталог · активные товары"),
-  "products_missing_images": ("Catalog.Media", "Медиа · товары без фото"),
-  "categories_total": ("Catalog.Taxonomy", "Категории каталога"),
-  "product_images": ("Catalog.Media", "Медиа каталога"),
-  "orders_total": ("Catalog.Orders", "Заявки каталога"),
-  "orders_new": ("Catalog.Orders", "Новые заявки"),
-  "cms_pages": ("CMS", "Страницы и контент"),
-  "gallery_items": ("Gallery", "Галерея проектов"),
-  "crm_clients": ("Operations", "CRM и сделки"),
-  "crm_tasks_open": ("Operations", "Открытые задачи"),
-  "projects_total": ("Projects", "Проекты и системы"),
-  "calculations_total": ("Calculations", "Инженерные расчёты"),
-  "users_total": ("AdminUsers", "Пользователи и роли"),
-  "ai_providers": ("AIOperator", "API и модели AI"),
-  "ai_usage_week": ("AIOperator", "Использование AI"),
-  "imports_total": ("ImportEngine", "Импорт каталога"),
-  "audit_week": ("SystemDiagnostics", "Журнал и диагностика"),
-  "settings_total": ("settings", "Центр настроек"),
-  "media_without_source": ("integrations.media.storage", "Хранилище изображений")
+WIDGET_GROUP_ROUTES = {
+  "Каталог": "Catalog",
+  "Медиа": "Catalog.Media",
+  "Заказы": "Catalog.Orders",
+  "Контент": "CMS",
+  "Рабочие процессы": "Operations",
+  "Проекты": "Projects",
+  "Пользователи": "AdminUsers",
+  "Интеграции": "AIOperator",
+  "Импорт и экспорт": "ImportEngine",
+  "Система": "SystemDiagnostics"
 }
 
 
@@ -46,6 +36,8 @@ class AdminSettings(AdminSettingsTemplate):
     self._selected_section_id = None
     self._editing_extension_id = None
     self._initial_view = properties.get("start_tab", "settings")
+    self._initial_section_id = properties.get("start_section")
+    self._initial_open_editor = bool(properties.get("open_editor"))
     self._load_studio()
 
   def _load_studio(self):
@@ -78,20 +70,30 @@ class AdminSettings(AdminSettingsTemplate):
     if initial_view == "ai_tools":
       self._load_ai_tools()
     self._show_view(initial_view)
+    if initial_view == "settings" and self._initial_section_id:
+      self._select_section(self._initial_section_id)
+      if self._initial_open_editor:
+        self._open_settings_editor()
 
   def _load_integration_snapshot(self):
     try:
       result = anvil.server.call("get_admin_media_storage_status")
     except anvil.server.RuntimeUnavailableError:
       self.media_storage_status.text = "Сервер временно недоступен"
+      self.media_storage_destination.text = "Не удалось загрузить маршрут фото."
+      self.media_storage_credentials.text = "Обновите статус после восстановления соединения с сервером."
       return
     if result.get("ok"):
       ready = ", ".join(result.get("ready", [])) or "ни одно облако не настроено"
       self.media_storage_status.text = "{} · доступно: {}".format(
         result.get("route", "Маршрут не задан"), ready
       )
+      self.media_storage_destination.text = result.get("destination", "")
+      self.media_storage_credentials.text = result.get("credentials", "")
     else:
       self.media_storage_status.text = result.get("message", "Статус недоступен")
+      self.media_storage_destination.text = "Маршрут фото недоступен."
+      self.media_storage_credentials.text = "Проверьте доступ администратора и обновите статус."
 
   @handle("refresh_media_status_button", "click")
   def refresh_media_status_button_click(self, **event_args):
@@ -99,11 +101,14 @@ class AdminSettings(AdminSettingsTemplate):
 
   @handle("open_media_settings_button", "click")
   def open_media_settings_button_click(self, **event_args):
-    self._show_view("settings")
-    self._select_section("integrations.media.storage")
+    self._navigate_to_section("integrations.media.storage", open_editor=True)
 
   @handle("open_api_settings_button", "click")
   def open_api_settings_button_click(self, **event_args):
+    self._navigate_to_section("integrations.api", open_editor=True)
+
+  @handle("open_provider_settings_button", "click")
+  def open_provider_settings_button_click(self, **event_args):
     Access.open_admin_window("AIOperator", window_title="API и модели AI")
 
   @handle("open_ai_settings_button", "click")
@@ -120,6 +125,15 @@ class AdminSettings(AdminSettingsTemplate):
     self.widgets_tab.role = "studio-tab-active" if view_name == "widgets" else "studio-tab"
     self.extensions_tab.role = "studio-tab-active" if view_name == "extensions" else "studio-tab"
     self.ai_tools_tab.role = "studio-tab-active" if view_name == "ai_tools" else "studio-tab"
+
+  def _navigate_to_section(self, section_id, open_editor=False):
+    self.settings_search.text = ""
+    self.settings_group_filter.selected_value = "all"
+    self._refresh_settings_navigation()
+    self._show_view("settings")
+    self._select_section(section_id)
+    if open_editor:
+      self._open_settings_editor()
 
   def _show_sections(self, sections):
     selected_id = self._selected_section_id
@@ -389,14 +403,27 @@ class AdminSettings(AdminSettingsTemplate):
 
   @handle("widget_rows", "x-open-widget")
   def widget_rows_open_widget(self, widget, **event_args):
-    widget_id = widget.get("id") if isinstance(widget, dict) else ""
-    target, title = WIDGET_ROUTES.get(widget_id, ("settings", "Центр настроек"))
-    if target == "settings":
-      self._show_view("settings")
-      self._select_section("system.widgets")
-      self.settings_status.text = "Открыт раздел настроек рабочего стола."
+    if not isinstance(widget, dict):
       return
-    Access.open_admin_window(target, window_title=title)
+    widget_id = str(widget.get("id") or "")
+    title = str(widget.get("label") or "Рабочий раздел")
+    if widget_id == "media_without_source":
+      Access.open_admin_window(
+        "AdminSettings", window_title="Фото и хранилище",
+        start_section="integrations.media.storage", open_editor=True
+      )
+      return
+    if widget_id == "settings_total":
+      Access.open_admin_window(
+        "AdminSettings", window_title="Центр настроек",
+        start_section="system.widgets", open_editor=True
+      )
+      return
+    target = WIDGET_GROUP_ROUTES.get(widget.get("group"), "AdminSettings")
+    properties = {"window_title": title}
+    if target == "Operations":
+      properties["section"] = "service" if widget_id.startswith("service_") else "crm"
+    Access.open_admin_window(target, **properties)
 
   @handle("save_widgets_button", "click")
   def save_widgets_button_click(self, **event_args):
