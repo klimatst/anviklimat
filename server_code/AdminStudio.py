@@ -672,6 +672,7 @@ SECRET_CATALOG = [
   {"name": "IMAGEKIT_PRIVATE_KEY", "provider": "ImageKit", "label": "Private key", "hint": "Секретный ключ загрузки ImageKit", "kind": "secret"},
   {"name": "IMAGEKIT_PUBLIC_KEY", "provider": "ImageKit", "label": "Public key", "hint": "Публичный ключ ImageKit", "kind": "text"},
   {"name": "IMAGEKIT_URL_ENDPOINT", "provider": "ImageKit", "label": "URL endpoint", "hint": "HTTPS endpoint CDN ImageKit", "kind": "url"},
+  {"name": "GITHUB_CATALOG_TOKEN", "provider": "GitHub", "label": "Токен публикации фото каталога", "hint": "Fine-grained token с правом Contents: Read and write для репозитория каталога. Хранится как секрет Anvil.", "kind": "secret"},
   {"name": "OPENROUTER_API_KEY", "provider": "AI", "label": "OpenRouter API key", "hint": "Ключ провайдера моделей AI", "kind": "secret"},
   {"name": "OPENAI_API_KEY", "provider": "AI", "label": "OpenAI API key", "hint": "Ключ OpenAI для совместимого API", "kind": "secret"},
   {"name": "ANTHROPIC_API_KEY", "provider": "AI", "label": "Anthropic API key", "hint": "Ключ Anthropic для интеграции", "kind": "secret"},
