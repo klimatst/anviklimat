@@ -46,7 +46,11 @@ class AdminSettings(AdminSettingsTemplate):
     self._load_studio()
 
   def _load_studio(self):
-    result = anvil.server.call("get_admin_studio")
+    try:
+      result = anvil.server.call("get_admin_studio")
+    except Exception as exc:
+      self.settings_status.text = "Не удалось загрузить центр настроек: {}".format(exc)
+      return
     if not result["ok"]:
       self.settings_status.text = result["message"]
       return
