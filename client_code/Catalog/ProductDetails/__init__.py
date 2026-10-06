@@ -88,10 +88,17 @@ class ProductDetails(ProductDetailsTemplate):
     self.series_description.visible = bool(self.series_description.text)
 
     specs = result["specs"]
-    self.product_specs.text = "\n".join(
-      "{}: {} {}".format(row["key"], row["value"], row.get("unit") or "").rstrip()
-      for row in specs
-    ) or "Характеристики пока не добавлены."
+    spec_lines = []
+    for index, row in enumerate(specs, 1):
+      key = str(row.get("key") or "Параметр").strip()
+      value = str(row.get("value") or "—").strip()
+      unit = str(row.get("unit") or "").strip()
+      spec_lines.append(
+        "{:02d}  {}  ·  {}{}".format(
+          index, key, value, " " + unit if unit else ""
+        )
+      )
+    self.product_specs.text = "\n".join(spec_lines) or "Характеристики пока не добавлены."
     if result.get("has_more_specs"):
       self.product_specs.text += "\nПоказаны первые 100 характеристик."
 
