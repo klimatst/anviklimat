@@ -137,6 +137,12 @@ MODULES = [
     "properties": {"window_title": "Управление вентиляцией", "start_section": "ventilation.page", "open_editor": True}
   },
   {
+    "id": "engineering_control_room", "title": "Engineering Control Room", "group": "Инженерия",
+    "description": "Единый контур инженерного проекта: стадии, системы, расчёты, сметы и сервис.",
+    "icon": "⌬", "badge": "ENGINEERING OS", "form": "EngineeringControlRoom", "permission": "projects.manage",
+    "properties": {"window_title": "Engineering Control Room"}
+  },
+  {
     "id": "projects", "title": "Проекты и системы", "group": "Инженерия",
     "description": "Объекты, помещения и спецификации оборудования.",
     "icon": "⌗", "badge": "ПРОЕКТЫ", "form": "Projects", "permission": "projects.manage",

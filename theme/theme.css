@@ -211,3 +211,78 @@ html,body{overflow-x:hidden}
 .digital-twin-home-band__actions span{font-size:11px;letter-spacing:.08em;opacity:.65;text-transform:uppercase}
 @media(max-width:760px){.digital-twin-home-band{flex-direction:column;align-items:flex-start}.digital-twin-home-band__actions{align-items:flex-start;min-width:0}}
 .site-theme--arctic-light .digital-twin-home-band,.site-theme--titanium-light .digital-twin-home-band{background:linear-gradient(135deg,rgba(20,120,145,.06),rgba(255,255,255,.88));border-color:rgba(20,70,85,.14)}
+
+
+
+/* KLIMAЭКО catalog integrity layer: eliminate accidental browser/Anvil white leaks
+   while inheriting the active five-theme material system. */
+.eco-site-shell[class*="site-theme--"] .catalog-view,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-main,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-content,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-products,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-category-strip,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-navigation,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-filters,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-links,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-grid,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-container,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-panel {
+  background: var(--surface-0) !important;
+  color: var(--text) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-category-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-links > * {
+  background: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-empty,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-message,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-breadcrumbs,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-toolbar,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-filter-panel {
+  background: transparent !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-textbox,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-dropdown,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-textarea {
+  background: var(--blank-control-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+.engineering-control-room {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+.engineering-control-hero,
+.engineering-control-panel,
+.engineering-control-metrics > * {
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.10);
+}
+.engineering-control-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap: 12px;
+}
+.engineering-control-metrics > * {
+  white-space: pre-line;
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+@media (max-width: 980px) {
+  .engineering-control-metrics { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  .engineering-control-metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
