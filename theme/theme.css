@@ -1112,3 +1112,21 @@ html,body{overflow-x:hidden}
 .anvil-button.admin-module-open>button{min-height:28px;padding:0 9px;border-radius:7px;font-size:9px}
 @media(max-width:850px){.admin-os{grid-template-columns:1fr}.admin-os__sidebar{position:static;display:flex;gap:5px;overflow-x:auto}.admin-os__brand,.admin-os__section-label,.admin-os__sidebar-foot{display:none}.anvil-button.admin-sidebar-link>button{white-space:nowrap}.anvil-role-admin-module-grid{grid-template-columns:1fr}.admin-os__toolbar{align-items:stretch;flex-direction:column}.admin-os__toolbar-controls{width:100%}}
 @media(max-width:650px){.page-main,.eco-main{width:calc(100% - 20px);padding-top:18px}.admin-os__engineering{align-items:flex-start;flex-direction:column}.admin-os__attention{grid-template-columns:1fr}}
+
+/* KLIMA ECO COMPACT STUDIO OVERRIDES */
+.admin-settings-studio{width:min(1040px,100%);margin:0 auto}
+.studio-hero{min-height:128px;padding:18px 20px;margin-bottom:10px;border-radius:14px}
+.studio-hero__copy{max-width:700px}.studio-hero-stats{gap:8px}.studio-count{min-width:90px;padding:9px 10px;border-radius:9px;font-size:9px}
+.studio-tabs{gap:4px!important;margin-bottom:9px!important;padding:4px!important;border-radius:10px}
+.studio-tab,.studio-tab-active{min-height:34px!important;padding:0 10px!important;font-size:9px!important;border-radius:7px!important}
+.studio-command-bar{gap:12px;padding:8px 11px;margin-bottom:10px;border-radius:9px;font-size:8px}
+.studio-integration-strip{display:grid!important;grid-template-columns:minmax(0,1.3fr) minmax(180px,.7fr);gap:10px!important;padding:12px!important;margin-bottom:10px!important;border-radius:12px!important}
+.studio-integration-guide,.studio-integration-actions{grid-column:1/-1}.studio-integration-guide{padding:9px 11px!important;border-radius:8px!important}
+.studio-integration-guide .anvil-role-status-message{font-size:8px}.studio-integration-actions{display:flex;gap:6px;flex-wrap:wrap}.studio-integration-actions .anvil-button>button{min-height:31px;padding:0 9px;font-size:8px}
+.studio-settings-workspace{display:grid!important;grid-template-columns:210px minmax(0,1fr);gap:10px!important;min-height:420px}
+.studio-section-rail{padding:10px!important;border-radius:11px!important}.studio-rail-heading input{min-height:34px!important;font-size:9px}
+.studio-settings-main{padding:15px!important;border-radius:11px!important}.studio-section-heading .anvil-role-studio-section-title{font-size:18px}
+.studio-category-summary{margin-top:12px!important;padding:10px!important;border-radius:8px!important}
+.studio-summary-points{gap:5px!important}.studio-summary-points span{font-size:8px!important}
+.studio-modal-overlay{padding:18px!important}.studio-settings-modal,.studio-secret-modal{width:min(700px,calc(100vw - 36px))!important;max-height:calc(100vh - 36px)!important;padding:18px!important;border-radius:14px!important}
+@media(max-width:760px){.admin-settings-studio{width:100%}.studio-hero{flex-direction:column}.studio-settings-workspace{grid-template-columns:1fr!important}.studio-section-rail{max-height:240px;overflow:auto}.studio-integration-strip{grid-template-columns:1fr!important}}
