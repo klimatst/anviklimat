@@ -1,0 +1,86 @@
+name: Anvil Static Audit
+
+on:
+  push:
+    branches:
+      - codex-audit
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run static audit
+        shell: python
+        run: |
+          import ast, pathlib, re, sys
+
+          root = pathlib.Path(".")
+          errors = []
+          warnings = []
+
+          py_files = list(root.rglob("*.py"))
+          for p in py_files:
+              try:
+                  ast.parse(p.read_text(encoding="utf-8"), filename=str(p))
+              except Exception as e:
+                  errors.append(f"PY_SYNTAX {p}: {e}")
+
+          server_files = {p.stem for p in (root/"server_code").glob("*.py")}
+          callables = set()
+          for p in (root/"server_code").rglob("*.py"):
+              text = p.read_text(encoding="utf-8")
+              for m in re.finditer(r'@anvil\\.server\\.callable(?:\\(([^)]*)\\))?\\s*(?:@[^\\n]+\\s*)*def\\s+([A-Za-z_]\\w*)', text):
+                  arg, fn = m.groups()
+                  if arg:
+                      quoted = re.match(r'\\s*[\\\'"]([^\\\'"]+)[\\\'"]\\s*$', arg)
+                      callables.add(quoted.group(1) if quoted else fn)
+                  else:
+                      callables.add(fn)
+
+          client_calls = {}
+          for p in (root/"client_code").rglob("*.py"):
+              text = p.read_text(encoding="utf-8")
+              for m in re.finditer(r'anvil\\.server\\.call(?:_s)?\\(\\s*[\\\'"]([^\\\'"]+)[\\\'"]', text):
+                  client_calls.setdefault(m.group(1), []).append(str(p))
+          for name, paths in sorted(client_calls.items()):
+              if name not in callables:
+                  errors.append("MISSING_SERVER_CALL {}: {}".format(name, ", ".join(paths[:6])))
+
+          for html in (root/"client_code").rglob("form_template.html"):
+              text = html.read_text(encoding="utf-8")
+              names = re.findall(r'\\bname="([^"]+)"', text)
+              duplicates = sorted({n for n in names if names.count(n) > 1})
+              if duplicates:
+                  errors.append(f"DUPLICATE_COMPONENT_NAMES {html}: {duplicates}")
+
+              py = html.with_name("__init__.py")
+              if py.exists():
+                  ptext = py.read_text(encoding="utf-8")
+                  for comp, event in re.findall(r'@handle\\(\\s*["\\\']([^"\\\']+)["\\\']\\s*,\\s*["\\\']([^"\\\']+)["\\\']\\s*\\)', ptext):
+                      if comp not in set(names):
+                          warnings.append(f"HANDLER_COMPONENT_NOT_IN_TEMPLATE {py}: {comp} ({event})")
+
+          all_text = []
+          for p in root.rglob("*"):
+              if p.is_file() and p.suffix.lower() in {".py",".html",".yaml",".yml",".css",".js",".json",".txt"}:
+                  try: all_text.append((p, p.read_text(encoding="utf-8")))
+                  except Exception: pass
+          for p, text in all_text:
+              if "PHP/portable-engine" in text or re.search(r'(^|[/\\])Android([/\\]|$)', text):
+                  warnings.append(f"LEGACY_REFERENCE {p}")
+
+          legacy_dirs = [p for p in root.rglob("*") if p.is_dir() and (p.as_posix().endswith("/Android") or p.as_posix().endswith("/PHP/portable-engine"))]
+          for p in legacy_dirs:
+              errors.append(f"LEGACY_DIRECTORY_PRESENT {p}")
+
+          print("Python files:", len(py_files))
+          print("Server callables:", len(callables))
+          print("Client server calls:", len(client_calls))
+          print("Errors:", len(errors))
+          print("Warnings:", len(warnings))
+          for item in errors: print("ERROR:", item)
+          for item in warnings: print("WARNING:", item)
+
+          if errors:
+              sys.exit(1)
