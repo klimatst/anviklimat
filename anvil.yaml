@@ -1784,7 +1784,7 @@ db_schema:
     title: Части загрузки XLSX
 dependencies: []
 metadata: {description: 'ЭКО-КЛИМАТ: оборудование, проектирование инженерных систем и монтаж.', logo_img: 'asset:pwa-icon.svg', title: ЭКО-КЛИМАТ — оборудование и монтаж}
-name: Clone of Clone of Clone of Clone of Minimal Theme 4
+name: КЛИМАЭКО
 native_deps:
   head_html: |
     <meta name="description" content="КЛИМАЭКО: климатическое оборудование, расчёты, проектирование и монтаж.">
