@@ -8,14 +8,17 @@ _APPLIED_REVISION = None
 _APPLIED_EXTENSION_IDS = []
 
 
-def apply_saved_extensions(force=False):
+def apply_saved_extensions(force=False, bundle=None):
   """Apply the public extension bundle once per revision in this session."""
   global _APPLIED_REVISION, _APPLIED_EXTENSION_IDS
   if not force and _APPLIED_REVISION is not None:
     return
-  try:
-    bundle = anvil.server.call("get_public_site_extensions")
-  except Exception:
+  if bundle is None:
+    try:
+      bundle = anvil.server.call("get_public_site_extensions")
+    except Exception:
+      return
+  if not isinstance(bundle, dict):
     return
   revision = bundle.get("revision", 0)
   for extension_id in _APPLIED_EXTENSION_IDS:
