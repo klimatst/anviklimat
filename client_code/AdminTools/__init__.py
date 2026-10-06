@@ -175,6 +175,80 @@ MODULES = [
 ]
 
 
+  {
+    "id": "command_center", "title": "Command Center", "group": "Система",
+    "description": "Главный центр управления: KPI, быстрые действия, состояние системы и критические задачи.",
+    "icon": "⌘", "badge": "CONTROL CENTER", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Command Center · ЭКО-КЛИМАТ", "start_tab": "widgets"}
+  },
+  {
+    "id": "design_studio", "title": "Design Studio", "group": "Редакторы",
+    "description": "Полное управление пятью темами, сеткой, карточками, Hero, анимациями и мобильным видом.",
+    "icon": "✦", "badge": "DESIGN", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Design Studio · визуальная система", "start_section": "design.visual.system", "open_editor": True}
+  },
+  {
+    "id": "page_builder", "title": "Visual Page Builder", "group": "Редакторы",
+    "description": "Управление блоками страниц, порядком секций, шаблонами и предпросмотром.",
+    "icon": "▤", "badge": "BUILDER", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Visual Page Builder", "start_section": "content.visual-editor", "open_editor": True}
+  },
+  {
+    "id": "menu_builder", "title": "Menu Builder", "group": "Редакторы",
+    "description": "Центральный редактор меню, навигации, CTA и структуры переходов.",
+    "icon": "☰", "badge": "NAV", "form": "SiteMenu", "permission": "cms.manage",
+    "properties": {"window_title": "Menu Builder · навигация"}
+  },
+  {
+    "id": "bulk_catalog", "title": "Bulk Catalog Editor", "group": "Каталог",
+    "description": "Массовое редактирование товаров, цен, категорий, брендов, характеристик и публикации.",
+    "icon": "▦", "badge": "BULK EDIT", "form": "Catalog", "permission": "catalog.manage",
+    "properties": {"window_title": "Bulk Catalog Editor · каталог"}
+  },
+  {
+    "id": "import_center", "title": "Import Center", "group": "Каталог",
+    "description": "Единый контроль XLSX, PDF, CSV, черновиков, проверки данных и журналов импорта.",
+    "icon": "⇧", "badge": "IMPORT", "form": "ImportEngine", "permission": "import.manage",
+    "properties": {"window_title": "Import Center · импорт"}
+  },
+  {
+    "id": "media_manager", "title": "Media Manager Pro", "group": "Каталог",
+    "description": "Центр изображений: отсутствующие фото, источники, ссылки, массовые операции и хранилища.",
+    "icon": "▧", "badge": "MEDIA PRO", "form": "Catalog.Media", "permission": "catalog.manage",
+    "properties": {"window_title": "Media Manager Pro · изображения"}
+  },
+  {
+    "id": "system_health", "title": "System Health Center", "group": "Система",
+    "description": "Контроль целостности каталога, изображений, калькуляторов, ссылок, данных и ошибок.",
+    "icon": "♥", "badge": "HEALTH", "form": "SystemDiagnostics", "permission": None,
+    "properties": {"window_title": "System Health Center"}
+  },
+  {
+    "id": "security_center", "title": "Security Center", "group": "Система",
+    "description": "Сессии, защита входа, аудит чувствительных действий и контроль повторных ошибок.",
+    "icon": "⌑", "badge": "SECURITY", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Security Center", "start_section": "security.control", "open_editor": True}
+  },
+  {
+    "id": "automation_center", "title": "Automation Center", "group": "Система",
+    "description": "Автоматические уведомления, назначения, напоминания и история статусов.",
+    "icon": "↯", "badge": "AUTOMATION", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Automation Center", "start_section": "workflow.automation", "open_editor": True}
+  },
+  {
+    "id": "performance_center", "title": "Performance Center", "group": "Система",
+    "description": "Управление скоростью, lazy-load, WebP, preload, качеством изображений и motion.",
+    "icon": "◒", "badge": "PERFORMANCE", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Performance Center", "start_section": "performance.control", "open_editor": True}
+  },
+  {
+    "id": "seo_center", "title": "SEO Control Center", "group": "Редакторы",
+    "description": "Расширенный SEO-контроль: schema, sitemap, canonical, breadcrumbs и индексация.",
+    "icon": "⌕", "badge": "SEO PRO", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "SEO Control Center", "start_section": "seo.advanced", "open_editor": True}
+  }
+
+
 MODULE_GROUPS = ("Редакторы", "Каталог", "Инженерия", "Операции", "Система")
 
 
