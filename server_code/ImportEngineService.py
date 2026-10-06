@@ -3950,8 +3950,8 @@ def add_pdf_draft_product_to_catalog(draft_id, draft_item_id, product):
   product = dict(product)
   product["_draft_item_id"] = draft_item_id
   cleaned, error = _clean_pdf_product(product)
-  if error:
-    return {"ok": False, "message": error}
+  if cleaned is None or error is not None:
+    return {"ok": False, "message": error or "Проверьте данные товара."}
 
   Catalog.ensure_catalog_categories()
   category_rows = list(app_tables.catalog_categories.search(active=True))
