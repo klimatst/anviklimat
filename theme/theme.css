@@ -213,44 +213,76 @@ html,body{overflow-x:hidden}
 .site-theme--arctic-light .digital-twin-home-band,.site-theme--titanium-light .digital-twin-home-band{background:linear-gradient(135deg,rgba(20,120,145,.06),rgba(255,255,255,.88));border-color:rgba(20,70,85,.14)}
 
 
-/* KLIMAЭКО catalog integrity layer: keep storefront surfaces on the active theme.
-   Explicitly override browser/default white panels that can leak through nested Anvil components. */
-.catalog-view,
-.catalog-view .catalog-main,
-.catalog-view .catalog-content,
-.catalog-view .catalog-products,
-.catalog-view .catalog-category-strip,
-.catalog-view .catalog-navigation,
-.catalog-view .catalog-filters,
-.catalog-view .catalog-reference-links,
-.catalog-view .catalog-product-grid,
-.catalog-view .anvil-container,
-.catalog-view .anvil-panel {
-  background: var(--eco-surface, #141c23) !important;
-  color: var(--eco-text, #e7f0f3);
+
+/* KLIMAЭКО catalog integrity layer: eliminate accidental browser/Anvil white leaks
+   while inheriting the active five-theme material system. */
+.eco-site-shell[class*="site-theme--"] .catalog-view,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-main,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-content,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-products,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-category-strip,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-navigation,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-filters,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-links,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-grid,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-container,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-panel {
+  background: var(--surface-0) !important;
+  color: var(--text) !important;
 }
-.catalog-view .catalog-card,
-.catalog-view .catalog-category-card,
-.catalog-view .catalog-product-card,
-.catalog-view .catalog-reference-links > * {
-  background: var(--eco-surface-strong, #10171d) !important;
-  color: var(--eco-text, #e7f0f3) !important;
-  border-color: var(--eco-border, #2b3a44) !important;
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-category-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-links > * {
+  background: var(--surface-1) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
 }
-.catalog-view img {
-  background: transparent;
-}
-.catalog-view .catalog-empty,
-.catalog-view .catalog-message,
-.catalog-view .catalog-breadcrumbs,
-.catalog-view .catalog-toolbar,
-.catalog-view .catalog-filter-panel {
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-empty,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-message,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-breadcrumbs,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-toolbar,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-filter-panel {
   background: transparent !important;
 }
-.catalog-view .anvil-textbox,
-.catalog-view .anvil-dropdown,
-.catalog-view .anvil-textarea {
-  background: var(--eco-control-bg, #10171d) !important;
-  color: var(--eco-text, #e7f0f3) !important;
-  border-color: var(--eco-border, #2b3a44) !important;
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-textbox,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-dropdown,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-textarea {
+  background: var(--blank-control-bg) !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+.engineering-control-room {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+.engineering-control-hero,
+.engineering-control-panel,
+.engineering-control-metrics > * {
+  border: 1px solid var(--line);
+  background: var(--surface-1);
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 18px 50px rgba(0,0,0,.10);
+}
+.engineering-control-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0,1fr));
+  gap: 12px;
+}
+.engineering-control-metrics > * {
+  white-space: pre-line;
+  min-height: 92px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+}
+@media (max-width: 980px) {
+  .engineering-control-metrics { grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+@media (max-width: 620px) {
+  .engineering-control-metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
