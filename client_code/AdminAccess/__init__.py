@@ -28,6 +28,9 @@ class AdminAccess(AdminAccessTemplate):
         "и повторите вход; авторизация не завершена."
       )
       return
+    except Exception as exc:
+      self.message_label.text = "Ошибка входа администратора: {}".format(exc)
+      return
     if not result["ok"]:
       self.message_label.text = result["message"]
       return
