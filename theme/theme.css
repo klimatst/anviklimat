@@ -286,3 +286,29 @@ html,body{overflow-x:hidden}
 @media (max-width: 620px) {
   .engineering-control-metrics { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+/* Catalog role-safe skin: Anvil CSS roles compile to anvil-role-* classes. */
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-category-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-product-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-tree,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-reference-links,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-product-grid {
+  color: var(--text) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-category-card,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-product-card {
+  background: var(--surface-1) !important;
+  border-color: var(--line) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-category-placeholder,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-product-placeholder {
+  background: var(--surface-2) !important;
+  color: var(--muted) !important;
+  border-color: var(--line) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-search,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-filter,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-role-catalog-filter-input {
+  background: var(--blank-control-bg) !important;
+  border-color: var(--line) !important;
+}

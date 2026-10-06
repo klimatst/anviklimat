@@ -1977,7 +1977,12 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
                    compressor="", country="", operation_mode="", energy_class="",
                    minimum_area=None, maximum_area=None, extra_filters=None):
   user = _current_user()
-  _ensure_categories()
+  # Category bootstrap is a schema/data-initialisation concern, not a hot-path
+  # operation. Only initialise when the table is actually empty.
+  if next(iter(app_tables.catalog_categories.search(
+    q.fetch_only("code"), q.page_size(1)
+  )), None) is None:
+    _ensure_categories()
   can_edit = Core.has_permission(user, "catalog.manage")
   if not isinstance(search_text, str) or len(search_text) > 100:
     return {"ok": False, "message": "Поисковый запрос слишком длинный.", "rows": [], "has_more": False}

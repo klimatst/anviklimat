@@ -49,6 +49,12 @@ class Projects(ProjectsTemplate):
       self.project_type_dropdown.items = result["object_types"]
       self.project_status_dropdown.items = result["statuses"]
       self.system_type_dropdown.items = result["system_types"]
+      self.engineering_profile_dropdown.items = [
+        ("Комплексный HVAC-проект", "combined"),
+        ("VRV / VRF", "vrv_vrf"),
+        ("Вентиляция", "ventilation"),
+        ("Сплит / мультисплит", "split_multi"),
+      ]
 
   def _start_project(self):
     self._project_id = None
@@ -66,6 +72,7 @@ class Projects(ProjectsTemplate):
     self.object_parameters_box.text = "{}"
     self.project_calculation_button.visible = False
     self.project_type_dropdown.selected_value = "other"
+    self.engineering_profile_dropdown.selected_value = "combined"
     self.project_status_dropdown.selected_value = "draft"
     self.project_message.text = ""
 
@@ -91,6 +98,15 @@ class Projects(ProjectsTemplate):
     )
     self.project_type_dropdown.items = result["object_types"]
     self.project_type_dropdown.selected_value = project["object_type"]
+    self.engineering_profile_dropdown.items = [
+      ("Комплексный HVAC-проект", "combined"),
+      ("VRV / VRF", "vrv_vrf"),
+      ("Вентиляция", "ventilation"),
+      ("Сплит / мультисплит", "split_multi"),
+    ]
+    self.engineering_profile_dropdown.selected_value = (
+      (project["object_parameters"] or {}).get("engineering_profile") or "combined"
+    )
     self.project_status_dropdown.items = result["statuses"]
     self.project_status_dropdown.selected_value = project["status"]
     self.room_rows.items = result["rooms"]
@@ -100,6 +116,19 @@ class Projects(ProjectsTemplate):
     self.engineering_control_button.visible = True
     self._load_engineering_snapshot()
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
+
+  def _project_parameters_with_profile(self):
+    raw = self.object_parameters_box.text or "{}"
+    try:
+      parameters = json.loads(raw)
+    except Exception:
+      return raw
+    if not isinstance(parameters, dict):
+      return raw
+    profile = self.engineering_profile_dropdown.selected_value or "combined"
+    parameters["engineering_profile"] = profile
+    parameters["engineering_workflow_version"] = 1
+    return json.dumps(parameters, ensure_ascii=False, separators=(",", ":"))
 
   def _save_project(self):
     self.save_project_button.enabled = False
@@ -111,7 +140,7 @@ class Projects(ProjectsTemplate):
           "object_name": self.object_name_box.text or "",
           "object_type": self.project_type_dropdown.selected_value,
           "address": self.object_address_box.text or "",
-          "object_parameters": self.object_parameters_box.text or "{}",
+          "object_parameters": self._project_parameters_with_profile(),
           "status": self.project_status_dropdown.selected_value
         },
         self._project_id
@@ -145,7 +174,16 @@ class Projects(ProjectsTemplate):
     snapshot = result["snapshot"]
     self.engineering_stage_label.text = "{} · {}%".format(snapshot["stage_title"], snapshot["progress"])
     self.engineering_stage_description.text = snapshot["stage_description"]
-    self.engineering_score_label.text = "Engineering Score: {}/100".format(snapshot["engineering_score"])
+    profile_titles = {
+      "combined": "Комплексный HVAC",
+      "vrv_vrf": "VRV / VRF",
+      "ventilation": "Вентиляция",
+      "split_multi": "Сплит / мультисплит"
+    }
+    self.engineering_score_label.text = "Engineering Score: {}/100 · {}".format(
+      snapshot["engineering_score"],
+      profile_titles.get(snapshot.get("engineering_profile"), "HVAC")
+    )
     self.engineering_lifecycle_label.text = (
       "Объект {} · {} помещений · {} систем · {} компонентов · {} расчётов · {} смет · {} сервисных записей"
       .format(snapshot["object_name"] or "не задан", snapshot["room_count"], snapshot["system_count"],
