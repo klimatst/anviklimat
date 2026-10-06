@@ -4,7 +4,7 @@ from anvil.js.window import document
 import anvil.server
 import anvil.users
 from ... import Access, AdminExtensions, AdminNavigation, NewsCategories
-SITE_THEME_CODES = ("blue", "graphite", "ice", "amber", "crimson", "violet")
+SITE_THEME_CODES = ("graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light")
 
 
 class BaseLayout(BaseLayoutTemplate):
