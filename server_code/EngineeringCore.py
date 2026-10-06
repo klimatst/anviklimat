@@ -166,7 +166,7 @@ def get_engineering_quality_gate():
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
 
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:500])
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:100])
   counts = {
     "projects_without_object": 0,
     "projects_without_rooms": 0,
