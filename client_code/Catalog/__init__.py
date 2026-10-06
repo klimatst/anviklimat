@@ -178,14 +178,26 @@ class Catalog(CatalogTemplate):
         {
           "id": "direction-home", "code": "direction-home",
           "title": "Для дома", "menu_label": "Для дома",
-          "children": tree[:7], "has_children": True,
-          "expand_icon": "›", "menu_mode": True, "product_count": 0
+          "children": [
+            row for row in tree if row["code"] in {
+              "air-conditioning", "heat-pumps", "heating",
+              "humidifiers-purifiers"
+            }
+          ],
+          "has_children": True, "expand_icon": "›",
+          "menu_mode": True, "product_count": 0
         },
         {
           "id": "direction-business", "code": "direction-business",
           "title": "Для бизнеса", "menu_label": "Для бизнеса",
-          "children": tree[2:], "has_children": True,
-          "expand_icon": "›", "menu_mode": True, "product_count": 0
+          "children": [
+            row for row in tree if row["code"] not in {
+              "air-conditioning", "heat-pumps", "heating",
+              "humidifiers-purifiers"
+            }
+          ],
+          "has_children": True, "expand_icon": "›",
+          "menu_mode": True, "product_count": 0
         }
       ]
     }
@@ -225,8 +237,10 @@ class Catalog(CatalogTemplate):
         children = []
       else:
         title = "Каталог оборудования"
-        description = "Подберите оборудование по назначению, категории и серии."
-        children = list(self.category_tree.items)
+        description = "Выберите категорию, затем подразделение или серию. Поиск и фильтры работают по всей номенклатуре."
+        children = [
+          row for row in self._categories if not row.get("parent_code")
+        ]
     elif code in ("direction-home", "direction-business"):
       direction = next((row for row in self.category_tree.items if row["code"] == code), None)
       title = direction["title"] if direction else "Каталог"
