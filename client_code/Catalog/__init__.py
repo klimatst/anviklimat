@@ -74,7 +74,7 @@ class Catalog(CatalogTemplate):
 
   def _load_categories(self, category_code=None):
     try:
-      result = anvil.server.call("get_catalog_menu_tree")
+      result = anvil.server.call("get_catalog_menu_tree", False)
     except Exception as exc:
       self.catalog_message.text = "Не удалось загрузить каталог: {}".format(exc)
       self.category_tree.items = []
@@ -171,10 +171,9 @@ class Catalog(CatalogTemplate):
     self.page_title.text = title
     self.category_description.text = description
     self.breadcrumb_rows.items = self._build_breadcrumbs(code)
-    self.catalog_panel.visible = bool(
-      (self.search_box.text or "").strip()
-      or (code and code not in ("direction-home", "direction-business"))
-    )
+    # Keep the catalog workspace visible even before a category is
+    # selected: users immediately get search, filters and the first products.
+    self.catalog_panel.visible = True
     cards = []
     for row in children:
       is_direction = row["code"] in ("direction-home", "direction-business")
@@ -190,9 +189,12 @@ class Catalog(CatalogTemplate):
         )
       else:
         card_description = row.get("description") or "Оборудование и серии этого раздела каталога."
-        summary = "{} моделей · {} подразделений".format(
-          row.get("product_count", 0),
-          row.get("child_count", len(row.get("children", [])))
+        child_count = row.get("child_count", len(row.get("children", [])))
+        product_count = row.get("product_count", 0)
+        summary = (
+          "{} моделей · {} подразделений".format(product_count, child_count)
+          if product_count
+          else "{} подразделений".format(child_count)
         )
       cards.append(dict(
         row, summary=summary, card_description=card_description,
