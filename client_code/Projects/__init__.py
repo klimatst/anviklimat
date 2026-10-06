@@ -212,6 +212,13 @@ class Projects(ProjectsTemplate):
     snapshot = result["snapshot"]
     self.engineering_stage_label.text = "{} · {}%".format(snapshot["stage_title"], snapshot["progress"])
     self.engineering_stage_description.text = snapshot["stage_description"]
+    self.engineering_next_action_label.text = "Следующее действие: " + snapshot.get("next_action", "")
+    risks = snapshot.get("risk_flags") or []
+    self.engineering_risk_label.text = (
+      "Риски / пробелы: " + " · ".join(risks)
+      if risks else
+      "Риски / пробелы: критических пропусков не обнаружено."
+    )
     profile_titles = {
       "combined": "Комплексный HVAC",
       "vrv_vrf": "VRV / VRF",
