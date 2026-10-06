@@ -284,3 +284,71 @@ def get_engineering_quality_gate():
     "high_count": high_count, "counts": counts, "issues": issues[:60],
     "checked_projects": len(projects), "generated_at": datetime.now(timezone.utc)
   }
+
+
+@anvil.server.callable(require_user=True)
+def get_project_action_center(project_id):
+  """Return prioritized actions for the current engineering lifecycle."""
+  snapshot_result = get_project_engineering_snapshot(project_id)
+  if not snapshot_result.get("ok"):
+    return snapshot_result
+  snapshot = snapshot_result["snapshot"]
+  actions = []
+
+  def add(key, priority, title, description):
+    actions.append({
+      "key": key,
+      "priority": priority,
+      "title": title,
+      "description": description,
+    })
+
+  if not snapshot["object_ready"]:
+    add("object", "critical", "Заполнить объект",
+        "Зафиксируйте объект и исходные ограничения до инженерного расчёта.")
+  if snapshot["object_ready"] and not snapshot["room_count"]:
+    add("rooms", "high", "Добавить помещения",
+        "Без помещений расчётная модель объекта неполная.")
+  if snapshot["room_count"] and not snapshot["calculation_count"]:
+    add("calculations", "high", "Запустить расчёты",
+        "Выполните независимые расчёты для выбранного инженерного профиля.")
+  if snapshot["calculation_count"] and not snapshot["system_count"]:
+    add("systems", "high", "Собрать инженерные системы",
+        "Свяжите расчёты с реальными системами объекта.")
+  if snapshot["system_count"] and not snapshot["system_component_count"]:
+    add("components", "high", "Собрать состав систем",
+        "Добавьте оборудование и компоненты в конструктор.")
+  if snapshot["system_component_count"] and not snapshot["bom_line_count"]:
+    add("bom", "high", "Сформировать BOM",
+        "Переведите состав систем в проверяемую спецификацию.")
+  if snapshot["bom_line_count"] and not snapshot["estimate_count"]:
+    add("estimate", "high", "Рассчитать смету",
+        "Оцените материалы, работы и расходные материалы по актуальному BOM.")
+  if snapshot["estimate_count"] and not snapshot["quote_count"]:
+    add("quote", "high", "Создать КП",
+        "Сформируйте коммерческое предложение из последней версии сметы.")
+  if snapshot["quote_count"] and not snapshot["approved_quote_count"]:
+    add("approval", "medium", "Согласовать КП",
+        "Переведите предложение из черновика/отправки в согласованный статус.")
+  if snapshot["approved_quote_count"] and not snapshot["installation_count"]:
+    add("installation", "high", "Передать в монтаж",
+        "Создайте монтажную запись и зафиксируйте фактический состав работ.")
+  if snapshot["installation_count"] and not snapshot["commissioning_completed_count"]:
+    add("commissioning", "high", "Закрыть ПНР",
+        "Зафиксируйте завершённую пусконаладку перед передачей объекта в эксплуатацию.")
+  if snapshot["commissioning_completed_count"] and not snapshot["service_completed_count"]:
+    add("service", "medium", "Запланировать сервис",
+        "Переведите объект в управляемый жизненный цикл обслуживания.")
+  if not actions:
+    add("lifecycle", "info", "Контур проекта собран",
+        "Поддерживайте расчёты, спецификацию, документы и сервисную историю в актуальном состоянии.")
+
+  priority_rank = {"critical": 0, "high": 1, "medium": 2, "info": 3}
+  actions.sort(key=lambda item: priority_rank[item["priority"]])
+  return {
+    "ok": True,
+    "stage_key": snapshot["stage_key"],
+    "engineering_score": snapshot["engineering_score"],
+    "lifecycle_ready": snapshot["lifecycle_ready"],
+    "actions": actions[:8],
+  }
