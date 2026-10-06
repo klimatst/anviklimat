@@ -2029,20 +2029,30 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     q.page_size(PAGE_SIZE + 1),
     q.all_of(identity_key=q.not_(q.ilike("demo|%")))
   ]
+  price_sort = sort_by in ("price_asc", "price_desc")
+  offset = 0
   if cursor:
     if not isinstance(cursor, str) or len(cursor) > 600:
       return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
-    try:
-      cursor_model, cursor_identity = json.loads(cursor)
-    except (TypeError, ValueError):
-      return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
-    if not isinstance(cursor_model, str) or not isinstance(cursor_identity, str):
-      return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
-    comparison = q.less_than if not ascending else q.greater_than
-    expressions.append(q.any_of(
-      q.all_of(model=comparison(cursor_model)),
-      q.all_of(model=cursor_model, identity_key=comparison(cursor_identity))
-    ))
+    if price_sort:
+      try:
+        offset = int(cursor)
+      except (TypeError, ValueError):
+        return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
+      if offset < 0 or offset > 10000:
+        return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
+    else:
+      try:
+        cursor_model, cursor_identity = json.loads(cursor)
+      except (TypeError, ValueError):
+        return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
+      if not isinstance(cursor_model, str) or not isinstance(cursor_identity, str):
+        return {"ok": False, "message": "Некорректный курсор каталога.", "rows": [], "has_more": False}
+      comparison = q.less_than if not ascending else q.greater_than
+      expressions.append(q.any_of(
+        q.all_of(model=comparison(cursor_model)),
+        q.all_of(model=cursor_model, identity_key=comparison(cursor_identity))
+      ))
   if category_id:
     if not isinstance(category_id, str):
       return {"ok": False, "message": "Некорректная категория.", "rows": [], "has_more": False}
@@ -2210,9 +2220,39 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     )
     expressions.append(q.any_of(*text_filters))
 
-  products = list(app_tables.products.search(*expressions, **filters)[:PAGE_SIZE + 1])
-  has_more = len(products) > PAGE_SIZE
-  products = products[:PAGE_SIZE]
+  query_limit = 10001 if price_sort else PAGE_SIZE + 1
+  products = list(app_tables.products.search(*expressions, **filters)[:query_limit])
+  if price_sort and len(products) > 10000:
+    return {"ok": False, "message": "Слишком много товаров для сортировки по цене. Уточните фильтры.", "rows": [], "has_more": False}
+  if price_sort:
+    # Prices are loaded before ordering, but the query itself may not have a
+    # price index. Keep a deterministic fallback: products without a price
+    # are always after products with a price.
+    price_rows = {
+      row["product"].get_id(): row
+      for row in app_tables.product_prices.search(
+        q.fetch_only("product", "sale_price", "currency"),
+        q.any_of(*[q.all_of(product=product) for product in products])
+      )
+      if row["product"] is not None
+    }
+    products.sort(
+      key=lambda product: (
+        price_rows.get(product.get_id()) is None
+        or price_rows[product.get_id()]["sale_price"] is None,
+        price_rows.get(product.get_id())["sale_price"]
+        if price_rows.get(product.get_id()) is not None
+        and price_rows[product.get_id()]["sale_price"] is not None else 0,
+        (product["model"] or "").casefold(),
+        product["identity_key"] or ""
+      ),
+      reverse=sort_by == "price_desc"
+    )
+    has_more = len(products) > offset + PAGE_SIZE
+    products = products[offset:offset + PAGE_SIZE]
+  else:
+    has_more = len(products) > PAGE_SIZE
+    products = products[:PAGE_SIZE]
   price_by_product = {}
   stock_by_product = {}
   image_by_product = {}
@@ -2358,12 +2398,17 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
       "can_edit": can_edit
     })
 
+  next_cursor = None
+  if has_more:
+    if price_sort:
+      next_cursor = str(offset + len(products))
+    else:
+      next_cursor = json.dumps([
+        products[-1]["model"] or "", products[-1]["identity_key"]
+      ])
   return {
     "ok": True, "rows": result, "has_more": has_more,
-    "shown_count": len(result),
-    "next_cursor": json.dumps([
-      products[-1]["model"] or "", products[-1]["identity_key"]
-    ]) if has_more else None
+    "shown_count": len(result), "next_cursor": next_cursor
   }
 
 
