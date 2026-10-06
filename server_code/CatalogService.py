@@ -557,7 +557,7 @@ def get_catalog_categories():
 
 
 @anvil.server.callable
-def get_catalog_menu_tree():
+def get_catalog_menu_tree(include_counts=True):
   """Return live category rows grouped into the two catalogue directions."""
   _ensure_categories()
   categories = _category_options()
@@ -566,14 +566,20 @@ def get_catalog_menu_tree():
   }
   roots = []
   direct_product_ids: dict[str, set[str]] = {}
-  for product in app_tables.products.search(
-    q.fetch_only("category", "subcategory"), active=True
-  ):
-    for field in ("category", "subcategory"):
-      category = product[field]
-      if category is not None:
-        category_id = category.get_id()
-        direct_product_ids.setdefault(category_id, set()).add(product.get_id())
+
+  # The header only needs the navigation tree. Full product counts and the
+  # series payload are useful to the Catalog form, but expensive on every
+  # public page load, so they are opt-in.
+  if include_counts:
+    for product in app_tables.products.search(
+      q.fetch_only("category", "subcategory"), active=True
+    ):
+      for field in ("category", "subcategory"):
+        category = product[field]
+        if category is not None:
+          category_id = category.get_id()
+          direct_product_ids.setdefault(category_id, set()).add(product.get_id())
+
   for row in categories:
     node = by_id[row["id"]]
     node["product_ids"] = set(direct_product_ids.get(row["id"], set()))
@@ -598,9 +604,10 @@ def get_catalog_menu_tree():
       path.add(node["id"])
       children = order_tree(node["children"], path)
       node["children"] = children
-      for child in children:
-        node["product_ids"].update(child["product_ids"])
-      node["product_count"] = len(node["product_ids"])
+      if include_counts:
+        for child in children:
+          node["product_ids"].update(child["product_ids"])
+        node["product_count"] = len(node["product_ids"])
       node["has_children"] = bool(children)
       node["child_count"] = len(children)
       node["expand_icon"] = "›" if children else ""
@@ -609,41 +616,51 @@ def get_catalog_menu_tree():
 
   roots = order_tree(roots)
 
-  def remove_count_sets(nodes):
-    for node in nodes:
-      node.pop("product_ids", None)
-      remove_count_sets(node["children"])
+  if include_counts:
+    def remove_count_sets(nodes):
+      for node in nodes:
+        node.pop("product_ids", None)
+        remove_count_sets(node["children"])
 
-  remove_count_sets(roots)
+    remove_count_sets(roots)
+
   for category in categories:
     node = by_id[category["id"]]
-    category["product_count"] = node["product_count"]
+    category["product_count"] = node["product_count"] if include_counts else 0
     category["child_count"] = node["child_count"]
+
   home = []
   business = []
   for root in roots:
     (home if root["code"] in HOME_ROOT_CODES else business).append(root)
+
   navigation_settings = AdminStudio.get_public_navigation_settings()
-  return {"ok": True, "categories": categories,
-    "series": [_series_payload(row) for row in _series_rows_for_category(active_only=True)],
+  return {
+    "ok": True,
+    "categories": categories,
+    "series": (
+      [_series_payload(row) for row in _series_rows_for_category(active_only=True)]
+      if include_counts else []
+    ),
     "navigation_settings": navigation_settings,
     "site_menu": SiteMenuService.get_public_site_menu_data(),
     "tree": [
-    {
-      "id": "direction-home", "code": "direction-home", "title": "Для дома",
-      "menu_label": "Для дома", "children": home, "has_children": True,
-      "expand_icon": "›", "menu_mode": True, "product_count": sum(
-        row["product_count"] for row in home
-      )
-    },
-    {
-      "id": "direction-business", "code": "direction-business", "title": "Для бизнеса",
-      "menu_label": "Для бизнеса", "children": business, "has_children": True,
-      "expand_icon": "›", "menu_mode": True, "product_count": sum(
-        row["product_count"] for row in business
-      )
-    }
-  ]}
+      {
+        "id": "direction-home", "code": "direction-home", "title": "Для дома",
+        "menu_label": "Для дома", "children": home, "has_children": True,
+        "expand_icon": "›", "menu_mode": True, "product_count": sum(
+          row["product_count"] for row in home
+        )
+      },
+      {
+        "id": "direction-business", "code": "direction-business", "title": "Для бизнеса",
+        "menu_label": "Для бизнеса", "children": business, "has_children": True,
+        "expand_icon": "›", "menu_mode": True, "product_count": sum(
+          row["product_count"] for row in business
+        )
+      }
+    ]
+  }
 
 
 def _series_image_url(series):
