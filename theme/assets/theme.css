@@ -6212,3 +6212,32 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
   .taxonomy-editor-header { align-items: flex-start; flex-direction: column; }
   .taxonomy-panel-hint { text-align: left; }
 }
+
+
+/* Sharper admin visual language: technical panels, square geometry, strong hierarchy. */
+.eco-site-shell[class*="admin-mode"] .admin-hub-module-panel,
+.eco-site-shell[class*="admin-mode"] .admin-hub-metrics-panel,
+.eco-site-shell[class*="admin-mode"] .admin-hub-attention,
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-hub-audit {
+  border-radius: 8px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-card {
+  border-radius: 7px;
+  border-left: 2px solid rgba(103,213,173,.18);
+  background:
+    linear-gradient(135deg, rgba(21,37,43,.98), rgba(10,18,23,.99));
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-card:hover {
+  border-left-color: #67d5ad;
+  transform: translateY(-1px);
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-icon {
+  border-radius: 6px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-badge {
+  border-radius: 4px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-hub-module-toolbar input.anvil-text-box,
+.eco-site-shell[class*="admin-mode"] .admin-hub-module-toolbar select {
+  border-radius: 5px;
+}
