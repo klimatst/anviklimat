@@ -190,3 +190,18 @@ html,body{overflow-x:hidden}
 .eco-site-shell.site-theme--arctic-light .engineering-dna,.eco-site-shell.site-theme--titanium-light .engineering-dna{background:linear-gradient(110deg,rgba(var(--theme-accent-rgb),.045),rgba(255,255,255,.72));box-shadow:0 18px 55px rgba(20,35,42,.08),inset 0 1px rgba(255,255,255,.85)}
 @media(max-width:900px){.engineering-dna{grid-template-columns:repeat(2,minmax(0,1fr))}.engineering-dna__label{grid-column:1/-1}.engineering-dna__item:nth-child(3){border-right:0}}
 @media(max-width:520px){.engineering-dna{grid-template-columns:1fr}.engineering-dna__label{grid-column:auto}.engineering-dna__item{border-right:0;border-top:1px solid rgba(var(--theme-accent-rgb),.10)}}
+
+
+/* KLIMAЭКО // ENGINEERING DIGITAL TWIN */
+.digital-twin-view{display:flex;flex-direction:column;gap:18px;padding:8px 0 40px}
+.digital-twin-hero{display:flex;justify-content:space-between;gap:24px;align-items:flex-end;padding:22px 24px;border:1px solid rgba(36,212,237,.18);background:linear-gradient(135deg,rgba(36,212,237,.07),rgba(255,255,255,.015));border-radius:18px}
+.digital-twin-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(7,11,15,.78)}
+.digital-twin-workbench{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
+.digital-twin-workbench .anvil-component{max-width:100%}
+.digital-twin-workbench canvas{border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.32);cursor:crosshair}
+.digital-twin-workbench .role-card{overflow:hidden}
+.digital-twin-bottom{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;border:1px solid rgba(36,212,237,.13);border-radius:14px;background:rgba(12,18,24,.72)}
+@media(max-width:1050px){.digital-twin-workbench{grid-template-columns:1fr}.digital-twin-toolbar{align-items:stretch}.digital-twin-hero{align-items:flex-start;flex-direction:column}}
+@media(max-width:700px){.digital-twin-view{padding:0 0 24px}.digital-twin-toolbar{flex-direction:column}.digital-twin-bottom{flex-direction:column;align-items:stretch}.digital-twin-workbench canvas{width:100%;height:auto}}
+.site-theme--arctic-light .digital-twin-hero,.site-theme--titanium-light .digital-twin-hero{background:linear-gradient(135deg,rgba(20,120,145,.07),rgba(255,255,255,.75));border-color:rgba(20,120,145,.16)}
+.site-theme--arctic-light .digital-twin-toolbar,.site-theme--titanium-light .digital-twin-toolbar,.site-theme--arctic-light .digital-twin-bottom,.site-theme--titanium-light .digital-twin-bottom{background:rgba(255,255,255,.86);border-color:rgba(20,50,60,.10)}
