@@ -2225,10 +2225,9 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
   products = list(app_tables.products.search(*expressions, **filters)[:query_limit])
   if price_sort and len(products) > 10000:
     return {"ok": False, "message": "Слишком много товаров для сортировки по цене. Уточните фильтры.", "rows": [], "has_more": False}
-  if price_sort:
-    # Prices are loaded before ordering, but the query itself may not have a
-    # price index. Keep a deterministic fallback: products without a price
-    # are always after products with a price.
+  if price_sort and products:
+    # Keep a deterministic fallback: products without a price are after
+    # products with a price.
     price_rows = {
       row["product"].get_id(): row
       for row in app_tables.product_prices.search(
@@ -2258,7 +2257,11 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
       )
     )
     products = priced + unpriced
-    has_more = len(products) > offset + PAGE_SIZE    products = products[offset:offset + PAGE_SIZE]
+    has_more = len(products) > offset + PAGE_SIZE
+    products = products[offset:offset + PAGE_SIZE]
+  elif price_sort:
+    has_more = False
+    products = []
   else:
     has_more = len(products) > PAGE_SIZE
     products = products[:PAGE_SIZE]
