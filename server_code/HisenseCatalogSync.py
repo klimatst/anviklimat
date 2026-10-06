@@ -634,7 +634,8 @@ def sync_hisense_lovable_catalog(force=False):
     _upsert_spec(product, "Фото", "", "", 120)
     _upsert_spec(product, "Резервная ссылка фото", "", "", 125)
     _upsert_spec(product, "Источник фото", "", "", 130)
-    _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])\n    _sync_xlsx_gallery(product, row["model"])
+    _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])
+    _sync_xlsx_gallery(product, row["model"])
     source = next(iter(app_tables.product_sources.search(product=product)), None)
     source_values = {
       "url": SOURCE_URL, "publisher": "Lovable · Hisense catalog",
