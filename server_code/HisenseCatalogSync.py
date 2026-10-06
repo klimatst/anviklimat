@@ -5,6 +5,7 @@ import math
 import re
 import uuid
 
+import anvil
 import anvil.server
 from anvil.tables import app_tables, order_by, query as q
 
@@ -328,7 +329,7 @@ def _ensure_series(category, title, min_power, max_power):
       is_new=("2026" in title.upper() or "NEW" in title.upper()),
       active=True, status="active", updated_at=datetime.now(timezone.utc)
     )
-    return existing
+    return existing, False
   return app_tables.catalog_series.add_row(
     code="hisense-" + _slug(title) + "-" + uuid.uuid4().hex[:8],
     title=title, category=category,
@@ -373,9 +374,18 @@ def _upsert_photo(product, url, model, photo_key):
     return
   existing = next((
     row for row in app_tables.product_media.search(product=product)
-    if not isinstance(row["file"], object) and (row["url"] or "") == url
+    if (row["url"] or "") == url
   ), None)
   primary_rows = list(app_tables.product_media.search(product=product, type="primary"))
+  if existing is not None:
+    existing.update(
+      source=IMAGE_SOURCE, type="primary", is_primary=True,
+      alt_text="Hisense " + model, checksum=""
+    )
+    for row in primary_rows:
+      if row.get_id() != existing.get_id() and row["is_primary"]:
+        row.update(is_primary=False)
+    return
   if primary_rows and not isinstance(primary_rows[0]["file"], anvil.Media):
     row = primary_rows[0]
     row.update(
@@ -471,9 +481,8 @@ def sync_hisense_lovable_catalog(force=False):
   series_created = 0
   for (category_id, title), stat in series_stats.items():
     category = app_tables.catalog_categories.get_by_id(category_id)
-    series = _ensure_series(category, title, stat["min"], stat["max"])
-    if (series["created_at"] or datetime.min.replace(tzinfo=timezone.utc)) == series["updated_at"]:
-      series_created += 1
+    series, was_created = _ensure_series(category, title, stat["min"], stat["max"])
+    series_created += 1 if was_created else 0
     series_map[(category_id, title.casefold())] = series
 
   created = updated = 0
