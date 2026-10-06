@@ -849,3 +849,155 @@ html,body{overflow-x:hidden}
     animation:none;
   }
 }
+
+
+/* KLIMAЭКО // PREMIUM MATERIAL SYSTEM v3
+   Global visual refinement. Native Anvil, no layout replacement. */
+.eco-site-shell{
+  --ke-glass:color-mix(in srgb,var(--surface-1,#141c23) 82%,transparent);
+  --ke-glass-strong:color-mix(in srgb,var(--surface-1,#141c23) 94%,transparent);
+  --ke-shadow-sm:0 8px 24px rgba(0,0,0,.10);
+  --ke-shadow-md:0 18px 52px rgba(0,0,0,.15);
+  --ke-shadow-lg:0 30px 90px rgba(0,0,0,.22);
+  --ke-border-soft:rgba(var(--theme-accent-rgb),.13);
+}
+.eco-site-shell .anvil-role-section-heading{
+  text-wrap:balance;
+}
+.eco-site-shell .anvil-role-card,
+.eco-site-shell .anvil-role-service-card,
+.eco-site-shell .anvil-role-calculator-card,
+.eco-site-shell .anvil-role-admin-tile,
+.eco-site-shell .anvil-role-admin-settings{
+  background:
+    linear-gradient(145deg,rgba(var(--theme-accent-rgb),.035),transparent 38%),
+    var(--surface-1,#141c23);
+  border:1px solid var(--ke-border-soft);
+  box-shadow:var(--ke-shadow-sm);
+}
+.eco-site-shell .anvil-role-card:hover,
+.eco-site-shell .anvil-role-service-card:hover,
+.eco-site-shell .anvil-role-calculator-card:hover,
+.eco-site-shell .anvil-role-admin-tile:hover{
+  box-shadow:var(--ke-shadow-md);
+}
+.eco-site-shell .anvil-role-admin-tile{
+  min-height:150px;
+}
+.eco-site-shell .anvil-role-admin-tile-code{
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.14em;
+}
+.eco-site-shell .anvil-role-metric-value{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.045em;
+}
+.eco-site-shell .catalog-product-card,
+.eco-site-shell .anvil-role-catalog-product-card{
+  border-radius:18px!important;
+  overflow:hidden;
+  box-shadow:0 12px 38px rgba(0,0,0,.11);
+  transition:transform 220ms var(--premium-ease),box-shadow 220ms ease,border-color 220ms ease;
+}
+.eco-site-shell .catalog-product-card:hover,
+.eco-site-shell .anvil-role-catalog-product-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 24px 62px rgba(0,0,0,.18);
+}
+.eco-site-shell .catalog-product-photo-frame{
+  position:relative;
+  overflow:hidden;
+}
+.eco-site-shell .catalog-product-photo-frame img{
+  transition:transform 500ms var(--premium-ease),filter 500ms ease;
+}
+.eco-site-shell .catalog-product-card:hover .catalog-product-photo-frame img,
+.eco-site-shell .anvil-role-catalog-product-card:hover .catalog-product-photo-frame img{
+  transform:scale(1.035);
+  filter:saturate(1.04) contrast(1.02);
+}
+.eco-site-shell .anvil-role-primary-action>button,
+.eco-site-shell .anvil-role-secondary-button>button{
+  min-height:42px;
+  border-radius:11px;
+  font-weight:760;
+  letter-spacing:.01em;
+}
+.eco-site-shell .anvil-role-primary-action>button{
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.12),transparent 45%),
+    linear-gradient(135deg,var(--theme-accent-bright,var(--accent,#24d4ed)),var(--ke-accent,#24d4ed))!important;
+}
+.eco-site-shell .admin-hub-module-toolbar{
+  box-shadow:0 12px 34px rgba(0,0,0,.12);
+}
+.eco-site-shell .admin-hub-module-grid .anvil-role-card{
+  min-height:176px;
+}
+.eco-site-shell .projects-view,
+.eco-site-shell .catalog-view,
+.eco-site-shell .calculator-page,
+.eco-site-shell .installation-page,
+.eco-site-shell .ventilation-page,
+.eco-site-shell .admin-hub{
+  max-width:1440px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.eco-site-shell .engineering-control-room{
+  max-width:1440px;
+}
+.eco-site-shell .engineering-control-hero{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 0,rgba(var(--theme-accent-rgb),.12),transparent 30%),
+    linear-gradient(145deg,var(--surface-2,#18232b),var(--surface-1,#11181d));
+  box-shadow:var(--ke-shadow-lg);
+}
+.eco-site-shell .engineering-control-hero::after{
+  content:"";
+  position:absolute;
+  width:420px;
+  height:420px;
+  right:-210px;
+  top:-260px;
+  border:1px solid rgba(var(--theme-accent-rgb),.15);
+  border-radius:50%;
+  box-shadow:0 0 0 34px rgba(var(--theme-accent-rgb),.025),0 0 0 68px rgba(var(--theme-accent-rgb),.018);
+  pointer-events:none;
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-service-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-service-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-tile,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-tile{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.92),rgba(var(--theme-accent-rgb),.025)),
+    #f8fbfc;
+  border-color:rgba(30,70,80,.10);
+  box-shadow:0 12px 38px rgba(30,52,60,.08),inset 0 1px rgba(255,255,255,.95);
+}
+.eco-site-shell.site-theme--arctic-light .eco-command-hero,
+.eco-site-shell.site-theme--titanium-light .eco-command-hero{
+  border-color:rgba(30,70,80,.12);
+}
+@media(max-width:760px){
+  .eco-site-shell .anvil-role-admin-tile{
+    min-height:130px;
+  }
+  .eco-site-shell .anvil-role-primary-action>button,
+  .eco-site-shell .anvil-role-secondary-button>button{
+    min-height:44px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .eco-site-shell .catalog-product-card,
+  .eco-site-shell .anvil-role-catalog-product-card{
+    transition:none;
+  }
+  .eco-site-shell .catalog-product-photo-frame img{
+    transition:none;
+  }
+}
