@@ -38,3 +38,47 @@ jobs:
               print("\n".join(errors))
               sys.exit(1)
           print("Server syntax and duplicate-definition checks passed.")
+
+      - name: Check client/server callable contract
+        shell: python
+        run: |
+          import ast, pathlib, sys
+          server_callables = set()
+          client_calls = {}
+          for path in pathlib.Path("server_code").rglob("*.py"):
+              try:
+                  tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              except SyntaxError:
+                  continue
+              for node in tree.body:
+                  if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                      continue
+                  for decorator in node.decorator_list:
+                      if isinstance(decorator, ast.Attribute) and decorator.attr == "callable":
+                          server_callables.add(node.name)
+                      elif isinstance(decorator, ast.Call) and isinstance(decorator.func, ast.Attribute) and decorator.func.attr == "callable":
+                          server_callables.add(node.name)
+          for path in pathlib.Path("client_code").rglob("*.py"):
+              try:
+                  tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              except SyntaxError:
+                  continue
+              for node in ast.walk(tree):
+                  if not isinstance(node, ast.Call) or not node.args:
+                      continue
+                  func = node.func
+                  if not (isinstance(func, ast.Attribute) and func.attr == "call"):
+                      continue
+                  if not (isinstance(func.value, ast.Attribute) and func.value.attr == "server"):
+                      continue
+                  if not (isinstance(func.value.value, ast.Name) and func.value.value.id == "anvil"):
+                      continue
+                  name = node.args[0]
+                  if isinstance(name, ast.Constant) and isinstance(name.value, str):
+                      client_calls.setdefault(name.value, set()).add(str(path))
+          missing = sorted(name for name in client_calls if name not in server_callables)
+          if missing:
+              for name in missing:
+                  print(f"Missing server callable: {name} <- {sorted(client_calls[name])}")
+              sys.exit(1)
+          print(f"Client/server callable contract passed: {len(client_calls)} static calls checked.")
