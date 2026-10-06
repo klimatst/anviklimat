@@ -140,7 +140,7 @@ class Projects(ProjectsTemplate):
           "object_name": self.object_name_box.text or "",
           "object_type": self.project_type_dropdown.selected_value,
           "address": self.object_address_box.text or "",
-          "object_parameters": self.object_parameters_box.text or "{}",
+          "object_parameters": self._project_parameters_with_profile(),
           "status": self.project_status_dropdown.selected_value
         },
         self._project_id
