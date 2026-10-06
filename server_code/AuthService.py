@@ -2,6 +2,7 @@
 
 import anvil.server
 import anvil.users
+import Core
 
 
 def _anonymous_access_context():
@@ -21,6 +22,18 @@ def get_access_context():
     return _anonymous_access_context()
 
   email = user["email"] or ""
+  if Core._is_admin(user):
+    role = user["role"]
+    role_title = role["title"] if role is not None else "Администратор"
+    if not isinstance(role_title, str) or not role_title:
+      role_title = "Администратор"
+    return {
+      "email": email,
+      "role_code": "admin",
+      "role_title": role_title,
+      "permissions": ["*"]
+    }
+
   role = user["role"]
   raw_role_code = role["code"] if role is not None else "user"
   role_code = (

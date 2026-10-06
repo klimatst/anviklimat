@@ -43,7 +43,7 @@ def get_session_context():
   if _SESSION_CONTEXT is None:
     try:
       _SESSION_CONTEXT = anvil.server.call("get_access_context")
-    except Exception:
+    except anvil.server.RuntimeUnavailableError:
       user = anvil.users.get_user()
       return {
         "email": user["email"] if user is not None else "",

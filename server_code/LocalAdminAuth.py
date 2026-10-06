@@ -52,12 +52,8 @@ def _ensure_local_admin_user(admin_role):
       permissions=["*"],
     )
   else:
-    role = user["role"]
-    role_code = role["code"] if role is not None else ""
-    if not isinstance(role_code, str) or role_code.casefold() != LOCAL_ADMIN_LOGIN:
-      raise RuntimeError(
-        "Зарезервированная учётная запись используется другой ролью."
-      )
+    # This address is reserved for the fixed local admin login. Repair an
+    # incomplete or stale role link instead of leaving the account unauthorised.
     user.update(
       enabled=True,
       confirmed_email=True,
@@ -73,14 +69,8 @@ def local_admin_login(login, password):
   if login != LOCAL_ADMIN_LOGIN or password != LOCAL_ADMIN_PASSWORD:
     return {"ok": False, "message": "Неверный логин или пароль."}
 
-  try:
-    admin_role = _admin_role()
-    user = _ensure_local_admin_user(admin_role)
-    anvil.users.force_login(user, remember=False)
-  except Exception as exc:
-    return {
-      "ok": False,
-      "message": "Не удалось открыть сессию администратора: {}".format(exc),
-    }
+  admin_role = _admin_role()
+  user = _ensure_local_admin_user(admin_role)
+  anvil.users.force_login(user, remember=False)
 
   return {"ok": True, "email": LOCAL_ADMIN_EMAIL}

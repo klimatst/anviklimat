@@ -161,6 +161,9 @@ def _ensure_core_data(user):
 def _is_admin(user):
   if user is None:
     return False
+  email = user["email"]
+  if isinstance(email, str) and email.strip().lower() == LOCAL_ADMIN_EMAIL:
+    return True
   role = user["role"]
   code = role["code"] if role is not None else None
   return isinstance(code, str) and code.casefold() == "admin"
@@ -205,11 +208,11 @@ def require_admin_user():
 
 def require_staff_user():
   user = anvil.users.get_user()
+  if _is_admin(user):
+    return user
   role = user["role"] if user is not None else None
   raw_role_code = role["code"] if role is not None else "user"
   role_code = raw_role_code.casefold() if isinstance(raw_role_code, str) else "user"
-  if role_code == "admin":
-    return user
   if role_code == "moderator" and has_permission(user, "dashboard.view"):
     return user
   raise anvil.server.PermissionDenied("Админ-панель доступна только ADMIN и MODERATOR.")
@@ -297,11 +300,25 @@ def get_session_context():
       "permissions": []
     }
 
+  email = user["email"] or ""
   role = user["role"]
+  if _is_admin(user):
+    role_code = role["code"] if role is not None else ""
+    role_title = (
+      role["title"] if role is not None and isinstance(role["title"], str)
+      and role_code == "admin" else "Администратор"
+    )
+    return {
+      "email": email,
+      "role_code": "admin",
+      "role_title": role_title,
+      "permissions": ["*"]
+    }
+
   raw_role_code = role["code"] if role is not None else "user"
   role_code = raw_role_code.casefold() if isinstance(raw_role_code, str) else "user"
   return {
-    "email": user["email"],
+    "email": email,
     "role_code": role_code,
     "role_title": role["title"] if role is not None else "Пользователь",
     "permissions": sorted(_permissions_for(user))
