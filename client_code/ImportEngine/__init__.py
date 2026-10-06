@@ -340,8 +340,7 @@ class ImportEngine(ImportEngineTemplate):
     finally:
       self.parse_pdf_button.enabled = True
     self.pdf_intake_message.text = "\n".join(messages)
-    self.pdf_file_loader.files = []
-    self.pdf_file_loader.file = None
+    self.pdf_file_loader.clear()
     if started_ids:
       self._load_pdf_drafts()
       self._open_pdf_draft(started_ids[-1])

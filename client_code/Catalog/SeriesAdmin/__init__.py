@@ -53,7 +53,7 @@ class SeriesAdmin(SeriesAdminTemplate):
     self.is_new_checkbox.checked = False
     self.active_checkbox.checked = True
     self.sort_order_box.text = "1000"
-    self.image_file.files = []
+    self.image_file.clear()
     self.image_preview.source = ""
     self.image_preview.visible = False
     self.series_editor_heading.text = "Новая серия"
@@ -72,7 +72,7 @@ class SeriesAdmin(SeriesAdminTemplate):
     self.is_new_checkbox.checked = bool(row["is_new"])
     self.active_checkbox.checked = bool(row["active"])
     self.sort_order_box.text = str(row["sort_order"] or 0)
-    self.image_file.files = []
+    self.image_file.clear()
     self.image_preview.source = row["image_url"] or ""
     self.image_preview.visible = bool(row["image_url"])
     self.series_editor_heading.text = "Изменить: {}".format(row["title"])
@@ -134,7 +134,7 @@ class SeriesAdmin(SeriesAdminTemplate):
     self.series_message.text = result["message"]
     if result["ok"]:
       self._series_id = result["series_id"]
-      self.image_file.files = []
+      self.image_file.clear()
       self._load_data(self._series_id)
 
   @handle("series_delete_button", "click")
@@ -158,7 +158,7 @@ class SeriesAdmin(SeriesAdminTemplate):
     self.document_message.text = result["message"]
     if result["ok"]:
       self.document_title_box.text = ""
-      self.document_file.files = []
+      self.document_file.clear()
       self.document_url_box.text = ""
       self._load_documents()
       self._load_data(self._series_id)

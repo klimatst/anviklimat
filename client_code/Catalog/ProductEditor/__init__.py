@@ -337,7 +337,7 @@ class ProductEditor(ProductEditorTemplate):
     self.document_message.text = result["message"]
     if result["ok"]:
       self.document_title_box.text = ""
-      self.document_file.files = []
+      self.document_file.clear()
       self.document_url_box.text = ""
       self._reload_documents()
 
@@ -360,7 +360,7 @@ class ProductEditor(ProductEditorTemplate):
       self.upload_images_button.enabled = True
     self.media_status.text = result["message"]
     if result["ok"]:
-      self.image_files.files = []
+      self.image_files.clear()
       self.media_rows.items = result["images"]
 
   @handle("media_rows", "x-product-image-primary")

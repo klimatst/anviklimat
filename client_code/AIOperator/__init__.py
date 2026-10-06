@@ -161,13 +161,13 @@ class AIOperator(AIOperatorTemplate):
       self.attachment_label.text = "Фото не выбрано"
       return
     if image.content_type not in IMAGE_TYPES:
-      self.image_loader.file = None
+      self.image_loader.clear()
       self._pending_image = None
       self.attachment_preview.visible = False
       self.attachment_label.text = "Формат не поддерживается. Выберите JPEG, PNG или WebP."
       return
     if image.length > MAX_IMAGE_BYTES:
-      self.image_loader.file = None
+      self.image_loader.clear()
       self._pending_image = None
       self.attachment_preview.visible = False
       self.attachment_label.text = "Фото больше 3 МБ. Уменьшите файл и выберите его снова."
@@ -181,7 +181,7 @@ class AIOperator(AIOperatorTemplate):
 
   @handle("remove_attachment_button", "click")
   def remove_attachment_button_click(self, **event_args):
-    self.image_loader.file = None
+    self.image_loader.clear()
     self._pending_image = None
     self.attachment_preview.visible = False
     self.attachment_label.text = "Фото не выбрано"
@@ -192,7 +192,7 @@ class AIOperator(AIOperatorTemplate):
     self._refresh_chat()
     self.chat_status.text = "Новый диалог готов."
     self.question_box.text = ""
-    self.image_loader.file = None
+    self.image_loader.clear()
     self._pending_image = None
     self.attachment_preview.visible = False
     self.attachment_label.text = "Фото не выбрано"
@@ -214,7 +214,7 @@ class AIOperator(AIOperatorTemplate):
       "tokens": 0
     })
     self.question_box.text = ""
-    self.image_loader.file = None
+    self.image_loader.clear()
     self._pending_image = None
     self.attachment_preview.visible = False
     self.attachment_label.text = "Фото не выбрано"

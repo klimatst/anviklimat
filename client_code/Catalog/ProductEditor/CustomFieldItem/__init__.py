@@ -96,5 +96,5 @@ class CustomFieldItem(CustomFieldItemTemplate):
       self.save_button.enabled = self._product_id is not None
     self.field_status.text = result["message"]
     if result["ok"]:
-      self.file_loader.files = []
+      self.file_loader.clear()
       self.parent.raise_event("x-custom-field-saved", field_id=self.item["id"])

@@ -80,7 +80,7 @@ class Taxonomy(TaxonomyTemplate):
     self.category_description_box.text = ""
     self.category_meta_title_box.text = ""
     self.category_meta_description_box.text = ""
-    self.category_image_file.files = []
+    self.category_image_file.clear()
     self.category_image_preview.source = ""
     self.category_image_preview.visible = False
     self.category_image_remove_checkbox.checked = False
@@ -100,7 +100,7 @@ class Taxonomy(TaxonomyTemplate):
     self.category_description_box.text = row.get("description") or ""
     self.category_meta_title_box.text = row.get("meta_title") or ""
     self.category_meta_description_box.text = row.get("meta_description") or ""
-    self.category_image_file.files = []
+    self.category_image_file.clear()
     self.category_image_preview.source = row.get("image_url") or ""
     self.category_image_preview.visible = bool(row.get("image_url"))
     self.category_image_remove_checkbox.checked = False
