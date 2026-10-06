@@ -157,6 +157,61 @@ def get_project_engineering_snapshot(project_id):
   })
   return {"ok": True, "snapshot": snapshot}
 
+@anvil.server.callable(require_user=True)
+def get_engineering_quality_gate():
+  user = anvil.users.get_user()
+  if user is None:
+    return {"ok": False, "message": "Требуется вход."}
+  context = Core.get_access_context()
+  if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
+    return {"ok": False, "message": "Недостаточно прав."}
+
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:500])
+  counts = {
+    "projects_without_object": 0,
+    "projects_without_rooms": 0,
+    "rooms_without_calculations": 0,
+    "calculations_without_system": 0,
+    "systems_without_components": 0
+  }
+  examples = []
+  for project in projects:
+    obj = project["object"]
+    if obj is None or not str(obj["name"] or "").strip():
+      counts["projects_without_object"] += 1
+      if len(examples) < 8:
+        examples.append({"code": project["code"] or "", "issue": "Не задан объект"})
+      continue
+    rooms = list(app_tables.rooms.search(object=obj)[:200])
+    calculations = list(app_tables.calculations.search(project=project)[:500])
+    systems = list(app_tables.systems.search(project=project)[:100])
+    if not rooms:
+      counts["projects_without_rooms"] += 1
+      if len(examples) < 8:
+        examples.append({"code": project["code"] or "", "issue": "Нет помещений"})
+    if rooms and not calculations:
+      counts["rooms_without_calculations"] += len(rooms)
+      if len(examples) < 8:
+        examples.append({"code": project["code"] or "", "issue": "Есть помещения, но нет расчётов"})
+    if calculations and not systems:
+      counts["calculations_without_system"] += len(calculations)
+      if len(examples) < 8:
+        examples.append({"code": project["code"] or "", "issue": "Есть расчёты, но нет системы"})
+    for system in systems:
+      component_count = len(list(app_tables.system_components.search(system=system)[:200]))
+      if component_count == 0:
+        counts["systems_without_components"] += 1
+        if len(examples) < 8:
+          examples.append({"code": project["code"] or "", "issue": "Система без компонентов"})
+  issue_count = sum(counts.values())
+  return {
+    "ok": True,
+    "healthy": issue_count == 0,
+    "issue_count": issue_count,
+    "counts": counts,
+    "examples": examples
+  }
+
 
 @anvil.server.callable(require_user=True)
 def get_engineering_control_room():
