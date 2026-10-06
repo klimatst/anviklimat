@@ -253,3 +253,51 @@ def get_engineering_control_room():
     ],
     "generated_at": datetime.now(timezone.utc),
   }
+
+
+@anvil.server.callable(require_user=True)
+def get_engineering_quality_gate():
+  user = anvil.users.get_user()
+  if user is None:
+    return {"ok": False, "message": "Требуется вход."}
+  context = Core.get_access_context()
+  if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
+    return {"ok": False, "message": "Недостаточно прав."}
+
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
+  issues = []
+  for project in projects:
+    obj = project["object"]
+    parameters = (obj["parameters"] or {}) if obj is not None else {}
+    if obj is None or not str(obj["name"] or "").strip():
+      issues.append({
+        "severity": "high",
+        "project": project["code"] or project.get_id(),
+        "message": "Проект без полноценного объекта."
+      })
+      continue
+    if not parameters.get("engineering_profile"):
+      issues.append({
+        "severity": "medium",
+        "project": project["code"] or project.get_id(),
+        "message": "Не задан инженерный профиль."
+      })
+    if not list(app_tables.rooms.search(object=obj)[:1]):
+      issues.append({
+        "severity": "medium",
+        "project": project["code"] or project.get_id(),
+        "message": "Нет помещений для инженерного расчёта."
+      })
+    if len(issues) >= 30:
+      break
+
+  high_count = sum(1 for item in issues if item["severity"] == "high")
+  return {
+    "ok": True,
+    "healthy": not issues,
+    "issue_count": len(issues),
+    "high_count": high_count,
+    "issues": issues[:30],
+    "checked_projects": len(projects),
+    "generated_at": datetime.now(timezone.utc)
+  }
