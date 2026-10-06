@@ -2,84 +2,128 @@
   <anvil-block slot="actions">
     <anvil-component type="Button" name="new_product_button" prop:text="Добавить товар" prop:role="primary-action" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="import_button" prop:text="Импортировать" prop:role="secondary-button" prop:visible="false"></anvil-component>
-    <anvil-component type="Button" name="sync_lovable_button" prop:text="Синхронизировать Lovable" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="sync_lovable_button" prop:text="Синхронизировать Hisense" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="manage_categories_button" prop:text="Категории" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="manage_series_button" prop:text="Серии" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="add_category_button" prop:text="Новая категория" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="DropDown" name="export_format_dropdown" prop:role="catalog-export-format" prop:visible="false"></anvil-component>
-    <anvil-component type="Button" name="export_filter_button" prop:text="Экспортировать выборку" prop:role="secondary-button" prop:visible="false"></anvil-component>
+    <anvil-component type="Button" name="export_filter_button" prop:text="Экспорт выборки" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="export_selected_button" prop:text="Экспорт выбранных" prop:role="secondary-button" prop:visible="false"></anvil-component>
     <anvil-component type="Button" name="home_button" prop:text="На главную" prop:role="secondary-button"></anvil-component>
   </anvil-block>
   <anvil-block slot="title">
-    <div class="catalog-page-title">
+    <div class="catalog-page-title catalog-reference-title">
       <anvil-component type="RepeatingPanel" name="breadcrumb_rows" prop:role="catalog-breadcrumbs" prop:item_template="Minimal_Theme_4.Catalog.BreadcrumbItem"></anvil-component>
-      <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Каталог оборудования"></anvil-component>
+      <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Кондиционеры"></anvil-component>
+      <anvil-component type="Label" name="catalog_total_label" prop:role="catalog-total" prop:text=""></anvil-component>
     </div>
   </anvil-block>
   <anvil-block slot="content">
     <div anvil:name="catalog_view" class="catalog-view catalog-storefront catalog-reference-layout">
-      <div class="catalog-navigation-column">
-        <anvil-component type="Label" name="catalog_navigation_heading" prop:role="section-heading" prop:text="Каталог оборудования"></anvil-component>
+      <div class="catalog-navigation-column catalog-reference-category-column">
+        <div class="catalog-reference-sidebar-title">Каталог</div>
         <anvil-component type="RepeatingPanel" name="category_tree" prop:role="catalog-tree" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
       </div>
-      <div class="catalog-main">
-        <div class="catalog-page-controls">
-          <anvil-component type="Button" name="catalog_navigation_toggle_button" prop:text="Все категории" prop:role="catalog-navigation-toggle"></anvil-component>
+
+      <div class="catalog-main catalog-reference-main">
+        <div class="catalog-mobile-bar">
+          <anvil-component type="Button" name="catalog_navigation_toggle_button" prop:text="☰ Категории" prop:role="catalog-navigation-toggle"></anvil-component>
+          <anvil-component type="Button" name="show_filters_button" prop:text="Фильтры" prop:role="catalog-navigation-toggle"></anvil-component>
         </div>
-        <div class="catalog-category-heading">
-          <anvil-component type="Label" name="category_description" prop:role="catalog-category-description" prop:text=""></anvil-component>
+
+        <div class="catalog-reference-toplinks">
+          <anvil-component type="RepeatingPanel" name="category_tiles" prop:role="catalog-reference-links" prop:item_template="Minimal_Theme_4.Catalog.CategoryCard"></anvil-component>
         </div>
-        <anvil-component type="RepeatingPanel" name="category_tiles" prop:role="catalog-category-grid" prop:item_template="Minimal_Theme_4.Catalog.CategoryCard"></anvil-component>
-        <div anvil:name="catalog_series_navigation" class="catalog-series-navigation">
-          <anvil-component type="Label" name="series_navigation_heading" prop:role="section-heading" prop:text="Быстрый переход к серии"></anvil-component>
-          <anvil-component type="RepeatingPanel" name="series_quick_links" prop:role="catalog-series-quick-links" prop:item_template="Minimal_Theme_4.Catalog.SeriesQuickLink"></anvil-component>
-        </div>
-        <anvil-component type="ColumnPanel" name="catalog_panel" prop:role="catalog-results-panel">
-          <div class="catalog-toolbar catalog-toolbar--reference">
-            <div class="catalog-search-wide">
-            <anvil-component type="TextBox" name="search_box" prop:role="catalog-search" prop:placeholder="Поиск по модели, артикулу, серии или категории"></anvil-component>
+
+        <div class="catalog-reference-search">
+          <div class="catalog-search-wide">
+            <anvil-component type="TextBox" name="search_box" prop:role="catalog-search" prop:placeholder="Поиск по модели, артикулу, производителю"></anvil-component>
             <anvil-component type="Button" name="search_button" prop:text="Найти" prop:role="primary-action"></anvil-component>
           </div>
-            <anvil-component type="DropDown" name="category_filter" prop:role="catalog-filter"></anvil-component>
-            <anvil-component type="DropDown" name="series_filter" prop:role="catalog-filter"></anvil-component>
-            <anvil-component type="TextBox" name="minimum_price_box" prop:role="catalog-filter" prop:placeholder="Цена от"></anvil-component>
-            <anvil-component type="TextBox" name="maximum_price_box" prop:role="catalog-filter" prop:placeholder="Цена до"></anvil-component>
-            <anvil-component type="DropDown" name="sort_filter" prop:role="catalog-filter"></anvil-component>
-            <anvil-component type="CheckBox" name="available_filter" prop:text="Только в наличии" prop:role="catalog-availability-filter"></anvil-component>
-            <anvil-component type="DropDown" name="status_filter" prop:role="catalog-filter" prop:visible="false"></anvil-component>
+        </div>
+
+        <div class="catalog-reference-body">
+          <aside class="catalog-reference-filters">
+            <div class="catalog-filter-panel-head">
+              <strong>Фильтр</strong>
+              <anvil-component type="Button" name="reset_filters_button" prop:text="Сбросить" prop:role="catalog-filter-reset"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="price_filter_heading" prop:role="catalog-filter-heading" prop:text="Розничная цена"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_price_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_price_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="brand_filter_heading" prop:role="catalog-filter-heading" prop:text="Производитель"></anvil-component>
+              <anvil-component type="DropDown" name="brand_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="area_filter_heading" prop:role="catalog-filter-heading" prop:text="Площадь помещения, м²"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_area_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_area_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="compressor_filter_heading" prop:role="catalog-filter-heading" prop:text="Компрессор"></anvil-component>
+              <anvil-component type="DropDown" name="compressor_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="country_filter_heading" prop:role="catalog-filter-heading" prop:text="Страна"></anvil-component>
+              <anvil-component type="DropDown" name="country_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="mode_filter_heading" prop:role="catalog-filter-heading" prop:text="Режим работы"></anvil-component>
+              <anvil-component type="DropDown" name="mode_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="energy_filter_heading" prop:role="catalog-filter-heading" prop:text="Класс энергоэффективности"></anvil-component>
+              <anvil-component type="DropDown" name="energy_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="CheckBox" name="available_filter" prop:text="Только в наличии" prop:role="catalog-availability-filter"></anvil-component>
+            </div>
+            <anvil-component type="Button" name="apply_filters_button" prop:text="Показать товары" prop:role="primary-action"></anvil-component>
+          </aside>
+
+          <div class="catalog-reference-products">
+            <div class="catalog-sort-row">
+              <anvil-component type="Label" name="catalog_message" prop:role="status-message" prop:text=""></anvil-component>
+              <anvil-component type="DropDown" name="sort_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+
+            <anvil-component type="RepeatingPanel" name="product_series_rows" prop:role="catalog-product-grid" prop:item_template="Minimal_Theme_4.Catalog.ProductItem"></anvil-component>
+
+            <div class="catalog-pagination">
+              <anvil-component type="Button" name="previous_button" prop:text="Назад" prop:role="secondary-button" prop:visible="false"></anvil-component>
+              <anvil-component type="Button" name="next_button" prop:text="Показать ещё" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            </div>
+
+            <anvil-component type="Label" name="selection_count" prop:role="status-message" prop:text="Выбрано моделей: 0 из 100" prop:visible="false"></anvil-component>
+            <anvil-component type="Button" name="clear_selection_button" prop:text="Снять выделение" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <anvil-component type="ColumnPanel" name="bulk_panel" prop:role="catalog-bulk-panel" prop:visible="false">
+              <anvil-component type="Label" name="bulk_heading" prop:role="section-heading" prop:text="Массовое изменение каталога"></anvil-component>
+              <anvil-component type="DropDown" name="bulk_field_dropdown"></anvil-component>
+              <anvil-component type="DropDown" name="bulk_mode_dropdown"></anvil-component>
+              <anvil-component type="DropDown" name="bulk_choice_dropdown" prop:visible="false"></anvil-component>
+              <anvil-component type="TextBox" name="bulk_value_box" prop:placeholder="Цена или изменение в процентах"></anvil-component>
+              <anvil-component type="Button" name="bulk_apply_button" prop:text="Применить к выбранным" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Label" name="bulk_message" prop:role="status-message" prop:text=""></anvil-component>
+            </anvil-component>
+            <anvil-component type="ColumnPanel" name="new_category_panel" prop:role="card" prop:visible="false">
+              <anvil-component type="Label" name="new_category_title" prop:role="section-heading" prop:text="Новая категория"></anvil-component>
+              <anvil-component type="TextBox" name="new_category_name_box" prop:placeholder="Название категории"></anvil-component>
+              <anvil-component type="DropDown" name="new_category_parent"></anvil-component>
+              <anvil-component type="Button" name="save_category_button" prop:text="Сохранить категорию" prop:role="primary-action"></anvil-component>
+              <anvil-component type="Label" name="category_message" prop:role="status-message" prop:text=""></anvil-component>
+            </anvil-component>
           </div>
-          <anvil-component type="Label" name="catalog_message" prop:role="status-message" prop:text=""></anvil-component>
-          <div class="catalog-results-heading">
-            <strong>Оборудование</strong>
-            <span>Откройте модель для полной информации, характеристик, документов и заказа.</span>
-          </div>
-          <anvil-component type="RepeatingPanel" name="product_series_rows" prop:role="catalog-series-list" prop:item_template="Minimal_Theme_4.Catalog.SeriesItem"></anvil-component>
-          <div class="catalog-pagination">
-            <anvil-component type="Button" name="previous_button" prop:text="Назад" prop:role="secondary-button" prop:visible="false"></anvil-component>
-            <anvil-component type="Button" name="next_button" prop:text="Следующие модели" prop:role="secondary-button" prop:visible="false"></anvil-component>
-          </div>
-          <anvil-component type="Label" name="selection_count" prop:role="status-message" prop:text="Выбрано моделей: 0 из 100"></anvil-component>
-          <anvil-component type="Button" name="clear_selection_button" prop:text="Снять выделение" prop:role="secondary-button" prop:visible="false"></anvil-component>
-          <anvil-component type="ColumnPanel" name="bulk_panel" prop:role="catalog-bulk-panel" prop:visible="false">
-            <anvil-component type="Label" name="bulk_heading" prop:role="section-heading" prop:text="Массовое изменение каталога"></anvil-component>
-            <anvil-component type="DropDown" name="bulk_field_dropdown"></anvil-component>
-            <anvil-component type="DropDown" name="bulk_mode_dropdown"></anvil-component>
-            <anvil-component type="DropDown" name="bulk_choice_dropdown" prop:visible="false"></anvil-component>
-            <anvil-component type="TextBox" name="bulk_value_box" prop:placeholder="Цена или изменение в процентах"></anvil-component>
-            <anvil-component type="Button" name="bulk_apply_button" prop:text="Применить к выбранным" prop:role="primary-action"></anvil-component>
-            <anvil-component type="Label" name="bulk_message" prop:role="status-message" prop:text=""></anvil-component>
-          </anvil-component>
-        </anvil-component>
-        <anvil-component type="ColumnPanel" name="new_category_panel" prop:role="card" prop:visible="false">
-          <anvil-component type="Label" name="new_category_title" prop:role="section-heading" prop:text="Новая категория"></anvil-component>
-          <anvil-component type="TextBox" name="new_category_name_box" prop:placeholder="Название категории"></anvil-component>
-          <anvil-component type="DropDown" name="new_category_parent"></anvil-component>
-          <anvil-component type="Button" name="save_category_button" prop:text="Сохранить категорию" prop:role="primary-action"></anvil-component>
-          <anvil-component type="Label" name="category_message" prop:role="status-message" prop:text=""></anvil-component>
-        </anvil-component>
+        </div>
       </div>
     </div>
+
     <anvil-component type="ColumnPanel" name="product_detail_overlay" prop:role="product-detail-overlay" prop:visible="false">
       <anvil-component type="Minimal_Theme_4.Catalog.ProductDetails" name="product_detail_form"></anvil-component>
     </anvil-component>
