@@ -173,9 +173,13 @@ class Calculations(CalculationsTemplate):
         "calculate_hvac_engine", self._profile, self._inputs(), False,
         self.project_dropdown.selected_value, selected_product_id
       )
+    except Exception as exc:
+      self.calculation_message.text = "Не удалось выполнить расчёт: {}".format(exc)
+      self.result_panel.visible = False
+      return
     finally:
       self.calculate_button.enabled = True
-    if not result["ok"]:
+    if not result["ok"]
       self.result_panel.visible = False
       self.calculation_message.text = result["message"]
       self._can_quote = False
@@ -331,6 +335,9 @@ class Calculations(CalculationsTemplate):
         "calculate_hvac_engine", self._profile, self._inputs(), True,
         self.project_dropdown.selected_value, self.product_dropdown.selected_value
       )
+    except Exception as exc:
+      self.calculation_message.text = "Не удалось сохранить расчёт: {}".format(exc)
+      return
     finally:
       self.save_calculation_button.enabled = self._signed_in
     if not result["ok"]:
@@ -378,6 +385,9 @@ class Calculations(CalculationsTemplate):
         self.project_dropdown.selected_value, self.product_dropdown.selected_value,
         self.quote_terms_box.text or ""
       )
+    except Exception as exc:
+      self.calculation_message.text = "Не удалось создать коммерческое предложение: {}".format(exc)
+      return
     finally:
       self.create_quote_button.enabled = bool(
         self._signed_in and self._can_quote and self.project_dropdown.selected_value
