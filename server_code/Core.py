@@ -9,7 +9,7 @@ from anvil.tables import app_tables, order_by, query as q
 
 
 DEFAULT_SETTINGS = {
-  "organization_name": "ЭКО-КЛИМАТ",
+  "organization_name": "КЛИМАЭКО",
   "currency": "RUB",
   "contact_email": "",
   "contact_phone": "+79257873848",
@@ -335,7 +335,7 @@ def get_public_contact_details():
       or message_limit < 100 or message_limit > 5000):
     message_limit = 1200
   return {
-    "organization_name": _setting_value("organization_name") or "ЭКО-КЛИМАТ",
+    "organization_name": _setting_value("organization_name") or "КЛИМАЭКО",
     "contact_email": _setting_value("contact_email"),
     "contact_phone": _setting_value("contact_phone") or "+79257873848",
     "contact_address": _setting_value("contact_address"),
