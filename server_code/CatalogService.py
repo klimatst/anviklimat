@@ -10,6 +10,7 @@ import zipfile
 import xml.etree.ElementTree as ET
 import base64
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any, cast
 from urllib.parse import urlsplit
