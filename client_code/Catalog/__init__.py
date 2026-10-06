@@ -73,7 +73,7 @@ class Catalog(CatalogTemplate):
     self.new_category_panel.visible = False
     self.product_detail_overlay.visible = False
 
-    self._load_categories(category_code)
+    self._load_categories(category_code or ("air-conditioning" if not search_query else None))
     self._load_filter_options()
     if self.sync_lovable_requested:
       self._sync_lovable_catalog()
@@ -168,7 +168,11 @@ class Catalog(CatalogTemplate):
     self.country_filter.items = options(result.get("countries", []))
     self.mode_filter.items = options(result.get("operation_modes", []))
     self.energy_filter.items = options(result.get("energy_classes", []))
-    for name in ("brand_filter", "compressor_filter", "country_filter", "mode_filter", "energy_filter"):
+    self.installation_filter.items = options(result.get("installations", []))
+    self.warranty_filter.items = options(result.get("warranties", []))
+    self.indoor_type_filter.items = options(result.get("indoor_types", []))
+    for name in ("brand_filter", "compressor_filter", "country_filter", "mode_filter",
+                 "energy_filter", "installation_filter", "warranty_filter", "indoor_type_filter"):
       getattr(self, name).selected_value = None
 
   def _scope_codes(self, category_code=None):
@@ -257,15 +261,34 @@ class Catalog(CatalogTemplate):
     self._load_page()
 
   def _filter_args(self):
-    return dict(
-      brand_filter=self.brand_filter.selected_value,
-      compressor_filter=(self.compressor_filter.selected_value or ""),
-      country_filter=(self.country_filter.selected_value or ""),
-      mode_filter=(self.mode_filter.selected_value or ""),
-      energy_filter=(self.energy_filter.selected_value or ""),
-      minimum_area=self.minimum_area_box.text or "",
-      maximum_area=self.maximum_area_box.text or ""
-    )
+    return {
+      "brand": self.brand_filter.selected_value,
+      "compressor": self.compressor_filter.selected_value or "",
+      "country": self.country_filter.selected_value or "",
+      "mode": self.mode_filter.selected_value or "",
+      "energy": self.energy_filter.selected_value or "",
+      "minimum_area": self.minimum_area_box.text or "",
+      "maximum_area": self.maximum_area_box.text or "",
+      "minimum_cooling": self.minimum_cooling_box.text or "",
+      "maximum_cooling": self.maximum_cooling_box.text or "",
+      "minimum_heating": self.minimum_heating_box.text or "",
+      "maximum_heating": self.maximum_heating_box.text or "",
+      "minimum_consumption_cooling": self.minimum_consumption_cooling_box.text or "",
+      "maximum_consumption_cooling": self.maximum_consumption_cooling_box.text or "",
+      "minimum_consumption_heating": self.minimum_consumption_heating_box.text or "",
+      "maximum_consumption_heating": self.maximum_consumption_heating_box.text or "",
+      "minimum_power": self.minimum_power_box.text or "",
+      "maximum_power": self.maximum_power_box.text or "",
+      "installation": self.installation_filter.selected_value or "",
+      "minimum_current": self.minimum_current_box.text or "",
+      "maximum_current": self.maximum_current_box.text or "",
+      "warranty": self.warranty_filter.selected_value or "",
+      "minimum_airflow": self.minimum_airflow_box.text or "",
+      "maximum_airflow": self.maximum_airflow_box.text or "",
+      "minimum_indoor_units": self.minimum_indoor_units_box.text or "",
+      "maximum_indoor_units": self.maximum_indoor_units_box.text or "",
+      "indoor_type": self.indoor_type_filter.selected_value or ""
+    }
 
   def _load_page(self, cursor=None):
     self._current_cursor = cursor
@@ -279,8 +302,12 @@ class Catalog(CatalogTemplate):
         None, bool(self.available_filter.checked),
         self.minimum_price_box.text or "", self.maximum_price_box.text or "",
         self.sort_filter.selected_value or "popular",
-        args["brand_filter"], args["compressor_filter"], args["country_filter"],
-        args["mode_filter"], args["energy_filter"], args["minimum_area"], args["maximum_area"]
+        args["brand"], args["compressor"], args["country"],
+        args["mode"], args["energy"], args["minimum_area"], args["maximum_area"],
+        {key: value for key, value in args.items() if key not in {
+          "brand", "compressor", "country", "mode", "energy",
+          "minimum_area", "maximum_area"
+        }}
       )
     except Exception as exc:
       self.product_series_rows.items = []
@@ -416,9 +443,20 @@ class Catalog(CatalogTemplate):
 
   @handle("reset_filters_button", "click")
   def reset_filters_button_click(self, **event_args):
-    for name in ("minimum_price_box", "maximum_price_box", "minimum_area_box", "maximum_area_box"):
+    for name in (
+      "minimum_price_box", "maximum_price_box", "minimum_area_box", "maximum_area_box",
+      "minimum_cooling_box", "maximum_cooling_box", "minimum_heating_box", "maximum_heating_box",
+      "minimum_consumption_cooling_box", "maximum_consumption_cooling_box",
+      "minimum_consumption_heating_box", "maximum_consumption_heating_box",
+      "minimum_power_box", "maximum_power_box", "minimum_current_box", "maximum_current_box",
+      "minimum_airflow_box", "maximum_airflow_box",
+      "minimum_indoor_units_box", "maximum_indoor_units_box"
+    ):
       getattr(self, name).text = ""
-    for name in ("brand_filter", "compressor_filter", "country_filter", "mode_filter", "energy_filter"):
+    for name in (
+      "brand_filter", "compressor_filter", "country_filter", "mode_filter",
+      "energy_filter", "installation_filter", "warranty_filter", "indoor_type_filter"
+    ):
       getattr(self, name).selected_value = None
     self.available_filter.checked = False
     self.sort_filter.selected_value = "popular"
