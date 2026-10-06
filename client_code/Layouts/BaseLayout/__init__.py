@@ -19,18 +19,32 @@ class BaseLayout(BaseLayoutTemplate):
     self._navigation_settings = {
       "catalog": True, "news": True, "projects": True, "account": True
     }
-    self._apply_site_theme(Access.get_site_theme())
+    bootstrap = self._load_public_shell_data()
     self.catalog_dropdown.visible = False
     self.calculators_dropdown.visible = False
     self.news_dropdown.visible = False
     self.service_dropdown.visible = False
     self.custom_site_menu_dropdown.visible = False
-    self.nav_catalog_tree.items = self._catalog_menu_tree()
+
+    # Public navigation is the first render path. Bootstrap theme, menu,
+    # session context and extensions in one request to avoid a chain of
+    # synchronous server round-trips on every page open.
+    if bootstrap.get("ok"):
+      self._apply_site_theme(bootstrap.get("site_theme", "blue"))
+      catalog = bootstrap.get("catalog") or {}
+      self.nav_catalog_tree.items = self._apply_catalog_menu_result(catalog)
+      Access.prime_session_context(bootstrap.get("session_context"))
+      AdminExtensions.apply_saved_extensions(bundle=bootstrap.get("extensions"))
+    else:
+      # Keep the old fallback path for temporary runtime failures.
+      self._apply_site_theme(Access.get_site_theme())
+      self.nav_catalog_tree.items = self._catalog_menu_tree()
+      AdminExtensions.apply_saved_extensions()
+
     self.nav_news_tree.items = NewsCategories.build_tree(menu_mode=True)
     self.nav_service_tree.items = self._service_menu_tree()
     self._refresh_session_context()
     self._configure_admin_sidebar()
-    AdminExtensions.apply_saved_extensions()
 
   def _apply_site_theme(self, theme_code):
     if not isinstance(theme_code, str) or theme_code not in SITE_THEME_CODES:
@@ -216,20 +230,33 @@ class BaseLayout(BaseLayoutTemplate):
       "menu_mode": True
     }]
 
+  def _load_public_shell_data(self):
+    try:
+      result = anvil.server.call("get_public_shell_data")
+      return result if isinstance(result, dict) else {}
+    except Exception:
+      return {}
+
+  def _apply_catalog_menu_result(self, result):
+    if not isinstance(result, dict):
+      return []
+    self.nav_custom_site_menu.items = result.get("site_menu", [])
+    self.custom_site_menu_nav.visible = bool(self.nav_custom_site_menu.items)
+    settings = result.get("navigation_settings", {})
+    if isinstance(settings, dict):
+      self._navigation_settings = {
+        key: settings.get(key) is not False
+        for key in ("catalog", "news", "projects", "account")
+      }
+    tree = result.get("tree")
+    return tree if isinstance(tree, list) else []
+
   def _catalog_menu_tree(self):
     try:
       result = anvil.server.call("get_catalog_menu_tree")
       if result.get("ok"):
-        self.nav_custom_site_menu.items = result.get("site_menu", [])
-        self.custom_site_menu_nav.visible = bool(self.nav_custom_site_menu.items)
-        settings = result.get("navigation_settings", {})
-        if isinstance(settings, dict):
-          self._navigation_settings = {
-            key: settings.get(key) is not False
-            for key in ("catalog", "news", "projects", "account")
-          }
-        return result["tree"]
-    except anvil.server.RuntimeUnavailableError:
+        return self._apply_catalog_menu_result(result)
+    except Exception:
       # The header remains usable while the server runtime reconnects; the
       # database-backed tree replaces this compact fallback on the next load.
       pass
