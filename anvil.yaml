@@ -1414,46 +1414,6 @@ db_schema:
     indexes: []
     server: full
     title: Проекты
-  project_plans:
-    client: none
-    columns:
-    - admin_ui: {}
-      client_hidden: null
-      name: project
-      target: projects
-      type: link_single
-    - admin_ui: {}
-      client_hidden: null
-      name: title
-      type: string
-    - admin_ui: {}
-      client_hidden: null
-      name: file_name
-      type: string
-    - admin_ui: {}
-      client_hidden: null
-      name: content_type
-      type: string
-    - admin_ui: {}
-      client_hidden: null
-      name: file
-      type: media
-    - admin_ui: {}
-      client_hidden: null
-      name: settings
-      type: simpleObject
-    - admin_ui: {}
-      client_hidden: null
-      name: created_at
-      type: datetime
-    - admin_ui: {}
-      client_hidden: null
-      name: updated_at
-      type: datetime
-    indexes: []
-    server: full
-    title: Планы и схемы объектов
-
   quotes:
     client: none
     columns:
