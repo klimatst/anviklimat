@@ -19,6 +19,7 @@ class BaseLayout(BaseLayoutTemplate):
     }
     bootstrap = self._load_public_shell_data()
     self.catalog_dropdown.visible = False
+    self.prices_dropdown.visible = False
     self.calculators_dropdown.visible = False
     self.news_dropdown.visible = False
     self.service_dropdown.visible = False
@@ -291,6 +292,7 @@ class BaseLayout(BaseLayoutTemplate):
 
   def _close_dropdowns(self):
     self.catalog_dropdown.visible = False
+    self.prices_dropdown.visible = False
     self.calculators_dropdown.visible = False
     self.news_dropdown.visible = False
     self.service_dropdown.visible = False
@@ -391,11 +393,39 @@ class BaseLayout(BaseLayoutTemplate):
     else:
       self._show_dropdown("catalog_dropdown")
 
+  @handle("prices_nav", "click")
+  def prices_nav_click(self, **event_args):
+    if self.prices_dropdown.visible:
+      self.prices_dropdown.visible = False
+    else:
+      self._show_dropdown("prices_dropdown")
+
+  @handle("prices_conditioners_nav", "click")
+  def prices_conditioners_nav_click(self, **event_args):
+    self._close_dropdowns()
+    Access.open_window("PricePage", page_code="conditioners")
+
+  @handle("prices_vrf_nav", "click")
+  def prices_vrf_nav_click(self, **event_args):
+    self._close_dropdowns()
+    Access.open_window("PricePage", page_code="vrf")
+
+  @handle("prices_ventilation_nav", "click")
+  def prices_ventilation_nav_click(self, **event_args):
+    self._close_dropdowns()
+    Access.open_window("PricePage", page_code="ventilation")
+
   def catalog_menu_mouse_enter(self, event):
     self._show_dropdown("catalog_dropdown")
 
   def catalog_menu_mouse_leave(self, event):
     self._hide_dropdown("catalog_dropdown")
+
+  def prices_menu_mouse_enter(self, event):
+    self._show_dropdown("prices_dropdown")
+
+  def prices_menu_mouse_leave(self, event):
+    self._hide_dropdown("prices_dropdown")
 
   @handle("nav_catalog_tree", "x-category-selected")
   def nav_catalog_tree_category_selected(self, category_id=None, category_code=None, **event_args):
