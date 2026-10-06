@@ -528,6 +528,8 @@ class ImportEngine(ImportEngineTemplate):
         self._load_pdf_drafts()
         self._open_pdf_draft(self._xlsx_upload_id)
         self._start_pdf_status_polling()
+    except Exception as exc:
+      self.xlsx_upload_progress.text = "Ошибка загрузки XLSX: {}".format(exc)
     finally:
       self.xlsx_upload_button.enabled = self._xlsx_selected_file is not None
       self.xlsx_pause_button.visible = False
@@ -590,10 +592,14 @@ class ImportEngine(ImportEngineTemplate):
       self.pdf_review_message.text = "Откройте нужный черновик и повторите добавление."
       return
     self._sync_visible_pdf_products()
-    saved = anvil.server.call(
-      "save_pdf_catalog_draft", self._pdf_draft_id,
-      list(self._pdf_products), "save"
-    )
+    try:
+      saved = anvil.server.call(
+        "save_pdf_catalog_draft", self._pdf_draft_id,
+        list(self._pdf_products), "save"
+      )
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось сохранить черновик PDF: {}".format(exc)
+      return
     if not saved["ok"]:
       self.pdf_review_message.text = saved["message"]
       self._open_pdf_draft(self._pdf_draft_id)
