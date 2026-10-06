@@ -91,6 +91,10 @@ def get_project_engineering_snapshot(project_id):
     "project_status": project["status"] or "draft",
     "object_ready": object_ready,
     "object_name": (obj["name"] if obj is not None else "") or "",
+    "engineering_profile": (
+      (obj["parameters"] or {}).get("engineering_profile", "combined")
+      if obj is not None else "combined"
+    ),
     "room_count": len(rooms),
     "system_count": len(systems),
     "system_component_count": component_count,
