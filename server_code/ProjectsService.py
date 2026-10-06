@@ -125,7 +125,19 @@ def get_projects_page(search_text="", cursor=None):
       "status": row["status"],
       "status_title": STATUS_NAMES.get(row["status"], row["status"]),
       "object_name": obj["name"] if obj is not None else "Объект не задан",
-      "object_type": OBJECT_NAMES.get(obj["object_type"], "Другой") if obj is not None else ""
+      "object_type": OBJECT_NAMES.get(obj["object_type"], "Другой") if obj is not None else "",
+      "engineering_profile": (
+        (obj["parameters"] or {}).get("engineering_profile", "combined")
+        if obj is not None else "combined"
+      ),
+      "engineering_goal": (
+        (obj["parameters"] or {}).get("engineering_goal", "design")
+        if obj is not None else "design"
+      ),
+      "project_priority": (
+        (obj["parameters"] or {}).get("project_priority", "standard")
+        if obj is not None else "standard"
+      )
     })
   return {
     "ok": True, "rows": result, "has_more": has_more,
