@@ -41,9 +41,9 @@ class ProductDetails(ProductDetailsTemplate):
     )
 
   def _spec_value(self, specs, *keys):
-    wanted = {str(key).casefold() for key in keys}
+    wanted = {str(key).lower() for key in keys}
     for row in specs:
-      if str(row.get("key") or "").casefold() in wanted:
+      if str(row.get("key") or "").lower() in wanted:
         value = str(row.get("value") or "").strip()
         unit = str(row.get("unit") or "").strip()
         if value:

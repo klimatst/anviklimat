@@ -137,7 +137,8 @@ def validate_ventilation_estimator_rates(raw_rates):
     return None, "В настройках есть неизвестные коды тарифов: {}.".format(
       ", ".join(sorted(unknown))
     )
-  rates = dict(allowed)
+  rates: dict[str, int | float] = {}
+  rates.update(allowed)
   for code, value in raw_rates.items():
     if isinstance(value, str):
       value = value.strip().replace(",", ".")
@@ -154,13 +155,13 @@ def validate_ventilation_estimator_rates(raw_rates):
         code, maximum, unit
       )
     unit = dict((item[0], item[2]) for item in VENTILATION_ESTIMATOR_RATE_FIELDS).get(code, "₽")
-    rates[code] = int(value + 0.5) if unit.startswith("₽") else round(value, 2)
+    rates[code] = int(value + 0.5) if unit.startswith("₽") else float(round(value, 2))
   return rates, None
 
 
 def ventilation_estimator_rate_rows(raw_rates=None):
   rates, error = validate_ventilation_estimator_rates(raw_rates)
-  if error:
+  if rates is None:
     rates = dict(DEFAULT_VENTILATION_ESTIMATOR_RATES)
   return [
     {"code": code, "label": label, "unit": unit, "value": str(rates[code])}
@@ -519,7 +520,7 @@ def _seed_price_pages():
           )
           page.update(settings=settings, updated_at=now)
       continue
-    settings = {
+    settings: dict[str, object] = {
       "publish_date": now.strftime("%d.%m.%Y"),
       "excerpt": meta["seo_description"],
       "seo_title": meta["seo_title"],

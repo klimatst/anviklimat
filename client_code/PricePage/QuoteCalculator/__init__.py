@@ -144,10 +144,10 @@ class QuoteCalculator(QuoteCalculatorTemplate):
       values[name] = int(value) if integer else value
     if values["installation_count_box"] and values["installation_flow_box"] <= 0:
       return None, "Укажите производительность установки в м³/ч."
+    if bool(values["room_area_box"]) != bool(values["room_height_box"]):
+      return None, "Для расчёта объёма помещения заполните и площадь, и высоту."
     if values["room_area_box"] and values["room_height_box"] and not values["air_change_box"]:
       return None, "Для расчёта по объёму задайте кратность воздухообмена больше нуля."
-    if values["duct_type_dropdown"] if "duct_type_dropdown" in values else False:
-      pass
     if values["rigid_duct_area_box"] and self.duct_type_dropdown.selected_value != "rigid":
       return None, "Выберите жёсткие воздуховоды для расчёта площади каналов."
     if values["duct_length_box"] and self.duct_type_dropdown.selected_value == "none":
@@ -210,8 +210,8 @@ class QuoteCalculator(QuoteCalculatorTemplate):
 
   def _recalculate(self):
     values, error = self._read_values()
-    if error:
-      self.estimate_message.text = error
+    if values is None:
+      self.estimate_message.text = error or "Проверьте исходные данные расчёта."
       self.airflow_summary.text = "Проверьте исходные данные расчёта."
       self.breakdown_rows.items = []
       self.estimate_total.text = "—"
@@ -374,4 +374,3 @@ class QuoteCalculator(QuoteCalculatorTemplate):
     self.estimate_total.text = self._money(total)
     self.breakdown_rows.items = lines
     self.estimate_message.text = "Смета пересчитывается автоматически. Это предварительная оценка."
-

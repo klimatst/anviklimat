@@ -12,19 +12,25 @@
     <anvil-component type="ColumnPanel" name="quote_input_panel" prop:role="ventilation-quote-input">
       <anvil-component type="Label" name="quote_installation_heading" prop:role="ventilation-subheading" prop:text="Установка и оборудование"></anvil-component>
       <div class="ventilation-quote-fields">
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="room_area_label" prop:text="Площадь помещения, м²"></anvil-component><anvil-component type="TextBox" name="room_area_box" prop:placeholder="80"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="room_height_label" prop:text="Высота потолка, м"></anvil-component><anvil-component type="TextBox" name="room_height_box" prop:placeholder="3"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="occupants_label" prop:text="Постоянно находящихся людей"></anvil-component><anvil-component type="TextBox" name="occupants_box" prop:placeholder="8"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="air_change_label" prop:text="Кратность воздухообмена, 1/ч"></anvil-component><anvil-component type="TextBox" name="air_change_box" prop:placeholder="1"></anvil-component></div>
         <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="installation_type_label" prop:text="Тип установки"></anvil-component><anvil-component type="DropDown" name="installation_type_dropdown"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="installation_flow_label" prop:text="Производительность, м³/ч"></anvil-component><anvil-component type="TextBox" name="installation_flow_box" prop:placeholder="500"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="installation_count_label" prop:text="Количество установок, шт."></anvil-component><anvil-component type="TextBox" name="installation_count_box" prop:placeholder="1"></anvil-component></div>
-        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="equipment_unit_price_label" prop:text="Цена одной установки, ₽ (если известна)"></anvil-component><anvil-component type="TextBox" name="equipment_unit_price_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="equipment_unit_price_label" prop:text="Цена установки вручную, ₽ · 0 — взять тариф из админки"></anvil-component><anvil-component type="TextBox" name="equipment_unit_price_box" prop:placeholder="0"></anvil-component></div>
       </div>
       <div class="ventilation-quote-checks"><anvil-component type="CheckBox" name="recovery_checkbox" prop:text="Рекуперация"></anvil-component><anvil-component type="CheckBox" name="cooling_checkbox" prop:text="Охлаждение воздуха"></anvil-component></div>
+      <anvil-component type="Label" name="airflow_summary" prop:role="ventilation-airflow-summary" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="airflow_message" prop:role="ventilation-quote-note" prop:text=""></anvil-component>
 
       <anvil-component type="Label" name="quote_air_distribution_heading" prop:role="ventilation-subheading" prop:text="Воздуховоды и трубопроводы"></anvil-component>
       <div class="ventilation-quote-fields">
         <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_type_label" prop:text="Тип воздуховода"></anvil-component><anvil-component type="DropDown" name="duct_type_dropdown"></anvil-component></div>
-        <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_diameter_label" prop:text="Диаметр гибкого воздуховода"></anvil-component><anvil-component type="DropDown" name="duct_diameter_dropdown"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_diameter_label" prop:text="Диаметр канала для расчёта площади"></anvil-component><anvil-component type="DropDown" name="duct_diameter_dropdown"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_length_label" prop:text="Длина воздуховодов, м"></anvil-component><anvil-component type="TextBox" name="duct_length_box" prop:placeholder="20"></anvil-component></div>
-        <div class="ventilation-quote-field"><anvil-component type="Label" name="rigid_duct_area_label" prop:text="Площадь жёстких каналов, м²"></anvil-component><anvil-component type="TextBox" name="rigid_duct_area_box" prop:placeholder="10"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="rigid_duct_area_label" prop:text="Площадь жёстких каналов, м² · 0 — оценить по длине и диаметру"></anvil-component><anvil-component type="TextBox" name="rigid_duct_area_box" prop:placeholder="0"></anvil-component></div>
         <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="pipe_length_label" prop:text="Длина инженерных труб, м"></anvil-component><anvil-component type="TextBox" name="pipe_length_box" prop:placeholder="0"></anvil-component></div>
       </div>
 
@@ -32,7 +38,7 @@
       <div class="ventilation-quote-fields">
         <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="fan_installation_label" prop:text="Тип вентилятора для установки"></anvil-component><anvil-component type="DropDown" name="fan_installation_dropdown"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="fan_count_label" prop:text="Вентиляторы, шт."></anvil-component><anvil-component type="TextBox" name="fan_count_box" prop:placeholder="0"></anvil-component></div>
-        <div class="ventilation-quote-field"><anvil-component type="Label" name="fan_equipment_price_label" prop:text="Цена вентилятора, ₽/шт."></anvil-component><anvil-component type="TextBox" name="fan_equipment_price_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="fan_equipment_price_label" prop:text="Цена вентилятора вручную, ₽/шт. · 0 — из тарифа"></anvil-component><anvil-component type="TextBox" name="fan_equipment_price_box" prop:placeholder="0"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="branch_count_label" prop:text="Ответвления, шт."></anvil-component><anvil-component type="TextBox" name="branch_count_box" prop:placeholder="0"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="filter_count_label" prop:text="Фильтры, шт."></anvil-component><anvil-component type="TextBox" name="filter_count_box" prop:placeholder="0"></anvil-component></div>
         <div class="ventilation-quote-field"><anvil-component type="Label" name="diffuser_count_label" prop:text="Диффузоры, шт."></anvil-component><anvil-component type="TextBox" name="diffuser_count_box" prop:placeholder="0"></anvil-component></div>
@@ -65,7 +71,7 @@
       </div>
       <div class="ventilation-estimate-table-head"><span>Раздел</span><span>Позиция</span><span>Кол-во</span><span>Цена</span><span>Сумма</span></div>
       <anvil-component type="RepeatingPanel" name="breakdown_rows" prop:role="ventilation-estimate-lines" prop:item_template="Minimal_Theme_4.PricePage.QuoteCalculator.LineItem"></anvil-component>
-      <anvil-component type="Label" name="quote_disclaimer" prop:role="ventilation-quote-note" prop:text="Смета ориентировочная. Тарифы монтажа и материалов можно изменить в админке; стоимость оборудования можно указать вручную."></anvil-component>
+      <anvil-component type="Label" name="quote_disclaimer" prop:role="ventilation-quote-note" prop:text="Смета ориентировочная. Тарифы оборудования, монтажа и материалов редактируются через Управление → Вентиляция. Расчёт воздухообмена предварительный; проектные нормы зависят от назначения помещения."></anvil-component>
     </anvil-component>
   </div>
 </anvil-form>
