@@ -124,7 +124,7 @@ class Projects(ProjectsTemplate):
     except Exception:
       return raw
     if not isinstance(parameters, dict):
-      parameters = {}
+      return raw
     profile = self.engineering_profile_dropdown.selected_value or "combined"
     parameters["engineering_profile"] = profile
     parameters["engineering_workflow_version"] = 1
