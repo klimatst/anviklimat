@@ -74,7 +74,7 @@ _DENSITY = [("Компактно", "compact"), ("Стандартно", "standar
 SETTINGS_SECTIONS = [
   _section("site.identity", "Сайт", "Профиль сайта",
     "Публичное имя и базовые данные компании.",
-    _core("organization_name", "Название компании", "text", "ЭКО-КЛИМАТ"),
+    _core("organization_name", "Название компании", "text", "КЛИМАЭКО"),
     _text("site.tagline", "Короткий слоган", "Климат под инженерным контролем"),
     _text("site.canonical_url", "Основной адрес сайта", "", "Например, https://example.ru", 240, "url")),
   _section("site.contacts", "Сайт", "Контакты",
