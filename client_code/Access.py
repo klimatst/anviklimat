@@ -98,7 +98,7 @@ def get_site_theme():
 def set_site_theme(theme):
   """Keep newly saved theme choices in sync across client-side navigation."""
   global _SITE_THEME_CACHE
-  if theme in ("blue", "graphite", "ice", "amber", "crimson", "violet"):
+  if theme in ("graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light"):
     _SITE_THEME_CACHE = theme
 
 
