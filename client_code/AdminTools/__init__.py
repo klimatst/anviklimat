@@ -202,7 +202,8 @@ class AdminTools(AdminToolsTemplate):
     return self._is_admin if permission is None else self._module_available_by_permission(permission)
 
   def _filtered_modules(self):
-    term = (self.module_search_box.text or "").strip().casefold()
+    # The Anvil client runtime does not implement str.casefold().
+    term = (self.module_search_box.text or "").strip().lower()
     selected_group = self.module_group_dropdown.selected_value or "Все"
     modules = self._modules
     if selected_group != "Все":
@@ -210,7 +211,7 @@ class AdminTools(AdminToolsTemplate):
     if term:
       modules = [module for module in modules if term in " ".join((
         module["title"], module["description"], module["badge"], module["group"]
-      )).casefold()]
+      )).lower()]
     return [dict(module) for module in modules]
 
   def _render_modules(self):
