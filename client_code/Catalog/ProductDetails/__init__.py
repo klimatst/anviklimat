@@ -12,7 +12,13 @@ class ProductDetails(ProductDetailsTemplate):
     self.order_message.text = ""
     self._product_id = None
     self.gallery_rows.visible = False
-    self._order_form_settings = anvil.server.call("get_catalog_order_form_settings")
+    try:
+      self._order_form_settings = anvil.server.call("get_catalog_order_form_settings")
+    except Exception:
+      self._order_form_settings = {
+        "enabled": True, "phone_required": True,
+        "email_required": False, "comment_enabled": True
+      }
     self.order_panel.visible = self._order_form_settings.get("enabled", True) is not False
     self.order_phone_box.placeholder = "Телефон{}".format(
       " *" if self._order_form_settings.get("phone_required", True) else ""
@@ -32,7 +38,11 @@ class ProductDetails(ProductDetailsTemplate):
     self.product_content.visible = False
     self.status_label.text = "Загрузка карточки товара…"
     self.order_message.text = ""
-    result = anvil.server.call("get_product_card", product_id)
+    try:
+      result = anvil.server.call("get_product_card", product_id)
+    except Exception as exc:
+      self.status_label.text = "Не удалось загрузить карточку товара: {}".format(exc)
+      return
     if not result["ok"]:
       self.status_label.text = result["message"]
       return
@@ -144,6 +154,9 @@ class ProductDetails(ProductDetailsTemplate):
         self.order_name_box.text or "", self.order_phone_box.text or "",
         self.order_email_box.text or "", self.order_comment_box.text or ""
       )
+    except Exception as exc:
+      self.order_message.text = "Не удалось отправить заявку: {}".format(exc)
+      return
     finally:
       self.order_button.enabled = True
     self.order_message.text = result["message"]
