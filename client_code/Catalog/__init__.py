@@ -24,9 +24,11 @@ class Catalog(CatalogTemplate):
     self.is_admin = context["role_code"] == "admin"
     self.can_edit_catalog = self.is_admin or "catalog.manage" in context["permissions"]
     self.can_import_catalog = self.is_admin or "import.manage" in context["permissions"]
+    self.sync_lovable_requested = bool(properties.get("sync_lovable")) and self.is_admin
 
     self.new_product_button.visible = self.can_edit_catalog
     self.import_button.visible = self.can_import_catalog
+    self.sync_lovable_button.visible = self.is_admin
     self.manage_categories_button.visible = self.can_edit_catalog
     self.manage_series_button.visible = self.can_edit_catalog
     self.add_category_button.visible = self.can_edit_catalog
@@ -66,6 +68,8 @@ class Catalog(CatalogTemplate):
     self.new_category_panel.visible = False
     self.product_detail_overlay.visible = False
     self._load_categories(category_code)
+    if self.sync_lovable_requested:
+      self._sync_lovable_catalog()
     self._load_page()
 
   def _load_categories(self, category_code=None):
@@ -432,6 +436,25 @@ class Catalog(CatalogTemplate):
   @handle("new_product_button", "click")
   def new_product_button_click(self, **event_args):
     Access.open_context_window("Catalog.ProductEditor")
+
+  def _sync_lovable_catalog(self, force=False):
+    self.sync_lovable_button.enabled = False
+    self.catalog_message.text = "Синхронизация полного каталога Hisense из Lovable…"
+    try:
+      result = anvil.server.call("sync_hisense_lovable_catalog", bool(force))
+    except Exception as exc:
+      self.catalog_message.text = "Ошибка синхронизации Lovable: {}".format(exc)
+      return
+    finally:
+      self.sync_lovable_button.enabled = True
+    self.catalog_message.text = result.get("message", "")
+    if result.get("ok"):
+      self._load_categories(self._active_category_code)
+      self._reset_and_load()
+
+  @handle("sync_lovable_button", "click")
+  def sync_lovable_button_click(self, **event_args):
+    self._sync_lovable_catalog(force=False)
 
   @handle("import_button", "click")
   def import_button_click(self, **event_args):
