@@ -1,6 +1,6 @@
 from ._anvil_designer import ProjectItemTemplate
 from anvil import handle
-from .. import Access
+from ... import Access
 
 class ProjectItem(ProjectItemTemplate):
   def __init__(self, item=None, **properties):
