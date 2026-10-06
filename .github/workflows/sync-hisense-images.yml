@@ -6,6 +6,7 @@ on:
     paths:
       - theme/assets/catalog/hisense/photo_sources.json
       - server_code/HisenseLovableCatalogData.py
+      - .github/workflows/sync-hisense-images.yml
 
 permissions:
   contents: write
@@ -16,12 +17,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download catalog photos
+      - name: Install image processor
+        shell: bash
+        run: python -m pip install --disable-pip-version-check pillow
+
+      - name: Download and optimize catalog photos
         shell: python
         run: |
           import json
           import pathlib
           import urllib.request
+          from collections import deque
+          from io import BytesIO
+          from PIL import Image
 
           sources = json.loads(pathlib.Path(
               "theme/assets/catalog/hisense/photo_sources.json"
@@ -29,20 +37,64 @@ jobs:
           target = pathlib.Path("theme/assets/catalog/hisense")
           target.mkdir(parents=True, exist_ok=True)
 
+          def remove_connected_white(img):
+              rgba = img.convert("RGBA")
+              pixels = rgba.load()
+              width, height = rgba.size
+              visited = bytearray(width * height)
+              queue = deque()
+
+              def enqueue(x, y):
+                  index = y * width + x
+                  if visited[index]:
+                      return
+                  visited[index] = 1
+                  queue.append((x, y))
+
+              for x in range(width):
+                  enqueue(x, 0)
+                  enqueue(x, height - 1)
+              for y in range(height):
+                  enqueue(0, y)
+                  enqueue(width - 1, y)
+
+              removed = 0
+              while queue:
+                  x, y = queue.popleft()
+                  r, g, b, a = pixels[x, y]
+                  near_white = r >= 242 and g >= 242 and b >= 242 and max(r, g, b) - min(r, g, b) <= 14
+                  if near_white:
+                      pixels[x, y] = (255, 255, 255, 0)
+                      removed += 1
+                      for nx, ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                          if 0 <= nx < width and 0 <= ny < height:
+                              enqueue(nx, ny)
+              return rgba
+
           for key, url in sources.items():
               request = urllib.request.Request(
                   url,
-                  headers={"User-Agent": "klimatst-anviklimat-hisense-sync/1.0"},
+                  headers={"User-Agent": "klimatst-anviklimat-hisense-sync/2.0"},
               )
               with urllib.request.urlopen(request, timeout=45) as response:
                   data = response.read()
               if len(data) < 100:
                   raise RuntimeError(f"{key}: downloaded image is unexpectedly small")
-              if not (data.startswith(b"\x89PNG\r\n\x1a\n")
-                      or data.startswith(b"\xff\xd8\xff")
-                      or data.startswith(b"RIFF")):
-                  raise RuntimeError(f"{key}: downloaded file is not a supported image")
-              (target / f"{key}.png").write_bytes(data)
+
+              image = Image.open(BytesIO(data))
+              image.load()
+              image.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
+              image = remove_connected_white(image)
+
+              output = target / f"{key}.png"
+              image.save(
+                  output,
+                  "PNG",
+                  optimize=True,
+                  compress_level=9,
+                )
+              if output.stat().st_size < 100:
+                  raise RuntimeError(f"{key}: processed image is unexpectedly small")
 
       - name: Commit GitHub photo assets
         shell: bash
@@ -54,5 +106,5 @@ jobs:
             echo "No photo changes"
             exit 0
           fi
-          git commit -m "Sync Hisense catalog photos"
+          git commit -m "Optimize Hisense catalog photos"
           git push
