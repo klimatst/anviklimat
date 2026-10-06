@@ -6902,3 +6902,266 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
     width:100%;
   }
 }
+
+/* ===== GLOBAL FIVE-TEMPLATE OVERRIDES ===== */
+.eco-site-shell.site-theme--graphite{--theme-accent-rgb:85,211,173}
+.eco-site-shell.site-theme--carbon-amber{--theme-accent-rgb:255,179,71}
+.eco-site-shell.site-theme--carbon-red{--theme-accent-rgb:255,82,105}
+.eco-site-shell.site-theme--arctic-light{--theme-accent-rgb:22,143,128}
+.eco-site-shell.site-theme--titanium-light{--theme-accent-rgb:44,57,65}
+
+.eco-site-shell[class*="site-theme--"]{
+  --surface-0:var(--u-bg);
+  --surface-1:var(--u-surface);
+  --surface-2:var(--u-surface-2);
+  --surface-3:var(--u-surface-3);
+  --line:var(--u-line);
+  --text:var(--u-text);
+  --muted:var(--u-muted);
+  --accent:var(--u-accent);
+  --accent-soft:rgba(var(--theme-accent-rgb),.10);
+  --accent-glow:rgba(var(--theme-accent-rgb),.20);
+}
+.eco-site-shell[class*="site-theme--"] .site-categories,
+.eco-site-shell[class*="site-theme--"] .eco-navigation{
+  background:color-mix(in srgb,var(--surface-0) 88%,#000 12%)!important;
+  border-color:var(--line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .site-header{
+  background:color-mix(in srgb,var(--surface-0) 88%,transparent)!important;
+  border-bottom-color:var(--line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .site-header *,
+.eco-site-shell[class*="site-theme--"] .eco-header *{
+  border-color:var(--line);
+}
+.eco-site-shell[class*="site-theme--"] .site-header .anvil-role-search-action > button{
+  color:var(--u-on-accent)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-panel,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-settings,
+.eco-site-shell[class*="site-theme--"] .anvil-role-result-panel,
+.eco-site-shell[class*="site-theme--"] .anvil-role-calculator-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-calculator-result,
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile,
+.eco-site-shell[class*="site-theme--"] .anvil-role-studio-settings-modal,
+.eco-site-shell[class*="site-theme--"] .anvil-role-studio-secret-modal{
+  background:linear-gradient(145deg,rgba(255,255,255,.025),transparent 55%),var(--surface-1)!important;
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-card:hover,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile:hover,
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card:hover,
+.eco-site-shell[class*="site-theme--"] .anvil-role-calculator-card:hover{
+  border-color:rgba(var(--theme-accent-rgb),.42)!important;
+  box-shadow:0 16px 40px var(--u-shadow),0 0 22px rgba(var(--theme-accent-rgb),.07)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-icon-button > button,
+.eco-site-shell[class*="site-theme--"] .anvil-role-secondary-button > button{
+  color:var(--text);
+  background:var(--surface-2);
+  border-color:var(--line);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-icon-button > button:hover,
+.eco-site-shell[class*="site-theme--"] .anvil-role-secondary-button > button:hover{
+  background:var(--surface-3);
+  border-color:var(--accent);
+}
+.eco-site-shell[class*="site-theme--"] a{
+  color:var(--accent);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-eyebrow,
+.eco-site-shell[class*="site-theme--"] .service-index,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile-code{
+  color:var(--u-accent-2)!important;
+}
+.eco-site-shell[class*="site-theme--"] hr,
+.eco-site-shell[class*="site-theme--"] .divider{
+  border-color:var(--line)!important;
+  opacity:.9;
+}
+
+.eco-site-shell[class*="site-theme--"] .anvil-role-h1{
+  text-shadow:0 0 26px rgba(var(--theme-accent-rgb),.08);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-primary-action > button{
+  min-height:44px;
+  border-radius:9px;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-secondary-button > button{
+  min-height:42px;
+  border-radius:9px;
+}
+
+.eco-site-shell[class*="site-theme--"] .repeating-panel,
+.eco-site-shell[class*="site-theme--"] .anvil-repeating-panel{
+  scrollbar-color:var(--accent) var(--surface-2);
+}
+.eco-site-shell[class*="site-theme--"] table{
+  color:var(--text);
+  border-color:var(--line);
+}
+.eco-site-shell[class*="site-theme--"] th{
+  color:var(--u-accent-2);
+  background:var(--surface-2);
+  border-bottom-color:var(--line);
+}
+.eco-site-shell[class*="site-theme--"] td{
+  border-bottom-color:var(--line);
+}
+.eco-site-shell[class*="site-theme--"] tr:hover td{
+  background:rgba(var(--theme-accent-rgb),.035);
+}
+
+.eco-site-shell[class*="site-theme--"] .anvil-role-status-message{
+  color:var(--muted)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-warning,
+.eco-site-shell[class*="site-theme--"] .anvil-role-studio-warning{
+  color:var(--u-warning)!important;
+  border-color:rgba(255,190,80,.25)!important;
+  background:rgba(255,190,80,.07)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-error{
+  color:var(--u-danger)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-success{
+  color:var(--u-accent-2)!important;
+}
+
+.eco-site-shell[class*="site-theme--"] .admin-topbar{
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(var(--theme-accent-rgb),.045),transparent 55%);
+}
+.eco-site-shell[class*="site-theme--"] .admin-topbar__identity .anvil-role-h1{
+  color:var(--text)!important;
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-brand__mark{
+  color:var(--u-on-accent)!important;
+  background:linear-gradient(145deg,var(--u-accent-2),var(--u-accent))!important;
+  box-shadow:0 0 24px rgba(var(--theme-accent-rgb),.22);
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-menu{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-footer{
+  color:var(--muted);
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-footer span:first-child{
+  color:var(--u-accent-2);
+}
+
+.eco-site-shell[class*="site-theme--"] .studio-hero,
+.eco-site-shell[class*="site-theme--"] .studio-integration-strip,
+.eco-site-shell[class*="site-theme--"] .studio-settings-main,
+.eco-site-shell[class*="site-theme--"] .studio-workspace-heading,
+.eco-site-shell[class*="site-theme--"] .studio-command-bar{
+  background:linear-gradient(120deg,rgba(var(--theme-accent-rgb),.06),transparent 60%),var(--surface-1)!important;
+  border-color:var(--line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .studio-command-bar{
+  border:1px solid var(--line);
+  border-radius:10px;
+  box-shadow:0 10px 30px var(--u-shadow);
+}
+.eco-site-shell[class*="site-theme--"] .studio-hero::after{
+  background:linear-gradient(90deg,var(--accent),transparent)!important;
+}
+.eco-site-shell[class*="site-theme--"] .studio-section-rail,
+.eco-site-shell[class*="site-theme--"] .studio-section-list,
+.eco-site-shell[class*="site-theme--"] .studio-field-list,
+.eco-site-shell[class*="site-theme--"] .studio-extension-list{
+  border-color:var(--line)!important;
+  background:var(--surface-2)!important;
+}
+.eco-site-shell[class*="site-theme--"] .studio-section-list .anvil-button > button:hover,
+.eco-site-shell[class*="site-theme--"] .studio-field-list .anvil-button > button:hover{
+  background:var(--accent-soft)!important;
+}
+
+.eco-site-shell[class*="site-theme--"] .catalog-product-card,
+.eco-site-shell[class*="site-theme--"] .news-card,
+.eco-site-shell[class*="site-theme--"] .project-card,
+.eco-site-shell[class*="site-theme--"] .gallery-card,
+.eco-site-shell[class*="site-theme--"] .service-card{
+  animation:eco-card-rise .45s ease both;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-product-card:nth-child(2),
+.eco-site-shell[class*="site-theme--"] .news-card:nth-child(2),
+.eco-site-shell[class*="site-theme--"] .project-card:nth-child(2){
+  animation-delay:.04s;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-product-card:nth-child(3),
+.eco-site-shell[class*="site-theme--"] .news-card:nth-child(3),
+.eco-site-shell[class*="site-theme--"] .project-card:nth-child(3){
+  animation-delay:.08s;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-product-card:nth-child(4),
+.eco-site-shell[class*="site-theme--"] .news-card:nth-child(4),
+.eco-site-shell[class*="site-theme--"] .project-card:nth-child(4){
+  animation-delay:.12s;
+}
+
+.eco-site-shell.site-theme--graphite .eco-header__unit--outdoor,
+.eco-site-shell.site-theme--carbon-amber .eco-header__unit--outdoor,
+.eco-site-shell.site-theme--carbon-red .eco-header__unit--outdoor{
+  filter:drop-shadow(0 0 10px rgba(var(--theme-accent-rgb),.16));
+}
+
+.eco-site-shell.site-theme--arctic-light .anvil-role-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-calculator-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-calculator-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-panel,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-panel,
+.eco-site-shell.site-theme--arctic-light .anvil-role-service-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-service-card{
+  box-shadow:0 14px 36px var(--u-shadow),inset 0 1px rgba(255,255,255,.9);
+}
+.eco-site-shell.site-theme--arctic-light .site-header,
+.eco-site-shell.site-theme--titanium-light .site-header{
+  background:rgba(255,255,255,.90)!important;
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-persistent-sidebar,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-persistent-sidebar{
+  background:linear-gradient(145deg,#fff,var(--surface-2))!important;
+  box-shadow:0 18px 45px var(--u-shadow),inset 0 1px #fff;
+}
+.eco-site-shell.site-theme--arctic-light .admin-sidebar-context,
+.eco-site-shell.site-theme--titanium-light .admin-sidebar-context{
+  background:var(--surface-2);
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-nav > button,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-nav > button{
+  color:var(--muted)!important;
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-nav > button:hover,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-nav > button:hover{
+  color:var(--text)!important;
+}
+
+.eco-site-shell.site-theme--titanium-light{
+  --theme-accent-rgb:44,57,65;
+}
+.eco-site-shell.site-theme--titanium-light .anvil-role-primary-action > button{
+  background:linear-gradient(180deg,#52636c,#2c3941)!important;
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-primary-action > button{
+  background:linear-gradient(180deg,#37b9a7,#168f80)!important;
+}
+
+@media (max-width:1100px){
+  .system-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tool-band{grid-template-columns:1fr}
+  .contacts-view{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .system-cards,
+  .settings-grid{grid-template-columns:1fr}
+  .page-main.eco-main{padding-top:18px}
+  .eco-site-shell[class*="site-theme--"] .page-title-wrap::after{width:58px}
+}
