@@ -497,6 +497,8 @@ def _ventilation_html():
   return html_out + _finish(SOURCE_VENTILATION)
 
 
+_PRICE_PAGES_READY = False
+
 PAGE_HTML = {
   "conditioners": _conditioners_html,
   "vrf": _vrf_html,
@@ -505,6 +507,9 @@ PAGE_HTML = {
 
 
 def _seed_price_pages():
+  global _PRICE_PAGES_READY
+  if _PRICE_PAGES_READY:
+    return
   now = datetime.now(timezone.utc)
   created = []
   for code in PRICE_CODES:
@@ -552,6 +557,7 @@ def _seed_price_pages():
       enabled=True
     )
     created.append(slug)
+  _PRICE_PAGES_READY = True
   if created:
     Core.log_audit(
       action="cms.price_pages_seeded",
