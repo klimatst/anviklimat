@@ -567,7 +567,7 @@ def get_catalog_categories():
 
 
 @anvil.server.callable
-def get_catalog_menu_tree(include_counts=True):
+def get_catalog_menu_tree(include_counts=True, include_series=True):
   """Return live category rows grouped into the two catalogue directions."""
   # Public navigation is read-mostly. Do not rewrite/migrate the category
   # tree on every page load; initialize it only when the table is empty.
@@ -655,7 +655,7 @@ def get_catalog_menu_tree(include_counts=True):
     "categories": categories,
     "series": (
       [_series_payload(row) for row in _series_rows_for_category(active_only=True)]
-      if include_counts else []
+      if include_series else []
     ),
     "navigation_settings": navigation_settings,
     "site_menu": SiteMenuService.get_public_site_menu_data(),
