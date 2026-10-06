@@ -80,10 +80,16 @@ def get_project_engineering_snapshot(project_id):
   for system in systems:
     component_count += len(list(app_tables.system_components.search(system=system)[:500]))
 
+  object_parameters = (obj["parameters"] or {}) if obj is not None else {}
+  engineering_profile = object_parameters.get("engineering_profile", "combined")
+  engineering_goal = object_parameters.get("engineering_goal", "design")
+  project_priority = object_parameters.get("project_priority", "standard")
+  constraints = str(object_parameters.get("constraints", "") or "").strip()
   object_ready = bool(
     obj is not None and
     str(obj["name"] or "").strip()
   )
+  engineering_brief_ready = bool(object_ready and engineering_profile and engineering_goal and project_priority)
   snapshot = {
     "project_id": project.get_id(),
     "project_code": project["code"] or "",
@@ -91,10 +97,11 @@ def get_project_engineering_snapshot(project_id):
     "project_status": project["status"] or "draft",
     "object_ready": object_ready,
     "object_name": (obj["name"] if obj is not None else "") or "",
-    "engineering_profile": (
-      (obj["parameters"] or {}).get("engineering_profile", "combined")
-      if obj is not None else "combined"
-    ),
+    "engineering_profile": engineering_profile,
+    "engineering_goal": engineering_goal,
+    "project_priority": project_priority,
+    "constraints": constraints,
+    "engineering_brief_ready": engineering_brief_ready,
     "room_count": len(rooms),
     "system_count": len(systems),
     "system_component_count": component_count,
@@ -114,7 +121,8 @@ def get_project_engineering_snapshot(project_id):
     "progress": round(index / float(len(STAGES) - 1) * 100),
     "engineering_score": min(
       100,
-      (15 if object_ready else 0) +
+      (12 if object_ready else 0) +
+      (8 if engineering_brief_ready else 0) +
       (20 if snapshot["room_count"] else 0) +
       (20 if snapshot["system_count"] else 0) +
       (15 if snapshot["calculation_count"] else 0) +
