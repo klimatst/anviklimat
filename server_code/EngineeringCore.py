@@ -213,7 +213,7 @@ def get_project_engineering_snapshot(project_id):
   return {"ok": True, "snapshot": snapshot}
 
 @anvil.server.callable(require_user=True)
-def get_engineering_quality_gate():
+def get_engineering_quality_gate(project_limit=250):
   user = anvil.users.get_user()
   if user is None:
     return {"ok": False, "message": "Требуется вход."}
@@ -221,7 +221,9 @@ def get_engineering_quality_gate():
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
 
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
+  if isinstance(project_limit, bool) or not isinstance(project_limit, int) or not 1 <= project_limit <= 250:
+    return {"ok": False, "message": "Некорректный лимит Quality Gate."}
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:project_limit]
   counts = {
     "projects_without_object": 0, "projects_without_rooms": 0,
     "rooms_without_calculations": 0, "calculations_without_system": 0,
