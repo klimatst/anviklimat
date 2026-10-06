@@ -101,6 +101,9 @@ class SiteMenu(SiteMenuTemplate):
     self.save_menu_button.enabled = False
     try:
       result = anvil.server.call("save_managed_site_menu", items)
+    except Exception as exc:
+      self.menu_message.text = "Не удалось сохранить меню: {}".format(exc)
+      return
     finally:
       self.save_menu_button.enabled = True
     self.menu_message.text = result["message"]
