@@ -10,6 +10,7 @@ import CalculationsService as Calculations
 import CatalogService as Catalog
 import Core
 import EstimateEngine as Estimates
+import AdminStudio
 
 
 INSTALLATION_PROFILES = [
@@ -500,6 +501,29 @@ def _calculate_installation(profile, raw_inputs, raw_materials=None,
   rate_per_unit = coefficients.get("rate_per_unit", 0)
   rate_per_m = coefficients.get("route_rate_per_m", 0)
   rate_per_floor = coefficients.get("rate_per_floor", 0)
+  # Mirror the Lovable-style installation pricing controls into the real
+  # Anvil installation calculator for the core AC/VRF rates.
+  if profile == "ac":
+    price_key = (
+      "installation.pricing.acStandard"
+      if values["complexity"] == "standard"
+      else "installation.pricing.acPremium"
+    )
+    configured_rate = AdminStudio.get_admin_studio_setting(price_key, None)
+    if Calculations.is_finite_number(configured_rate) and configured_rate >= 0:
+      rate_per_unit = configured_rate
+      complexity_factor = 1.0
+  elif profile == "vrf_vrv":
+    configured_unit = AdminStudio.get_admin_studio_setting(
+      "installation.pricing.indoorUnit", None
+    )
+    configured_route = AdminStudio.get_admin_studio_setting(
+      "installation.pricing.vrfMainRoute", None
+    )
+    if Calculations.is_finite_number(configured_unit) and configured_unit >= 0:
+      rate_per_unit = configured_unit
+    if Calculations.is_finite_number(configured_route) and configured_route >= 0:
+      rate_per_m = configured_route
   for value, label in (
     (rate_per_unit, "работа за единицу"),
     (rate_per_m, "работа за метр"),
