@@ -615,6 +615,9 @@ class ImportEngine(ImportEngineTemplate):
         "add_pdf_draft_product_to_catalog", self._pdf_draft_id,
         target["_draft_item_id"], target
       )
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось добавить товар в каталог: {}".format(exc)
+      return
     finally:
       self._open_pdf_draft(self._pdf_draft_id)
       self._load_pdf_drafts()
@@ -658,6 +661,9 @@ class ImportEngine(ImportEngineTemplate):
     self.transfer_images_button.enabled = False
     try:
       result = anvil.server.call("transfer_import_images_to_site", self._pdf_draft_id, True)
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось перенести изображения: {}".format(exc)
+      return
     finally:
       self.transfer_images_button.enabled = True
     self.pdf_review_message.text = result.get("message", "")
@@ -693,6 +699,9 @@ class ImportEngine(ImportEngineTemplate):
     self.retry_pdf_button.enabled = False
     try:
       result = anvil.server.call("retry_pdf_catalog_draft", self._pdf_draft_id)
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось повторить обработку PDF: {}".format(exc)
+      return
     finally:
       self.retry_pdf_button.enabled = True
     self.pdf_review_message.text = result["message"]
@@ -707,6 +716,9 @@ class ImportEngine(ImportEngineTemplate):
     self.pause_pdf_button.enabled = False
     try:
       result = anvil.server.call("pause_pdf_catalog_draft", self._pdf_draft_id)
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось поставить импорт на паузу: {}".format(exc)
+      return
     finally:
       self.pause_pdf_button.enabled = True
     self.pdf_review_message.text = result["message"]
@@ -720,6 +732,9 @@ class ImportEngine(ImportEngineTemplate):
     self.resume_pdf_button.enabled = False
     try:
       result = anvil.server.call("resume_pdf_catalog_draft", self._pdf_draft_id)
+    except Exception as exc:
+      self.pdf_review_message.text = "Не удалось продолжить импорт: {}".format(exc)
+      return
     finally:
       self.resume_pdf_button.enabled = True
     self.pdf_review_message.text = result["message"]
@@ -756,6 +771,9 @@ class ImportEngine(ImportEngineTemplate):
         self.format_dropdown.selected_value, self.secret_ref_box.text or "",
         self.file_loader.file, preview_token
       )
+    except Exception as exc:
+      self.import_message.text = "Не удалось запустить импорт: {}".format(exc)
+      return
     finally:
       self.start_button.enabled = True
     self._show_progress(result)
@@ -776,6 +794,9 @@ class ImportEngine(ImportEngineTemplate):
         self.format_dropdown.selected_value, self.secret_ref_box.text or "",
         self.file_loader.file
       )
+    except Exception as exc:
+      self.preview_summary.text = "Не удалось выполнить предпросмотр: {}".format(exc)
+      return
     finally:
       self.preview_button.enabled = True
     self.preview_summary.text = result["message"]
@@ -801,6 +822,9 @@ class ImportEngine(ImportEngineTemplate):
       result = anvil.server.call(
         "resume_product_import", self._import_id, self.file_loader.file
       )
+    except Exception as exc:
+      self.import_message.text = "Не удалось продолжить импорт: {}".format(exc)
+      return
     finally:
       self.continue_button.enabled = True
     self._show_progress(result)
