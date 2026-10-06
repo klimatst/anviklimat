@@ -1903,9 +1903,70 @@ def save_product_custom_field_value(product_id, field_id, value, uploaded_file=N
 
 
 @anvil.server.callable
+def get_catalog_filter_options(category_id=None):
+  _ensure_categories()
+  allowed_ids = None
+  if category_id:
+    if not isinstance(category_id, str):
+      return {"ok": False, "message": "Некорректная категория."}
+    scope = _catalog_category_scope(category_id)
+    if scope is None:
+      return {"ok": False, "message": "Категория больше недоступна."}
+    allowed_ids = {row.get_id() for row in scope}
+
+  products = list(app_tables.products.search(q.fetch_only("brand", "category", "subcategory"), active=True))
+  if allowed_ids is not None:
+    products = [
+      row for row in products if (
+        row["category"] is not None and row["category"].get_id() in allowed_ids
+      ) or (
+        row["subcategory"] is not None and row["subcategory"].get_id() in allowed_ids
+      )
+    ]
+
+  brand_counts = {}
+  product_ids = set()
+  for product in products:
+    product_ids.add(product.get_id())
+    brand = product["brand"]
+    if brand is not None:
+      brand_counts[brand.get_id()] = brand_counts.get(brand.get_id(), 0) + 1
+
+  relevant_keys = ("Компрессор", "Страна", "Режим работы", "Класс энергоэффективности")
+  values = {key: set() for key in relevant_keys}
+  if product_ids:
+    for row in app_tables.product_specs.search(
+      q.fetch_only("product", "key", "value"),
+      q.any_of(*[q.all_of(key=key) for key in relevant_keys]),
+      visible=True
+    ):
+      product = row["product"]
+      value = str(row["value"] or "").strip()
+      if product is not None and product.get_id() in product_ids and value:
+        values[row["key"]].add(value)
+
+  brands = []
+  for brand in app_tables.brands.search(q.fetch_only("name"), order_by("name")):
+    count = brand_counts.get(brand.get_id(), 0)
+    if count:
+      brands.append({"id": brand.get_id(), "title": brand["name"], "count": count})
+
+  return {
+    "ok": True,
+    "brands": brands,
+    "compressors": sorted(values["Компрессор"], key=str.casefold),
+    "countries": sorted(values["Страна"], key=str.casefold),
+    "operation_modes": sorted(values["Режим работы"], key=str.casefold),
+    "energy_classes": sorted(values["Класс энергоэффективности"], key=str.casefold)
+  }
+
+
+@anvil.server.callable
 def search_catalog(search_text="", category_id=None, cursor=None, active_filter="active",
                    series_id=None, available_only=False, minimum_price=None,
-                   maximum_price=None, sort_by="model_asc"):
+                   maximum_price=None, sort_by="model_asc", brand_id=None,
+                   compressor="", country="", operation_mode="", energy_class="",
+                   minimum_area=None, maximum_area=None):
   user = _current_user()
   _ensure_categories()
   can_edit = Core.has_permission(user, "catalog.manage")
@@ -1915,8 +1976,25 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     return {"ok": False, "message": "Выбран неизвестный статус каталога.", "rows": [], "has_more": False}
   if not isinstance(available_only, bool):
     return {"ok": False, "message": "Некорректный фильтр наличия.", "rows": [], "has_more": False}
-  if sort_by not in ("model_asc", "model_desc"):
+  if sort_by not in ("model_asc", "model_desc", "popular", "price_asc", "price_desc"):
     return {"ok": False, "message": "Выбрана неизвестная сортировка.", "rows": [], "has_more": False}
+  for field_value, label in (
+    (brand_id, "Производитель"), (compressor, "Компрессор"),
+    (country, "Страна"), (operation_mode, "Режим работы"),
+    (energy_class, "Класс энергоэффективности")
+  ):
+    if field_value is not None and not isinstance(field_value, str):
+      return {"ok": False, "message": "Некорректный фильтр «{}».".format(label), "rows": [], "has_more": False}
+    if isinstance(field_value, str) and len(field_value) > 100:
+      return {"ok": False, "message": "Фильтр «{}» слишком длинный.".format(label), "rows": [], "has_more": False}
+  minimum_area, error = _number_value({"value": minimum_area}, "value", "Минимальная площадь")
+  if error:
+    return {"ok": False, "message": error, "rows": [], "has_more": False}
+  maximum_area, error = _number_value({"value": maximum_area}, "value", "Максимальная площадь")
+  if error:
+    return {"ok": False, "message": error, "rows": [], "has_more": False}
+  if minimum_area is not None and maximum_area is not None and minimum_area > maximum_area:
+    return {"ok": False, "message": "Минимальная площадь не может быть выше максимальной.", "rows": [], "has_more": False}
   minimum_price, error = _number_value(
     {"value": minimum_price}, "value", "Минимальная цена"
   )
@@ -1934,7 +2012,7 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
   filters = {}
   if active_filter != "all":
     filters["active"] = active_filter == "active"
-  ascending = sort_by == "model_asc"
+  ascending = sort_by in ("model_asc", "popular", "price_asc")
   expressions = [
     q.fetch_only(
       "identity_key", "model", "sku", "type", "description", "active", "brand",
@@ -1993,6 +2071,57 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
       q.all_of(identity_key=product["identity_key"])
       for product in available_products
     ]))
+  if brand_id:
+    brand = app_tables.brands.get_by_id(brand_id)
+    if brand is None:
+      return {"ok": False, "message": "Производитель не найден.", "rows": [], "has_more": False}
+    expressions.append(q.all_of(brand=brand))
+
+  spec_filter_values = {
+    "Компрессор": compressor.strip(),
+    "Страна": country.strip(),
+    "Режим работы": operation_mode.strip(),
+    "Класс энергоэффективности": energy_class.strip()
+  }
+  for spec_key, wanted in spec_filter_values.items():
+    if not wanted:
+      continue
+    matching_rows = list(app_tables.product_specs.search(
+      q.fetch_only("product"), key=spec_key, value=q.ilike(wanted)
+    )[:5001])
+    matching_products = [row["product"] for row in matching_rows if row["product"] is not None]
+    if not matching_products:
+      return {"ok": True, "rows": [], "has_more": False, "next_cursor": None}
+    expressions.append(q.any_of(*[
+      q.all_of(identity_key=product["identity_key"])
+      for product in matching_products
+    ]))
+
+  if minimum_area is not None or maximum_area is not None:
+    area_rows = list(app_tables.product_specs.search(
+      q.fetch_only("product", "value"), key=q.ilike("Площадь помещения%")
+    )[:10001])
+    area_products = []
+    for area_row in area_rows:
+      product = area_row["product"]
+      if product is None:
+        continue
+      try:
+        area_value = float(str(area_row["value"] or "").replace(",", ".").split()[0])
+      except (TypeError, ValueError, IndexError):
+        continue
+      if minimum_area is not None and area_value < minimum_area:
+        continue
+      if maximum_area is not None and area_value > maximum_area:
+        continue
+      area_products.append(product)
+    if not area_products:
+      return {"ok": True, "rows": [], "has_more": False, "next_cursor": None}
+    expressions.append(q.any_of(*[
+      q.all_of(identity_key=product["identity_key"])
+      for product in area_products
+    ]))
+
   if minimum_price is not None or maximum_price is not None:
     price_filter = {}
     if minimum_price is not None and maximum_price is not None:
@@ -2220,11 +2349,18 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
       "cooling_capacity": spec_value("Мощность охлаждения", "Холодопроизводительность", "Номинальная мощность охлаждения"),
       "heating_capacity": spec_value("Мощность обогрева", "Теплопроизводительность", "Номинальная мощность обогрева"),
       "indoor_dimensions": spec_value("Габариты внутреннего блока", "Размеры внутреннего блока", "Габариты внутреннего блока (Ш×В×Г)"),
+      "compressor": spec_value("Компрессор"),
+      "operation_mode": spec_value("Режим работы"),
+      "country": spec_value("Страна"),
+      "energy_class": spec_value("Класс энергоэффективности"),
+      "area": spec_value("Площадь помещения, м²", "Площадь помещения"),
+      "noise_level": spec_value("Уровень шума, Дб", "Уровень шума", "Шум"),
       "can_edit": can_edit
     })
 
   return {
     "ok": True, "rows": result, "has_more": has_more,
+    "shown_count": len(result),
     "next_cursor": json.dumps([
       products[-1]["model"] or "", products[-1]["identity_key"]
     ]) if has_more else None
