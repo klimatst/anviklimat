@@ -132,7 +132,14 @@ def _photo_key(model, series, category, imported_key):
   if category == "accessory":
     return "accessory"
   if category == "mobile":
-    return {"MOBILE-V": "mobileV", "MOBILE-W": "mobileW", "MOBILE-C": "mobileC"}.get("MOBILE-" + series_value[-1:] if series_value else "", "mobileC")
+    imported = (imported_key or "").casefold()
+    if "mobile-v" in imported:
+      return "mobileV"
+    if "mobile-w" in imported:
+      return "mobileW"
+    if "mobile-c" in imported:
+      return "mobileC"
+    return "mobileC"
   if category == "multi-split":
     if "НАРУЖНЫЕ БЛОКИ" in series_value:
       return "multi-outdoor"
@@ -339,7 +346,7 @@ def _ensure_series(category, title, min_power, max_power):
     power_range=power_range,
     image=None, sort_order=0, active=True,
     created_at=datetime.now(timezone.utc), updated_at=datetime.now(timezone.utc)
-  )
+  ), True
 
 
 def _find_product(model, sku):
@@ -390,7 +397,7 @@ def _upsert_photo(product, url, model, photo_key):
     row = primary_rows[0]
     row.update(
       url=url, source=IMAGE_SOURCE, type="primary", is_primary=True,
-      alt_text="Hisense " + model, checksum="", updated_at=datetime.now(timezone.utc)
+      alt_text="Hisense " + model, checksum=""
     )
   else:
     if next((row for row in primary_rows if (row["url"] or "") == url), None):
