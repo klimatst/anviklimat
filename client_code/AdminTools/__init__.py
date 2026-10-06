@@ -255,9 +255,8 @@ MODULES = [
 
 MODULE_GROUPS = ("Редакторы", "Каталог", "Инженерия", "Операции", "Система")
 
-
 class AdminTools(AdminToolsTemplate):
-  """The redesigned module workspace for staff and administrators."""
+  """Compact, fast admin workspace. Heavy dashboards are deliberately opt-in."""
 
   def __init__(self, **properties):
     super().__init__(**properties)
@@ -267,26 +266,30 @@ class AdminTools(AdminToolsTemplate):
     self._context = Access.get_session_context()
     self._is_admin = self._context["role_code"] == "admin"
     self._permissions = set(self._context["permissions"])
-    self._modules = [module for module in MODULES if self._module_available(module)]
+    hidden = {"widgets", "command_center"}
+    self._modules = [
+      module for module in MODULES
+      if module.get("id") not in hidden and self._module_available(module)
+    ]
     self.module_group_dropdown.items = [("Все модули", "Все")] + [
       (group, group) for group in MODULE_GROUPS
       if any(module["group"] == group for module in self._modules)
     ]
     self.module_group_dropdown.selected_value = "Все"
-    self.orders_button.visible = self._module_available_by_permission("catalog.manage")
-    self.configure_widgets_button.visible = self._is_admin
-    self.settings_button.visible = self._is_admin
-    self.design_button.visible = self._is_admin
-    self.health_button.visible = self._is_admin
-    self.diagnostics_button.visible = self._is_admin
-    self.missing_images_button.visible = self._module_available_by_permission("catalog.manage")
-    self.catalog_button.visible = self._module_available_by_permission("catalog.manage")
-    self.content_button.visible = self._module_available_by_permission("cms.manage")
-    self.audit_panel.visible = self._is_admin
+    self._set_sidebar_active("sidebar_all")
     self._render_modules()
+    self.attention_summary.text = "Админка работает в быстром режиме"
+    self.attention_detail.text = (
+      "Каталог, CMS, инженерия, CRM и системные инструменты загружаются только "
+      "при открытии раздела. Это снижает стартовую нагрузку Anvil."
+    )
     self.engineering_control_button.visible = self._module_available_by_permission("projects.manage")
-    self._load_dashboard()
-    self._load_engineering_control_room()
+    if self.engineering_control_button.visible:
+      self.engineering_status.text = (
+        "Расширенные KPI, Quality Gate и аудит доступны внутри Engineering Control Room."
+      )
+    else:
+      self.engineering_status.text = "Инженерный контур доступен по правам projects.manage."
 
   def _module_available_by_permission(self, permission):
     return self._is_admin or permission in self._permissions or "*" in self._permissions
@@ -296,221 +299,84 @@ class AdminTools(AdminToolsTemplate):
     return self._is_admin if permission is None else self._module_available_by_permission(permission)
 
   def _filtered_modules(self):
-    term = str(self.module_search_box.text or "").strip().lower()
+    term = str(self.module_search_box.text or "").strip().casefold()
     selected_group = self.module_group_dropdown.selected_value or "Все"
     modules = self._modules
     if selected_group != "Все":
       modules = [module for module in modules if module["group"] == selected_group]
     if term:
-      modules = [module for module in modules if term in str(" ".join((
-        str(module["title"] or ""), str(module["description"] or ""),
-        str(module["badge"] or ""), str(module["group"] or "")
-      ))).lower()]
+      modules = [
+        module for module in modules
+        if term in str(" ".join((
+          module.get("title") or "", module.get("description") or "",
+          module.get("badge") or "", module.get("group") or ""
+        ))).casefold()
+      ]
     return [dict(module) for module in modules]
 
   def _render_modules(self):
     filtered = self._filtered_modules()
     self.module_rows.items = filtered
-    self.module_status.text = "{} из {} модулей · {} визуальных редакторов".format(
-      len(filtered), len(self._modules),
-      sum(1 for module in self._modules if module["group"] == "Редакторы")
-    )
+    self.module_status.text = "{} разделов".format(len(filtered))
 
-  def _load_engineering_control_room(self):
-    if not self._module_available_by_permission("projects.manage"):
-      self.engineering_status.text = "Инженерный контур доступен сотрудникам с правом projects.manage."
-      return
-    try:
-      result = anvil.server.call("get_engineering_control_room")
-    except Exception as exc:
-      self.engineering_status.text = "Инженерный контур временно недоступен: {}".format(exc)
-      return
-    if not result.get("ok"):
-      self.engineering_status.text = result.get("message", "Не удалось загрузить Engineering OS.")
-      return
-    metrics = result.get("metrics", {})
-    kpi_values = [
-      metrics.get("projects", 0),
-      metrics.get("active_projects", 0),
-      metrics.get("needs_attention", 0),
-      metrics.get("systems", 0),
-      metrics.get("calculations", 0),
-      metrics.get("estimates", 0)
-    ]
-    # The KPI strip is intentionally rendered through the component tree so
-    # the dashboard stays native Anvil and remains theme-safe.
-    for component, value in zip(
-      ("engineering_kpi_1", "engineering_kpi_2", "engineering_kpi_3",
-       "engineering_kpi_4", "engineering_kpi_5", "engineering_kpi_6"),
-      kpi_values
+  def _set_sidebar_active(self, component_name):
+    for name in (
+      "sidebar_all", "sidebar_editors", "sidebar_catalog",
+      "sidebar_engineering", "sidebar_operations", "sidebar_system"
     ):
-      if hasattr(self, component):
-        getattr(self, component).text = str(value)
-    self.engineering_status.text = (
-      "Активных проектов: {} · сервисных записей: {} · обновлено: {} UTC".format(
-        metrics.get("active_projects", 0),
-        metrics.get("services", 0),
-        result.get("generated_at")
-      )
-    )
-    try:
-      quality = anvil.server.call("get_engineering_quality_gate")
-      if quality.get("ok"):
-        if quality.get("healthy"):
-          self.engineering_quality_status.text = "QUALITY GATE · OK"
-        else:
-          self.engineering_quality_status.text = (
-            "QUALITY GATE · {} замечаний".format(quality.get("issue_count", 0))
-          )
-      else:
-        self.engineering_quality_status.text = "QUALITY GATE · недоступен"
-    except Exception:
-      self.engineering_quality_status.text = "QUALITY GATE · ошибка проверки"
+      component = getattr(self, name, None)
+      if component is not None:
+        component.role = (
+          "admin-sidebar-link admin-sidebar-link-active"
+          if name == component_name else "admin-sidebar-link"
+        )
 
-  def _load_dashboard(self):
-    try:
-      result = anvil.server.call("get_admin_dashboard")
-    except Exception as exc:
-      self.analytics_summary.items = []
-      self.analytics_status.text = "Сводка проекта временно недоступна: {}".format(exc)
-      self.attention_summary.text = "Не удалось загрузить состояние проекта."
-      self.attention_detail.text = "Откройте диагностику или повторите обновление."
-      return
-    if not result["ok"]:
-      self.analytics_summary.items = []
-      self.analytics_status.text = result["message"]
-      self.attention_summary.text = "Не удалось загрузить состояние проекта."
-      self.attention_detail.text = "Обновите данные или откройте раздел диагностики."
-      return
-
-    self.analytics_summary.items = result["widgets"]
-    self.analytics_status.text = "Показателей: {}".format(
-      result["widgets_available_count"]
-    )
-    self.analytics_updated.text = "Обновлено: {} UTC".format(result["as_of"])
-
-    missing_images = next(
-      (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Товары без изображений"), 0
-    )
-    new_orders = next(
-      (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Новые заявки каталога"), 0
-    )
-    incomplete_products = next(
-      (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Товары без описания"), 0
-    )
-    attention = []
-    if new_orders:
-      attention.append("Новых заявок: {}".format(new_orders))
-    if missing_images:
-      attention.append("Товаров без фото: {}".format(missing_images))
-    if incomplete_products:
-      attention.append("Карточек без описания: {}".format(incomplete_products))
-    self.attention_summary.text = (
-      "Требуют внимания: {}".format(len(attention)) if attention else
-      "Критических задач нет"
-    )
-    self.attention_detail.text = (
-      "\n".join(attention) if attention else
-      "Каталог, заявки и страницы готовы к работе. Показатели загружены из проекта."
-    )
-
-    if self._is_admin:
-      self.audit_summary.text = "\n".join(
-        result.get("recent_audit", [])
-      ) or "В журнале пока нет событий."
+  def _select_group(self, group, component_name):
+    self.module_group_dropdown.selected_value = group
+    self._set_sidebar_active(component_name)
+    self._render_modules()
 
   @handle("module_search_box", "change")
   def module_search_box_change(self, **event_args):
     self._render_modules()
 
-  @handle("module_group_dropdown", "change")
-  def module_group_dropdown_change(self, **event_args):
-    self._render_modules()
-
   @handle("module_rows", "x-open-admin-module")
   def module_rows_open_admin_module(self, module_id, **event_args):
     module = next((item for item in self._modules if item["id"] == module_id), None)
-    if module is None:
-      return
-    Access.open_admin_window(module["form"], **dict(module["properties"]))
+    if module is not None:
+      Access.open_admin_window(module["form"], **dict(module["properties"]))
 
-  @handle("analytics_summary", "x-open-metric")
-  def analytics_summary_open_metric(self, metric, **event_args):
-    if not isinstance(metric, dict):
-      return
-    metric_id = str(metric.get("id") or "")
-    title = str(metric.get("label") or "Рабочий раздел")
-    if metric_id == "settings_total":
-      Access.open_admin_window(
-        "AdminSettings", window_title="Центр настроек",
-        start_section="system.widgets", open_editor=True
-      )
-      return
-    if metric_id == "media_without_source":
-      Access.open_admin_window(
-        "AdminSettings", window_title="Фото и хранилище",
-        start_section="integrations.media.storage", open_editor=True
-      )
-      return
-    route = METRIC_ROUTES.get(metric_id)
-    target = route[0] if route else "AdminSettings"
-    if route:
-      title = route[1]
-    properties = {"window_title": title}
-    if target == "Operations":
-      properties["section"] = "service" if metric_id.startswith("service_") else "crm"
-    Access.open_admin_window(target, **properties)
+  @handle("sidebar_all", "click")
+  def sidebar_all_click(self, **event_args):
+    self._select_group("Все", "sidebar_all")
+
+  @handle("sidebar_editors", "click")
+  def sidebar_editors_click(self, **event_args):
+    self._select_group("Редакторы", "sidebar_editors")
+
+  @handle("sidebar_catalog", "click")
+  def sidebar_catalog_click(self, **event_args):
+    self._select_group("Каталог", "sidebar_catalog")
+
+  @handle("sidebar_engineering", "click")
+  def sidebar_engineering_click(self, **event_args):
+    self._select_group("Инженерия", "sidebar_engineering")
+
+  @handle("sidebar_operations", "click")
+  def sidebar_operations_click(self, **event_args):
+    self._select_group("Операции", "sidebar_operations")
+
+  @handle("sidebar_system", "click")
+  def sidebar_system_click(self, **event_args):
+    self._select_group("Система", "sidebar_system")
 
   @handle("refresh_button", "click")
   def refresh_button_click(self, **event_args):
-    self.refresh_button.enabled = False
-    try:
-      self._load_dashboard()
-    finally:
-      self.refresh_button.enabled = True
-
-  @handle("orders_button", "click")
-  def orders_button_click(self, **event_args):
-    Access.open_admin_window("Catalog.Orders", window_title="Заявки каталога")
-
-  @handle("missing_images_button", "click")
-  def missing_images_button_click(self, **event_args):
-    Access.open_admin_window("Catalog.Media", window_title="Медиа каталога")
-
-  @handle("catalog_button", "click")
-  def catalog_button_click(self, **event_args):
-    Access.open_admin_window("Catalog", window_title="Каталог товаров")
-
-  @handle("content_button", "click")
-  def content_button_click(self, **event_args):
-    Access.open_admin_window("CMS", window_title="Страницы и контент")
-
-  @handle("configure_widgets_button", "click")
-  def configure_widgets_button_click(self, **event_args):
-    Access.open_admin_window(
-      "AdminSettings", window_title="Настройка Dashboard", start_tab="widgets"
-    )
-
-  @handle("settings_button", "click")
-  def settings_button_click(self, **event_args):
-    Access.open_admin_window("AdminSettings", window_title="Центр настроек")
-
-  @handle("design_button", "click")
-  def design_button_click(self, **event_args):
-    Access.open_admin_window("AdminSettings", window_title="Design Studio · визуальная система", start_section="design.visual.system", open_editor=True)
-
-  @handle("health_button", "click")
-  def health_button_click(self, **event_args):
-    Access.open_admin_window("SystemDiagnostics", window_title="System Health Center")
-
-  @handle("diagnostics_button", "click")
-  def diagnostics_button_click(self, **event_args):
-    Access.open_admin_window("SystemDiagnostics", window_title="Системная диагностика")
+    self._render_modules()
 
   @handle("engineering_control_button", "click")
   def engineering_control_button_click(self, **event_args):
-    Access.open_admin_window("EngineeringControlRoom", window_title="Engineering Control Room")
-
+    Access.open_admin_window(
+      "EngineeringControlRoom", window_title="Engineering Control Room"
+    )
+\n
