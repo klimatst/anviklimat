@@ -8,6 +8,10 @@ class SystemItem(SystemItemTemplate):
   def __init__(self, **properties):
     super().__init__(**properties)
 
+  @handle("select_button", "click")
+  def select_button_click(self, **event_args):
+    self.raise_event("x-engineering-decision", system_id=self.item["id"])
+
   @handle("open_button", "click")
   def open_button_click(self, **event_args):
     Access.open_window("Constructor", system_id=self.item["id"])
