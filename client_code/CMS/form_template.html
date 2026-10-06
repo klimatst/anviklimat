@@ -58,8 +58,17 @@
         </anvil-component>
         <anvil-component type="ColumnPanel" name="module_html_panel" prop:role="cms-editor-panel" prop:visible="false">
           <anvil-component type="Label" name="module_html_heading" prop:role="eyebrow" prop:text="HTML-КОД И ПРЕДПРОСМОТР"></anvil-component>
-          <anvil-component type="TextArea" name="module_html_box" prop:role="cms-html-source" prop:placeholder="Введите HTML-разметку блока"></anvil-component>
-          <anvil-component type="RichText" name="module_html_preview" prop:role="cms-rich-preview"></anvil-component>
+          <anvil-component type="Label" name="module_html_help" prop:role="cms-html-help" prop:text="Редактируйте здесь всю страницу: заголовки, тексты, таблицы и цены, адреса фотографий. Предпросмотр обновляется при вводе. Нажмите «Сохранить блок», затем «Опубликовать страницу». "></anvil-component>
+          <div class="cms-html-edit-grid">
+            <div class="cms-html-source-column">
+              <anvil-component type="Label" name="module_html_source_label" prop:role="section-heading" prop:text="Содержимое страницы"></anvil-component>
+              <anvil-component type="TextArea" name="module_html_box" prop:role="cms-html-source" prop:placeholder="Редактируйте заголовки, тексты, прайс-таблицы и URL фотографий"></anvil-component>
+            </div>
+            <div class="cms-html-preview-column">
+              <anvil-component type="Label" name="module_html_preview_label" prop:role="section-heading" prop:text="Предпросмотр"></anvil-component>
+              <anvil-component type="HtmlComponent" name="module_html_preview" prop:role="cms-rich-preview"></anvil-component>
+            </div>
+          </div>
         </anvil-component>
         <anvil-component type="ColumnPanel" name="module_json_panel" prop:role="cms-editor-panel" prop:visible="false">
           <anvil-component type="Label" name="module_json_heading" prop:role="eyebrow" prop:text="РАСШИРЕННЫЕ ПАРАМЕТРЫ JSON"></anvil-component>

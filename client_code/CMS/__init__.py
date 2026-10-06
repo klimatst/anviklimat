@@ -174,8 +174,7 @@ class CMS(CMSTemplate):
     self.module_visual_panel.visible = mode == "visual"
     self.module_html_panel.visible = mode == "html"
     self.module_json_panel.visible = mode == "json"
-    self.module_html_preview.format = "html"
-    self.module_html_preview.content = self.module_html_box.text or ""
+    self.module_html_preview.html = self.module_html_box.text or ""
     self.module_html_preview.visible = mode == "html"
 
   def _content_from_visual_editor(self):
@@ -336,8 +335,7 @@ class CMS(CMSTemplate):
 
   @handle("module_html_box", "change")
   def module_html_box_change(self, **event_args):
-    self.module_html_preview.format = "html"
-    self.module_html_preview.content = self.module_html_box.text or ""
+    self.module_html_preview.html = self.module_html_box.text or ""
 
   @handle("module_type_dropdown", "change")
   def module_type_dropdown_change(self, **event_args):

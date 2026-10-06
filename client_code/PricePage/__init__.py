@@ -16,22 +16,20 @@ class PricePage(PricePageTemplate):
 
   def _load_page(self):
     self.price_status.text = "Загрузка страницы цен…"
+    self.price_status.visible = True
     try:
       result = anvil.server.call("get_price_page", self._page_code)
     except Exception as exc:
       self.price_status.text = "Не удалось загрузить страницу цен: {}".format(exc)
-      self.price_html.content = "<p>Повторите открытие страницы через несколько секунд.</p>"
+      self.price_html.html = "<p>Повторите открытие страницы через несколько секунд.</p>"
       return
     if not result["ok"]:
       self.price_status.text = result["message"]
-      self.price_html.content = ""
+      self.price_html.html = ""
       return
     self.page_title.text = result["title"]
-    self.price_html.format = "html"
-    self.price_html.content = result["html"]
-    self.price_status.text = (
-      "Страница обновлена: {}".format(result.get("updated_at") or "текущая версия")
-    )
+    self.price_html.html = result["html"]
+    self.price_status.visible = False
     document.title = "{} | ЭКО-КЛИМАТ".format(result["title"])
 
   @handle("prices_conditioners_button", "click")

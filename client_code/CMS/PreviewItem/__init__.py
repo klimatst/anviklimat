@@ -8,7 +8,6 @@ class PreviewItem(PreviewItemTemplate):
     self.preview_block_title.text = self.item.get("title", "")
     html_content = self.item.get("html", "")
     self.preview_block_html.visible = bool(html_content)
-    self.preview_block_html.format = "html"
-    self.preview_block_html.content = html_content
+    self.preview_block_html.html = html_content
     self.preview_block_body.visible = not bool(html_content)
     self.preview_block_body.text = self.item.get("body", "")
