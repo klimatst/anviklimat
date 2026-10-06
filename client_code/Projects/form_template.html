@@ -74,7 +74,13 @@
   <anvil-block slot="title">
     <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Проекты HVAC"></anvil-component>
   </anvil-block>
-</anvil-form>      <anvil-component type="ColumnPanel" name="engineering_action_panel" prop:role="card" prop:visible="false">
+</anvil-form>      <anvil-component type="ColumnPanel" name="engineering_decision_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="engineering_decision_heading" prop:role="section-heading" prop:text="SMART SELECTION · Инженерное решение"></anvil-component>
+        <anvil-component type="Label" name="engineering_decision_message" prop:role="status-message" prop:text="Подбор запускается из контекста текущей системы."></anvil-component>
+        <anvil-component type="Label" name="engineering_decision_summary" prop:role="lede" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="engineering_decision_rows" prop:item_template="Minimal_Theme_4.Projects.EngineeringDecisionItem"></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="engineering_action_panel" prop:role="card" prop:visible="false">
         <anvil-component type="Label" name="engineering_action_heading" prop:role="section-heading" prop:text="NEXT ACTIONS · Инженерный маршрут"></anvil-component>
         <anvil-component type="Label" name="engineering_action_message" prop:role="status-message" prop:text=""></anvil-component>
         <anvil-component type="RepeatingPanel" name="engineering_action_rows" prop:item_template="Minimal_Theme_4.Projects.EngineeringActionItem"></anvil-component>
