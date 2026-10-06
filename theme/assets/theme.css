@@ -7165,3 +7165,487 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
   .page-main.eco-main{padding-top:18px}
   .eco-site-shell[class*="site-theme--"] .page-title-wrap::after{width:58px}
 }
+
+/* ============================================================
+   ECO-CLIMATE 5 COMPLETE DESIGN SYSTEM
+   One visual language for public pages + admin + calculators.
+   Header HTML/layout intentionally untouched.
+   ============================================================ */
+.eco-site-shell[class*="site-theme--"]{
+  --eco-radius:14px;
+  --eco-radius-sm:9px;
+  --eco-panel:var(--surface-1,var(--blank-surface));
+  --eco-panel-2:var(--surface-2,var(--blank-surface-muted));
+  --eco-line:var(--line,var(--blank-border));
+  --eco-text:var(--text,var(--blank-text));
+  --eco-muted:var(--muted,var(--blank-muted));
+  --eco-accent:var(--accent,var(--blank-primary));
+  --eco-accent-rgb:var(--theme-accent-rgb);
+  --eco-danger:#ff5f6d;
+  --eco-warning:#ffbd4a;
+  --eco-shadow:0 18px 60px rgba(0,0,0,.28);
+  --eco-shadow-soft:0 8px 28px rgba(0,0,0,.12);
+  position:relative;
+  isolation:isolate;
+  min-height:100vh;
+  overflow-x:clip;
+  background:
+    radial-gradient(circle at 88% 0%,rgba(var(--eco-accent-rgb),.12),transparent 28%),
+    radial-gradient(circle at 0% 55%,rgba(var(--eco-accent-rgb),.055),transparent 24%),
+    var(--surface-0,var(--blank-bg));
+}
+.eco-site-shell[class*="site-theme--"]::before{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  inset:0;
+  pointer-events:none;
+  opacity:.34;
+  background-image:
+    linear-gradient(rgba(var(--eco-accent-rgb),.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(var(--eco-accent-rgb),.045) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:linear-gradient(to bottom,black 0%,transparent 82%);
+  animation:eco-grid-drift 20s linear infinite;
+}
+.eco-site-shell[class*="site-theme--"]::after{
+  content:"";
+  position:fixed;
+  z-index:-1;
+  width:460px;
+  height:460px;
+  right:-220px;
+  bottom:-220px;
+  border:1px solid rgba(var(--eco-accent-rgb),.13);
+  border-radius:50%;
+  box-shadow:0 0 80px rgba(var(--eco-accent-rgb),.08);
+  pointer-events:none;
+  animation:eco-orbit 16s linear infinite;
+}
+.eco-site-shell[class*="site-theme--"] .page-main.eco-main{
+  position:relative;
+}
+.eco-site-shell[class*="site-theme--"] .page-title-wrap{
+  position:relative;
+  padding-bottom:11px;
+}
+.eco-site-shell[class*="site-theme--"] .page-title-wrap::after{
+  content:"";
+  display:block;
+  width:78px;
+  height:3px;
+  margin-top:10px;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--eco-accent),transparent);
+  box-shadow:0 0 16px rgba(var(--eco-accent-rgb),.42);
+  animation:eco-title-line 700ms ease both;
+}
+
+/* ----- five visual templates ----- */
+.eco-site-shell.site-theme--graphite{
+  --u-bg:#080c10; --u-surface:#10171d; --u-surface-2:#172128; --u-surface-3:#1e2a32;
+  --u-line:#2d3d47; --u-text:#edf4f5; --u-muted:#8ea1aa; --u-accent:#53d3ad;
+  --u-accent-2:#a7f3dc; --u-on-accent:#06130f; --u-danger:#ff6372; --u-warning:#ffc45a;
+}
+.eco-site-shell.site-theme--carbon-amber{
+  --u-bg:#0c0b09; --u-surface:#171511; --u-surface-2:#211d17; --u-surface-3:#2a251d;
+  --u-line:#473a2b; --u-text:#f5efe5; --u-muted:#a99b88; --u-accent:#ffb347;
+  --u-accent-2:#ffe0a6; --u-on-accent:#211305; --u-danger:#ff685a; --u-warning:#ffd15a;
+}
+.eco-site-shell.site-theme--carbon-red{
+  --u-bg:#0d090b; --u-surface:#171013; --u-surface-2:#21181c; --u-surface-3:#2b1e24;
+  --u-line:#4b3039; --u-text:#f8eff1; --u-muted:#ad929b; --u-accent:#ff536a;
+  --u-accent-2:#ffacb9; --u-on-accent:#22070d; --u-danger:#ff7d62; --u-warning:#ffca58;
+}
+.eco-site-shell.site-theme--arctic-light{
+  --u-bg:#f1f5f5; --u-surface:#ffffff; --u-surface-2:#f6f9f9; --u-surface-3:#e9eeee;
+  --u-line:#d5dfe0; --u-text:#172125; --u-muted:#647479; --u-accent:#118f80;
+  --u-accent-2:#07685e; --u-on-accent:#ffffff; --u-danger:#c73d4d; --u-warning:#a36b00;
+}
+.eco-site-shell.site-theme--titanium-light{
+  --u-bg:#eceff1; --u-surface:#ffffff; --u-surface-2:#f5f6f7; --u-surface-3:#e5e8ea;
+  --u-line:#cbd2d6; --u-text:#1c252a; --u-muted:#68757c; --u-accent:#304b59;
+  --u-accent-2:#203640; --u-on-accent:#ffffff; --u-danger:#b13d46; --u-warning:#996400;
+}
+
+.eco-site-shell[class*="site-theme--"]{
+  --surface-0:var(--u-bg);
+  --surface-1:var(--u-surface);
+  --surface-2:var(--u-surface-2);
+  --surface-3:var(--u-surface-3);
+  --line:var(--u-line);
+  --text:var(--u-text);
+  --muted:var(--u-muted);
+  --accent:var(--u-accent);
+  --blank-bg:var(--u-bg);
+  --blank-surface:var(--u-surface);
+  --blank-surface-muted:var(--u-surface-2);
+  --blank-text:var(--u-text);
+  --blank-muted:var(--u-muted);
+  --blank-border:var(--u-line);
+  --blank-primary:var(--u-accent);
+  --blank-primary-dark:var(--u-accent-2);
+  --blank-control-bg:var(--u-surface-2);
+  --blank-control-bg-hover:var(--u-surface-3);
+  --blank-control-disabled:var(--u-surface-3);
+}
+
+/* ----- common content primitives ----- */
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-card,.anvil-role-service-card,
+.anvil-role-calculator-card,.anvil-role-calculator-result,.anvil-role-result-panel,
+.anvil-role-admin-panel,.anvil-role-admin-settings,.anvil-role-admin-tile,
+.anvil-role-studio-settings-modal,.anvil-role-studio-secret-modal,
+.anvil-role-gallery-card,.anvil-role-news-card,.anvil-role-project-card){
+  position:relative;
+  overflow:hidden;
+  color:var(--u-text)!important;
+  background:
+    linear-gradient(145deg,rgba(var(--eco-accent-rgb),.045),transparent 42%),
+    var(--u-surface)!important;
+  border:1px solid var(--u-line)!important;
+  border-radius:var(--eco-radius)!important;
+  box-shadow:var(--eco-shadow-soft);
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,background .22s ease;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-card,.anvil-role-service-card,
+.anvil-role-calculator-card,.anvil-role-admin-tile,.anvil-role-gallery-card,
+.anvil-role-news-card,.anvil-role-project-card):hover{
+  transform:translateY(-4px);
+  border-color:rgba(var(--eco-accent-rgb),.46)!important;
+  box-shadow:var(--eco-shadow),0 0 26px rgba(var(--eco-accent-rgb),.08);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-h1,.anvil-role-section-heading){
+  color:var(--u-text)!important;
+  letter-spacing:-.028em;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-eyebrow{
+  color:var(--u-accent-2)!important;
+  letter-spacing:.18em;
+}
+.eco-site-shell[class*="site-theme--"] :is(p,.anvil-role-lede,.anvil-role-description,
+.anvil-role-status-message,.anvil-role-card-copy){
+  color:var(--u-muted);
+}
+.eco-site-shell[class*="site-theme--"] a{
+  color:var(--u-accent);
+  transition:color .18s ease,text-shadow .18s ease;
+}
+.eco-site-shell[class*="site-theme--"] a:hover{
+  color:var(--u-accent-2);
+  text-shadow:0 0 14px rgba(var(--eco-accent-rgb),.18);
+}
+
+/* ----- every form/control gets one tone ----- */
+.eco-site-shell[class*="site-theme--"] :is(
+  input.anvil-text-box,textarea.anvil-text-area,
+  select.anvil-dropdown,.anvil-dropdown select,
+  .anvil-text-area textarea,.anvil-text-box input
+){
+  color:var(--u-text)!important;
+  background:var(--u-surface-2)!important;
+  border:1px solid var(--u-line)!important;
+  border-radius:var(--eco-radius-sm)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.035);
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.eco-site-shell[class*="site-theme--"] :is(
+  input.anvil-text-box,textarea.anvil-text-area,
+  select.anvil-dropdown,.anvil-dropdown select,
+  .anvil-text-area textarea,.anvil-text-box input
+):focus{
+  border-color:var(--u-accent)!important;
+  box-shadow:0 0 0 3px rgba(var(--eco-accent-rgb),.12),0 0 22px rgba(var(--eco-accent-rgb),.08);
+  outline:none;
+}
+.eco-site-shell.site-theme--arctic-light :is(
+  input.anvil-text-box,textarea.anvil-text-area,select.anvil-dropdown,.anvil-dropdown select
+),
+.eco-site-shell.site-theme--titanium-light :is(
+  input.anvil-text-box,textarea.anvil-text-area,select.anvil-dropdown,.anvil-dropdown select
+){
+  box-shadow:inset 0 1px rgba(255,255,255,.95),0 4px 16px rgba(24,40,46,.05);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button > button{
+  min-height:42px;
+  border:1px solid var(--u-line);
+  border-radius:var(--eco-radius-sm);
+  font-weight:750;
+  letter-spacing:.01em;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease,border-color .18s ease;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button > button:hover{
+  transform:translateY(-1px);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-search-action) > button{
+  color:var(--u-on-accent)!important;
+  border-color:var(--u-accent)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--u-accent) 82%,white 18%),var(--u-accent))!important;
+  box-shadow:0 8px 24px rgba(var(--eco-accent-rgb),.22),inset 0 1px rgba(255,255,255,.28);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-search-action) > button:hover{
+  filter:brightness(1.08);
+  box-shadow:0 12px 32px rgba(var(--eco-accent-rgb),.30),0 0 22px rgba(var(--eco-accent-rgb),.12);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-secondary-button > button{
+  color:var(--u-text)!important;
+  background:var(--u-surface-2)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-secondary-button > button:hover{
+  border-color:var(--u-accent)!important;
+  color:var(--u-accent-2)!important;
+  box-shadow:0 0 20px rgba(var(--eco-accent-rgb),.09);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-checkbox,.anvil-role-radio-button){
+  color:var(--u-text)!important;
+}
+.eco-site-shell[class*="site-theme--"] input[type="checkbox"],
+.eco-site-shell[class*="site-theme--"] input[type="radio"]{
+  accent-color:var(--u-accent);
+}
+
+/* ----- public page architecture ----- */
+.eco-site-shell[class*="site-theme--"] .page-heading-row{
+  gap:20px;
+  align-items:end;
+  margin-bottom:24px;
+}
+.eco-site-shell[class*="site-theme--"] .page-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.eco-site-shell[class*="site-theme--"] :is(.hero-panel,.landing-view,.tool-band,.contacts-view,
+.gallery-view,.projects-view,.news-view,.calculations-view){
+  animation:eco-content-in .55s cubic-bezier(.2,.75,.2,1) both;
+}
+.eco-site-shell[class*="site-theme--"] :is(.hero-panel,.tool-band){
+  border-radius:18px;
+}
+.eco-site-shell[class*="site-theme--"] .hero-panel{
+  border:1px solid var(--u-line);
+  background:
+    radial-gradient(circle at 80% 50%,rgba(var(--eco-accent-rgb),.16),transparent 34%),
+    linear-gradient(135deg,var(--u-surface),var(--u-surface-2));
+  box-shadow:var(--eco-shadow);
+}
+.eco-site-shell[class*="site-theme--"] .hero-panel::after{
+  content:"";
+  position:absolute;
+  inset:auto -12% -40% 30%;
+  height:46%;
+  border-radius:50%;
+  border:1px solid rgba(var(--eco-accent-rgb),.13);
+  box-shadow:0 0 80px rgba(var(--eco-accent-rgb),.07);
+  animation:eco-scan 5s ease-in-out infinite;
+}
+.eco-site-shell.site-theme--arctic-light .hero-panel,
+.eco-site-shell.site-theme--titanium-light .hero-panel{
+  background:linear-gradient(135deg,#fff,var(--u-surface-2));
+  box-shadow:0 24px 70px rgba(34,56,63,.12);
+}
+.eco-site-shell[class*="site-theme--"] :is(.catalog-category-card,.catalog-product-card,
+.catalog-series-card,.news-card,.project-card,.service-card){
+  animation:eco-content-in .48s ease both;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-section-heading,.anvil-role-h1){
+  text-wrap:balance;
+}
+
+/* ----- catalog adopts same system ----- */
+.eco-site-shell[class*="site-theme--"] .catalog-reference-layout{
+  border-color:var(--u-line)!important;
+  background:var(--u-surface)!important;
+  color:var(--u-text)!important;
+  box-shadow:var(--eco-shadow);
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-layout .catalog-navigation-column,
+.eco-site-shell[class*="site-theme--"] .catalog-reference-filters{
+  background:var(--u-surface-2)!important;
+  border-color:var(--u-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-search{
+  background:color-mix(in srgb,var(--u-surface) 94%,transparent)!important;
+  border-color:var(--u-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-toplinks .anvil-role-catalog-category-title{
+  color:var(--u-text)!important;
+  background:var(--u-surface-2)!important;
+  border-color:var(--u-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-toplinks .anvil-role-catalog-category-title:hover{
+  color:var(--u-accent)!important;
+  border-color:var(--u-accent)!important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-products .anvil-role-catalog-product-card{
+  color:var(--u-text)!important;
+  background:linear-gradient(160deg,rgba(var(--eco-accent-rgb),.035),transparent 36%),var(--u-surface)!important;
+  border-color:var(--u-line)!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.12);
+}
+.eco-site-shell.site-theme--arctic-light .catalog-reference-products .anvil-role-catalog-product-card,
+.eco-site-shell.site-theme--titanium-light .catalog-reference-products .anvil-role-catalog-product-card{
+  box-shadow:0 10px 26px rgba(24,42,49,.08);
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-products .anvil-role-catalog-product-card:hover{
+  border-color:var(--u-accent)!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.17),0 0 24px rgba(var(--eco-accent-rgb),.10);
+}
+
+/* ----- admin: same material, stronger contrast ----- */
+.eco-site-shell[class*="site-theme--"] .admin-topbar{
+  background:
+    linear-gradient(90deg,rgba(var(--eco-accent-rgb),.09),transparent 50%),
+    var(--u-surface)!important;
+  border-color:var(--u-line)!important;
+  border-radius:var(--eco-radius);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-persistent-sidebar{
+  background:
+    linear-gradient(180deg,rgba(var(--eco-accent-rgb),.07),transparent 34%),
+    var(--u-surface)!important;
+  border-color:var(--u-line)!important;
+  color:var(--u-text)!important;
+  box-shadow:var(--eco-shadow);
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-brand strong,
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-context strong,
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-footer span:first-child{
+  color:var(--u-text)!important;
+}
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-context,
+.eco-site-shell[class*="site-theme--"] .admin-global-subnav,
+.eco-site-shell[class*="site-theme--"] .admin-global-search{
+  background:var(--u-surface-2)!important;
+  border-color:var(--u-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-nav > button{
+  color:var(--u-muted)!important;
+  background:transparent!important;
+  border-color:transparent!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-nav > button:hover{
+  color:var(--u-text)!important;
+  background:rgba(var(--eco-accent-rgb),.10)!important;
+  border-color:rgba(var(--eco-accent-rgb),.26)!important;
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-nav > button,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-nav > button{
+  color:var(--u-muted)!important;
+}
+.eco-site-shell[class*="site-theme--"] .admin-system-status span,
+.eco-site-shell[class*="site-theme--"] .admin-sidebar-context__dot{
+  background:var(--u-accent)!important;
+  box-shadow:0 0 12px rgba(var(--eco-accent-rgb),.45);
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-metrics-panel,.admin-dashboard-grid,.settings-grid){
+  gap:14px;
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-metric-card,.settings-card,.admin-dashboard-card){
+  border-color:var(--u-line)!important;
+  background:var(--u-surface)!important;
+  border-radius:var(--eco-radius)!important;
+}
+
+/* ----- table/data views ----- */
+.eco-site-shell[class*="site-theme--"] table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--u-line);
+  border-radius:12px;
+  background:var(--u-surface);
+}
+.eco-site-shell[class*="site-theme--"] :is(th,td){
+  border-color:var(--u-line)!important;
+  color:var(--u-text)!important;
+}
+.eco-site-shell[class*="site-theme--"] th{
+  background:var(--u-surface-2)!important;
+  color:var(--u-accent-2)!important;
+  font-weight:800;
+}
+.eco-site-shell[class*="site-theme--"] tbody tr{
+  transition:background .16s ease;
+}
+.eco-site-shell[class*="site-theme--"] tbody tr:hover{
+  background:rgba(var(--eco-accent-rgb),.055);
+}
+
+/* ----- light themes: truly light pages, not dark glass disguised as light ----- */
+.eco-site-shell.site-theme--arctic-light,
+.eco-site-shell.site-theme--titanium-light{
+  background:
+    radial-gradient(circle at 85% 0%,rgba(var(--eco-accent-rgb),.12),transparent 30%),
+    linear-gradient(160deg,var(--u-bg),#ffffff 48%,var(--u-bg));
+}
+.eco-site-shell.site-theme--arctic-light::before,
+.eco-site-shell.site-theme--titanium-light::before{
+  opacity:.20;
+}
+.eco-site-shell.site-theme--arctic-light :is(.anvil-role-card,.anvil-role-service-card,
+.anvil-role-calculator-card,.anvil-role-calculator-result,.anvil-role-admin-panel,
+.anvil-role-admin-settings,.anvil-role-admin-tile,.anvil-role-gallery-card,
+.anvil-role-news-card,.anvil-role-project-card),
+.eco-site-shell.site-theme--titanium-light :is(.anvil-role-card,.anvil-role-service-card,
+.anvil-role-calculator-card,.anvil-role-calculator-result,.anvil-role-admin-panel,
+.anvil-role-admin-settings,.anvil-role-admin-tile,.anvil-role-gallery-card,
+.anvil-role-news-card,.anvil-role-project-card){
+  background:linear-gradient(145deg,#fff,var(--u-surface-2))!important;
+  color:var(--u-text)!important;
+  box-shadow:0 12px 34px rgba(31,48,54,.09),inset 0 1px #fff;
+}
+.eco-site-shell.site-theme--arctic-light :is(.anvil-role-status-message,.anvil-role-lede,.anvil-role-description),
+.eco-site-shell.site-theme--titanium-light :is(.anvil-role-status-message,.anvil-role-lede,.anvil-role-description){
+  color:var(--u-muted)!important;
+}
+
+/* ----- smooth navigation/page transitions ----- */
+.eco-site-shell[class*="site-theme--"] .eco-page-column{
+  animation:eco-page-in .42s ease both;
+}
+.eco-site-shell[class*="site-theme--"] .eco-page-column > .page-main > .page-heading-row,
+.eco-site-shell[class*="site-theme--"] .eco-page-column > .page-main > .anvil-component{
+  animation:eco-content-in .45s cubic-bezier(.2,.75,.2,1) both;
+}
+.eco-site-shell[class*="site-theme--"] .eco-site-shell,
+.eco-site-shell[class*="site-theme--"] .anvil-role-catalog-product-card:nth-child(n){
+  will-change:transform;
+}
+@keyframes eco-page-in{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+@keyframes eco-content-in{
+  from{opacity:0;transform:translateY(14px) scale(.992)}
+  to{opacity:1;transform:none}
+}
+@keyframes eco-title-line{
+  from{width:0;opacity:0}
+  to{width:78px;opacity:1}
+}
+@keyframes eco-grid-drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(46px,46px,0)}
+}
+@keyframes eco-orbit{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
+@keyframes eco-scan{
+  0%,100%{transform:translateY(0) scale(1);opacity:.5}
+  50%{transform:translateY(-14px) scale(1.04);opacity:1}
+}
+@media (prefers-reduced-motion:reduce){
+  .eco-site-shell[class*="site-theme--"]::before,
+  .eco-site-shell[class*="site-theme--"]::after,
+  .eco-site-shell[class*="site-theme--"] :is(.hero-panel,.catalog-category-card,.catalog-product-card,
+  .catalog-series-card,.news-card,.project-card,.service-card,.eco-page-column){
+    animation:none!important;
+    transition:none!important;
+  }
+}
+@media (max-width:760px){
+  .eco-site-shell[class*="site-theme--"]::before{background-size:34px 34px}
+  .eco-site-shell[class*="site-theme--"] .page-title-wrap::after{width:52px}
+}
