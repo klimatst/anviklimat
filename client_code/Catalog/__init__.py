@@ -286,6 +286,8 @@ class Catalog(CatalogTemplate):
           "{} моделей · {} подразделений".format(product_count, child_count)
           if product_count
           else "{} подразделений".format(child_count)
+          if child_count
+          else "Открыть оборудование"
         )
       cards.append(dict(
         row, summary=summary, card_description=card_description,
