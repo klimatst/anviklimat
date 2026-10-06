@@ -154,7 +154,8 @@ class Projects(ProjectsTemplate):
     self.engineering_control_button.visible = True
     self._load_engineering_snapshot()
     self._load_engineering_actions()
-    self._load_engineering_decision()
+    self.engineering_decision_panel.visible = False
+    self.engineering_decision_message.text = "Smart Selection запускается только по запросу, чтобы не нагружать проект при открытии."
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
 
   def _project_parameters_with_profile(self):
@@ -373,6 +374,38 @@ class Projects(ProjectsTemplate):
   def engineering_control_button_click(self, **event_args):
     Access.open_admin_window("EngineeringControlRoom", window_title="Engineering Control Room")
 
+
+  @handle("engineering_decision_load_button", "click")
+  def engineering_decision_load_button_click(self, **event_args):
+    self.engineering_decision_panel.visible = True
+    self.engineering_decision_message.text = "Проверяю инженерные системы и фактические характеристики каталога…"
+    self._load_engineering_decision()
+
+  @handle("engineering_decision_rows", "x-apply-engineering-recommendation")
+  def engineering_decision_apply_recommendation(self, system_id, product_id, **event_args):
+    if not self._project_id or not system_id or not product_id:
+      return
+    try:
+      result = anvil.server.call(
+        "apply_engineering_recommendation",
+        self._project_id, system_id, product_id
+      )
+      if not result.get("ok"):
+        self.engineering_decision_message.text = result.get("message", "Рекомендацию не удалось применить.")
+        return
+      bom = anvil.server.call("generate_system_bom", system_id)
+      if bom.get("ok"):
+        self.engineering_decision_message.text = "Рекомендация применена · BOM сформирован. Система готова к смете."
+      else:
+        self.engineering_decision_message.text = (
+          "Рекомендация применена, но BOM требует ручного запуска: " +
+          bom.get("message", "проверьте состав системы.")
+        )
+      self._load_engineering_snapshot()
+      self._load_engineering_actions()
+      self._load_engineering_decision()
+    except Exception as exc:
+      self.engineering_decision_message.text = "Не удалось применить рекомендацию: {}".format(exc)
 
   @handle("system_rows", "x-engineering-decision")
   def system_rows_engineering_decision(self, system_id, **event_args):
