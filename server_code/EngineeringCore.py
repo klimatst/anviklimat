@@ -595,7 +595,7 @@ def get_project_engineering_decisions(project_id):
   project = _project(project_id)
   if project is None:
     return {"ok": False, "message": "Проект недоступен.", "systems": []}
-  systems = list(app_tables.systems.search(project=project, order_by("title"))[:20])
+  systems = list(app_tables.systems.search(order_by("title"), project=project)[:20])
   result = []
   for system in systems:
     decision = get_engineering_decision(project_id, system.get_id())
