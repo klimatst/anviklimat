@@ -83,6 +83,74 @@
               <anvil-component type="DropDown" name="energy_filter" prop:role="catalog-filter"></anvil-component>
             </div>
             <div class="catalog-filter-section">
+              <anvil-component type="Label" name="cooling_filter_heading" prop:role="catalog-filter-heading" prop:text="Охлаждение, кВт"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_cooling_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_cooling_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="heating_filter_heading" prop:role="catalog-filter-heading" prop:text="Обогрев, кВт"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_heating_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_heating_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="consumption_cooling_heading" prop:role="catalog-filter-heading" prop:text="Потребляемая мощность (охлаждение), кВт"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_consumption_cooling_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_consumption_cooling_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="consumption_heating_heading" prop:role="catalog-filter-heading" prop:text="Потребляемая мощность (обогрев), кВт"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_consumption_heating_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_consumption_heating_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="power_filter_heading" prop:role="catalog-filter-heading" prop:text="Мощность, кВт"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_power_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_power_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="installation_filter_heading" prop:role="catalog-filter-heading" prop:text="Способ установки"></anvil-component>
+              <anvil-component type="DropDown" name="installation_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="current_filter_heading" prop:role="catalog-filter-heading" prop:text="Рабочий ток, А"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_current_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_current_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="warranty_filter_heading" prop:role="catalog-filter-heading" prop:text="Гарантия производителя"></anvil-component>
+              <anvil-component type="DropDown" name="warranty_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="airflow_filter_heading" prop:role="catalog-filter-heading" prop:text="Производительность, м³/ч"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_airflow_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_airflow_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="indoor_units_filter_heading" prop:role="catalog-filter-heading" prop:text="Количество внутренних блоков"></anvil-component>
+              <div class="catalog-range-row">
+                <anvil-component type="TextBox" name="minimum_indoor_units_box" prop:role="catalog-filter-input" prop:placeholder="от"></anvil-component>
+                <anvil-component type="TextBox" name="maximum_indoor_units_box" prop:role="catalog-filter-input" prop:placeholder="до"></anvil-component>
+              </div>
+            </div>
+            <div class="catalog-filter-section">
+              <anvil-component type="Label" name="indoor_type_filter_heading" prop:role="catalog-filter-heading" prop:text="Тип внутреннего блока"></anvil-component>
+              <anvil-component type="DropDown" name="indoor_type_filter" prop:role="catalog-filter"></anvil-component>
+            </div>
+            <div class="catalog-filter-section">
               <anvil-component type="CheckBox" name="available_filter" prop:text="Только в наличии" prop:role="catalog-availability-filter"></anvil-component>
             </div>
             <anvil-component type="Button" name="apply_filters_button" prop:text="Показать товары" prop:role="primary-action"></anvil-component>
