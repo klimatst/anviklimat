@@ -9,7 +9,7 @@ from datetime import datetime, timezone
 import html
 
 import anvil.server
-from anvil.tables import app_tables
+from anvil.tables import app_tables, order_by
 import Core
 
 
@@ -81,17 +81,17 @@ def _table(headers, rows):
 
 
 def _hero(meta, kicker, lead):
-  return (
-    BASE_STYLE
-    + "<div class='price-page'>"
-      "<section class='price-page__hero'>"
-        "<div><div class='price-page__eyebrow'>{}</div><h1>{}</h1>"
-        "<p class='price-page__lead'>{}</p>"
-        "<p>Цены указаны как ориентиры. Итоговая стоимость формируется после оценки объекта, проекта, длины коммуникаций и состава работ.</p>"
-        "<a class='price-page__cta' href='tel:+79257873848'>Получить точный расчёт</a></div>"
-        "<img src='{}' alt='{}'>"
-      "</section>"
+  hero_html = (
+    "<div class='price-page'>"
+    "<section class='price-page__hero'>"
+    "<div><div class='price-page__eyebrow'>{}</div><h1>{}</h1>"
+    "<p class='price-page__lead'>{}</p>"
+    "<p>Цены указаны как ориентиры. Итоговая стоимость формируется после оценки объекта, проекта, длины коммуникаций и состава работ.</p>"
+    "<a class='price-page__cta' href='tel:+79257873848'>Получить точный расчёт</a></div>"
+    "<img src='{}' alt='{}'>"
+    "</section>"
   ).format(_esc(kicker), _esc(meta["title"]), _esc(lead), _esc(meta["image"]), _esc(meta["title"]))
+  return BASE_STYLE + hero_html
 
 
 def _finish(source):
@@ -427,10 +427,7 @@ def get_price_page(code):
   code = code.strip().lower()
   if code not in PRICE_CODES:
     return {"ok": False, "message": "Страница цен не найдена."}
-  try:
-    _seed_price_pages()
-  except Exception:
-    pass
+  _seed_price_pages()
 
   slug = "prices-{}".format(code)
   page = app_tables.cms_pages.get(slug=slug, status="published")
