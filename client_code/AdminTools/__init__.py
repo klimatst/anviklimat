@@ -379,4 +379,3 @@ class AdminTools(AdminToolsTemplate):
     Access.open_admin_window(
       "EngineeringControlRoom", window_title="Engineering Control Room"
     )
-\n
