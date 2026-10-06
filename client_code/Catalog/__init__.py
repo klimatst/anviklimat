@@ -122,7 +122,7 @@ class Catalog(CatalogTemplate):
 
   def _load_categories(self, category_code=None):
     try:
-      result = anvil.server.call("get_catalog_menu_tree", True, False)
+      result = anvil.server.call("get_catalog_menu_tree", True, True)
     except Exception:
       result = self._fallback_catalog_result()
     if not result.get("ok"):
@@ -130,6 +130,7 @@ class Catalog(CatalogTemplate):
     self._categories = result.get("categories", [])
     self._categories_by_code = {row["code"]: row for row in self._categories}
     self._categories_by_id = {row["id"]: row for row in self._categories}
+    self._series = result.get("series", [])
 
     def page_nodes(nodes):
       return [
@@ -300,6 +301,7 @@ class Catalog(CatalogTemplate):
       )
       row["category_options"] = self._categories
       row["category_path"] = row.get("category_path") or row.get("category") or ""
+      row["series_options"] = list(self._series)
     self.product_series_rows.items = rows
     self.product_series_rows.role = "catalog-product-grid"
 
@@ -527,7 +529,7 @@ class Catalog(CatalogTemplate):
       self.bulk_choice_dropdown.selected_value = None
     elif field == "series_id":
       self.bulk_choice_dropdown.items = [("Без серии", "")] + [
-        (row["title"], row["id"]) for row in []  # series selector kept out of public storefront
+        (row["title"], row["id"]) for row in self._series
       ]
       self.bulk_choice_dropdown.selected_value = ""
     elif field == "active":
