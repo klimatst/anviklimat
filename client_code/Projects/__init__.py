@@ -239,6 +239,13 @@ class Projects(ProjectsTemplate):
     self.engineering_lifecycle_label.text += " · VRV/VRF {} · вентиляция {} · сплит/мультисплит {}".format(
       families.get("VRV / VRF", 0), families.get("Вентиляция", 0), families.get("Кондиционирование", 0)
     )
+    self.engineering_lifecycle_label.text += " · BOM {} · согласовано КП {} · монтаж {} · ПНР {} · сервис {}".format(
+      snapshot.get("bom_line_count", 0),
+      snapshot.get("approved_quote_count", 0),
+      snapshot.get("installation_count", 0),
+      snapshot.get("commissioning_completed_count", 0),
+      snapshot.get("service_completed_count", 0)
+    )
 
   def _start_room(self):
     self._room_id = None
