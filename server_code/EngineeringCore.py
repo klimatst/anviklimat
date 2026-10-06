@@ -762,30 +762,102 @@ def get_engineering_control_room():
   context = Core.get_access_context()
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
+  projects = list(app_tables.projects.search(
+    q.fetch_only("code", "title", "status", "object", "updated_at"),
+    order_by("updated_at", ascending=False)
+  )[:250])
   active_statuses = {"calculation", "review", "ready", "quoted", "approved", "installation", "commissioning"}
   active_projects = sum(1 for p in projects if p["status"] in active_statuses)
-  systems = list(app_tables.systems.search()[:500])
-  calculations = list(app_tables.calculations.search()[:1000])
-  estimates = list(app_tables.estimates.search()[:300])
+
+  # Control-room metrics are intentionally bounded and batched. The old implementation
+  # opened a full row set and then performed one snapshot (many table scans) per recent project.
+  systems = list(app_tables.systems.search(q.fetch_only("project", "type"))[:500])
+  calculations = list(app_tables.calculations.search(q.fetch_only("project"))[:1000])
+  estimates = list(app_tables.estimates.search(q.fetch_only("project"))[:300])
+  components = list(app_tables.system_components.search(q.fetch_only("system"))[:5000])
+  bom_lines = list(app_tables.bom_lines.search(q.fetch_only("system"))[:6000])
+
+  systems_by_project = {}
+  for row in systems:
+    project = row["project"]
+    if project is not None:
+      systems_by_project.setdefault(project.get_id(), []).append(row)
+  calculations_by_project = {}
+  for row in calculations:
+    project = row["project"]
+    if project is not None:
+      calculations_by_project[project.get_id()] = calculations_by_project.get(project.get_id(), 0) + 1
+  estimates_by_project = {}
+  for row in estimates:
+    project = row["project"]
+    if project is not None:
+      estimates_by_project[project.get_id()] = estimates_by_project.get(project.get_id(), 0) + 1
+  components_by_system = {}
+  for row in components:
+    system = row["system"]
+    if system is not None:
+      sid = system.get_id()
+      components_by_system[sid] = components_by_system.get(sid, 0) + 1
+  bom_by_system = {}
+  for row in bom_lines:
+    system = row["system"]
+    if system is not None:
+      sid = system.get_id()
+      bom_by_system[sid] = bom_by_system.get(sid, 0) + 1
+
   needs_attention = 0
   recent = []
   for project in projects[:12]:
-    snapshot_result = get_project_engineering_snapshot(project.get_id())
-    if snapshot_result.get("ok"):
-      snapshot = snapshot_result["snapshot"]
-      if snapshot.get("risk_flags"):
-        needs_attention += 1
-      recent.append({
-        "id": project.get_id(), "code": project["code"] or "",
-        "title": project["title"] or "Без названия",
-        "status": project["status"] or "draft",
-        "stage_title": snapshot["stage_title"],
-        "progress": snapshot["progress"],
-        "engineering_score": snapshot["engineering_score"],
-        "risk_count": len(snapshot.get("risk_flags") or [])
-      })
-  quality = get_engineering_quality_gate(80)
+    pid = project.get_id()
+    project_systems = systems_by_project.get(pid, [])
+    system_count = len(project_systems)
+    component_count = sum(components_by_system.get(row.get_id(), 0) for row in project_systems)
+    bom_count = sum(bom_by_system.get(row.get_id(), 0) for row in project_systems)
+    calculation_count = calculations_by_project.get(pid, 0)
+    estimate_count = estimates_by_project.get(pid, 0)
+    obj = project["object"]
+    object_ready = bool(obj is not None and str(obj["name"] or "").strip())
+    brief_ready = bool(object_ready and (obj["parameters"] or {}).get("engineering_profile", "combined"))
+    snapshot = {
+      "project_status": project["status"] or "draft",
+      "object_ready": object_ready,
+      "room_count": 0,
+      "calculation_count": calculation_count,
+      "system_count": system_count,
+      "system_component_count": component_count,
+      "estimate_count": estimate_count,
+      "bom_line_count": bom_count,
+      "approved_quote_count": 0,
+      "installation_count": 0,
+      "commissioning_completed_count": 0,
+      "service_completed_count": 0
+    }
+    index = _stage(snapshot)
+    risks = []
+    if not object_ready: risks.append("Не задан объект")
+    if object_ready and not system_count and not calculation_count: risks.append("Нет инженерной системы")
+    if calculation_count and not system_count: risks.append("Нет инженерных систем")
+    if system_count and not component_count: risks.append("Нет компонентов систем")
+    if component_count and not bom_count: risks.append("BOM ещё не сформирован")
+    if estimate_count: risks.append("Проверить КП") if not risks else None
+    score = min(100,
+      (10 if object_ready else 0) + (8 if brief_ready else 0) +
+      (14 if calculation_count else 0) + (14 if system_count else 0) +
+      (10 if component_count else 0) + (10 if bom_count else 0) +
+      (8 if estimate_count else 0)
+    )
+    if risks:
+      needs_attention += 1
+    recent.append({
+      "id": pid, "code": project["code"] or "",
+      "title": project["title"] or "Без названия",
+      "status": project["status"] or "draft",
+      "stage_title": STAGES[index][1],
+      "progress": round(index / float(len(STAGES) - 1) * 100),
+      "engineering_score": score,
+      "risk_count": len(risks)
+    })
+  quality = get_engineering_quality_gate(40)
   quality_ok = quality.get("ok") and quality.get("healthy")
   return {
     "ok": True,
