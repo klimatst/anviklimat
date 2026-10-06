@@ -118,6 +118,67 @@ def upload_project_plan(project_id, media, title="План объекта"):
   }
 
 
+def _sync_engineering_objects(project, plan_id, settings, user):
+  objects = settings.get("objects") if isinstance(settings, dict) else []
+  if not isinstance(objects, list):
+    return
+  wanted = {}
+  for obj in objects:
+    if not isinstance(obj, dict):
+      continue
+    system_id = obj.get("system_id")
+    obj_id = obj.get("id")
+    if not isinstance(system_id, str) or not system_id or not isinstance(obj_id, str) or not obj_id:
+      continue
+    system = app_tables.systems.get_by_id(system_id)
+    if system is None or system["project"] is None or system["project"].get_id() != project.get_id():
+      continue
+    wanted[obj_id] = (system, obj)
+
+  touched = set()
+  for system, obj in wanted.values():
+    rows = list(app_tables.system_components.search(system=system)[:300])
+    row = next(
+      (item for item in rows
+       if (item["properties"] or {}).get("digital_twin_plan_id") == plan_id
+       and (item["properties"] or {}).get("digital_twin_object_id") == obj["id"]),
+      None
+    )
+    kind = obj.get("kind") or "other"
+    engineering_kind = "equipment" if kind in (
+      "indoor", "outdoor", "vrf", "ahu", "diffuser", "vent"
+    ) else "route" if kind in (
+      "drain", "route_refrigerant", "route_duct", "route_cable", "route_hydronic"
+    ) else "other"
+    props = dict(row["properties"] or {}) if row is not None else {}
+    props.update({
+      "digital_twin_plan_id": plan_id,
+      "digital_twin_object_id": obj["id"],
+      "digital_twin_kind": kind,
+      "digital_twin_source": "plan"
+    })
+    values = {
+      "system": system, "kind": engineering_kind,
+      "name": str(obj.get("name") or kind)[:120],
+      "quantity": 1,
+      "properties": props,
+      "position_x": float(obj.get("x") or 0),
+      "position_y": float(obj.get("y") or 0),
+      "sort_order": float(obj.get("y") or 0) * 20000 + float(obj.get("x") or 0)
+    }
+    if row is None:
+      row = app_tables.system_components.add_row(**values)
+    else:
+      row.update(**values)
+    touched.add(row.get_id())
+
+  for system in app_tables.systems.search(project=project)[:100]:
+    for row in app_tables.system_components.search(system=system)[:300]:
+      props = row["properties"] or {}
+      if props.get("digital_twin_plan_id") == plan_id and row.get_id() not in touched:
+        row.delete()
+
+
 @anvil.server.callable(require_user=True)
 def save_project_plan(project_id, plan_data):
   project, error = _project(project_id)
