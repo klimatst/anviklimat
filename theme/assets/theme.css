@@ -7965,3 +7965,553 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
   .eco-site-shell[class*="site-theme--"] .admin-hub-hero::after,
   .eco-site-shell[class*="site-theme--"] .admin-hub-status-icon{animation:none!important}
 }
+
+
+/* =========================================================
+   ECO // APEX ENGINEERING INTERFACE
+   Final visual layer — premium instrument, not a marketing site.
+   ========================================================= */
+.eco-site-shell[class*="site-theme--"]{
+  --apex-ease:cubic-bezier(.19,1,.22,1);
+  --apex-fast:180ms;
+  --apex-mid:420ms;
+  --apex-slow:900ms;
+  --apex-hair:rgba(var(--eco-accent-rgb),.18);
+  --apex-glow:rgba(var(--eco-accent-rgb),.30);
+  --apex-hot:rgba(var(--eco-accent-rgb),.58);
+  --apex-text-hi:color-mix(in srgb,var(--u-text) 96%,white);
+  --apex-text-lo:color-mix(in srgb,var(--u-text) 54%,transparent);
+  --apex-panel:color-mix(in srgb,var(--u-surface) 92%,transparent);
+  --apex-panel-2:color-mix(in srgb,var(--u-surface-2) 94%,transparent);
+}
+
+/* A restrained technical canvas */
+.eco-site-shell[class*="site-theme--"] .eco-main{
+  position:relative;
+  isolation:isolate;
+}
+.eco-site-shell[class*="site-theme--"] .eco-main::before{
+  content:"";
+  position:fixed;
+  z-index:-3;
+  inset:0;
+  pointer-events:none;
+  opacity:.32;
+  background:
+    linear-gradient(90deg,transparent 0,transparent calc(50% - 620px),rgba(var(--eco-accent-rgb),.045) calc(50% - 619px),transparent calc(50% - 618px),transparent calc(50% + 618px),rgba(var(--eco-accent-rgb),.045) calc(50% + 619px),transparent calc(50% + 620px)),
+    radial-gradient(circle at 50% 0,rgba(var(--eco-accent-rgb),.08),transparent 34%);
+}
+.eco-site-shell[class*="site-theme--"] .eco-main::after{
+  content:"SYSTEM // CLIMATE ENGINEERING";
+  position:fixed;
+  z-index:-2;
+  right:18px;
+  bottom:15px;
+  pointer-events:none;
+  color:rgba(var(--eco-accent-rgb),.22);
+  font:700 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.22em;
+  writing-mode:vertical-rl;
+}
+
+/* Header stays structurally intact, but becomes an instrument panel */
+.eco-site-shell[class*="site-theme--"] .site-header.premium-header.eco-header{
+  box-shadow:
+    0 16px 50px rgba(0,0,0,.16),
+    inset 0 -1px rgba(var(--eco-accent-rgb),.10);
+}
+.eco-site-shell[class*="site-theme--"] .site-header.premium-header.eco-header::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent 2%,rgba(var(--eco-accent-rgb),.55) 28%,var(--u-accent) 50%,rgba(var(--eco-accent-rgb),.55) 72%,transparent 98%);
+  opacity:.55;
+}
+.eco-site-shell[class*="site-theme--"] .eco-header__system::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:-10px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(var(--eco-accent-rgb),.12),transparent);
+}
+.eco-site-shell[class*="site-theme--"] .site-brand-lockup{
+  filter:drop-shadow(0 0 18px rgba(var(--eco-accent-rgb),.08));
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-brand-mark>button{
+  position:relative;
+  overflow:hidden;
+  border-color:rgba(var(--eco-accent-rgb),.42);
+  box-shadow:0 0 28px rgba(var(--eco-accent-rgb),.11),inset 0 1px rgba(255,255,255,.18);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-brand-mark>button::after{
+  content:"";
+  position:absolute;
+  inset:-70%;
+  background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.20),transparent 20%);
+  animation:apex-spin 7s linear infinite;
+}
+.eco-site-shell[class*="site-theme--"] .site-search input.anvil-text-box{
+  transition:border-color var(--apex-fast) ease,box-shadow var(--apex-fast) ease,background var(--apex-fast) ease;
+}
+.eco-site-shell[class*="site-theme--"] .site-search input.anvil-text-box:focus{
+  background:var(--u-surface-2);
+  border-color:rgba(var(--eco-accent-rgb),.58);
+  box-shadow:inset 0 0 0 1px rgba(var(--eco-accent-rgb),.16),0 0 26px rgba(var(--eco-accent-rgb),.08);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-category-link>button{
+  position:relative;
+  transition:color var(--apex-fast) ease,background var(--apex-fast) ease;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-category-link>button::after{
+  content:"";
+  position:absolute;
+  left:14px;right:14px;bottom:5px;height:1px;
+  background:var(--u-accent);
+  transform:scaleX(0);
+  transform-origin:center;
+  box-shadow:0 0 10px var(--apex-hot);
+  transition:transform 300ms var(--apex-ease);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-category-link>button:hover::after,
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-category-link>button:focus::after{transform:scaleX(1)}
+
+/* Typography: editorial engineering hierarchy */
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-h1,.anvil-role-section-heading,.page-title-wrap .anvil-role-h1){
+  text-wrap:balance;
+  font-weight:850;
+  letter-spacing:-.052em;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-lede,.service-copy,.anvil-role-service-copy){
+  text-wrap:pretty;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-eyebrow,
+.eco-site-shell[class*="site-theme--"] .service-index,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile-code{
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.18em;
+}
+
+/* Hero becomes a cinematic engineering cockpit */
+.eco-site-shell[class*="site-theme--"] .hero-panel{
+  min-height:560px;
+  border-radius:28px!important;
+  padding:clamp(34px,6vw,82px);
+  overflow:hidden;
+}
+.eco-site-shell[class*="site-theme--"] .hero-panel::before{
+  display:block;
+  inset:0!important;
+  border:0!important;
+  border-radius:inherit!important;
+  background:
+    linear-gradient(90deg,transparent 0,rgba(var(--eco-accent-rgb),.045) 50%,transparent 100%),
+    repeating-linear-gradient(90deg,transparent 0,transparent 92px,rgba(var(--eco-accent-rgb),.035) 93px,transparent 94px);
+  opacity:.9;
+}
+.eco-site-shell[class*="site-theme--"] .hero-panel::after{
+  content:"";
+  position:absolute;
+  inset:auto 7% 9% 7%;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(var(--eco-accent-rgb),.35),transparent);
+  box-shadow:0 0 22px rgba(var(--eco-accent-rgb),.14);
+}
+.eco-site-shell[class*="site-theme--"] .hero-copy::before{
+  content:"01 // CLIMATE SYSTEMS";
+  display:inline-block;
+  margin-bottom:6px;
+  color:var(--u-accent);
+  font:800 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.22em;
+  text-shadow:0 0 16px var(--apex-glow);
+}
+.eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-h1{
+  max-width:780px;
+  font-size:clamp(48px,7.2vw,96px);
+  line-height:.91;
+}
+.eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-h1::after{
+  content:"";
+  display:block;
+  width:clamp(70px,10vw,150px);
+  height:3px;
+  margin-top:24px;
+  background:linear-gradient(90deg,var(--u-accent),transparent);
+  box-shadow:0 0 18px var(--apex-hot);
+}
+.eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-lede{
+  max-width:650px;
+  color:color-mix(in srgb,var(--u-text) 68%,transparent);
+  font-size:clamp(15px,1.5vw,18px);
+}
+.eco-site-shell[class*="site-theme--"] .hero-actions{
+  margin-top:30px;
+}
+
+/* Replace the generic orb with layered machine geometry */
+.eco-site-shell[class*="site-theme--"] .hero-visual{
+  width:min(38vw,470px);
+  filter:drop-shadow(0 25px 50px rgba(0,0,0,.25));
+}
+.eco-site-shell[class*="site-theme--"] .hero-visual::before{
+  content:"";
+  position:absolute;
+  inset:7%;
+  border:1px solid rgba(var(--eco-accent-rgb),.22);
+  border-radius:46% 54% 51% 49%;
+  transform:rotate(17deg);
+  box-shadow:inset 0 0 55px rgba(var(--eco-accent-rgb),.06),0 0 40px rgba(var(--eco-accent-rgb),.05);
+  animation:apex-machine 11s ease-in-out infinite;
+}
+.eco-site-shell[class*="site-theme--"] .hero-visual::after{
+  content:"";
+  position:absolute;
+  inset:24%;
+  border:1px dashed rgba(205,230,230,.20);
+  border-radius:50%;
+  transform:rotate(-28deg);
+  animation:apex-spin-reverse 18s linear infinite;
+}
+.eco-site-shell[class*="site-theme--"] .hero-ring{
+  inset:3%;
+  border-color:rgba(var(--eco-accent-rgb),.30);
+  box-shadow:0 0 55px rgba(var(--eco-accent-rgb),.08);
+}
+.eco-site-shell[class*="site-theme--"] .hero-ring-outer{border-style:dashed}
+.eco-site-shell[class*="site-theme--"] .hero-ring-inner{
+  inset:16%;
+  border-color:rgba(218,240,239,.28);
+}
+.eco-site-shell[class*="site-theme--"] .hero-core{
+  inset:30%;
+  border-radius:24% 50% 28% 50%;
+  box-shadow:0 0 70px rgba(var(--eco-accent-rgb),.28),inset 0 1px rgba(255,255,255,.22);
+}
+.eco-site-shell[class*="site-theme--"] .hero-orbit{
+  border-color:rgba(var(--eco-accent-rgb),.30);
+  color:var(--apex-text-hi);
+  box-shadow:0 8px 28px rgba(0,0,0,.18),0 0 18px rgba(var(--eco-accent-rgb),.06);
+}
+
+/* Sections get a clear product-system rhythm */
+.eco-site-shell[class*="site-theme--"] .landing-section{
+  position:relative;
+  padding-top:12px;
+}
+.eco-site-shell[class*="site-theme--"] .landing-section+.landing-section{
+  padding-top:28px;
+}
+.eco-site-shell[class*="site-theme--"] .section-intro{
+  position:relative;
+  padding-bottom:13px;
+}
+.eco-site-shell[class*="site-theme--"] .section-intro::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,rgba(var(--eco-accent-rgb),.35),rgba(var(--eco-accent-rgb),.08),transparent 75%);
+}
+.eco-site-shell[class*="site-theme--"] .section-intro::before{
+  content:"";
+  position:absolute;
+  left:0;bottom:-2px;
+  width:36px;height:3px;
+  background:var(--u-accent);
+  box-shadow:0 0 15px var(--apex-hot);
+  z-index:1;
+}
+
+/* Cards: physical material instead of flat rectangles */
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card,.catalog-series-card){
+  position:relative;
+  overflow:hidden;
+  border-radius:18px!important;
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.035),transparent 28%),
+    linear-gradient(135deg,var(--u-surface),var(--u-surface-2))!important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 18px 50px rgba(0,0,0,.10);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card,.catalog-series-card)::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.20),transparent);
+  opacity:.7;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card,.catalog-series-card)::after{
+  content:"";
+  position:absolute;
+  left:-80%;top:0;width:45%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+  transform:skewX(-18deg);
+  transition:left 800ms var(--apex-ease);
+  pointer-events:none;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card,.catalog-series-card):hover::after{left:125%}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card,.catalog-series-card):hover{
+  transform:translateY(-8px) perspective(900px) rotateX(.7deg);
+  border-color:rgba(var(--eco-accent-rgb),.46)!important;
+  box-shadow:
+    0 28px 70px rgba(0,0,0,.20),
+    0 0 36px rgba(var(--eco-accent-rgb),.09),
+    inset 0 1px rgba(255,255,255,.10);
+}
+
+/* Service cards gain numbered engineering metadata */
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card{
+  min-height:285px;
+  padding:27px;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card .service-index{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card .service-index::after{
+  content:"";
+  flex:1;
+  max-width:75px;
+  height:1px;
+  background:linear-gradient(90deg,var(--u-accent),transparent);
+  opacity:.55;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card .anvil-role-section-heading{
+  font-size:23px;
+  letter-spacing:-.035em;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-copy{
+  color:var(--apex-text-lo);
+}
+
+/* Metrics become instrument readouts */
+.eco-site-shell[class*="site-theme--"] .landing-overview{
+  position:relative;
+  gap:0;
+  border:1px solid rgba(var(--eco-accent-rgb),.16);
+  border-radius:16px;
+  background:rgba(var(--eco-accent-rgb),.06);
+  box-shadow:0 20px 60px rgba(0,0,0,.10);
+}
+.eco-site-shell[class*="site-theme--"] .landing-overview>div{
+  position:relative;
+  background:linear-gradient(145deg,rgba(var(--eco-accent-rgb),.045),var(--u-surface));
+}
+.eco-site-shell[class*="site-theme--"] .landing-overview>div:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  top:20px;right:0;bottom:20px;width:1px;
+  background:linear-gradient(transparent,rgba(var(--eco-accent-rgb),.20),transparent);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-metric-value{
+  font-size:clamp(19px,2.4vw,27px);
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.04em;
+}
+.eco-site-shell[class*="site-theme--"] .metric-caption{
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:9px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+
+/* Buttons feel machined */
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-secondary-button,.anvil-role-search-action)>button{
+  position:relative;
+  min-height:46px;
+  border-radius:9px;
+  font-weight:800;
+  letter-spacing:.02em;
+  overflow:hidden;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-primary-action>button{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--u-accent) 92%,white),var(--u-accent))!important;
+  box-shadow:0 10px 28px rgba(var(--eco-accent-rgb),.20),inset 0 1px rgba(255,255,255,.35);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-secondary-button,.anvil-role-search-action)>button::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.16) 48%,transparent 68%);
+  transform:translateX(-120%);
+  transition:transform 650ms var(--apex-ease);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-secondary-button,.anvil-role-search-action)>button:hover::before{transform:translateX(120%)}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-primary-action,.anvil-role-secondary-button,.anvil-role-search-action)>button:hover{
+  box-shadow:0 14px 34px rgba(var(--eco-accent-rgb),.25),inset 0 1px rgba(255,255,255,.35);
+}
+
+/* Forms become control surfaces */
+.eco-site-shell[class*="site-theme--"] :is(input.anvil-text-box,textarea.anvil-text-area,.anvil-dropdown select,.anvil-datepicker input){
+  min-height:44px;
+  border-radius:10px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.025),transparent),
+    var(--u-surface-2);
+  transition:border-color var(--apex-fast) ease,box-shadow var(--apex-fast) ease,transform var(--apex-fast) var(--apex-ease);
+}
+.eco-site-shell[class*="site-theme--"] :is(input.anvil-text-box,textarea.anvil-text-area,.anvil-dropdown select,.anvil-datepicker input):focus{
+  border-color:rgba(var(--eco-accent-rgb),.60)!important;
+  box-shadow:0 0 0 3px rgba(var(--eco-accent-rgb),.10),0 0 26px rgba(var(--eco-accent-rgb),.07)!important;
+  transform:translateY(-1px);
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-label,.calculator-field>.anvil-label){
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+/* Calculator = engineering workstation */
+.eco-site-shell[class*="site-theme--"] .calculator-view{
+  max-width:1380px;
+}
+.eco-site-shell[class*="site-theme--"] .calculator-heading{
+  padding:10px 0 20px;
+  border-bottom:1px solid rgba(var(--eco-accent-rgb),.15);
+}
+.eco-site-shell[class*="site-theme--"] .calculator-tabs{
+  padding:8px;
+  border:1px solid rgba(var(--eco-accent-rgb),.14);
+  border-radius:14px;
+  background:rgba(var(--eco-accent-rgb),.035);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-calculator-tab>button,
+.eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-calculator-tab-active>button{
+  border-radius:9px;
+}
+.eco-site-shell[class*="site-theme--"] :is(.calculator-subpanel,.installation-totals,.anvil-role-calculator-product-summary){
+  border-radius:14px;
+  background:linear-gradient(145deg,rgba(var(--eco-accent-rgb),.045),var(--u-surface-2));
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-calculator-result,.anvil-role-result-panel){
+  position:relative;
+  overflow:hidden;
+  min-height:190px;
+  border:1px solid rgba(var(--eco-accent-rgb),.30)!important;
+  box-shadow:0 22px 70px rgba(0,0,0,.18),0 0 42px rgba(var(--eco-accent-rgb),.09)!important;
+}
+.eco-site-shell[class*="site-theme--"] :is(.anvil-role-calculator-result,.anvil-role-result-panel)::before{
+  content:"LIVE CALCULATION";
+  position:absolute;
+  top:16px;right:18px;
+  color:rgba(var(--eco-accent-rgb),.65);
+  font:800 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.18em;
+}
+.eco-site-shell[class*="site-theme--"] :is(.result-value,.calculator-result-value,.anvil-role-calculator-result-value){
+  text-shadow:0 0 26px rgba(var(--eco-accent-rgb),.22);
+}
+
+/* Catalog = product laboratory */
+.eco-site-shell[class*="site-theme--"] :is(.catalog-reference-layout,.catalog-reference-products){
+  position:relative;
+}
+.eco-site-shell[class*="site-theme--"] :is(.catalog-product-card,.catalog-category-card){
+  min-height:100%;
+}
+.eco-site-shell[class*="site-theme--"] :is(.catalog-product-card,.catalog-category-card) img{
+  background:linear-gradient(145deg,var(--u-surface-2),var(--u-surface));
+}
+.eco-site-shell[class*="site-theme--"] :is(.catalog-product-card,.catalog-category-card) .anvil-role-primary-action>button{
+  min-height:40px;
+}
+
+/* Admin: command deck, not CRUD */
+.eco-site-shell[class*="site-theme--"] :is(.admin-dashboard-card,.admin-metric-card,.admin-module-card,.admin-hub-module-card,.settings-card){
+  position:relative;
+  overflow:hidden;
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-dashboard-card,.admin-metric-card,.admin-module-card,.admin-hub-module-card,.settings-card)::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(var(--eco-accent-rgb),.35),transparent);
+  opacity:.7;
+}
+.eco-site-shell[class*="site-theme--"] .admin-hub-hero{
+  min-height:250px;
+  border-radius:26px;
+  box-shadow:0 35px 100px rgba(0,0,0,.25),0 0 55px rgba(var(--eco-accent-rgb),.09);
+}
+.eco-site-shell[class*="site-theme--"] .admin-hub-hero::before{
+  background:
+    repeating-linear-gradient(90deg,transparent 0,transparent 74px,rgba(var(--eco-accent-rgb),.045) 75px,transparent 76px),
+    repeating-linear-gradient(0deg,transparent 0,transparent 74px,rgba(var(--eco-accent-rgb),.035) 75px,transparent 76px);
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-hub-module-panel,.admin-hub-attention,.admin-hub-metrics-panel){
+  border-radius:20px;
+  box-shadow:0 22px 70px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.045);
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-hub-module-card,.admin-module-card){
+  min-height:128px;
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-hub-module-card,.admin-module-card) .anvil-role-admin-tile-title{
+  font-size:15px;
+  letter-spacing:-.015em;
+}
+.eco-site-shell[class*="site-theme--"] :is(.admin-hub-chip,.badge,.status-badge,.anvil-role-status-badge){
+  font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+  font-size:8px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+/* Light themes are architectural white-metal, never generic SaaS white */
+.eco-site-shell.site-theme--arctic-light,
+.eco-site-shell.site-theme--titanium-light{
+  --apex-metal:rgba(25,45,53,.10);
+}
+.eco-site-shell.site-theme--arctic-light .hero-panel,
+.eco-site-shell.site-theme--titanium-light .hero-panel{
+  background:
+    radial-gradient(circle at 78% 18%,rgba(var(--eco-accent-rgb),.14),transparent 26%),
+    linear-gradient(135deg,#f8fbfb,#e8eff0 72%,#dce6e8)!important;
+  border-color:rgba(48,75,82,.20)!important;
+  box-shadow:0 35px 100px rgba(28,47,54,.13),inset 0 1px rgba(255,255,255,.95);
+}
+.eco-site-shell.site-theme--arctic-light :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card),
+.eco-site-shell.site-theme--titanium-light :is(.anvil-role-service-card,.anvil-role-card,.catalog-product-card,.catalog-category-card){
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.98),rgba(231,238,240,.96))!important;
+  border-color:rgba(54,78,84,.16)!important;
+  box-shadow:0 18px 45px rgba(30,49,56,.09),inset 0 1px #fff;
+}
+.eco-site-shell.site-theme--arctic-light .landing-overview>div,
+.eco-site-shell.site-theme--titanium-light .landing-overview>div{
+  background:linear-gradient(145deg,#fff,#edf3f4);
+}
+.eco-site-shell.site-theme--arctic-light .eco-main::before,
+.eco-site-shell.site-theme--titanium-light .eco-main::before{opacity:.16}
+
+/* Responsive — retain the premium composition */
+@media(max-width:900px){
+  .eco-site-shell[class*="site-theme--"] .hero-panel{min-height:500px}
+  .eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-h1{font-size:clamp(46px,9vw,76px)}
+}
+@media(max-width:700px){
+  .eco-site-shell[class*="site-theme--"] .hero-panel{min-height:0;padding:34px 22px 24px}
+  .eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-h1{font-size:clamp(43px,12vw,66px)}
+  .eco-site-shell[class*="site-theme--"] .hero-visual{width:min(72vw,310px);margin:22px auto 0}
+  .eco-site-shell[class*="site-theme--"] .landing-overview>div:not(:last-child)::after{display:none}
+  .eco-site-shell[class*="site-theme--"] .landing-overview{gap:1px}
+  .eco-site-shell[class*="site-theme--"] .eco-main::after{display:none}
+}
+@media(max-width:420px){
+  .eco-site-shell[class*="site-theme--"] .hero-copy .anvil-role-h1{font-size:clamp(39px,13vw,58px)}
+  .eco-site-shell[class*="site-theme--"] .hero-panel{border-radius:20px!important}
+}
+
+/* Motion safety */
+@media(prefers-reduced-motion:reduce){
+  .eco-site-shell[class*="site-theme--"] .anvil-button.anvil-role-brand-mark>button::after,
+  .eco-site-shell[class*="site-theme--"] .hero-visual::before,
+  .eco-site-shell[class*="site-theme--"] .hero-visual::after{animation:none!important}
+}
+@keyframes apex-spin{to{transform:rotate(360deg)}}
+@keyframes apex-spin-reverse{to{transform:rotate(-360deg)}}
+@keyframes apex-machine{
+  0%,100%{transform:rotate(17deg) scale(1)}
+  50%{transform:rotate(24deg) scale(1.035)}
+}
