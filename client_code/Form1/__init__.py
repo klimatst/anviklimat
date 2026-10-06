@@ -1,14 +1,25 @@
 from ._anvil_designer import Form1Template
 from .. import Access
 from anvil import alert, handle
+import anvil.server
 
 
 class Form1(Form1Template):
   def __init__(self, **properties):
     super().__init__(**properties)
-    self.category_count.text = "Оборудование HVAC"
-    self.calculation_count.text = "Раздельные инженерные расчёты"
-    self.news_status.text = "Новости и публикации"
+    self.category_count.text = "Загрузка каталога…"
+    self.calculation_count.text = "Загрузка инженерного ядра…"
+    self.news_status.text = "CMS и публикации"
+    try:
+      summary = anvil.server.call("get_public_home_summary")
+      if summary.get("ok"):
+        self.category_count.text = "{} моделей HVAC".format(summary.get("product_count", 0))
+        self.calculation_count.text = "{} инженерных формул".format(summary.get("formula_count", 0))
+        self.news_status.text = "{} направлений каталога".format(summary.get("category_count", 0))
+    except Exception:
+      self.category_count.text = "Инженерный каталог"
+      self.calculation_count.text = "Раздельные инженерные расчёты"
+      self.news_status.text = "CMS и публикации"
     self.home_gallery_title.text = "Наши работы"
     self.home_gallery_intro.text = "Проекты по кондиционированию, вентиляции и инженерным системам."
     self.home_gallery_rows.role = [
