@@ -5522,3 +5522,40 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
     padding: 18px;
   }
 }
+
+
+/* Admin module cards: readable titles, fixed action area, no text collisions. */
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-grid > div {
+  grid-template-columns: repeat(3, minmax(280px, 1fr));
+  gap: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-card {
+  min-height: 230px;
+  padding: 20px;
+  border-radius: 15px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-title {
+  font-size: 16px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-description {
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-button.anvil-role-admin-module-open > button {
+  min-height: 40px;
+  padding: 8px 13px;
+  font-size: 10px;
+}
+@media (max-width: 1240px) {
+  .eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-grid > div {
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .eco-site-shell[class*="admin-mode"] .anvil-role-admin-module-grid > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
