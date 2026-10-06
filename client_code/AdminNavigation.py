@@ -35,6 +35,7 @@ MENU = {
       ("Вентиляция · страница, формулы и цены", "AdminSettings", {"window_title": "Управление · Вентиляция", "start_section": "ventilation.page", "open_editor": True}, "calculations.manage"),
       ("Монтаж, работы и материалы", "InstallationCalculator", {"window_title": "Монтаж · расчёты"}, "installation.manage"),
       ("Монтаж · цены и тарифы", "AdminSettings", {"window_title": "Монтаж · цены и тарифы", "start_section": "engineering.installation.pricing", "open_editor": True}, "installation.manage"),
+      ("Engineering Control Room", "EngineeringControlRoom", {"window_title": "Engineering Control Room"}, "projects.manage"),
       ("Проекты и системы", "Projects", {"window_title": "Проекты и системы"}, "projects.manage"),
       ("Digital Twin объекта · планы и трассы", "Projects", {"window_title": "Digital Twin объекта"}, "projects.manage")
     ]
