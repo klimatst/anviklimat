@@ -95,6 +95,12 @@ MODULES = [
     "properties": {"window_title": "Каталог товаров"}
   },
   {
+    "id": "lovable_catalog_sync", "title": "Hisense · синхронизация Lovable", "group": "Каталог",
+    "description": "Полный перенос каталога Hisense: модели, цены, характеристики, серии и фото из GitHub.",
+    "icon": "⇄", "badge": "SYNC", "form": "Catalog", "permission": "catalog.manage",
+    "properties": {"window_title": "Hisense · синхронизация каталога", "sync_lovable": True}
+  },
+  {
     "id": "media", "title": "Медиа и фотохранилище", "group": "Каталог",
     "description": "Фото товаров, облачные ссылки и записи без изображений.",
     "icon": "▧", "badge": "МЕДИА", "form": "Catalog.Media", "permission": "catalog.manage",
