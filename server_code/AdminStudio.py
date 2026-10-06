@@ -824,6 +824,7 @@ SETTINGS_SECTIONS = [
     _toggle("cms.blocks.templates", "Шаблоны страниц", True),
     _toggle("cms.blocks.preview", "Предпросмотр перед публикацией", True),
     _toggle("cms.blocks.duplicate", "Дублирование блоков", True))
+]
 
 
 SECRET_CATALOG = [
