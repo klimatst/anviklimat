@@ -29,7 +29,7 @@ def _project(project_id):
 
 def _count(table, **filters):
   try:
-    return len(list(table.search(**filters)[:5000]))
+    return len(table.search(**filters))
   except Exception:
     return 0
 
