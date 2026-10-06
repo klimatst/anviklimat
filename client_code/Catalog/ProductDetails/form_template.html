@@ -5,8 +5,11 @@ events:
 ---
 <anvil-form container="ColumnPanel" prop:role="catalog-product-dialog">
   <div class="catalog-detail-dialog-header">
-    <anvil-component type="Label" name="dialog_eyebrow" prop:role="eyebrow" prop:text="КАРТОЧКА ОБОРУДОВАНИЯ"></anvil-component>
-    <anvil-component type="Button" name="close_button" prop:text="Закрыть" prop:role="secondary-button"></anvil-component>
+    <div>
+      <anvil-component type="Label" name="dialog_eyebrow" prop:role="eyebrow" prop:text="КАРТОЧКА ОБОРУДОВАНИЯ"></anvil-component>
+      <div class="catalog-detail-dialog-subtitle">Полная информация о модели, технические характеристики и заявка</div>
+    </div>
+    <anvil-component type="Button" name="close_button" prop:text="× Закрыть" prop:role="secondary-button"></anvil-component>
   </div>
   <anvil-component type="Label" name="status_label" prop:role="status-message" prop:text=""></anvil-component>
   <anvil-component type="ColumnPanel" name="product_content" prop:role="catalog-product-content">
@@ -31,10 +34,14 @@ events:
       </div>
     </div>
     <anvil-component type="Label" name="description_heading" prop:role="section-heading" prop:text="Описание"></anvil-component>
-    <anvil-component type="Label" name="product_description" prop:role="catalog-detail-description" prop:text=""></anvil-component>
+    <div class="catalog-detail-section-box">
+      <anvil-component type="Label" name="product_description" prop:role="catalog-detail-description" prop:text=""></anvil-component>
+    </div>
     <anvil-component type="Label" name="series_description" prop:role="catalog-detail-description" prop:text="" prop:visible="false"></anvil-component>
     <anvil-component type="Label" name="specs_heading" prop:role="section-heading" prop:text="Характеристики"></anvil-component>
-    <anvil-component type="Label" name="product_specs" prop:role="catalog-detail-specs" prop:text=""></anvil-component>
+    <div class="catalog-detail-section-box catalog-detail-specs-box">
+      <anvil-component type="Label" name="product_specs" prop:role="catalog-detail-specs" prop:text=""></anvil-component>
+    </div>
     <anvil-component type="Label" name="sources_heading" prop:role="section-heading" prop:text="Источники" prop:visible="false"></anvil-component>
     <anvil-component type="Label" name="product_sources" prop:role="catalog-detail-sources" prop:text="" prop:visible="false"></anvil-component>
     <anvil-component type="ColumnPanel" name="documents_panel" prop:role="catalog-series-documents" prop:visible="false">
