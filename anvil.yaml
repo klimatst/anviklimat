@@ -1787,22 +1787,16 @@ metadata: {description: 'ЭКО-КЛИМАТ: оборудование, прое
 name: Clone of Clone of Clone of Clone of Minimal Theme 4
 native_deps:
   head_html: |
-    <meta name="description" content="ЭКО-КЛИМАТ: климатическое оборудование, расчёты, проектирование и монтаж.">
+    <meta name="description" content="КЛИМАЭКО: климатическое оборудование, расчёты, проектирование и монтаж.">
     <meta http-equiv="content-language" content="ru">
     <meta name="google" content="notranslate">
-    <meta name="theme-color" content="#0a1015">
-    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#080c10">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script>
       document.documentElement.lang = 'ru';
       document.documentElement.setAttribute('translate', 'no');
       document.documentElement.classList.add('notranslate');
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker.register('/service-worker.js', {scope: '/'});
-        });
-      }
     </script>
 package_name: Minimal_Theme_4
 runtime_options:
