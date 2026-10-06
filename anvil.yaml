@@ -334,18 +334,6 @@ db_schema:
       type: string
     - admin_ui: {}
       client_hidden: null
-      name: category_name
-      type: string
-    - admin_ui: {}
-      client_hidden: null
-      name: subcategory_name
-      type: string
-    - admin_ui: {}
-      client_hidden: null
-      name: series_name
-      type: string
-    - admin_ui: {}
-      client_hidden: null
       name: model
       type: string
     - admin_ui: {}
@@ -396,6 +384,18 @@ db_schema:
       client_hidden: null
       name: updated_at
       type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: category_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: subcategory_name
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: series_name
+      type: string
     indexes: []
     server: full
     title: Заказы каталога
@@ -771,6 +771,24 @@ db_schema:
     indexes: []
     server: full
     title: Сметы
+  files:
+    client: none
+    columns:
+    - admin_ui: {width: 200}
+      client_hidden: false
+      name: path
+      type: string
+    - admin_ui: {width: 200}
+      client_hidden: false
+      name: file
+      type: media
+    - admin_ui: {width: 200}
+      client_hidden: false
+      name: file_version
+      type: string
+    indexes: []
+    server: full
+    title: Files
   formulas:
     client: none
     columns:
@@ -949,10 +967,6 @@ db_schema:
       type: simpleObject
     - admin_ui: {}
       client_hidden: null
-      name: source_file
-      type: media
-    - admin_ui: {}
-      client_hidden: null
       name: total
       type: number
     - admin_ui: {}
@@ -980,6 +994,10 @@ db_schema:
       client_hidden: null
       name: updated_at
       type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: source_file
+      type: media
     indexes: []
     server: full
     title: Пакетные импорты
@@ -1120,6 +1138,18 @@ db_schema:
       type: string
     - admin_ui: {}
       client_hidden: null
+      name: size
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: checksum
+      type: string
+    - admin_ui: {}
+      client_hidden: null
       name: file
       type: media
     - admin_ui: {}
@@ -1134,18 +1164,6 @@ db_schema:
       client_hidden: null
       name: sort_order
       type: number
-    - admin_ui: {}
-      client_hidden: null
-      name: size
-      type: number
-    - admin_ui: {}
-      client_hidden: null
-      name: created_at
-      type: datetime
-    - admin_ui: {}
-      client_hidden: null
-      name: checksum
-      type: string
     indexes: []
     server: full
     title: Медиа товаров
@@ -1329,11 +1347,6 @@ db_schema:
       type: link_single
     - admin_ui: {}
       client_hidden: null
-      name: series
-      target: catalog_series
-      type: link_single
-    - admin_ui: {}
-      client_hidden: null
       name: type
       type: string
     - admin_ui: {}
@@ -1348,6 +1361,11 @@ db_schema:
       client_hidden: null
       name: updated_at
       type: datetime
+    - admin_ui: {}
+      client_hidden: null
+      name: series
+      target: catalog_series
+      type: link_single
     indexes: []
     server: full
     title: Товары
@@ -1815,8 +1833,16 @@ services:
 - client_config: {enable_v2: true}
   server_config: {}
   source: /runtime/services/tables.yml
-- client_config: {allow_signup: true, confirm_email: false, require_secure_passwords: false, use_email: true}
-  server_config: {user_table: users}
+- client_config: {allow_signup: true, confirm_email: false, enable_automatically: true, require_secure_passwords: false, use_email: true}
+  server_config:
+    email_content:
+      reset_password:
+        html: |-
+          <p>Hi there,</p>
+          <p>You have requested a password reset for your account {{email}}. To reset your password, click the link below:</p>
+          <p>{{reset_link}}</p>
+          <p>This link will expire in ten minutes.</p>
+    user_table: users
   source: /runtime/services/anvil/users.yml
 - client_config: {}
   server_config: {}
