@@ -205,3 +205,9 @@ html,body{overflow-x:hidden}
 @media(max-width:700px){.digital-twin-view{padding:0 0 24px}.digital-twin-toolbar{flex-direction:column}.digital-twin-bottom{flex-direction:column;align-items:stretch}.digital-twin-workbench canvas{width:100%;height:auto}}
 .site-theme--arctic-light .digital-twin-hero,.site-theme--titanium-light .digital-twin-hero{background:linear-gradient(135deg,rgba(20,120,145,.07),rgba(255,255,255,.75));border-color:rgba(20,120,145,.16)}
 .site-theme--arctic-light .digital-twin-toolbar,.site-theme--titanium-light .digital-twin-toolbar,.site-theme--arctic-light .digital-twin-bottom,.site-theme--titanium-light .digital-twin-bottom{background:rgba(255,255,255,.86);border-color:rgba(20,50,60,.10)}
+
+.digital-twin-home-band{display:flex;justify-content:space-between;gap:28px;align-items:center;margin:24px 0;padding:28px 30px;border:1px solid rgba(36,212,237,.20);border-radius:20px;background:radial-gradient(circle at 80% 20%,rgba(36,212,237,.13),transparent 40%),linear-gradient(135deg,rgba(36,212,237,.06),rgba(255,255,255,.015));box-shadow:0 24px 80px rgba(0,0,0,.18)}
+.digital-twin-home-band__actions{display:flex;flex-direction:column;gap:9px;align-items:flex-end;min-width:260px}
+.digital-twin-home-band__actions span{font-size:11px;letter-spacing:.08em;opacity:.65;text-transform:uppercase}
+@media(max-width:760px){.digital-twin-home-band{flex-direction:column;align-items:flex-start}.digital-twin-home-band__actions{align-items:flex-start;min-width:0}}
+.site-theme--arctic-light .digital-twin-home-band,.site-theme--titanium-light .digital-twin-home-band{background:linear-gradient(135deg,rgba(20,120,145,.06),rgba(255,255,255,.88));border-color:rgba(20,70,85,.14)}
