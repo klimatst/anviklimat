@@ -29,7 +29,6 @@ _ADMIN_FORM_TITLES = {
   "InstallationCalculator": "Монтаж и расчёты",
   "Projects": "Проекты и системы",
   "EngineeringControlRoom": "Engineering Control Room",
-  "PlanStudio": "Цифровой двойник объекта",
   "Operations": "Клиенты и обслуживание",
   "AdminUsers": "Пользователи и роли",
   "AdminSettings": "Центр настроек",
