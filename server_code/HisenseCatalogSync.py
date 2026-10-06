@@ -10,7 +10,6 @@ import anvil.server
 from anvil.tables import app_tables, order_by, query as q
 
 import Core
-import CatalogService as Catalog
 from HisenseLovableCatalogData import CATALOG_PARTS
 
 
@@ -188,6 +187,11 @@ def _photo_key(model, series, category, imported_key):
   return imported_key if imported_key in PHOTO_URLS else "vibe"
 
 
+def _catalog():
+  import CatalogService as Catalog
+  return Catalog
+
+
 def _category_target(category, series):
   series_value = (series or "").upper()
   if category == "split":
@@ -303,7 +307,7 @@ def _ensure_child(parent, code, title):
 
 
 def _ensure_target_categories():
-  Catalog._ensure_categories()
+  _catalog()._ensure_categories()
   roots = {row["code"]: row for row in app_tables.catalog_categories.search()}
   targets = {}
   mapping = {
@@ -355,7 +359,7 @@ def _ensure_series(category, title, min_power, max_power):
 
 
 def _find_product(model, sku):
-  identity = Catalog.product_identity_key("Hisense", model, sku)
+  identity = _catalog().product_identity_key("Hisense", model, sku)
   product = app_tables.products.get(identity_key=identity)
   if product is None and sku:
     product = app_tables.products.get(sku_key=sku.casefold())
