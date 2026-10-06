@@ -122,7 +122,7 @@ class Projects(ProjectsTemplate):
     try:
       parameters = json.loads(raw)
     except Exception:
-      parameters = {}
+      return raw
     if not isinstance(parameters, dict):
       parameters = {}
     profile = self.engineering_profile_dropdown.selected_value or "combined"
