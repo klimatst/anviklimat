@@ -74,7 +74,7 @@ class Catalog(CatalogTemplate):
 
   def _load_categories(self, category_code=None):
     try:
-      result = anvil.server.call("get_catalog_menu_tree", False)
+      result = anvil.server.call("get_catalog_menu_tree", False, True)
     except Exception as exc:
       self.catalog_message.text = "Не удалось загрузить каталог: {}".format(exc)
       self.category_tree.items = []
