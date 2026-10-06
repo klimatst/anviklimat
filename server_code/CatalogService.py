@@ -2236,20 +2236,28 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
       )
       if row["product"] is not None
     }
-    products.sort(
+    priced = [
+      product for product in products
+      if price_rows.get(product.get_id()) is not None
+      and price_rows[product.get_id()]["sale_price"] is not None
+    ]
+    unpriced = [product for product in products if product not in priced]
+    priced.sort(
       key=lambda product: (
-        price_rows.get(product.get_id()) is None
-        or price_rows[product.get_id()]["sale_price"] is None,
-        price_rows.get(product.get_id())["sale_price"]
-        if price_rows.get(product.get_id()) is not None
-        and price_rows[product.get_id()]["sale_price"] is not None else 0,
+        price_rows[product.get_id()]["sale_price"],
         (product["model"] or "").casefold(),
         product["identity_key"] or ""
       ),
       reverse=sort_by == "price_desc"
     )
-    has_more = len(products) > offset + PAGE_SIZE
-    products = products[offset:offset + PAGE_SIZE]
+    unpriced.sort(
+      key=lambda product: (
+        (product["model"] or "").casefold(),
+        product["identity_key"] or ""
+      )
+    )
+    products = priced + unpriced
+    has_more = len(products) > offset + PAGE_SIZE    products = products[offset:offset + PAGE_SIZE]
   else:
     has_more = len(products) > PAGE_SIZE
     products = products[:PAGE_SIZE]
