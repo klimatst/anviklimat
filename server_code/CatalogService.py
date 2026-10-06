@@ -360,9 +360,7 @@ def ensure_catalog_categories():
 
 
 def _category_options(include_inactive=False):
-  # ``parent`` points back to this table. Fetch category rows once, then resolve
-  # parent codes from the same result set instead of issuing a nested linked-row
-  # fetch for every category.
+  # Fetch once and build indexes in linear passes instead of repeated full-table scans.
   rows = list(app_tables.catalog_categories.search(
     q.fetch_only(
       "code", "title", "parent", "active", "sort_order", "description",
@@ -379,11 +377,8 @@ def _category_options(include_inactive=False):
     parent_id = parent.get_id() if parent is not None else None
     parent_row = rows_by_id.get(parent_id) if parent_id is not None else None
     result.append({
-      "id": row.get_id(),
-      "code": row["code"],
-      "title": row["title"],
-      "sort_order": row["sort_order"] or 0,
-      "parent_id": parent_id,
+      "id": row.get_id(), "code": row["code"], "title": row["title"],
+      "sort_order": row["sort_order"] or 0, "parent_id": parent_id,
       "parent_code": parent_row["code"] if parent_row is not None else None,
       "description": row["description"] or "",
       "meta_title": row["meta_title"] or "",
@@ -391,22 +386,86 @@ def _category_options(include_inactive=False):
       "image_url": _category_image_url(row["code"], row["image"])
     })
   by_code = {row["code"]: row for row in result}
+  child_counts = {}
   for row in result:
-    parts = [row["title"]]
+    parent_id = row["parent_id"]
+    if parent_id is not None:
+      child_counts[parent_id] = child_counts.get(parent_id, 0) + 1
+  path_cache = {}
+  def build_path(code, seen=None):
+    if code in path_cache:
+      return path_cache[code]
+    seen = set() if seen is None else seen
+    if code in seen or code not in by_code:
+      return [by_code[code]["title"]] if code in by_code else []
+    row = by_code[code]
     parent_code = row["parent_code"]
-    visited = {row["code"]}
-    while parent_code in by_code and parent_code not in visited:
-      visited.add(parent_code)
-      parent_row = by_code[parent_code]
-      parts.insert(0, parent_row["title"])
-      parent_code = parent_row["parent_code"]
+    parts = ([row["title"]] if not parent_code else
+             build_path(parent_code, seen | {code}) + [row["title"]])
+    path_cache[code] = parts
+    return parts
+  for row in result:
+    parts = build_path(row["code"])
     row["path"] = " / ".join(parts)
     row["depth"] = len(parts) - 1
-    row["child_count"] = sum(
-      1 for candidate in result if candidate["parent_id"] == row["id"]
-    )
+    row["child_count"] = child_counts.get(row["id"], 0)
   return result
 
+_MENU_CACHE = {}
+_MENU_CACHE_TTL_SECONDS = 15
+
+def _cached_catalog_menu(include_counts=True, include_series=True):
+  key = (bool(include_counts), bool(include_series))
+  now = datetime.now(timezone.utc).timestamp()
+  cached = _MENU_CACHE.get(key)
+  if cached and now - cached["at"] < _MENU_CACHE_TTL_SECONDS:
+    return cached["value"]
+  categories = _category_options()
+  by_id = {row["id"]: dict(row, children=[]) for row in categories}
+  roots = []
+  direct_product_counts = {}
+  if include_counts:
+    for product in app_tables.products.search(
+      q.fetch_only("category", "subcategory"), active=True
+    ):
+      category = product["subcategory"] or product["category"]
+      if category is not None:
+        category_id = category.get_id()
+        direct_product_counts[category_id] = direct_product_counts.get(category_id, 0) + 1
+  for row in categories:
+    node = by_id[row["id"]]
+    node["product_count"] = direct_product_counts.get(row["id"], 0)
+    node["menu_label"] = row["title"]
+    node["menu_mode"] = True
+    node["has_children"] = False
+    node["expand_icon"] = ""
+    parent = by_id.get(row["parent_id"])
+    (roots if parent is None else parent["children"]).append(node)
+  def order_tree(nodes, visited=None):
+    visited = visited or set()
+    safe_nodes = []
+    for node in sorted(nodes, key=lambda item: (item["sort_order"] or 0, item["title"].casefold())):
+      if node["id"] in visited:
+        continue
+      path = set(visited); path.add(node["id"])
+      children = order_tree(node["children"], path)
+      node["children"] = children
+      if include_counts:
+        node["product_count"] += sum(child["product_count"] for child in children)
+      node["has_children"] = bool(children)
+      node["child_count"] = len(children)
+      node["expand_icon"] = "›" if children else ""
+      safe_nodes.append(node)
+    return safe_nodes
+  value = {
+    "ok": True, "categories": categories,
+    "series": _series_options() if include_series else [],
+    "tree": order_tree(roots),
+    "navigation_settings": AdminStudio.get_admin_studio_setting("catalog.navigation", {}),
+    "site_menu": AdminStudio.get_admin_studio_setting("site.menu", [])
+  }
+  _MENU_CACHE[key] = {"at": now, "value": value}
+  return value
 
 def _category_image_url(category_code, media=None):
   if isinstance(media, anvil.Media):
@@ -581,159 +640,12 @@ def get_catalog_categories():
 @anvil.server.callable
 def get_catalog_menu_tree(include_counts=True, include_series=True):
   """Return live category rows grouped into the two catalogue directions."""
-  # Public navigation is read-mostly. Do not rewrite/migrate the category
-  # tree on every page load; initialize it only when the table is empty.
   if next(iter(app_tables.catalog_categories.search(
     q.fetch_only("code"), q.page_size(1)
   )), None) is None:
     _ensure_categories()
-  categories = _category_options()
-  by_id: dict[str, dict[str, Any]] = {
-    row["id"]: dict(row, children=[]) for row in categories
-  }
-  roots = []
-  direct_product_counts = {}
-
-  # Count each product once at its most specific linked category. Parent
-  # totals are then derived from children, avoiding large in-memory ID sets.
-  if include_counts:
-    for product in app_tables.products.search(
-      q.fetch_only("category", "subcategory"), active=True
-    ):
-      category = product["subcategory"] or product["category"]
-      if category is not None:
-        category_id = category.get_id()
-        direct_product_counts[category_id] = direct_product_counts.get(category_id, 0) + 1
-
-  for row in categories:
-    node = by_id[row["id"]]
-    node["product_count"] = direct_product_counts.get(row["id"], 0)
-    node["menu_label"] = row["title"]
-    node["menu_mode"] = True
-    node["has_children"] = False
-    node["expand_icon"] = ""
-    parent = by_id.get(row["parent_id"])
-    if parent is None:
-      roots.append(node)
-    else:
-      parent["children"].append(node)
-
-  def order_tree(nodes, visited=None):
-    visited = visited or set()
-    safe_nodes = []
-    for node in sorted(nodes, key=lambda item: (item["sort_order"] or 0, item["title"].casefold())):
-      if node["id"] in visited:
-        continue
-      path = set(visited)
-      path.add(node["id"])
-      children = order_tree(node["children"], path)
-      node["children"] = children
-      if include_counts:
-        node["product_count"] += sum(child["product_count"] for child in children)
-      node["has_children"] = bool(children)
-      node["child_count"] = len(children)
-      node["expand_icon"] = "›" if children else ""
-      safe_nodes.append(node)
-    return safe_nodes
-
-  roots = order_tree(roots)
-
-
-  for category in categories:
-    node = by_id[category["id"]]
-    category["product_count"] = node["product_count"] if include_counts else 0
-    category["child_count"] = node["child_count"]
-
-  home = []
-  business = []
-  for root in roots:
-    (home if root["code"] in HOME_ROOT_CODES else business).append(root)
-
-  navigation_settings = AdminStudio.get_public_navigation_settings()
-  return {
-    "ok": True,
-    "categories": categories,
-    "series": (
-      [_series_payload(row) for row in _series_rows_for_category(active_only=True)]
-      if include_series else []
-    ),
-    "navigation_settings": navigation_settings,
-    "site_menu": SiteMenuService.get_public_site_menu_data(),
-    "tree": [
-      {
-        "id": "direction-home", "code": "direction-home", "title": "Для дома",
-        "menu_label": "Для дома", "children": home, "has_children": True,
-        "expand_icon": "›", "menu_mode": True, "product_count": sum(
-          row["product_count"] for row in home
-        )
-      },
-      {
-        "id": "direction-business", "code": "direction-business", "title": "Для бизнеса",
-        "menu_label": "Для бизнеса", "children": business, "has_children": True,
-        "expand_icon": "›", "menu_mode": True, "product_count": sum(
-          row["product_count"] for row in business
-        )
-      }
-    ]
-  }
-
-
-def _series_image_url(series):
-  image = series["image"]
-  return image.get_url() if isinstance(image, anvil.Media) else ""
-
-
-def _series_rows_for_category(category=None, active_only=True):
-  rows = list(app_tables.catalog_series.search(
-    q.fetch_only(
-      "code", "title", "category", "description", "status", "is_new",
-      "power_range", "image", "sort_order", "active"
-    ),
-    order_by("sort_order")
-  ))
-  allowed_category_ids = None
-  if category is not None:
-    all_categories = list(app_tables.catalog_categories.search(
-      q.fetch_only("parent"), active=True
-    ))
-    descendants = {category.get_id()}
-    changed = True
-    while changed:
-      changed = False
-      for item in all_categories:
-        parent = item["parent"]
-        if parent is not None and parent.get_id() in descendants:
-          item_id = item.get_id()
-          if item_id not in descendants:
-            descendants.add(item_id)
-            changed = True
-    allowed_category_ids = descendants
-  result = []
-  for row in rows:
-    if active_only and not row["active"]:
-      continue
-    linked_category = row["category"]
-    if allowed_category_ids is not None and (
-      linked_category is None or linked_category.get_id() not in allowed_category_ids
-    ):
-      continue
-    result.append(row)
-  return result
-
-
-def _series_payload(row):
-  category = row["category"]
-  return {
-    "id": row.get_id(), "code": row["code"], "title": row["title"],
-    "category_id": category.get_id() if category is not None else None,
-    "category_code": category["code"] if category is not None else "",
-    "category_title": category["title"] if category is not None else "",
-    "description": row["description"] or "", "status": row["status"] or "active",
-    "is_new": bool(row["is_new"]), "power_range": row["power_range"] or "",
-    "image_url": _series_image_url(row),
-    "sort_order": row["sort_order"] or 0, "active": bool(row["active"])
-  }
-
+    _MENU_CACHE.clear()
+  return _cached_catalog_menu(include_counts, include_series)
 
 @anvil.server.callable(require_user=True)
 @Core.permission_guard("catalog.manage")
