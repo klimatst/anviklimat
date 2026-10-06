@@ -383,7 +383,7 @@ class AdminSettings(AdminSettingsTemplate):
     shell = document.querySelector(".eco-site-shell")
     if shell is None:
       return
-    for code in ("blue", "graphite", "ice", "amber", "crimson", "violet"):
+    for code in ("graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light"):
       shell.classList.remove("site-theme--" + code)
     shell.classList.add("site-theme--" + theme_code)
 
@@ -563,7 +563,7 @@ class AdminSettings(AdminSettingsTemplate):
     if result["ok"]:
       section["fields"] = [dict(field) for field in self._draft_fields]
       if section["id"] == "site.appearance":
-        theme = values.get("site_theme", "blue")
+        theme = values.get("site_theme", "graphite")
         self._apply_theme_to_current_page(theme)
       if "extensions.allow_css" in values or "extensions.allow_javascript" in values:
         AdminExtensions.apply_saved_extensions(force=True)
