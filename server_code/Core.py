@@ -339,6 +339,22 @@ def get_public_contact_details():
 def get_current_site_theme():
   return _current_site_theme()
 
+@anvil.server.callable
+def get_public_shell_data():
+  """Return the data required for the first public render in one server round-trip."""
+  import AdminStudio
+  import CatalogService
+  import SiteMenuService
+
+  catalog = CatalogService.get_catalog_menu_tree(include_counts=False)
+  return {
+    "ok": True,
+    "site_theme": _current_site_theme(),
+    "session_context": get_session_context(),
+    "catalog": catalog,
+    "extensions": AdminStudio.get_public_site_extensions()
+  }
+
 
 @anvil.server.callable(require_user=True)
 @admin_guard
