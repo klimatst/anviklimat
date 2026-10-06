@@ -15,7 +15,7 @@ def apply_saved_extensions(force=False):
     return
   try:
     bundle = anvil.server.call("get_public_site_extensions")
-  except anvil.server.RuntimeUnavailableError:
+  except Exception:
     return
   revision = bundle.get("revision", 0)
   for extension_id in _APPLIED_EXTENSION_IDS:
