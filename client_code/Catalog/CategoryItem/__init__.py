@@ -34,8 +34,11 @@ class CategoryItem(CategoryItemTemplate):
 
   @handle("open_category_button", "click")
   def open_category_button_click(self, **event_args):
+    category_id = self.item.get("id") or self.item.get("code")
+    if not category_id:
+      return
     self.parent.raise_event(
-      "x-category-selected", category_id=self.item["id"],
+      "x-category-selected", category_id=category_id,
       category_code=self.item.get("code")
     )
 
