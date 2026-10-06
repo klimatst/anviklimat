@@ -768,9 +768,7 @@ SETTINGS_SECTIONS = [
     _text("admin.branding.title", "Название панели", "КЛИМАЭКО CONTROL CENTER", maximum=80),
     _text("admin.branding.subtitle", "Подзаголовок", "ENGINEERING MANAGEMENT PLATFORM", maximum=120),
     _toggle("admin.branding.status", "Показывать System Status", True),
-    _toggle("admin.branding.version", "Показывать версию", True))
-]
-,
+    _toggle("admin.branding.version", "Показывать версию", True)),
 
   _section("erp.sales", "ERP", "Продажи · воронка",
     "Управление этапами продаж, ответственными, сроками и коммерческими предложениями.",

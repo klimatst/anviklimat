@@ -171,10 +171,7 @@ MODULES = [
     "description": "Сводка проверок, журнал событий и состояние модулей.",
     "icon": "⌁", "badge": "СИСТЕМА", "form": "SystemDiagnostics", "permission": None,
     "properties": {"window_title": "Системная диагностика"}
-  }
-]
-
-
+  },
   {
     "id": "command_center", "title": "Command Center", "group": "Система",
     "description": "Главный центр управления: KPI, быстрые действия, состояние системы и критические задачи.",
@@ -246,7 +243,8 @@ MODULES = [
     "description": "Расширенный SEO-контроль: schema, sitemap, canonical, breadcrumbs и индексация.",
     "icon": "⌕", "badge": "SEO PRO", "form": "AdminSettings", "permission": None,
     "properties": {"window_title": "SEO Control Center", "start_section": "seo.advanced", "open_editor": True}
-  },
+  }
+]
 
 
 MODULE_GROUPS = ("Редакторы", "Каталог", "Инженерия", "Операции", "Система")

@@ -1,4 +1,4 @@
-allow_embedding: false
+allow_embedding: true
 correct_dependency_ids: {}
 db_schema:
   ai_providers:
