@@ -284,7 +284,9 @@ class AdminTools(AdminToolsTemplate):
     self.content_button.visible = self._module_available_by_permission("cms.manage")
     self.audit_panel.visible = self._is_admin
     self._render_modules()
+    self.engineering_control_button.visible = self._module_available_by_permission("projects.manage")
     self._load_dashboard()
+    self._load_engineering_control_room()
 
   def _module_available_by_permission(self, permission):
     return self._is_admin or permission in self._permissions or "*" in self._permissions
@@ -312,6 +314,44 @@ class AdminTools(AdminToolsTemplate):
     self.module_status.text = "{} из {} модулей · {} визуальных редакторов".format(
       len(filtered), len(self._modules),
       sum(1 for module in self._modules if module["group"] == "Редакторы")
+    )
+
+  def _load_engineering_control_room(self):
+    if not self._module_available_by_permission("projects.manage"):
+      self.engineering_status.text = "Инженерный контур доступен сотрудникам с правом projects.manage."
+      return
+    try:
+      result = anvil.server.call("get_engineering_control_room")
+    except Exception as exc:
+      self.engineering_status.text = "Инженерный контур временно недоступен: {}".format(exc)
+      return
+    if not result.get("ok"):
+      self.engineering_status.text = result.get("message", "Не удалось загрузить Engineering OS.")
+      return
+    metrics = result.get("metrics", {})
+    kpi_values = [
+      metrics.get("projects", 0),
+      metrics.get("active_projects", 0),
+      metrics.get("needs_attention", 0),
+      metrics.get("systems", 0),
+      metrics.get("calculations", 0),
+      metrics.get("estimates", 0)
+    ]
+    # The KPI strip is intentionally rendered through the component tree so
+    # the dashboard stays native Anvil and remains theme-safe.
+    for component, value in zip(
+      ("engineering_kpi_1", "engineering_kpi_2", "engineering_kpi_3",
+       "engineering_kpi_4", "engineering_kpi_5", "engineering_kpi_6"),
+      kpi_values
+    ):
+      if hasattr(self, component):
+        getattr(self, component).text = str(value)
+    self.engineering_status.text = (
+      "Активных проектов: {} · сервисных записей: {} · обновлено: {} UTC".format(
+        metrics.get("active_projects", 0),
+        metrics.get("services", 0),
+        result.get("generated_at")
+      )
     )
 
   def _load_dashboard(self):
@@ -456,3 +496,8 @@ class AdminTools(AdminToolsTemplate):
   @handle("diagnostics_button", "click")
   def diagnostics_button_click(self, **event_args):
     Access.open_admin_window("SystemDiagnostics", window_title="Системная диагностика")
+
+  @handle("engineering_control_button", "click")
+  def engineering_control_button_click(self, **event_args):
+    Access.open_admin_window("EngineeringControlRoom", window_title="Engineering Control Room")
+
