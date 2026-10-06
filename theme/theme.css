@@ -758,3 +758,94 @@ html,body{overflow-x:hidden}
 @media(prefers-reduced-motion:reduce){
   .eco-command-hero__dial{animation:none}
 }
+
+
+/* KLIMAЭКО // GLOBAL PREMIUM CONTROL SURFACE
+   One visual language for public pages, calculators and admin workspaces. */
+.eco-site-shell .anvil-textbox,
+.eco-site-shell .anvil-textarea,
+.eco-site-shell .anvil-dropdown{
+  border-radius:12px;
+  transition:border-color 180ms ease,box-shadow 180ms ease,background 180ms ease,transform 180ms ease;
+}
+.eco-site-shell .anvil-textbox:focus-within,
+.eco-site-shell .anvil-textarea:focus-within,
+.eco-site-shell .anvil-dropdown:focus-within{
+  border-color:rgba(var(--theme-accent-rgb),.55);
+  box-shadow:0 0 0 3px rgba(var(--theme-accent-rgb),.10),0 10px 28px rgba(0,0,0,.08);
+}
+.eco-site-shell input::placeholder,
+.eco-site-shell textarea::placeholder{
+  color:var(--muted,#91a4ad);
+  opacity:.72;
+}
+.eco-site-shell .anvil-role-card,
+.eco-site-shell .anvil-role-calculator-card,
+.eco-site-shell .anvil-role-calculator-result,
+.eco-site-shell .anvil-role-service-card,
+.eco-site-shell .anvil-role-admin-settings,
+.eco-site-shell .anvil-role-admin-tile{
+  border-radius:18px;
+}
+.eco-site-shell .anvil-repeating-panel{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(var(--theme-accent-rgb),.26) transparent;
+}
+.eco-site-shell .anvil-repeating-panel::-webkit-scrollbar{width:7px;height:7px}
+.eco-site-shell .anvil-repeating-panel::-webkit-scrollbar-thumb{
+  border-radius:99px;
+  background:rgba(var(--theme-accent-rgb),.24);
+}
+.eco-site-shell .anvil-button>button:focus-visible,
+.eco-site-shell a:focus-visible,
+.eco-site-shell input:focus-visible,
+.eco-site-shell textarea:focus-visible,
+.eco-site-shell select:focus-visible{
+  outline:2px solid rgba(var(--theme-accent-rgb),.72);
+  outline-offset:3px;
+}
+.eco-site-shell .anvil-role-primary-action>button,
+.eco-site-shell .anvil-role-primary-action{
+  box-shadow:0 10px 28px rgba(var(--theme-accent-rgb),.12);
+}
+.eco-site-shell .anvil-role-primary-action>button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 14px 34px rgba(var(--theme-accent-rgb),.20);
+}
+.eco-site-shell .anvil-role-secondary-button>button:hover{
+  transform:translateY(-1px);
+}
+.eco-site-shell .admin-hub,
+.eco-site-shell .projects-view,
+.eco-site-shell .catalog-view,
+.eco-site-shell .ventilation-page,
+.eco-site-shell .calculator-page,
+.eco-site-shell .installation-page{
+  animation:eco-page-enter 420ms var(--premium-ease, cubic-bezier(.2,.75,.2,1)) both;
+}
+@keyframes eco-page-enter{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+.site-theme--arctic-light .eco-site-shell .anvil-role-card,
+.site-theme--titanium-light .eco-site-shell .anvil-role-card{
+  box-shadow:0 12px 34px rgba(30,52,60,.07);
+}
+.site-theme--arctic-light .eco-site-shell .anvil-textbox,
+.site-theme--arctic-light .eco-site-shell .anvil-textarea,
+.site-theme--arctic-light .eco-site-shell .anvil-dropdown,
+.site-theme--titanium-light .eco-site-shell .anvil-textbox,
+.site-theme--titanium-light .eco-site-shell .anvil-textarea,
+.site-theme--titanium-light .eco-site-shell .anvil-dropdown{
+  box-shadow:inset 0 1px rgba(255,255,255,.9),0 1px 2px rgba(25,45,52,.04);
+}
+@media(prefers-reduced-motion:reduce){
+  .eco-site-shell .admin-hub,
+  .eco-site-shell .projects-view,
+  .eco-site-shell .catalog-view,
+  .eco-site-shell .ventilation-page,
+  .eco-site-shell .calculator-page,
+  .eco-site-shell .installation-page{
+    animation:none;
+  }
+}
