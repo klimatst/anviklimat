@@ -199,7 +199,7 @@ class Calculations(CalculationsTemplate):
       return
     finally:
       self.calculate_button.enabled = True
-    if not result["ok"]
+    if not result["ok"]:
       self.result_panel.visible = False
       self.calculation_message.text = result["message"]
       self._can_quote = False
