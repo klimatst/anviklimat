@@ -26,6 +26,8 @@ NEWS_CATEGORY_CODES = {
   "air_conditioning", "vrf_vrv", "ventilation", "guides", "selection",
   "operation", "maintenance"
 }
+_REFERENCE_ARTICLES_READY = False
+
 REFERENCE_ARTICLES = (
   {
     "slug": "vybor-konditsionera-dlya-kvartiry",
@@ -182,6 +184,9 @@ def _module_record(row):
 
 
 def _ensure_reference_articles():
+  global _REFERENCE_ARTICLES_READY
+  if _REFERENCE_ARTICLES_READY:
+    return
   now = datetime.now(timezone.utc)
   created = []
   for article in REFERENCE_ARTICLES:
@@ -206,6 +211,7 @@ def _ensure_reference_articles():
       enabled=True
     )
     created.append(article["slug"])
+  _REFERENCE_ARTICLES_READY = True
   if created:
     Core.log_audit(
       action="cms.reference_articles_seeded", entity_type="cms_page",
