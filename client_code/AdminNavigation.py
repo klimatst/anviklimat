@@ -37,7 +37,6 @@ MENU = {
       ("Монтаж · цены и тарифы", "AdminSettings", {"window_title": "Монтаж · цены и тарифы", "start_section": "engineering.installation.pricing", "open_editor": True}, "installation.manage"),
       ("Engineering Control Room", "EngineeringControlRoom", {"window_title": "Engineering Control Room"}, "projects.manage"),
       ("Проекты и системы", "Projects", {"window_title": "Проекты и системы"}, "projects.manage"),
-      ("Digital Twin объекта · планы и трассы", "Projects", {"window_title": "Digital Twin объекта"}, "projects.manage")
     ]
   },
   "operations": {
