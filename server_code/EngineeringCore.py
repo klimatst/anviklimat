@@ -281,3 +281,263 @@ def get_project_action_center(project_id):
     "lifecycle_ready": snapshot["lifecycle_ready"],
     "actions": actions[:8],
   }
+
+
+DECISION_ENGINE_VERSION = "1.0"
+SELECTION_LIMIT = 12
+
+
+def _product_specs_map(product):
+  values = {}
+  try:
+    rows = app_tables.product_specs.search(product=product, visible=True)[:120]
+  except Exception:
+    rows = []
+  for row in rows:
+    key = (row["key"] or "").strip().casefold()
+    raw = str(row["value"] or "").strip().replace(",", ".")
+    if not key or not raw:
+      continue
+    first_token = raw.replace("×", " ").replace("x", " ").split()[0]
+    try:
+      values[key] = float(first_token)
+    except (TypeError, ValueError, IndexError):
+      continue
+  return values
+
+
+def _system_family(system_type):
+  value = str(system_type or "").casefold()
+  if "vrf" in value or "vrv" in value:
+    return "vrv_vrf"
+  if "vent" in value or "ahu" in value or "recovery" in value:
+    return "ventilation"
+  if "split" in value or "commercial_ac" in value or "air" in value:
+    return "conditioning"
+  return "other"
+
+
+def _selection_candidates(project_id, system_id):
+  project = app_tables.projects.get_by_id(project_id)
+  system = app_tables.systems.get_by_id(system_id)
+  if project is None or system is None:
+    return None, None, "Проект или система не найдены."
+  user = anvil.users.get_user()
+  if user is None or not Core.can_access_project(project, user):
+    return None, None, "Проект недоступен этой учётной записи."
+
+  snapshot_result = get_project_engineering_snapshot(project_id)
+  if not snapshot_result.get("ok"):
+    return None, None, snapshot_result.get("message", "Не удалось получить контекст проекта.")
+  snapshot = snapshot_result["snapshot"]
+
+  # Selection is intentionally derived only from structured catalog fields.
+  # Never invent missing technical values.
+  calculation_rows = list(app_tables.calculations.search(project=project)[:500])
+  target_kw = 0.0
+  target_airflow = 0.0
+  for row in calculation_rows:
+    payload = row["result"] if "result" in row else {}
+    payload = payload if isinstance(payload, dict) else {}
+    parameters = row["parameters"] if "parameters" in row else {}
+    parameters = parameters if isinstance(parameters, dict) else {}
+    merged = dict(parameters)
+    merged.update(payload)
+    for key in ("required_kw", "cooling_kw", "cooling_capacity_kw", "load_kw", "capacity_kw"):
+      value = merged.get(key)
+      if isinstance(value, (int, float)) and not isinstance(value, bool) and value > target_kw:
+        target_kw = float(value)
+    for key in ("airflow_m3h", "airflow", "required_airflow_m3h", "supply_airflow_m3h", "exhaust_airflow_m3h"):
+      value = merged.get(key)
+      if isinstance(value, (int, float)) and not isinstance(value, bool) and value > target_airflow:
+        target_airflow = float(value)
+
+  family = _system_family(system["type"])
+  categories = []
+  category_codes = {
+    "conditioning": ("air-conditioning", "multi-split-systems", "semi-industrial"),
+    "vrv_vrf": ("vrf-vrv",),
+    "ventilation": ("ventilation",),
+    "other": ()
+  }[family]
+  for code in category_codes:
+    category = app_tables.catalog_categories.get(code=code)
+    if category is not None:
+      categories.append(category)
+
+  products = []
+  if categories:
+    for product in app_tables.products.search(active=True)[:3000]:
+      if product["category"] not in categories and product["subcategory"] not in categories:
+        continue
+      products.append(product)
+      if len(products) >= 600:
+        break
+
+  return system, snapshot, {
+    "family": family,
+    "target_kw": target_kw,
+    "target_airflow": target_airflow,
+    "products": products
+  }
+
+
+@anvil.server.callable(require_user=True)
+def get_engineering_decision(project_id, system_id):
+  if not isinstance(project_id, str) or not isinstance(system_id, str):
+    return {"ok": False, "message": "Некорректный проект или система."}
+  system, snapshot, context = _selection_candidates(project_id, system_id)
+  if isinstance(context, str):
+    return {"ok": False, "message": context}
+
+  family = context["family"]
+  target_kw = context["target_kw"]
+  target_airflow = context["target_airflow"]
+  ranked = []
+  existing_products = _products_for_system(system)
+  for product in context["products"]:
+    specs = _product_specs_map(product)
+    cooling = next((specs[k] for k in (
+      "мощность охлаждения", "охлаждение, квт", "холодопроизводительность",
+      "номинальная мощность охлаждения"
+    ) if k in specs), None)
+    heating = next((specs[k] for k in (
+      "мощность обогрева", "обогрев, квт", "теплопроизводительность",
+      "номинальная мощность обогрева"
+    ) if k in specs), None)
+    airflow = next((specs[k] for k in (
+      "производительность", "производительность, м³/ч", "расход воздуха",
+      "воздушный расход"
+    ) if k in specs), None)
+
+    target = target_kw if family in ("conditioning", "vrv_vrf") else target_airflow
+    capacity = cooling if family in ("conditioning", "vrv_vrf") else airflow
+    score = 0.0
+    reasons = []
+    warnings = []
+    hard_fail = False
+
+    if family in ("conditioning", "vrv_vrf"):
+      if target > 0 and capacity is not None:
+        ratio = capacity / target
+        if ratio < 1.0:
+          score += 8
+          warnings.append("Мощность ниже расчётной потребности.")
+          hard_fail = True
+        elif ratio <= 1.35:
+          score += 70
+          reasons.append("Расчётная потребность закрывается с инженерным запасом.")
+        else:
+          score += 48
+          warnings.append("Есть заметное превышение расчётной мощности.")
+        score += max(0.0, 15.0 - abs(ratio - 1.15) * 15.0)
+      elif target == 0:
+        score += 15
+        warnings.append("Нет числовой расчётной потребности — требуется ручная проверка.")
+      else:
+        warnings.append("В каталоге нет структурированной мощности для ранжирования.")
+        hard_fail = True
+    elif family == "ventilation":
+      if target > 0 and airflow is not None:
+        ratio = airflow / target
+        if ratio < 1.0:
+          score += 8
+          warnings.append("Производительность ниже расчётного расхода воздуха.")
+          hard_fail = True
+        elif ratio <= 1.30:
+          score += 70
+          reasons.append("Производительность закрывает расчётный расход с запасом.")
+        else:
+          score += 48
+          warnings.append("Производительность существенно выше расчётной.")
+        score += max(0.0, 15.0 - abs(ratio - 1.12) * 15.0)
+      elif target == 0:
+        score += 15
+        warnings.append("Нет целевого расхода воздуха — подбор носит предварительный характер.")
+      else:
+        warnings.append("Нет структурированной производительности в каталоге.")
+        hard_fail = True
+    else:
+      score += 10
+      warnings.append("Для этого типа системы пока нет специализированной модели подбора.")
+
+    if heating is not None and family in ("conditioning", "vrv_vrf"):
+      reasons.append("Есть отдельная характеристика мощности обогрева.")
+
+    price = app_tables.product_prices.get(product=product)
+    if price is not None and price["sale_price"] is not None:
+      score += 5
+      reasons.append("Есть цена продажи для сметы.")
+    else:
+      warnings.append("Цена отсутствует — позиция не готова для полного коммерческого цикла.")
+
+    if product.get_id() in existing_products:
+      score += 5
+      reasons.append("Модель уже находится в составе текущей системы.")
+
+    compatibility_issues = []
+    # Validate a candidate against every current product by using existing rules.
+    if existing_products:
+      candidate_match = q.any_of(*[
+        q.all_of(product=candidate) for candidate in existing_products.values()
+      ])
+      matches = list(app_tables.compatibility.search(
+        q.fetch_only("product", "compatible_product", "type", "rule"),
+        q.any_of(
+          q.all_of(product=product, compatible_product=candidate_match),
+          q.all_of(compatible_product=product, product=candidate_match)
+        ),
+        enabled=True
+      )[:120])
+      for rule in matches:
+        first = rule["product"]
+        second = rule["compatible_product"]
+        if first is None or second is None:
+          continue
+        if rule["type"] == "incompatible":
+          compatibility_issues.append("{} несовместимо с {}.".format(
+            _product_label(product), _product_label(second if first.get_id() == product.get_id() else first)
+          ))
+        elif rule["type"] == "required":
+          compatibility_issues.append("{} требует дополнительный совместимый компонент.".format(
+            _product_label(product)
+          ))
+      if compatibility_issues:
+        score -= min(30, 10 * len(compatibility_issues))
+        warnings.extend(compatibility_issues[:3])
+
+    price_ready = price is not None and price["sale_price"] is not None
+    compatible = not compatibility_issues
+    decision = "recommended" if not hard_fail and compatible and score >= 75 else "candidate"
+    ranked.append({
+      "product_id": product.get_id(),
+      "label": _product_label(product),
+      "model": product["model"] or "",
+      "sku": product["sku"] or "",
+      "score": round(max(0.0, min(100.0, score)), 1),
+      "capacity": capacity,
+      "target": target or None,
+      "capacity_unit": "кВт" if family in ("conditioning", "vrv_vrf") else "м³/ч",
+      "price_ready": price_ready,
+      "compatible": compatible,
+      "reasons": reasons[:5],
+      "warnings": warnings[:5],
+      "decision": decision,
+      "existing": product.get_id() in existing_products
+    })
+
+  ranked.sort(key=lambda row: (-row["score"], row["label"].casefold()))
+  selected = ranked[:SELECTION_LIMIT]
+  return {
+    "ok": True,
+    "version": DECISION_ENGINE_VERSION,
+    "project_id": project_id,
+    "system_id": system_id,
+    "family": family,
+    "target_capacity_kw": target_kw or None,
+    "target_airflow_m3h": target_airflow or None,
+    "selection_ready": bool(selected),
+    "top_candidate": selected[0] if selected else None,
+    "candidates": selected,
+    "message": "Подбор построен только на фактических характеристиках каталога и доступных расчётных данных. Неполные данные понижает confidence и требуют инженерной проверки."
+  }
