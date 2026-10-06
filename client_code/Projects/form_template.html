@@ -24,9 +24,12 @@
         <anvil-component type="TextBox" name="object_name_box" prop:placeholder="Название объекта"></anvil-component>
         <anvil-component type="DropDown" name="project_type_dropdown"></anvil-component>
         <anvil-component type="DropDown" name="engineering_profile_dropdown"></anvil-component>
-        <anvil-component type="Label" name="engineering_profile_hint" prop:role="status-message" prop:text="Профиль определяет основной инженерный маршрут проекта; все расчёты остаются независимыми."></anvil-component>
+        <anvil-component type="DropDown" name="engineering_goal_dropdown"></anvil-component>
+        <anvil-component type="DropDown" name="project_priority_dropdown"></anvil-component>
+        <anvil-component type="Label" name="engineering_profile_hint" prop:role="status-message" prop:text="Профиль определяет основной инженерный маршрут. Цель и приоритет формируют инженерный бриф, а независимые расчётные модули остаются отдельными."></anvil-component>
         <anvil-component type="TextBox" name="object_address_box" prop:placeholder="Адрес объекта"></anvil-component>
-        <anvil-component type="TextArea" name="object_parameters_box" prop:placeholder="Параметры объекта в JSON, до 4 КБ"></anvil-component>
+        <anvil-component type="TextArea" name="object_constraints_box" prop:placeholder="Ограничения объекта: высота, шум, сроки, бюджет, архитектура, доступ и т. п."></anvil-component>
+        <anvil-component type="TextArea" name="object_parameters_box" prop:placeholder="Дополнительные параметры объекта в JSON, до 4 КБ"></anvil-component>
         <anvil-component type="DropDown" name="project_status_dropdown"></anvil-component>
         <anvil-component type="Button" name="save_project_button" prop:text="Сохранить проект" prop:role="primary-action"></anvil-component>
         <anvil-component type="Button" name="project_calculation_button" prop:text="Расчёты проекта" prop:role="secondary-button" prop:visible="false"></anvil-component>
