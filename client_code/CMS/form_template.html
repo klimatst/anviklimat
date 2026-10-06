@@ -27,6 +27,11 @@
         </div>
         <anvil-component type="Label" name="advanced_settings_heading" prop:role="section-heading" prop:text="Дополнительные параметры страницы · JSON"></anvil-component>
         <anvil-component type="TextArea" name="page_settings_box" prop:placeholder="Дополнительные короткие настройки в JSON"></anvil-component>
+        <anvil-component type="ColumnPanel" name="ventilation_estimator_rate_panel" prop:role="cms-editor-panel" prop:visible="false">
+          <anvil-component type="Label" name="ventilation_estimator_rate_heading" prop:role="section-heading" prop:text="Тарифы калькулятора вентиляции"></anvil-component>
+          <anvil-component type="Label" name="ventilation_estimator_rate_help" prop:role="cms-html-help" prop:text="Меняйте цены на установку, оборудование и расходники. Новые значения используются в калькуляторе сразу после сохранения страницы."></anvil-component>
+          <anvil-component type="RepeatingPanel" name="ventilation_estimator_rate_rows" prop:role="cms-ventilation-rates" prop:item_template="Minimal_Theme_4.CMS.VentilationRateItem"></anvil-component>
+        </anvil-component>
         <anvil-component type="Label" name="page_status_label" prop:role="eyebrow" prop:text=""></anvil-component>
         <anvil-component type="Button" name="save_page_button" prop:text="Сохранить черновик" prop:role="secondary-button"></anvil-component>
         <anvil-component type="Button" name="preview_button" prop:text="Предпросмотр" prop:role="secondary-button"></anvil-component>

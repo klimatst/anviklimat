@@ -6902,3 +6902,121 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
     width:100%;
   }
 }
+
+/* Ventilation estimate: a separate, responsive quote builder on the pricing page. */
+.anvil-role-ventilation-quote {
+  width: 100%;
+  margin: 30px 0 4px;
+  padding: clamp(18px, 3vw, 34px);
+  border: 1px solid rgba(var(--theme-accent-rgb), .25);
+  border-radius: 22px;
+  color: #dce9eb;
+  background:
+    radial-gradient(ellipse at 92% 0%, rgba(var(--theme-accent-rgb), .09), transparent 38%),
+    linear-gradient(145deg, rgba(18, 29, 35, .98), rgba(9, 16, 21, .98));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, .28), inset 0 1px rgba(255, 255, 255, .04);
+}
+.ventilation-quote-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.ventilation-quote-heading > div { min-width: 0; }
+.ventilation-quote-heading .anvil-role-section-heading { margin: 5px 0 8px; font-size: clamp(23px, 3vw, 34px); }
+.ventilation-quote-heading .anvil-role-lede { max-width: 690px; color: #9fb1b6; }
+.anvil-role-ventilation-quote-total {
+  flex: 0 0 auto;
+  color: #b2f0dd;
+  font-size: clamp(25px, 4vw, 40px);
+  font-weight: 850;
+  letter-spacing: -.04em;
+  text-align: right;
+}
+.ventilation-quote-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr);
+  align-items: start;
+  gap: 15px;
+}
+.anvil-role-ventilation-quote-input,
+.anvil-role-ventilation-quote-result {
+  min-width: 0;
+  padding: clamp(14px, 2vw, 22px);
+  border: 1px solid rgba(145, 177, 184, .15);
+  border-radius: 16px;
+  background: rgba(4, 12, 16, .43);
+}
+.anvil-role-ventilation-subheading {
+  display: block;
+  margin: 16px 0 9px;
+  color: #eff7f5;
+  font-size: 15px;
+  font-weight: 760;
+}
+.anvil-role-ventilation-quote-input > .anvil-role-ventilation-subheading:first-child { margin-top: 0; }
+.ventilation-quote-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; margin: 8px 0 14px; }
+.ventilation-quote-field { min-width: 0; }
+.ventilation-quote-field > .anvil-label { display: block; min-height: 29px; margin: 0 0 4px; color: #9fb1b6; font-size: 10px; line-height: 1.35; }
+.ventilation-quote-field > .anvil-text-box,
+.ventilation-quote-field > .anvil-dropdown { width: 100%; }
+.ventilation-quote-wide { grid-column: 1 / -1; }
+.anvil-role-ventilation-quote-input input.anvil-text-box,
+.anvil-role-ventilation-quote-input .anvil-dropdown select { min-height: 40px; }
+.ventilation-quote-checks { display: flex; flex-wrap: wrap; gap: 9px 18px; margin: 10px 0 12px; }
+.ventilation-quote-checks .anvil-checkbox { color: #c6d7da; font-size: 12px; }
+.anvil-role-ventilation-airflow-summary {
+  display: block;
+  margin: 10px 0 5px;
+  padding: 11px 13px;
+  border: 1px solid rgba(var(--theme-accent-rgb), .2);
+  border-radius: 10px;
+  color: #d7eee7;
+  background: rgba(var(--theme-accent-rgb), .07);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+.anvil-role-ventilation-quote-note { display: block; margin: 7px 0; color: #92a7ad; font-size: 10px; line-height: 1.5; }
+.ventilation-quote-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+.ventilation-quote-totals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 11px 0 15px; }
+.ventilation-quote-totals > div { min-width: 0; padding: 11px 12px; border: 1px solid rgba(145, 177, 184, .13); border-radius: 10px; background: rgba(8, 17, 21, .62); }
+.ventilation-quote-totals .anvil-label { display: block; color: #8da2a8; font-size: 9px; }
+.anvil-role-ventilation-quote-total-line { display: block; margin-top: 3px; color: #dce9eb; font-size: 15px; font-weight: 760; }
+.ventilation-estimate-table-head,
+.ventilation-estimate-line-grid { display: grid; grid-template-columns: minmax(70px, .72fr) minmax(120px, 1.45fr) minmax(65px, .7fr) minmax(75px, .8fr) minmax(80px, .85fr); align-items: center; gap: 8px; }
+.ventilation-estimate-table-head { padding: 8px 10px; color: #82969c; font-size: 8px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+.anvil-role-ventilation-estimate-lines > div { display: grid; gap: 6px; }
+.anvil-role-ventilation-estimate-line { min-width: 0; padding: 9px 10px; border-top: 1px solid rgba(145, 177, 184, .1); background: rgba(9, 18, 22, .45); }
+.anvil-role-ventilation-estimate-line-category { color: #91aaa9; font-size: 9px; }
+.anvil-role-ventilation-estimate-line-title { min-width: 0; color: #dce8e9; font-size: 10px; overflow-wrap: anywhere; }
+.anvil-role-ventilation-estimate-line-value { color: #aabdc1; font-size: 9px; }
+.anvil-role-ventilation-estimate-line-total { color: #d8eee6; font-size: 10px; font-weight: 750; text-align: right; }
+.anvil-role-cms-ventilation-rates > div { display: grid; gap: 5px; }
+.anvil-role-cms-ventilation-rate-item { min-width: 0; padding: 8px 10px; border-bottom: 1px solid rgba(145, 177, 184, .12); }
+.cms-ventilation-rate-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(110px, 170px) auto; align-items: center; gap: 10px; }
+.anvil-role-cms-ventilation-rate-label { color: #cbd9dc; font-size: 10px; line-height: 1.4; }
+.anvil-role-cms-ventilation-rate-value { width: 100%; }
+.anvil-role-cms-ventilation-rate-unit { color: #91a6ab; font-size: 9px; white-space: nowrap; }
+
+@media (max-width: 1020px) {
+  .ventilation-quote-layout { grid-template-columns: minmax(0, 1fr); }
+  .anvil-role-ventilation-quote-result { order: 2; }
+}
+@media (max-width: 640px) {
+  .anvil-role-ventilation-quote { padding: 14px; border-radius: 15px; }
+  .ventilation-quote-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
+  .anvil-role-ventilation-quote-total { text-align: left; }
+  .ventilation-quote-fields { grid-template-columns: minmax(0, 1fr); }
+  .ventilation-quote-wide { grid-column: auto; }
+  .ventilation-estimate-table-head { display: none; }
+  .ventilation-estimate-line-grid { grid-template-columns: minmax(0, 1fr) auto; gap: 3px 8px; }
+  .anvil-role-ventilation-estimate-line-category { grid-column: 1 / -1; }
+  .anvil-role-ventilation-estimate-line-title { grid-column: 1; }
+  .anvil-role-ventilation-estimate-line-value { grid-column: 1; }
+  .anvil-role-ventilation-estimate-line-total { grid-column: 2; grid-row: 2 / span 2; }
+  .cms-ventilation-rate-row { grid-template-columns: minmax(0, 1fr) 92px auto; gap: 6px; }
+  .anvil-role-ventilation-quote-input,
+  .anvil-role-ventilation-quote-result { padding: 12px; }
+}

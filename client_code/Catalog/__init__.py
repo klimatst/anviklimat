@@ -157,12 +157,17 @@ class Catalog(CatalogTemplate):
                 "operation_modes": [], "energy_classes": []}
 
     def options(values, empty="Все"):
+      if not isinstance(values, list):
+        values = []
       return [(empty, None)] + [(v.get("title", v), v.get("id", v)) if isinstance(v, dict) else (v, v)
                                 for v in values]
 
-    self.brand_filter.items = [( "Все производители", None)] + [
+    brands = result.get("brands", [])
+    if not isinstance(brands, list):
+      brands = []
+    self.brand_filter.items = [("Все производители", None)] + [
       (row["title"] + " · " + str(row.get("count", 0)), row["id"])
-      for row in result.get("brands", [])
+      for row in brands if isinstance(row, dict) and row.get("id") is not None
     ]
     self.compressor_filter.items = options(result.get("compressors", []))
     self.country_filter.items = options(result.get("countries", []))
@@ -212,7 +217,6 @@ class Catalog(CatalogTemplate):
     self.page_title.text = title
     self.breadcrumb_rows.items = self._build_breadcrumbs(code)
     self.catalog_total_label.text = ""
-    self.catalog_panel.visible = True
     # The target storefront puts related category/topic links above products.
     links = []
     if code:
@@ -229,7 +233,6 @@ class Catalog(CatalogTemplate):
     self.category_tiles.items = cards
     self.category_tiles.role = "catalog-reference-links"
     self.category_tiles.visible = bool(cards)
-    self.catalog_navigation_column.visible = True if hasattr(self, "catalog_navigation_column") else True
 
   def _build_breadcrumbs(self, category_code):
     crumbs = [{"title": "Каталог", "code": None}]
@@ -460,10 +463,15 @@ class Catalog(CatalogTemplate):
       getattr(self, name).selected_value = None
     self.available_filter.checked = False
     self.sort_filter.selected_value = "popular"
+    self.status_filter.selected_value = "active"
     self._reset_and_load()
 
   @handle("sort_filter", "change")
   def sort_filter_change(self, **event_args):
+    self._reset_and_load()
+
+  @handle("status_filter", "change")
+  def status_filter_change(self, **event_args):
     self._reset_and_load()
 
   @handle("available_filter", "change")

@@ -67,11 +67,17 @@ class CMS(CMSTemplate):
     self.keywords_box.text = self._page_settings.get("keywords", "")
     self.canonical_url_box.text = self._page_settings.get("canonical_url", "")
     self.social_image_url_box.text = self._page_settings.get("social_image_url", "")
+    is_ventilation_price_page = page["slug"] == "prices-ventilation"
+    self.ventilation_estimator_rate_panel.visible = is_ventilation_price_page
+    self.ventilation_estimator_rate_rows.items = result.get(
+      "ventilation_estimator_rate_rows", []
+    )
     advanced_settings = {
       key: value for key, value in self._page_settings.items()
       if key not in {
         "publish_date", "excerpt", "seo_title", "seo_description",
-        "keywords", "canonical_url", "social_image_url", "news_category"
+        "keywords", "canonical_url", "social_image_url", "news_category",
+        "ventilation_estimator_rates"
       }
     }
     self.page_settings_box.text = json.dumps(
@@ -109,6 +115,8 @@ class CMS(CMSTemplate):
     self.canonical_url_box.text = ""
     self.social_image_url_box.text = ""
     self.page_settings_box.text = "{}"
+    self.ventilation_estimator_rate_panel.visible = False
+    self.ventilation_estimator_rate_rows.items = []
     self.page_status_label.text = "Черновик"
     self.module_rows.items = []
     self.preview_panel.visible = False
@@ -284,6 +292,14 @@ class CMS(CMSTemplate):
       settings["news_category"] = category_code
     else:
       settings.pop("news_category", None)
+    if self.ventilation_estimator_rate_panel.visible:
+      settings["ventilation_estimator_rates"] = {
+        row.get("code"): row.get("value", "")
+        for row in self.ventilation_estimator_rate_rows.items
+        if isinstance(row, dict) and row.get("code")
+      }
+    else:
+      settings.pop("ventilation_estimator_rates", None)
     result = anvil.server.call(
       "save_cms_page",
       self.page_title_box.text or "",
