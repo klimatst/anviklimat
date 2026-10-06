@@ -156,7 +156,6 @@ class Projects(ProjectsTemplate):
     self.engineering_lifecycle_label.text += " · VRV/VRF {} · вентиляция {} · сплит/мультисплит {}".format(
       families.get("VRV / VRF", 0), families.get("Вентиляция", 0), families.get("Кондиционирование", 0)
     )
-    )
 
   def _start_room(self):
     self._room_id = None
