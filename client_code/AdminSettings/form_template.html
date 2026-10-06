@@ -3,25 +3,25 @@
     <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Центр настроек"></anvil-component>
   </anvil-block>
   <anvil-block slot="actions">
-    <anvil-component type="Button" name="home_button" prop:text="На Dashboard" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="К рабочему центру" prop:role="secondary-button"></anvil-component>
   </anvil-block>
   <anvil-block slot="content">
     <div class="admin-settings-studio">
       <section class="studio-hero">
         <div class="studio-hero__copy">
           <anvil-component type="Label" name="studio_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · КОНСТРУКТОР СИСТЕМЫ"></anvil-component>
-          <anvil-component type="Label" name="studio_intro" prop:role="lede" prop:text="Настраивайте сайт, каталог, Dashboard, интеграции и расширения из единого центра управления."></anvil-component>
+          <anvil-component type="Label" name="studio_intro" prop:role="lede" prop:text="Настраивайте сайт, каталог, инженерию, интеграции и расширения из единого центра управления."></anvil-component>
           <div class="studio-hero__path"><span>Сайт</span><i>→</i><span>Проект</span><i>→</i><span>Рабочая среда</span></div>
         </div>
         <div class="studio-hero-stats">
           <anvil-component type="Label" name="section_count" prop:role="studio-count" prop:text="Загрузка категорий…"></anvil-component>
-          <anvil-component type="Label" name="widget_count" prop:role="studio-count" prop:text="Загрузка виджетов…"></anvil-component>
+          <anvil-component type="Label" name="widget_count" prop:role="studio-count studio-count-legacy" prop:text="Библиотека виджетов отключена"></anvil-component>
         </div>
       </section>
 
       <nav class="studio-tabs" aria-label="Инструменты центра настроек">
         <anvil-component type="Button" name="settings_tab" prop:role="studio-tab-active" prop:text="Настройки сайта и проекта"></anvil-component>
-        <anvil-component type="Button" name="widgets_tab" prop:role="studio-tab" prop:text="Библиотека виджетов"></anvil-component>
+        <anvil-component type="Button" name="widgets_tab" prop:role="studio-tab studio-tab-legacy" prop:text="Виджеты отключены"></anvil-component>
         <anvil-component type="Button" name="extensions_tab" prop:role="studio-tab" prop:text="Модули и скрипты"></anvil-component>
         <anvil-component type="Button" name="ai_tools_tab" prop:role="studio-tab" prop:text="AI Studio · инструменты"></anvil-component>
         <anvil-component type="Button" name="secrets_tab" prop:role="studio-tab" prop:text="Секреты и подключения"></anvil-component>
@@ -208,7 +208,7 @@
         </anvil-component>
       </anvil-component>
 
-      <anvil-component type="ColumnPanel" name="widgets_workspace" prop:role="studio-widgets-workspace" prop:visible="false">
+      <anvil-component type="ColumnPanel" name="widgets_workspace" prop:role="studio-widgets-workspace studio-widgets-workspace-legacy" prop:visible="false">
         <div class="studio-workspace-heading">
           <div>
             <anvil-component type="Label" name="widgets_eyebrow" prop:role="eyebrow" prop:text="РАБОЧИЙ СТОЛ"></anvil-component>
