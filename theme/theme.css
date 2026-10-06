@@ -535,3 +535,47 @@ html,body{overflow-x:hidden}
     transition-duration:.01ms!important;
   }
 }
+
+
+/* KLIMAЭКО // CATALOG SURFACE HARDENING
+   Prevent native Anvil container/Form defaults from leaking white surfaces.
+   Keep light themes intentionally light through their existing theme variables. */
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-form,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-panel,
+.eco-site-shell[class*="site-theme--"] .catalog-view .anvil-column-panel,
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-tree-node"],
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-category-card"],
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-product-card"]{
+  background:var(--surface-1) !important;
+  color:var(--text) !important;
+  border-color:var(--line) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-tree-flyout"]{
+  background:var(--surface-0) !important;
+  color:var(--text) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-category-column,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-main,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-body,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-reference-products{
+  background:var(--surface-0) !important;
+  color:var(--text) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-photo-frame,
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-photo-placeholder"],
+.eco-site-shell[class*="site-theme--"] .catalog-view [role="catalog-category-placeholder"]{
+  background:var(--surface-2) !important;
+  color:var(--muted) !important;
+  border-color:var(--line) !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-tree-entry,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-meta-list,
+.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-card-bottom{
+  background:transparent !important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view input,
+.eco-site-shell[class*="site-theme--"] .catalog-view textarea,
+.eco-site-shell[class*="site-theme--"] .catalog-view select{
+  color:var(--text) !important;
+  background-color:var(--blank-control-bg) !important;
+}
