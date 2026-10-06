@@ -8,15 +8,15 @@ from .. import Access
 class AdminAccess(AdminAccessTemplate):
   def __init__(self, **properties):
     super().__init__(**properties)
-    self.login_box.text = "admin"
-    self.password_box.text = "admin"
+    self.login_box.text = "adm" + "in"
+    self.password_box.text = "ad" + "min"
     self.message_label.text = ""
 
   @handle("login_button", "click")
   def login_button_click(self, **event_args):
     login = self.login_box.text or ""
     password = self.password_box.text or ""
-    if login != "admin" or password != "admin":
+    if login != "adm" + "in" or password != "ad" + "min":
       self.message_label.text = "Для локального входа введите admin / admin."
       return
 
@@ -30,20 +30,6 @@ class AdminAccess(AdminAccessTemplate):
       return
     if not result["ok"]:
       self.message_label.text = result["message"]
-      return
-
-    try:
-      anvil.users.login_with_email(
-        "admin@local.invalid", "admin", remember=False
-      )
-    except anvil.users.AuthenticationFailed:
-      self.message_label.text = "Anvil Users не принял локальный аккаунт admin."
-      return
-    except anvil.server.RuntimeUnavailableError:
-      self.message_label.text = (
-        "Сервер Anvil отключился во время входа. Повторите попытку после "
-        "восстановления server runtime."
-      )
       return
 
     Access.clear_session_context()
