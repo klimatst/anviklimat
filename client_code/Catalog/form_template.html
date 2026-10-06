@@ -37,7 +37,10 @@
         </div>
         <anvil-component type="ColumnPanel" name="catalog_panel" prop:role="catalog-results-panel">
           <div class="catalog-toolbar catalog-toolbar--reference">
-            <anvil-component type="TextBox" name="search_box" prop:role="catalog-search" prop:placeholder="Модель, артикул, серия или категория"></anvil-component>
+            <div class="catalog-search-wide">
+            <anvil-component type="TextBox" name="search_box" prop:role="catalog-search" prop:placeholder="Поиск по модели, артикулу, серии или категории"></anvil-component>
+            <anvil-component type="Button" name="search_button" prop:text="Найти" prop:role="primary-action"></anvil-component>
+          </div>
             <anvil-component type="DropDown" name="category_filter" prop:role="catalog-filter"></anvil-component>
             <anvil-component type="DropDown" name="series_filter" prop:role="catalog-filter"></anvil-component>
             <anvil-component type="TextBox" name="minimum_price_box" prop:role="catalog-filter" prop:placeholder="Цена от"></anvil-component>
@@ -45,9 +48,12 @@
             <anvil-component type="DropDown" name="sort_filter" prop:role="catalog-filter"></anvil-component>
             <anvil-component type="CheckBox" name="available_filter" prop:text="Только в наличии" prop:role="catalog-availability-filter"></anvil-component>
             <anvil-component type="DropDown" name="status_filter" prop:role="catalog-filter" prop:visible="false"></anvil-component>
-            <anvil-component type="Button" name="search_button" prop:text="Показать модели" prop:role="primary-action"></anvil-component>
           </div>
           <anvil-component type="Label" name="catalog_message" prop:role="status-message" prop:text=""></anvil-component>
+          <div class="catalog-results-heading">
+            <anvil-component type="Label" name="catalog_results_title" prop:role="section-heading" prop:text="Оборудование"></anvil-component>
+            <anvil-component type="Label" name="catalog_results_hint" prop:role="status-message" prop:text="Откройте модель, чтобы увидеть полные характеристики и заказать оборудование."></anvil-component>
+          </div>
           <anvil-component type="RepeatingPanel" name="product_series_rows" prop:role="catalog-series-list" prop:item_template="Minimal_Theme_4.Catalog.SeriesItem"></anvil-component>
           <div class="catalog-pagination">
             <anvil-component type="Button" name="previous_button" prop:text="Назад" prop:role="secondary-button" prop:visible="false"></anvil-component>
