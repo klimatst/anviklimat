@@ -587,3 +587,45 @@ def get_engineering_decision(project_id, system_id):
     "candidates": selected,
     "message": "Подбор построен только на фактических характеристиках каталога и доступных расчётных данных. Неполные данные понижает confidence и требуют инженерной проверки."
   }
+
+
+@anvil.server.callable(require_user=True)
+def get_project_engineering_decisions(project_id):
+  """Return explainable Smart Selection candidates for every system in a project."""
+  project = _project(project_id)
+  if project is None:
+    return {"ok": False, "message": "Проект недоступен.", "systems": []}
+  systems = list(app_tables.systems.search(project=project, order_by("title"))[:20])
+  result = []
+  for system in systems:
+    decision = get_engineering_decision(project_id, system.get_id())
+    if not decision.get("ok"):
+      result.append({
+        "system_id": system.get_id(), "system_title": system["title"] or "Система",
+        "system_type": system["type"] or "other", "ok": False,
+        "message": decision.get("message", "Подбор недоступен."), "candidates": []
+      })
+      continue
+    candidates = []
+    for candidate in decision.get("candidates", [])[:4]:
+      item = dict(candidate)
+      item["system_id"] = system.get_id()
+      item["system_title"] = system["title"] or "Система"
+      item["system_type"] = system["type"] or "other"
+      candidates.append(item)
+    result.append({
+      "system_id": system.get_id(), "system_title": system["title"] or "Система",
+      "system_type": system["type"] or "other", "ok": True,
+      "family": decision.get("family"),
+      "target_capacity_kw": decision.get("target_capacity_kw"),
+      "target_airflow_m3h": decision.get("target_airflow_m3h"),
+      "candidates": candidates,
+      "top_candidate": candidates[0] if candidates else None
+    })
+  return {
+    "ok": True,
+    "project_id": project_id,
+    "system_count": len(systems),
+    "systems": result,
+    "message": "Smart Selection построен отдельно для каждой инженерной системы проекта; результаты не смешиваются между контурами."
+  }
