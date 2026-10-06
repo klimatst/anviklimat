@@ -1,0 +1,54 @@
+name: Extract Hisense XLSX images
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "data/source/*.xlsx"
+      - "tools/extract_hisense_catalog_images.py"
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Find source workbook
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          file="$(find data/source -maxdepth 1 -type f -iname '*.xlsx' | sort | head -n 1)"
+          test -n "$file"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+
+      - name: Extract embedded images
+        run: python tools/extract_hisense_catalog_images.py "${{ steps.source.outputs.file }}"
+
+      - name: Enable XLSX images for Anvil
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i 's/^READY = False$/READY = True/' server_code/HisenseXlsxImageIndex.py
+
+      - name: Commit image library
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add theme/assets/catalog/hisense/xlsx server_code/HisenseXlsxImageIndex.py
+          if git diff --cached --quiet; then
+            echo "No image changes."
+            exit 0
+          fi
+          git commit -m "Extract Hisense catalog images from XLSX"
+          git push
