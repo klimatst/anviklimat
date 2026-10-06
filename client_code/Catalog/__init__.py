@@ -76,15 +76,11 @@ class Catalog(CatalogTemplate):
     try:
       result = anvil.server.call("get_catalog_menu_tree", False, True)
     except Exception as exc:
-      self.catalog_message.text = "Не удалось загрузить каталог: {}".format(exc)
-      self.category_tree.items = []
-      self.category_tiles.items = []
-      return
-    if not result["ok"]:
-      self.catalog_message.text = "Не удалось загрузить дерево каталога."
-      self.category_tree.items = []
-      self.category_tiles.items = []
-      return
+      self.catalog_message.text = "Сервер каталога временно недоступен. Показаны основные категории."
+      result = self._fallback_catalog_result()
+    if not result.get("ok"):
+      self.catalog_message.text = "Не удалось загрузить дерево каталога. Показаны основные категории."
+      result = self._fallback_catalog_result()
     self._categories = result["categories"]
     self._categories_by_code = {row["code"]: row for row in self._categories}
     self._categories_by_id = {row["id"]: row for row in self._categories}
@@ -112,6 +108,87 @@ class Catalog(CatalogTemplate):
       self._select_category(category_code, load=False)
     else:
       self._select_category(None, load=False)
+
+  def _fallback_catalog_result(self):
+    """Small local category shell so the catalog never renders completely empty."""
+    roots = [
+      ("air-conditioning", "Кондиционирование", "conditioners.jpg", [
+        ("air-conditioning-split-systems", "Сплит-системы"),
+        ("multi-split-systems", "Мульти сплит системы"),
+        ("semi-industrial", "Полупромышленные системы")
+      ]),
+      ("vrf-vrv", "VRV / VRF-системы", "vrv-vrf.jpg", [
+        ("vrf-vrv-outdoor-units", "Наружные блоки"),
+        ("vrf-vrv-indoor-units", "Внутренние блоки")
+      ]),
+      ("ventilation", "Вентиляция", "ventilation.jpg", [
+        ("ventilation-ahu", "Приточно-вытяжные установки"),
+        ("ventilation-supply-units", "Приточные установки"),
+        ("ventilation-exhaust-units", "Вытяжные установки")
+      ]),
+      ("refrigeration", "Холодильное оборудование", "refrigeration.jpg", [
+        ("refrigeration-chillers", "Чиллеры"),
+        ("refrigeration-fan-coils", "Фанкойлы")
+      ]),
+      ("heat-pumps", "Тепловые насосы", "vrv-vrf.jpg", [
+        ("heat-pumps-air-air", "Воздух — воздух"),
+        ("heat-pumps-air-water", "Воздух — вода")
+      ]),
+      ("heating", "Отопление", "vrv-vrf.jpg", []),
+      ("humidifiers-purifiers", "Увлажнители и очистители", "ventilation.jpg", []),
+      ("installation", "Монтаж", "materials.jpg", []),
+      ("accessories-options", "Аксессуары и опции", "materials.jpg", [])
+    ]
+    categories = []
+    tree = []
+    for root_code, title, image, children in roots:
+      root = {
+        "id": root_code, "code": root_code, "title": title,
+        "parent_id": None, "parent_code": None, "path": title,
+        "description": "Оборудование и решения категории.",
+        "product_count": 0, "child_count": len(children),
+        "image_url": "_/theme/catalog/" + image,
+        "active": True, "sort_order": len(tree),
+        "children": []
+      }
+      categories.append(root)
+      for index, (child_code, child_title) in enumerate(children):
+        child = {
+          "id": child_code, "code": child_code, "title": child_title,
+          "parent_id": root_code, "parent_code": root_code,
+          "path": title + " / " + child_title,
+          "description": "Подраздел категории «{}».".format(title),
+          "product_count": 0, "child_count": 0,
+          "image_url": "_/theme/catalog/" + image,
+          "active": True, "sort_order": index,
+          "children": []
+        }
+        root["children"].append(child)
+        categories.append(child)
+      tree.append(root)
+    return {
+      "ok": True,
+      "categories": categories,
+      "series": [],
+      "navigation_settings": {
+        "catalog": True, "news": True, "projects": True, "account": True
+      },
+      "site_menu": [],
+      "tree": [
+        {
+          "id": "direction-home", "code": "direction-home",
+          "title": "Для дома", "menu_label": "Для дома",
+          "children": tree[:7], "has_children": True,
+          "expand_icon": "›", "menu_mode": True, "product_count": 0
+        },
+        {
+          "id": "direction-business", "code": "direction-business",
+          "title": "Для бизнеса", "menu_label": "Для бизнеса",
+          "children": tree[2:], "has_children": True,
+          "expand_icon": "›", "menu_mode": True, "product_count": 0
+        }
+      ]
+    }
 
   def _scope_codes(self, category_code=None):
     if category_code in ("direction-home", "direction-business"):
