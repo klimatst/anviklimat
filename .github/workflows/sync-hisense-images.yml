@@ -1,0 +1,58 @@
+name: Sync Hisense catalog photos
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - theme/assets/catalog/hisense/photo_sources.json
+      - server_code/HisenseLovableCatalogData.py
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download catalog photos
+        shell: python
+        run: |
+          import json
+          import pathlib
+          import urllib.request
+
+          sources = json.loads(pathlib.Path(
+              "theme/assets/catalog/hisense/photo_sources.json"
+          ).read_text(encoding="utf-8"))
+          target = pathlib.Path("theme/assets/catalog/hisense")
+          target.mkdir(parents=True, exist_ok=True)
+
+          for key, url in sources.items():
+              request = urllib.request.Request(
+                  url,
+                  headers={"User-Agent": "klimatst-anviklimat-hisense-sync/1.0"},
+              )
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  data = response.read()
+              if len(data) < 100:
+                  raise RuntimeError(f"{key}: downloaded image is unexpectedly small")
+              if not (data.startswith(b"\x89PNG\r\n\x1a\n")
+                      or data.startswith(b"\xff\xd8\xff")
+                      or data.startswith(b"RIFF")):
+                  raise RuntimeError(f"{key}: downloaded file is not a supported image")
+              (target / f"{key}.png").write_bytes(data)
+
+      - name: Commit GitHub photo assets
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add theme/assets/catalog/hisense/*.png
+          if git diff --cached --quiet; then
+            echo "No photo changes"
+            exit 0
+          fi
+          git commit -m "Sync Hisense catalog photos"
+          git push
