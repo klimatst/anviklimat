@@ -5296,3 +5296,229 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 @media (max-width: 760px) { .ventilation-scope-grid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) { .ventilation-estimate-summary { grid-template-columns: minmax(0, 1fr); } .ventilation-cost-list > div { align-items: flex-start; flex-direction: column; gap: 4px; } .anvil-role-ventilation-cost-value { text-align: left; } }
 @media (max-width: 900px) { .ventilation-fields-four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+/* Admin Pro workspace: wide, stable panels and non-wrapping navigation. */
+.eco-site-shell[class*="admin-mode"] .eco-page-frame {
+  align-items: stretch;
+  min-height: calc(100vh - var(--anvil-banner-height, 0px));
+}
+.eco-site-shell[class*="admin-mode"] .eco-admin-sidebar-wrap {
+  width: 292px;
+  flex: 0 0 292px;
+  min-width: 292px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar {
+  position: sticky;
+  top: 112px;
+  width: 100%;
+  min-height: calc(100vh - 138px);
+  padding: 17px;
+  border-radius: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar .anvil-button.anvil-role-admin-nav > button {
+  min-height: 46px;
+  padding: 9px 12px;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-brand {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-brand strong {
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-brand small {
+  font-size: 8px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-context {
+  margin-bottom: 14px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-context strong {
+  font-size: 11px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sidebar-context small {
+  font-size: 8px;
+}
+.eco-site-shell[class*="admin-mode"] .eco-page-column {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.eco-site-shell[class*="admin-mode"] .page-main {
+  width: 100%;
+  max-width: none;
+  padding: 30px clamp(22px, 3vw, 48px) 64px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-topbar {
+  min-height: 70px;
+  margin-bottom: 18px;
+  padding: 13px 16px;
+  border-radius: 14px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-topbar__tools {
+  gap: 10px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-global-search {
+  width: min(560px, 48vw);
+}
+.eco-site-shell[class*="admin-mode"] .admin-global-search input.anvil-text-box {
+  min-height: 44px;
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-topbar__tools > .anvil-button > button,
+.eco-site-shell[class*="admin-mode"] .admin-global-search .anvil-button > button {
+  min-height: 44px;
+  font-size: 11px;
+  padding-inline: 15px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-dashboard,
+.eco-site-shell[class*="admin-mode"] .admin-console,
+.eco-site-shell[class*="admin-mode"] .admin-settings-studio,
+.eco-site-shell[class*="admin-mode"] .calculations-view,
+.eco-site-shell[class*="admin-mode"] .installation-view,
+.eco-site-shell[class*="admin-mode"] .projects-view,
+.eco-site-shell[class*="admin-mode"] .catalog-view {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-panel,
+.eco-site-shell[class*="admin-mode"] .anvil-role-calculator-card,
+.eco-site-shell[class*="admin-mode"] .product-editor-view > .anvil-role-card {
+  border-radius: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .admin-sections-grid {
+  grid-template-columns: repeat(3, minmax(260px, 1fr));
+  gap: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-tile {
+  min-height: 210px;
+  padding: 22px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-tile-title {
+  font-size: 17px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-admin-tile-copy {
+  min-height: 62px;
+  font-size: 11px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-button.anvil-role-admin-tile-open > button {
+  min-height: 42px;
+  font-size: 11px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-workspace {
+  grid-template-columns: minmax(300px, 330px) minmax(0, 1fr);
+  gap: 18px;
+  padding: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .studio-section-rail {
+  top: 100px;
+  max-height: calc(100vh - 140px);
+  padding: 15px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-section-list {
+  max-height: calc(100vh - 252px);
+}
+.eco-site-shell[class*="admin-mode"] .anvil-button.anvil-role-settings-section-link > button,
+.eco-site-shell[class*="admin-mode"] .anvil-button.anvil-role-settings-section-link-active > button {
+  min-height: 42px;
+  padding: 9px 11px;
+  font-size: 11px;
+}
+.eco-site-shell[class*="admin-mode"] .studio-settings-main {
+  padding: 24px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-section-title {
+  font-size: clamp(23px, 2vw, 30px);
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-section-description {
+  max-width: 900px;
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-list > div {
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 13px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-card {
+  min-height: 132px;
+  padding: 16px;
+  border-radius: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-title {
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-hint {
+  font-size: 9px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-card input.anvil-text-box,
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-card textarea.anvil-text-area,
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-card .anvil-dropdown select {
+  min-height: 44px;
+  padding: 9px 11px;
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-card textarea.anvil-text-area {
+  min-height: 150px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-modal {
+  width: min(1320px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  padding: 30px;
+  border-radius: 20px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-modal .anvil-role-studio-field-list > div {
+  grid-template-columns: repeat(2, minmax(360px, 1fr));
+  gap: 14px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-modal .studio-save-row {
+  margin-top: 20px;
+  padding-top: 16px;
+}
+.eco-site-shell[class*="admin-mode"] .calculator-grid {
+  gap: 18px;
+}
+.eco-site-shell[class*="admin-mode"] .calculator-field input.anvil-text-box,
+.eco-site-shell[class*="admin-mode"] .calculator-field textarea.anvil-text-area,
+.eco-site-shell[class*="admin-mode"] .calculator-field .anvil-dropdown select {
+  min-height: 44px;
+  font-size: 12px;
+}
+.eco-site-shell[class*="admin-mode"] .anvil-role-calculator-card,
+.eco-site-shell[class*="admin-mode"] .anvil-role-calculator-result {
+  padding: 22px;
+}
+@media (max-width: 1120px) {
+  .eco-site-shell[class*="admin-mode"] .eco-admin-sidebar-wrap {
+    width: 250px;
+    flex-basis: 250px;
+    min-width: 250px;
+  }
+  .eco-site-shell[class*="admin-mode"] .admin-sections-grid {
+    grid-template-columns: repeat(2, minmax(240px, 1fr));
+  }
+  .eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-workspace {
+    grid-template-columns: minmax(250px, 290px) minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .eco-site-shell[class*="admin-mode"] .eco-admin-sidebar-wrap {
+    width: 100%;
+    min-width: 0;
+    flex-basis: auto;
+  }
+  .eco-site-shell[class*="admin-mode"] .admin-sidebar {
+    position: static;
+    min-height: 0;
+  }
+  .eco-site-shell[class*="admin-mode"] .admin-sections-grid,
+  .eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-workspace,
+  .eco-site-shell[class*="admin-mode"] .anvil-role-studio-field-list > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .eco-site-shell[class*="admin-mode"] .anvil-role-studio-settings-modal {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+  }
+}
