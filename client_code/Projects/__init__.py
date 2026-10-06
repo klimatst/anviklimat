@@ -374,6 +374,36 @@ class Projects(ProjectsTemplate):
     Access.open_admin_window("EngineeringControlRoom", window_title="Engineering Control Room")
 
 
+  @handle("system_rows", "x-engineering-decision")
+  def system_rows_engineering_decision(self, system_id, **event_args):
+    if not self._project_id or not system_id:
+      return
+    try:
+      result = anvil.server.call("get_engineering_decision", self._project_id, system_id)
+    except Exception as exc:
+      self.engineering_decision_panel.visible = True
+      self.engineering_decision_message.text = "Smart Selection недоступен: {}".format(exc)
+      return
+    if not result.get("ok"):
+      self.engineering_decision_panel.visible = True
+      self.engineering_decision_message.text = result.get("message", "Подбор недоступен.")
+      return
+    rows = []
+    for item in result.get("candidates", [])[:12]:
+      candidate = dict(item)
+      candidate["decision_label"] = "SELECTED SYSTEM · {}".format(candidate.get("decision", "candidate").upper())
+      candidate["score_label"] = "Decision Score: {}/100 · Confidence: {}%".format(candidate.get("score", 0), candidate.get("confidence", 0))
+      capacity, target, unit = candidate.get("capacity"), candidate.get("target"), candidate.get("capacity_unit") or ""
+      candidate["capacity_label"] = ("Ёмкость: {} {} · цель: {} {}".format(capacity, unit, target, unit) if capacity is not None and target is not None else "Ёмкость: {} {}".format(capacity, unit) if capacity is not None else "Структурированная ёмкость не найдена")
+      candidate["readiness_label"] = ("VALIDATED · цена и совместимость подтверждены" if candidate.get("decision_state") == "validated" and candidate.get("price_ready") and candidate.get("compatible") else "REVIEW · требуется инженерная проверка")
+      candidate["reasons_label"] = "Почему: " + (" · ".join(candidate.get("reasons") or []) or "Недостаточно подтверждённых факторов.")
+      candidate["warnings_label"] = "Контроль: " + (" · ".join(candidate.get("warnings") or []) or "Критических замечаний нет.")
+      rows.append(candidate)
+    self.engineering_decision_panel.visible = True
+    self.engineering_decision_rows.items = rows
+    self.engineering_decision_summary.text = "Выбрана система · кандидатов: {} · confidence: {}% · статус: {}".format(len(rows), result.get("selection_confidence", 0), result.get("selection_state", "review").upper())
+    self.engineering_decision_message.text = result.get("message", "")
+
   @handle("home_button", "click")
   def home_button_click(self, **event_args):
     Access.open_context_home()
