@@ -1130,3 +1130,122 @@ html,body{overflow-x:hidden}
 .studio-summary-points{gap:5px!important}.studio-summary-points span{font-size:8px!important}
 .studio-modal-overlay{padding:18px!important}.studio-settings-modal,.studio-secret-modal{width:min(700px,calc(100vw - 36px))!important;max-height:calc(100vh - 36px)!important;padding:18px!important;border-radius:14px!important}
 @media(max-width:760px){.admin-settings-studio{width:100%}.studio-hero{flex-direction:column}.studio-settings-workspace{grid-template-columns:1fr!important}.studio-section-rail{max-height:240px;overflow:auto}.studio-integration-strip{grid-template-columns:1fr!important}}
+
+
+/* KLIMA ECO SUPER PREMIUM COMPACT SYSTEM */
+:root{
+  --ke-site-max:1180px;
+  --ke-work-max:1120px;
+  --ke-reading-max:980px;
+  --ke-window-max:920px;
+  --ke-gap:10px;
+}
+.page-main,.eco-main{
+  width:min(var(--ke-site-max),calc(100% - 32px));
+  max-width:var(--ke-site-max);
+}
+.hvac-view,.catalog-view,.calculations-view,.projects-view,.operations-view,
+.cms-view,.constructor-view,.compatibility-view,.profile-view,.contacts-view,
+.admin-users-view,.installation-view,.engineering-control-room,
+.system-diagnostics-view,.backup-view,.site-menu-view,.import-engine-view{
+  width:min(var(--ke-work-max),100%);
+  max-width:var(--ke-work-max);
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.calculator-view{
+  width:min(var(--ke-work-max),100%)!important;
+  max-width:var(--ke-work-max)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.eco-main > .anvil-container,
+.eco-main > .anvil-panel,
+.eco-main > .anvil-column-panel{
+  max-width:var(--ke-work-max);
+  margin-left:auto;
+  margin-right:auto;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-view{
+  max-width:var(--ke-work-max);
+}
+.catalog-view .catalog-toolbar,
+.catalog-view .catalog-filter-panel,
+.catalog-view .catalog-navigation-column,
+.catalog-view .catalog-product-grid{
+  min-width:0;
+}
+.catalog-view .catalog-product-grid{
+  gap:10px!important;
+}
+.catalog-view .catalog-product-card{
+  border-radius:12px!important;
+  min-height:0!important;
+}
+.catalog-view .catalog-product-photo-frame{
+  min-height:170px!important;
+}
+.calculator-view .anvil-panel,
+.calculator-view .anvil-column-panel,
+.projects-view .anvil-panel,
+.operations-view .anvil-panel,
+.cms-view .anvil-panel{
+  border-radius:12px;
+}
+.studio-tab-legacy,.studio-count-legacy,.studio-widgets-workspace-legacy,
+.anvil-role-studio-widgets-workspace{
+  display:none!important;
+}
+.admin-settings-studio .studio-tabs{
+  display:flex;
+  flex-wrap:wrap;
+}
+.admin-settings-studio .studio-tabs .studio-tab-legacy{
+  display:none!important;
+}
+.studio-settings-workspace,.studio-secrets-workspace,.studio-extensions-workspace,
+.studio-ai-tools-workspace{
+  max-width:var(--ke-work-max);
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.studio-field-list,.studio-extension-list,.studio-secret-list{
+  min-width:0;
+  overflow:auto;
+}
+.studio-settings-modal,.studio-secret-modal,.studio-extension-modal{
+  width:min(var(--ke-window-max),calc(100vw - 40px))!important;
+  max-width:var(--ke-window-max)!important;
+}
+.catalog-product-detail-modal,
+.catalog-reference-product-modal,
+.product-detail-modal,
+.project-editor-modal,
+.crm-editor-modal{
+  width:min(var(--ke-window-max),calc(100vw - 40px))!important;
+  max-width:var(--ke-window-max)!important;
+  max-height:calc(100vh - 40px);
+  overflow:auto;
+}
+.engineering-control-room{
+  --ecr-card-gap:10px;
+}
+.engineering-control-room .anvil-role-card,
+.engineering-control-room .anvil-role-panel{
+  min-width:0;
+}
+@media(max-width:760px){
+  .page-main,.eco-main{width:calc(100% - 20px);padding-top:18px}
+  .hvac-view,.catalog-view,.calculations-view,.projects-view,.operations-view,
+  .cms-view,.constructor-view,.compatibility-view,.profile-view,.contacts-view,
+  .admin-users-view,.installation-view,.engineering-control-room,
+  .system-diagnostics-view,.backup-view,.site-menu-view,.import-engine-view,
+  .calculator-view{width:100%!important}
+  .catalog-view .catalog-product-photo-frame{min-height:140px!important}
+  .catalog-view .catalog-product-grid{grid-template-columns:1fr!important}
+  .catalog-product-detail-modal,.catalog-reference-product-modal,.product-detail-modal,
+  .project-editor-modal,.crm-editor-modal{width:calc(100vw - 20px)!important;max-height:calc(100vh - 20px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .catalog-product-card,.anvil-role-admin-module-card{transition:none!important;transform:none!important}
+}
