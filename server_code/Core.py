@@ -161,9 +161,6 @@ def _ensure_core_data(user):
 def _is_admin(user):
   if user is None:
     return False
-  email = user["email"]
-  if isinstance(email, str) and email.strip().lower() == LOCAL_ADMIN_EMAIL:
-    return True
   role = user["role"]
   code = role["code"] if role is not None else None
   return isinstance(code, str) and code.casefold() == "admin"

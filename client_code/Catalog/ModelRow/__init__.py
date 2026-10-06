@@ -6,6 +6,11 @@ import anvil.server
 class ModelRow(ModelRowTemplate):
   def __init__(self, **properties):
     super().__init__(**properties)
+    image_url = self.item.get("image_url") or ""
+    self.model_image.source = image_url
+    self.model_image.visible = bool(image_url)
+    self.model_image.alt_text = self.item.get("image_alt") or self.item.get("model") or "Фото модели"
+    self.model_image_placeholder.visible = not bool(image_url)
     self.brand_label.text = self.item.get("brand") or ""
     self.details_button.text = self.item.get("model") or "Модель"
     self.sku_label.text = "Артикул: {}".format(self.item.get("sku") or "—")

@@ -1,9 +1,11 @@
 """Sync the complete Hisense catalog snapshot from the Lovable project into Anvil."""
 
 from datetime import datetime, timezone
+import hashlib
 import math
 import re
 import uuid
+from typing import Any, cast
 
 import anvil
 import anvil.server
@@ -14,7 +16,7 @@ from HisenseLovableCatalogData import CATALOG_PARTS
 
 
 SYNC_STATE_KEY = "hisense_lovable_catalog_sync_v1"
-CATALOG_VERSION = "2026-09-15"
+CATALOG_SYNC_FORMAT = "3"
 
 PHOTO_URLS = {
   "sensation": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-superior-dc-inverter/sensation-slider-pro-superior-dc-inverter-01.png",
@@ -32,13 +34,11 @@ PHOTO_URLS = {
   "city": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
   "city-2": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
   "zoom": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
-  "zoom-classic": "https://images.breez.ru/catalog/hisense/zoom-2-0-classic-a/zoom-2-0-classic-a-01.png",
   "cassette": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
   "duct": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
   "floor": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
   "column": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
   "console": "https://images.breez.ru/catalog/hisense/split-sistem-konsol-eu-dc-inverter-r32/split-sistem-konsol-eu-dc-inverter-r32-01.png",
-  "multi-outdoor": "https://images.breez.ru/catalog/hisense/outdoor-multi-eu-dc-inverter/outdoor-multi-eu-dc-inverter-01.png",
   "multi-sensation": "https://images.breez.ru/catalog/hisense/sensation-pro-2-0-multi-superior-dc-inverter/sensation-pro-2-0-multi-superior-dc-inverter-01.png",
   "multi-sensation-carbon": "https://images.breez.ru/catalog/hisense/sensation-pro-carbon-multi-superior-dc-inverter/sensation-pro-carbon-multi-superior-dc-inverter-01.png",
   "multi-vision": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
@@ -57,13 +57,21 @@ PHOTO_URLS = {
   "mobileW": "https://images.breez.ru/catalog/hisense/mob-cond-w/mob-cond-w-01.png",
   "mobileC": "https://images.breez.ru/catalog/hisense/mob-cond-c/mob-cond-c-01.png",
   "dehumidifier": "https://images.breez.ru/catalog/hisense/osushit-vozd-air-go-pro/osushit-vozd-air-go-pro-01.png",
-  "accessory": "https://images.breez.ru/catalog/hisense/accessories/accessories-01.png",
 }
 
-IMAGE_SOURCE = "GitHub · synced from Lovable Hisense catalog"
-CDN_IMAGE_SOURCE = "Lovable Hisense catalog · external catalog CDN"
+# Only verified image URLs are mapped here. The linked GitHub folder has no
+# product PNG files, so unmapped families intentionally use the catalog placeholder.
 
-GITHUB_PHOTO_BASE = "https://raw.githubusercontent.com/klimatst/anviklimat/master/theme/assets/catalog/hisense"
+CATALOG_VERSION = "git-{}".format(hashlib.sha256(
+  (
+    "\n".join(CATALOG_PARTS) + "\n" +
+    "format={}\n".format(CATALOG_SYNC_FORMAT) +
+    "\n".join("{}|{}".format(key, PHOTO_URLS[key]) for key in sorted(PHOTO_URLS))
+  ).encode("utf-8")
+).hexdigest()[:12])
+
+IMAGE_SOURCE = "Lovable Hisense catalog · verified external CDN"
+
 SOURCE_URL = "https://github.com/klimatst/anviklimat/blob/master/server_code/HisenseLovableCatalogData.py"
 
 
@@ -187,7 +195,7 @@ def _photo_key(model, series, category, imported_key):
   return imported_key if imported_key in PHOTO_URLS else "vibe"
 
 
-def _catalog():
+def _catalog() -> Any:
   import CatalogService as Catalog
   return Catalog
 
@@ -290,8 +298,7 @@ def _parse_rows():
         "indoor_dim": indoor_dim or "", "outdoor_dim": outdoor_dim or "",
         "weight": weight or "", "series": series, "ns_code": ns_code or "",
         "category": category, "photo_key": photo_key,
-        "photo_url": (GITHUB_PHOTO_BASE + "/" + photo_key + ".png") if photo_key else "",
-        "photo_fallback_url": photo_url
+        "photo_url": photo_url
       })
   return rows
 
@@ -367,12 +374,17 @@ def _find_product(model, sku):
 
 
 def _upsert_spec(product, key, value, unit, order):
-  if value in (None, ""):
+  image_metadata_keys = ("Фото", "Резервная ссылка фото", "Источник фото")
+  if value in (None, "") and key not in image_metadata_keys:
     return
   existing = next((
     row for row in app_tables.product_specs.search(product=product)
     if (row["key_key"] or "").casefold() == key.casefold()
   ), None)
+  if value in (None, ""):
+    if existing is not None and existing["source"] == "Lovable catalog":
+      existing.delete()
+    return
   values = {
     "key": key, "key_key": key.casefold(), "value": str(value)[:200],
     "unit": unit[:32], "source": "Lovable catalog",
@@ -386,6 +398,16 @@ def _upsert_spec(product, key, value, unit, order):
 
 
 def _upsert_photo(product, url, model, photo_key):
+  repository_photo_prefix = (
+    "https://raw.githubusercontent.com/klimatst/anviklimat/"
+    "master/theme/assets/catalog/hisense/"
+  )
+  for row in list(app_tables.product_media.search(product=product)):
+    if (
+      not isinstance(row["file"], anvil.Media) and
+      (row["url"] or "").startswith(repository_photo_prefix)
+    ):
+      row.delete()
   if not url:
     return
   existing = next((
@@ -402,27 +424,32 @@ def _upsert_photo(product, url, model, photo_key):
       if row.get_id() != existing.get_id() and row["is_primary"]:
         row.update(is_primary=False)
     return
-  if primary_rows and not isinstance(primary_rows[0]["file"], anvil.Media):
-    row = primary_rows[0]
+  primary_file_row = next((row for row in primary_rows if row["is_primary"]), None)
+  if primary_file_row is not None and isinstance(primary_file_row["file"], anvil.Media):
+    # Preserve photos uploaded by an administrator; catalog sync owns only URL photos.
+    return
+  if primary_rows:
+    row = primary_file_row or primary_rows[0]
     row.update(
       url=url, source=IMAGE_SOURCE, type="primary", is_primary=True,
       alt_text="Hisense " + model, checksum=""
     )
-  else:
-    if next((row for row in primary_rows if (row["url"] or "") == url), None):
-      return
-    for row in app_tables.product_media.search(product=product):
-      if row["is_primary"]:
-        row.update(is_primary=False)
-    app_tables.product_media.add_row(
-      product=product, file_id="", file=None, url=url,
-      source=IMAGE_SOURCE, type="primary",
-      alt_text="Hisense " + model, is_primary=True,
-      sort_order=0, created_at=datetime.now(timezone.utc), checksum=""
-    )
+    for candidate in primary_rows:
+      if candidate.get_id() != row.get_id() and candidate["is_primary"]:
+        candidate.update(is_primary=False)
+    return
+  for row in app_tables.product_media.search(product=product):
+    if row["is_primary"]:
+      row.update(is_primary=False)
+  app_tables.product_media.add_row(
+    product=product, file_id="", file=None, url=url,
+    source=IMAGE_SOURCE, type="primary",
+    alt_text="Hisense " + model, is_primary=True,
+    sort_order=0, created_at=datetime.now(timezone.utc), checksum=""
+  )
 
 
-def _write_sync_state(total, created, updated, series_created):
+def _write_sync_state(total, created, updated, series_created, actor):
   state = {
     "version": CATALOG_VERSION, "total": total, "created": created,
     "updated": updated, "series_created": series_created,
@@ -433,12 +460,12 @@ def _write_sync_state(total, created, updated, series_created):
   if row is None:
     app_tables.system_settings.add_row(
       key=SYNC_STATE_KEY, value=state,
-      updated_at=datetime.now(timezone.utc), updated_by=Core.get_admin_user()
+      updated_at=datetime.now(timezone.utc), updated_by=actor
     )
   else:
     row.update(
       value=state, updated_at=datetime.now(timezone.utc),
-      updated_by=Core.get_admin_user()
+      updated_by=actor
     )
   return state
 
@@ -455,6 +482,7 @@ def get_hisense_lovable_sync_status():
 @Core.admin_guard
 def sync_hisense_lovable_catalog(force=False):
   actor = Core.require_admin_user()
+  catalog = _catalog()
   if not isinstance(force, bool):
     return {"ok": False, "message": "Некорректный режим синхронизации."}
   existing_state = app_tables.system_settings.get(key=SYNC_STATE_KEY)
@@ -511,6 +539,8 @@ def sync_hisense_lovable_catalog(force=False):
       continue
     assigned_category = subcategory or category
     series = series_map.get((assigned_category.get_id(), row["series"].casefold()))
+    if series is None:
+      raise RuntimeError("Не удалось сопоставить серию Hisense: {}".format(row["series"]))
     product = _find_product(row["model"], row["ns_code"])
     is_new = product is None
     full_description = (
@@ -529,19 +559,19 @@ def sync_hisense_lovable_catalog(force=False):
 
     if product is None:
       product = app_tables.products.add_row(
-        identity_key=Catalog.product_identity_key("Hisense", row["model"], row["ns_code"]),
+        identity_key=catalog.product_identity_key("Hisense", row["model"], row["ns_code"]),
         brand=brand, model=row["model"], sku=row["ns_code"],
         sku_key=(row["ns_code"] or "").casefold(),
-        category=category, subcategory=subcategory, series=series,
+        category=category, subcategory=cast(Any, subcategory), series=series,
         type=_unit_type(row["series"], row["category"]),
         description=full_description,
-        active=True, created_at=now, updated_at=now
+        active=True, updated_at=now
       )
     else:
       product.update(
         brand=brand, model=row["model"], sku=row["ns_code"],
         sku_key=(row["ns_code"] or "").casefold(),
-        category=category, subcategory=subcategory, series=series,
+        category=category, subcategory=cast(Any, subcategory), series=series,
         type=_unit_type(row["series"], row["category"]),
         description=full_description,
         active=True, updated_at=now
@@ -566,9 +596,9 @@ def sync_hisense_lovable_catalog(force=False):
     _upsert_spec(product, "НС-код", row["ns_code"], "", 90)
     _upsert_spec(product, "Тип оборудования", _unit_type(row["series"], row["category"]), "", 100)
     _upsert_spec(product, "Категория Lovable", row["category"], "", 110)
-    _upsert_spec(product, "Фото", row["photo_url"], "", 120)
-    _upsert_spec(product, "Резервная ссылка фото", row.get("photo_fallback_url", ""), "", 125)
-    _upsert_spec(product, "Источник фото", IMAGE_SOURCE, "", 130)
+    _upsert_spec(product, "Фото", "", "", 120)
+    _upsert_spec(product, "Резервная ссылка фото", "", "", 125)
+    _upsert_spec(product, "Источник фото", "", "", 130)
     _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])
     source = next(iter(app_tables.product_sources.search(product=product)), None)
     source_values = {
@@ -584,7 +614,7 @@ def sync_hisense_lovable_catalog(force=False):
     else:
       updated += 1
 
-  state = _write_sync_state(len(rows), created, updated, series_created)
+  state = _write_sync_state(len(rows), created, updated, series_created, actor)
   Core.log_audit(
     actor=actor, action="catalog.hisense_lovable_sync",
     entity_type="catalog", entity_id=SYNC_STATE_KEY,

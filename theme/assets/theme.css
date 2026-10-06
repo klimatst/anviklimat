@@ -4521,7 +4521,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .catalog-storefront .anvil-role-catalog-model-list > div { display: flex; flex-direction: column; }
 .catalog-storefront .anvil-role-catalog-model-row { min-height: 68px; padding: 9px 12px; border: 1px solid rgba(139,174,183,.11); border-top: 0; background: #111c22; }
 .catalog-storefront .anvil-role-catalog-model-row:nth-child(even) { background: #142127; }
-.catalog-model-identity { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.catalog-model-identity { display: flex; min-width: 0; align-items: center; gap: 9px; }
+.catalog-model-photo-wrap { display: grid; flex: 0 0 58px; width: 58px; height: 58px; place-items: center; overflow: hidden; border: 1px solid rgba(139,174,183,.13); border-radius: 9px; background: #19272d; }
+.anvil-role-catalog-model-photo,
+.anvil-role-catalog-model-photo img { display: block; width: 56px; height: 56px; object-fit: contain; }
+.anvil-role-catalog-model-photo-placeholder { max-width: 52px; color: #8ea3a5; font-size: 8px; text-align: center; }
+.catalog-model-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
 .catalog-storefront .anvil-role-catalog-model-brand { color: #80ddb7; font-size: 10px; font-weight: 750; }
 .catalog-storefront .anvil-role-catalog-model-title > button { min-height: 28px; padding: 1px 0; color: #eef5f1; background: transparent; font-size: 13px; font-weight: 700; text-align: left; white-space: normal; }
 .catalog-storefront .anvil-role-catalog-model-sku,

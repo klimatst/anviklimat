@@ -1,11 +1,17 @@
 <anvil-form container="FlowPanel" prop:role="catalog-model-row">
   <anvil-component type="CheckBox" name="select_checkbox" prop:text="Выбрать" prop:role="catalog-select-checkbox" prop:visible="false"></anvil-component>
   <div class="catalog-model-identity">
-    <anvil-component type="Label" name="brand_label" prop:role="catalog-model-brand" prop:text=""></anvil-component>
-    <anvil-component type="Button" name="details_button" prop:role="catalog-model-title" prop:text=""></anvil-component>
-    <anvil-component type="Label" name="sku_label" prop:role="catalog-model-sku" prop:text=""></anvil-component>
-    <anvil-component type="Label" name="category_label" prop:role="catalog-model-category" prop:text=""></anvil-component>
-    <anvil-component type="Label" name="series_label" prop:role="catalog-model-series" prop:text=""></anvil-component>
+    <div class="catalog-model-photo-wrap">
+      <anvil-component type="Image" name="model_image" prop:role="catalog-model-photo" prop:visible="false"></anvil-component>
+      <anvil-component type="Label" name="model_image_placeholder" prop:role="catalog-model-photo-placeholder" prop:text="Нет фото" prop:visible="true"></anvil-component>
+    </div>
+    <div class="catalog-model-copy">
+      <anvil-component type="Label" name="brand_label" prop:role="catalog-model-brand" prop:text=""></anvil-component>
+      <anvil-component type="Button" name="details_button" prop:role="catalog-model-title" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="sku_label" prop:role="catalog-model-sku" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="category_label" prop:role="catalog-model-category" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="series_label" prop:role="catalog-model-series" prop:text=""></anvil-component>
+    </div>
   </div>
   <anvil-component type="RepeatingPanel" name="spec_cells" prop:role="catalog-model-spec-cells" prop:item_template="Minimal_Theme_4.Catalog.ModelSpecItem"></anvil-component>
   <anvil-component type="Label" name="price_label" prop:role="catalog-model-price" prop:text=""></anvil-component>

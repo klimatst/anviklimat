@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import math
+import re
 import uuid
 import zipfile
 import xml.etree.ElementTree as ET
@@ -436,6 +437,13 @@ def _safe_product_image_url(value):
   if parsed.scheme != "https" or not parsed.netloc or parsed.username or parsed.password:
     return ""
   return value
+
+
+def _display_currency(value):
+  currency = str(value or "").strip()
+  if currency.upper() in ("RUB", "RUR"):
+    return "₽"
+  return currency
 
 
 def _product_image_url(product):
@@ -2026,7 +2034,8 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     text_filters = [
       q.all_of(model=q.ilike(pattern)),
       q.all_of(sku=q.ilike(pattern)),
-      q.all_of(type=q.ilike(pattern))
+      q.all_of(type=q.ilike(pattern)),
+      q.all_of(description=q.ilike(pattern))
     ]
     matching_brands = list(app_tables.brands.search(
       q.fetch_only("name"), name=q.ilike(pattern)
@@ -2042,6 +2051,34 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     for category in matching_categories:
       text_filters.append(q.all_of(category=category))
       text_filters.append(q.all_of(subcategory=category))
+    matching_specs = list(app_tables.product_specs.search(
+      q.fetch_only("product", product=q.fetch_only("identity_key")),
+      q.any_of(
+        key=q.ilike(pattern), value=q.ilike(pattern), unit=q.ilike(pattern)
+      ),
+      q.page_size(1001), visible=True
+    )[:1001])
+    if len(matching_specs) > 1000:
+      return {
+        "ok": False,
+        "message": "Слишком много совпадений в характеристиках. Уточните запрос.",
+        "rows": [], "has_more": False
+      }
+    spec_products = {}
+    for spec in matching_specs:
+      product = spec["product"]
+      if product is not None:
+        spec_products[product.get_id()] = product
+    if len(spec_products) > 500:
+      return {
+        "ok": False,
+        "message": "Слишком много совпадений в характеристиках. Уточните запрос.",
+        "rows": [], "has_more": False
+      }
+    text_filters.extend(
+      q.all_of(identity_key=product["identity_key"])
+      for product in spec_products.values()
+    )
     expressions.append(q.any_of(*text_filters))
 
   products = list(app_tables.products.search(*expressions, **filters)[:PAGE_SIZE + 1])
@@ -2126,7 +2163,7 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     is_demo = (product["sku"] or "").startswith("DEMO-")
     image_url = product_image if not is_demo else ""
     sale_price = price["sale_price"] if price is not None else None
-    currency = price["currency"] if price is not None else ""
+    currency = _display_currency(price["currency"]) if price is not None else ""
     quantity = stock["quantity"] if stock is not None else None
     specs = specs_by_product.get(product_id, [])
     spec_map = {item["key"].casefold(): item for item in specs}
@@ -2244,7 +2281,7 @@ def get_product_card(product_id):
   }
   if price is not None:
     data["sale_price"] = price["sale_price"]
-    data["currency"] = price["currency"] or ""
+    data["currency"] = _display_currency(price["currency"])
     if is_admin:
       data.update({
         key: price[key] for key in (
