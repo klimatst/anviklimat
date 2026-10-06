@@ -1139,7 +1139,7 @@ def _trim_import_history():
 
 def _has_active_import_capacity():
   active = 0
-  for status in ("draft", "running", "pdf_processing", "xlsx_uploading", "xlsx_processing",
+  for status in ("draft", "running", "pdf_uploading", "pdf_processing", "xlsx_uploading", "xlsx_processing",
                  "xlsx_images_processing"):
     rows = list(app_tables.imports.search(
       q.fetch_only("status"), status=status
@@ -3952,7 +3952,7 @@ def get_pdf_catalog_drafts(page=1, page_size=50):
     page_total = checkpoint.get("page_total", 0) or 0
     page_progress = checkpoint.get("page_progress", 0) or 0
     is_xlsx = row["format"] == "xlsx"
-    if is_xlsx and row["status"] == "xlsx_uploading":
+    if row["status"] in ("xlsx_uploading", "pdf_uploading"):
       progress_total = checkpoint.get("source_size", 0) or 0
       progress_done = checkpoint.get("uploaded_bytes", 0) or 0
     else:
