@@ -460,12 +460,29 @@ def _cached_catalog_menu(include_counts=True, include_series=True):
   value = {
     "ok": True, "categories": categories,
     "series": _series_options() if include_series else [],
-    "tree": order_tree(roots),
+    "tree": _normalize_catalog_tree(order_tree(roots)),
     "navigation_settings": AdminStudio.get_admin_studio_setting("catalog.navigation", {}),
     "site_menu": AdminStudio.get_admin_studio_setting("site.menu", [])
   }
   _MENU_CACHE[key] = {"at": now, "value": value}
   return value
+
+def _normalize_catalog_tree(nodes):
+  """Guarantee the stable node contract consumed by Anvil CategoryItem."""
+  safe_nodes = []
+  for raw in nodes or []:
+    if not isinstance(raw, dict):
+      continue
+    node = dict(raw)
+    children = _normalize_catalog_tree(node.get("children") or [])
+    node["children"] = children
+    node["has_children"] = bool(children) or bool(node.get("has_children"))
+    node["expand_icon"] = node.get("expand_icon") or ("›" if node["has_children"] else "")
+    node["child_count"] = len(children)
+    node["menu_label"] = node.get("menu_label") or node.get("title") or "Категория"
+    node["menu_mode"] = bool(node.get("menu_mode"))
+    safe_nodes.append(node)
+  return safe_nodes
 
 def _category_image_url(category_code, media=None):
   if isinstance(media, anvil.Media):
