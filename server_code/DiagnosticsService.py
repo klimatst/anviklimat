@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 import anvil.server
 from anvil.tables import app_tables, query as q
 import Core
+import EngineeringCore
 
 
 _SEVERITY_RANK = {"error": 0, "warning": 1, "info": 2}
@@ -227,6 +228,24 @@ def get_system_diagnostics(search_text="", severity="all", limit=300):
         "pdf_import" if import_row["format"] == "pdf" else "import",
         str(import_row.get_id()), action_label="Открыть импорт"
       ))
+
+  try:
+    engineering_gate = EngineeringCore.get_engineering_quality_gate()
+  except Exception as exc:
+    engineering_gate = {"ok": False, "message": "Engineering Quality Gate недоступен: {}".format(exc)}
+  if engineering_gate.get("ok"):
+    for item in engineering_gate.get("issues", [])[:60]:
+      severity = "error" if item.get("severity") == "high" else "warning"
+      issues.append(_issue(
+        "engineering_lifecycle_gap", severity, "Инженерный lifecycle требует внимания",
+        "{} · {}".format(item.get("project", "Проект"), item.get("message", "")),
+        "project", item.get("project"), action_label="Открыть проекты"
+      ))
+  else:
+    issues.append(_issue(
+      "engineering_quality_gate_unavailable", "warning",
+      "Engineering Quality Gate недоступен", engineering_gate.get("message", "Проверьте инженерное ядро.")
+    ))
 
   for issue in issues:
     issue["search_key"] = " ".join((
