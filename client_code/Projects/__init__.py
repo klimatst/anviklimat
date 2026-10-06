@@ -152,6 +152,11 @@ class Projects(ProjectsTemplate):
               snapshot["system_component_count"], snapshot["calculation_count"], snapshot["estimate_count"],
               snapshot["service_count"])
     )
+    families = snapshot.get("system_family_counts", {})
+    self.engineering_lifecycle_label.text += " · VRV/VRF {} · вентиляция {} · сплит/мультисплит {}".format(
+      families.get("VRV / VRF", 0), families.get("Вентиляция", 0), families.get("Кондиционирование", 0)
+    )
+    )
 
   def _start_room(self):
     self._room_id = None
