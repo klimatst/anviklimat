@@ -22,6 +22,7 @@ class Projects(ProjectsTemplate):
     self._next_cursor = None
     self.project_editor.visible = False
     self.project_calculation_button.visible = False
+    self.project_plan_button.visible = False
     self.rooms_panel.visible = False
     self.room_editor.visible = False
     self.save_project_button.enabled = True
@@ -75,6 +76,7 @@ class Projects(ProjectsTemplate):
     self._room_id = None
     self.project_editor.visible = True
     self.project_calculation_button.visible = True
+    self.project_plan_button.visible = True
     self.rooms_panel.visible = True
     self.systems_panel.visible = True
     self.room_editor.visible = False
@@ -179,6 +181,18 @@ class Projects(ProjectsTemplate):
   def project_calculation_button_click(self, **event_args):
     if self._project_id:
       Access.open_window("Calculations", project_id=self._project_id)
+
+  @handle("plan_studio_button", "click")
+  def plan_studio_button_click(self, **event_args):
+    if self._project_id:
+      Access.open_window("PlanStudio", project_id=self._project_id)
+    else:
+      self.projects_message.text = "Сначала откройте или создайте проект."
+
+  @handle("project_plan_button", "click")
+  def project_plan_button_click(self, **event_args):
+    if self._project_id:
+      Access.open_window("PlanStudio", project_id=self._project_id)
 
   @handle("home_button", "click")
   def home_button_click(self, **event_args):
