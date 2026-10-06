@@ -35,6 +35,43 @@ def _count(table, **filters):
 
 
 def _stage(snapshot):
+  if snapshot["service_completed_count"] > 0 and snapshot["project_status"] in ("active", "completed", "service"):
+    return 7
+  if snapshot["commissioning_completed_count"] > 0 or snapshot["project_status"] in ("commissioning", "active"):
+    return 6
+  if snapshot["approved_quote_count"] > 0 or snapshot["project_status"] in ("approved", "installation"):
+    return 5
+  if snapshot["estimate_count"] > 0 and snapshot["bom_line_count"] > 0:
+    return 5
+  if snapshot["system_component_count"] > 0 or snapshot["system_count"] > 0:
+    return 4
+  if snapshot["calculation_count"] > 0:
+    return 3
+  if snapshot["room_count"] > 0:
+    return 2
+  if snapshot["object_ready"]:
+    return 1
+  return 0
+
+
+def _project(project_id):
+  if not project_id:
+    return None
+  project = app_tables.projects.get_by_id(project_id)
+  user = anvil.users.get_user()
+  if project is None or user is None or not Core.can_access_project(project, user):
+    return None
+  return project
+
+
+def _count(table, **filters):
+  try:
+    return len(table.search(**filters))
+  except Exception:
+    return 0
+
+
+def _stage(snapshot):
   if snapshot["service_count"] > 0:
     return 7
   if snapshot["project_status"] in ("installation", "commissioning", "active"):
@@ -65,7 +102,12 @@ def get_project_engineering_snapshot(project_id):
   estimates = list(app_tables.estimates.search(project=project)[:50])
   quotes = list(app_tables.quotes.search(project=project)[:50])
   services = list(app_tables.service.search(project=project)[:200])
+  approved_quote_count = sum(1 for quote in quotes if quote["status"] == "approved")
+  commissioning_completed_count = sum(1 for row in services if row["service_type"] == "commissioning" and row["status"] == "completed")
+  service_completed_count = sum(1 for row in services if row["status"] == "completed" and row["service_type"] in ("maintenance", "repair", "diagnosis", "measurement", "humidification_maintenance"))
+  installation_count = sum(1 for row in services if row["service_type"] == "installation" and row["status"] != "cancelled")
   component_count = 0
+  bom_line_count = 0
   system_family_counts = {"VRV / VRF": 0, "Вентиляция": 0, "Кондиционирование": 0, "Другое": 0}
   for system in systems:
     system_type = str(system["type"] or "").lower()
@@ -79,6 +121,7 @@ def get_project_engineering_snapshot(project_id):
       system_family_counts["Другое"] += 1
   for system in systems:
     component_count += len(list(app_tables.system_components.search(system=system)[:500]))
+    bom_line_count += len(list(app_tables.bom_lines.search(q.fetch_only("line_key"), system=system)[:600]))
 
   object_parameters = (obj["parameters"] or {}) if obj is not None else {}
   engineering_profile = object_parameters.get("engineering_profile", "combined")
@@ -108,20 +151,26 @@ def get_project_engineering_snapshot(project_id):
     "calculation_count": len(calculations),
     "estimate_count": len(estimates),
     "quote_count": len(quotes),
+    "approved_quote_count": approved_quote_count,
     "service_count": len(services),
+    "installation_count": installation_count,
+    "commissioning_completed_count": commissioning_completed_count,
+    "service_completed_count": service_completed_count,
+    "bom_line_count": bom_line_count,
     "system_family_counts": system_family_counts,
+    "lifecycle_ready": bool(approved_quote_count and installation_count and commissioning_completed_count),
   }
   index = _stage(snapshot)
   key, title, description = STAGES[index]
   next_actions = {
     0: "Заполнить инженерный бриф и зафиксировать объект.",
     1: "Добавить помещения и основные исходные нагрузки.",
-    2: "Запустить расчёты по помещениям и проверить исходные допущения.",
+    2: "Запустить независимые расчёты и проверить исходные допущения.",
     3: "Выбрать системы и связать оборудование с расчётами.",
-    4: "Сформировать спецификацию и проверить совместимость.",
-    5: "Проверить смету, КП и готовность к передаче в монтаж.",
-    6: "Зафиксировать пусконаладку и передать объект в сервис.",
-    7: "Поддерживать сервисную историю и жизненный цикл оборудования."
+    4: "Сформировать BOM, проверить совместимость и закрыть инженерные пробелы.",
+    5: "Согласовать КП и подготовить пакет передачи в монтаж.",
+    6: "Зафиксировать пусконаладку и актировать готовность объекта.",
+    7: "Поддерживать сервисную историю, регламент и жизненный цикл оборудования."
   }
   risk_flags = []
   if not object_ready:
@@ -134,25 +183,30 @@ def get_project_engineering_snapshot(project_id):
     risk_flags.append("Нет инженерных систем")
   if snapshot["system_count"] and not snapshot["system_component_count"]:
     risk_flags.append("Нет компонентов систем")
+  if snapshot["system_component_count"] and not snapshot["bom_line_count"]:
+    risk_flags.append("BOM ещё не сформирован")
+  if snapshot["estimate_count"] and not snapshot["quote_count"]:
+    risk_flags.append("Смета есть, КП не создано")
+  if snapshot["quote_count"] and not snapshot["approved_quote_count"]:
+    risk_flags.append("КП ещё не согласовано")
+  if snapshot["approved_quote_count"] and not snapshot["installation_count"]:
+    risk_flags.append("Нет монтажной записи")
+  if snapshot["installation_count"] and not snapshot["commissioning_completed_count"]:
+    risk_flags.append("Пусконаладка не закрыта")
   snapshot.update({
-    "stage_key": key,
-    "stage_title": title,
-    "stage_description": description,
+    "stage_key": key, "stage_title": title, "stage_description": description,
     "stage_index": index,
     "progress": round(index / float(len(STAGES) - 1) * 100),
     "next_action": next_actions[index],
-    "risk_flags": risk_flags[:6],
-    "engineering_score": min(
-      100,
-      (12 if object_ready else 0) +
-      (8 if engineering_brief_ready else 0) +
-      (20 if snapshot["room_count"] else 0) +
-      (20 if snapshot["system_count"] else 0) +
-      (15 if snapshot["calculation_count"] else 0) +
-      (10 if snapshot["system_component_count"] else 0) +
-      (10 if snapshot["estimate_count"] else 0) +
-      (5 if snapshot["quote_count"] else 0) +
-      (5 if snapshot["service_count"] else 0)
+    "risk_flags": risk_flags[:8],
+    "engineering_score": min(100,
+      (10 if object_ready else 0) + (8 if engineering_brief_ready else 0) +
+      (12 if snapshot["room_count"] else 0) + (14 if snapshot["calculation_count"] else 0) +
+      (14 if snapshot["system_count"] else 0) + (10 if snapshot["system_component_count"] else 0) +
+      (10 if snapshot["bom_line_count"] else 0) + (8 if snapshot["estimate_count"] else 0) +
+      (5 if snapshot["quote_count"] else 0) + (4 if snapshot["approved_quote_count"] else 0) +
+      (5 if snapshot["installation_count"] else 0) + (5 if snapshot["commissioning_completed_count"] else 0) +
+      (5 if snapshot["service_completed_count"] else 0)
     ),
   })
   return {"ok": True, "snapshot": snapshot}
@@ -166,138 +220,67 @@ def get_engineering_quality_gate():
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
 
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:100])
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
   counts = {
-    "projects_without_object": 0,
-    "projects_without_rooms": 0,
-    "rooms_without_calculations": 0,
-    "calculations_without_system": 0,
-    "systems_without_components": 0
+    "projects_without_object": 0, "projects_without_rooms": 0,
+    "rooms_without_calculations": 0, "calculations_without_system": 0,
+    "systems_without_components": 0, "systems_without_bom": 0,
+    "estimates_without_quote": 0, "approved_quotes_without_installation": 0,
+    "installations_without_commissioning": 0,
   }
-  examples = []
+  issues = []
   for project in projects:
     obj = project["object"]
+    code = project["code"] or project.get_id()
     if obj is None or not str(obj["name"] or "").strip():
       counts["projects_without_object"] += 1
-      if len(examples) < 8:
-        examples.append({"code": project["code"] or "", "issue": "Не задан объект"})
+      issues.append({"severity": "high", "project": code, "message": "Проект без полноценного объекта."})
       continue
+    parameters = obj["parameters"] or {}
+    if not parameters.get("engineering_profile"):
+      issues.append({"severity": "medium", "project": code, "message": "Не задан инженерный профиль."})
     rooms = list(app_tables.rooms.search(object=obj)[:200])
     calculations = list(app_tables.calculations.search(project=project)[:500])
     systems = list(app_tables.systems.search(project=project)[:100])
+    estimates = list(app_tables.estimates.search(project=project)[:20])
+    quotes = list(app_tables.quotes.search(project=project)[:20])
+    services = list(app_tables.service.search(project=project)[:100])
     if not rooms:
       counts["projects_without_rooms"] += 1
-      if len(examples) < 8:
-        examples.append({"code": project["code"] or "", "issue": "Нет помещений"})
+      issues.append({"severity": "medium", "project": code, "message": "Нет помещений для инженерного расчёта."})
     if rooms and not calculations:
       counts["rooms_without_calculations"] += len(rooms)
-      if len(examples) < 8:
-        examples.append({"code": project["code"] or "", "issue": "Есть помещения, но нет расчётов"})
+      issues.append({"severity": "medium", "project": code, "message": "Есть помещения, но нет расчётов."})
     if calculations and not systems:
       counts["calculations_without_system"] += len(calculations)
-      if len(examples) < 8:
-        examples.append({"code": project["code"] or "", "issue": "Есть расчёты, но нет системы"})
+      issues.append({"severity": "high", "project": code, "message": "Есть расчёты, но нет инженерной системы."})
     for system in systems:
       component_count = len(list(app_tables.system_components.search(system=system)[:200]))
       if component_count == 0:
         counts["systems_without_components"] += 1
-        if len(examples) < 8:
-          examples.append({"code": project["code"] or "", "issue": "Система без компонентов"})
+        issues.append({"severity": "high", "project": code, "message": "Система без компонентов."})
+      bom_count = len(list(app_tables.bom_lines.search(system=system)[:600]))
+      if component_count and bom_count == 0:
+        counts["systems_without_bom"] += 1
+        issues.append({"severity": "medium", "project": code, "message": "Система собрана, но BOM не сформирован."})
+    if estimates and not quotes:
+      counts["estimates_without_quote"] += 1
+      issues.append({"severity": "medium", "project": code, "message": "Смета есть, но коммерческое предложение не создано."})
+    approved = any(row["status"] == "approved" for row in quotes)
+    installation = any(row["service_type"] == "installation" and row["status"] != "cancelled" for row in services)
+    commissioning = any(row["service_type"] == "commissioning" and row["status"] == "completed" for row in services)
+    if approved and not installation:
+      counts["approved_quotes_without_installation"] += 1
+      issues.append({"severity": "high", "project": code, "message": "Согласованное КП не связано с монтажной записью."})
+    if installation and not commissioning:
+      counts["installations_without_commissioning"] += 1
+      issues.append({"severity": "medium", "project": code, "message": "Монтаж есть, но пусконаладка не закрыта."})
+    if len(issues) >= 60:
+      break
+  high_count = sum(1 for item in issues if item["severity"] == "high")
   issue_count = sum(counts.values())
   return {
-    "ok": True,
-    "healthy": issue_count == 0,
-    "issue_count": issue_count,
-    "counts": counts,
-    "examples": examples
-  }
-
-
-@anvil.server.callable(require_user=True)
-def get_engineering_control_room():
-  user = anvil.users.get_user()
-  if user is None:
-    return {"ok": False, "message": "Требуется вход."}
-  context = Core.get_access_context()
-  if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
-    return {"ok": False, "message": "Недостаточно прав."}
-
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:500])
-  systems = _count(app_tables.systems)
-  calculations = _count(app_tables.calculations)
-  estimates = _count(app_tables.estimates)
-  services = _count(app_tables.service)
-  active = sum(1 for row in projects if (row["status"] or "draft") not in ("completed", "archived"))
-  needs_attention = sum(1 for row in projects if (row["status"] or "draft") in ("draft", "blocked", "on_hold"))
-
-  return {
-    "ok": True,
-    "metrics": {
-      "projects": len(projects),
-      "active_projects": active,
-      "needs_attention": needs_attention,
-      "systems": systems,
-      "calculations": calculations,
-      "estimates": estimates,
-      "services": services,
-    },
-    "recent_projects": [
-      {
-        "id": row.get_id(),
-        "code": row["code"] or "",
-        "title": row["title"] or row["code"] or "Без названия",
-        "status": row["status"] or "draft",
-        "updated_at": row["updated_at"],
-      }
-      for row in projects[:12]
-    ],
-    "generated_at": datetime.now(timezone.utc),
-  }
-
-
-@anvil.server.callable(require_user=True)
-def get_engineering_quality_gate():
-  user = anvil.users.get_user()
-  if user is None:
-    return {"ok": False, "message": "Требуется вход."}
-  context = Core.get_access_context()
-  if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
-    return {"ok": False, "message": "Недостаточно прав."}
-
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
-  issues = []
-  for project in projects:
-    obj = project["object"]
-    parameters = (obj["parameters"] or {}) if obj is not None else {}
-    if obj is None or not str(obj["name"] or "").strip():
-      issues.append({
-        "severity": "high",
-        "project": project["code"] or project.get_id(),
-        "message": "Проект без полноценного объекта."
-      })
-      continue
-    if not parameters.get("engineering_profile"):
-      issues.append({
-        "severity": "medium",
-        "project": project["code"] or project.get_id(),
-        "message": "Не задан инженерный профиль."
-      })
-    if not list(app_tables.rooms.search(object=obj)[:1]):
-      issues.append({
-        "severity": "medium",
-        "project": project["code"] or project.get_id(),
-        "message": "Нет помещений для инженерного расчёта."
-      })
-    if len(issues) >= 30:
-      break
-
-  high_count = sum(1 for item in issues if item["severity"] == "high")
-  return {
-    "ok": True,
-    "healthy": not issues,
-    "issue_count": len(issues),
-    "high_count": high_count,
-    "issues": issues[:30],
-    "checked_projects": len(projects),
-    "generated_at": datetime.now(timezone.utc)
+    "ok": True, "healthy": issue_count == 0, "issue_count": issue_count,
+    "high_count": high_count, "counts": counts, "issues": issues[:60],
+    "checked_projects": len(projects), "generated_at": datetime.now(timezone.utc)
   }
