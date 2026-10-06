@@ -67,6 +67,15 @@
           <anvil-component type="RepeatingPanel" name="nav_catalog_tree" prop:role="eco-nav-tree" prop:item_template="Minimal_Theme_4.Catalog.CategoryItem"></anvil-component>
         </anvil-component>
       </div>
+      <div class="eco-menu-group eco-menu-group--prices" anvil:on-dom:mouseenter="self.prices_menu_mouse_enter" anvil:on-dom:mouseleave="self.prices_menu_mouse_leave">
+        <anvil-component type="Button" name="prices_nav" prop:text="Цены ▾" prop:role="category-link"></anvil-component>
+        <anvil-component type="ColumnPanel" name="prices_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
+          <anvil-component type="Label" name="prices_menu_heading" prop:role="eco-nav-heading" prop:text="СТОИМОСТЬ МОНТАЖА"></anvil-component>
+          <anvil-component type="Button" name="prices_conditioners_nav" prop:text="Кондиционеры" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="Button" name="prices_vrf_nav" prop:text="VRV / VRF" prop:role="eco-nav-item"></anvil-component>
+          <anvil-component type="Button" name="prices_ventilation_nav" prop:text="Вентиляция" prop:role="eco-nav-item"></anvil-component>
+        </anvil-component>
+      </div>
       <div class="eco-menu-group eco-menu-group--calculators" anvil:on-dom:mouseenter="self.calculators_menu_mouse_enter" anvil:on-dom:mouseleave="self.calculators_menu_mouse_leave">
         <anvil-component type="Button" name="calculators_nav" prop:text="Калькуляторы ▾" prop:role="category-link"></anvil-component>
         <anvil-component type="ColumnPanel" name="calculators_dropdown" prop:role="eco-nav-dropdown" prop:visible="false">
