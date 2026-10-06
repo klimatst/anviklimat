@@ -289,40 +289,32 @@ def get_currency():
   return _setting_value("currency")
 
 
+def build_access_context(user=None):
+  """Build one stable access contract for every client-facing entry point."""
+  user = user if user is not None else anvil.users.get_user()
+  if user is None:
+    return {"email": "", "role_code": "user", "role_title": "Пользователь", "permissions": []}
+  email = user["email"] or ""
+  if _is_admin(user):
+    role = user["role"]
+    role_title = role["title"] if role is not None else "Администратор"
+    if not isinstance(role_title, str) or not role_title.strip():
+      role_title = "Администратор"
+    return {"email": email, "role_code": "admin", "role_title": role_title, "permissions": ["*"]}
+  role = user["role"]
+  raw_role_code = role["code"] if role is not None else "user"
+  role_code = raw_role_code.strip().casefold() if isinstance(raw_role_code, str) else "user"
+  if not role_code:
+    role_code = "user"
+  role_title = role["title"] if role is not None else "Пользователь"
+  if not isinstance(role_title, str) or not role_title.strip():
+    role_title = "Пользователь"
+  return {"email": email, "role_code": role_code, "role_title": role_title, "permissions": sorted(_permissions_for(user))}
+
+
 @anvil.server.callable
 def get_session_context():
-  user = anvil.users.get_user()
-  if user is None:
-    return {
-      "email": "",
-      "role_code": "user",
-      "role_title": "Пользователь",
-      "permissions": []
-    }
-
-  email = user["email"] or ""
-  role = user["role"]
-  if _is_admin(user):
-    role_code = role["code"] if role is not None else ""
-    role_title = (
-      role["title"] if role is not None and isinstance(role["title"], str)
-      and role_code == "admin" else "Администратор"
-    )
-    return {
-      "email": email,
-      "role_code": "admin",
-      "role_title": role_title,
-      "permissions": ["*"]
-    }
-
-  raw_role_code = role["code"] if role is not None else "user"
-  role_code = raw_role_code.casefold() if isinstance(raw_role_code, str) else "user"
-  return {
-    "email": email,
-    "role_code": role_code,
-    "role_title": role["title"] if role is not None else "Пользователь",
-    "permissions": sorted(_permissions_for(user))
-  }
+  return build_access_context()
 
 
 @anvil.server.callable
