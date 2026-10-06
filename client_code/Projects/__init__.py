@@ -55,6 +55,21 @@ class Projects(ProjectsTemplate):
         ("Вентиляция", "ventilation"),
         ("Сплит / мультисплит", "split_multi"),
       ]
+      self.engineering_goal_dropdown.items = [
+        ("Проектирование и подбор", "design"),
+        ("Оптимизация существующей системы", "optimization"),
+        ("Модернизация / замена", "modernization"),
+        ("Расчёт стоимости и КП", "commercial"),
+        ("Подготовка к монтажу", "installation"),
+        ("Сервис и жизненный цикл", "service"),
+      ]
+      self.project_priority_dropdown.items = [
+        ("Стандарт", "standard"),
+        ("Сроки", "speed"),
+        ("Экономия CAPEX", "capex"),
+        ("Минимум OPEX", "opex"),
+        ("Надёжность", "reliability"),
+      ]
 
   def _start_project(self):
     self._project_id = None
@@ -106,6 +121,21 @@ class Projects(ProjectsTemplate):
       ("VRV / VRF", "vrv_vrf"),
       ("Вентиляция", "ventilation"),
       ("Сплит / мультисплит", "split_multi"),
+    ]
+    self.engineering_goal_dropdown.items = [
+      ("Проектирование и подбор", "design"),
+      ("Оптимизация существующей системы", "optimization"),
+      ("Модернизация / замена", "modernization"),
+      ("Расчёт стоимости и КП", "commercial"),
+      ("Подготовка к монтажу", "installation"),
+      ("Сервис и жизненный цикл", "service"),
+    ]
+    self.project_priority_dropdown.items = [
+      ("Стандарт", "standard"),
+      ("Сроки", "speed"),
+      ("Экономия CAPEX", "capex"),
+      ("Минимум OPEX", "opex"),
+      ("Надёжность", "reliability"),
     ]
     project_parameters = project["object_parameters"] or {}
     self.engineering_profile_dropdown.selected_value = project_parameters.get("engineering_profile") or "combined"
