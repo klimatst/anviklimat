@@ -210,6 +210,7 @@ def save_project_plan(project_id, plan_data):
   title = str(plan_data.get("title") or row["title"] or "План объекта").strip()[:160]
   now = datetime.now(timezone.utc)
   row.update(title=title, settings=settings, updated_at=now)
+  _sync_engineering_objects(project, row.get_id(), settings, _user())
   Core.log_audit(
     actor=_user(), action="project.plan_updated",
     entity_type="project_plan", entity_id=row.get_id(),
