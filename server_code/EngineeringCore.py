@@ -223,7 +223,7 @@ def get_engineering_quality_gate(project_limit=250):
 
   if isinstance(project_limit, bool) or not isinstance(project_limit, int) or not 1 <= project_limit <= 250:
     return {"ok": False, "message": "Некорректный лимит Quality Gate."}
-  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:project_limit]
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:project_limit])
   counts = {
     "projects_without_object": 0, "projects_without_rooms": 0,
     "rooms_without_calculations": 0, "calculations_without_system": 0,
