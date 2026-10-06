@@ -114,6 +114,9 @@ class AIOperator(AIOperatorTemplate):
     self.provider_add_button.enabled = False
     try:
       result = anvil.server.call("create_ai_provider", title)
+    except Exception as exc:
+      self.provider_message.text = "Не удалось создать AI-провайдера: {}".format(exc)
+      return
     finally:
       self.provider_add_button.enabled = True
     self.provider_message.text = result["message"]
