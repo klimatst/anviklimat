@@ -49,6 +49,12 @@ class Projects(ProjectsTemplate):
       self.project_type_dropdown.items = result["object_types"]
       self.project_status_dropdown.items = result["statuses"]
       self.system_type_dropdown.items = result["system_types"]
+      self.engineering_profile_dropdown.items = [
+        ("Комплексный HVAC-проект", "combined"),
+        ("VRV / VRF", "vrv_vrf"),
+        ("Вентиляция", "ventilation"),
+        ("Сплит / мультисплит", "split_multi"),
+      ]
 
   def _start_project(self):
     self._project_id = None
@@ -66,6 +72,7 @@ class Projects(ProjectsTemplate):
     self.object_parameters_box.text = "{}"
     self.project_calculation_button.visible = False
     self.project_type_dropdown.selected_value = "other"
+    self.engineering_profile_dropdown.selected_value = "combined"
     self.project_status_dropdown.selected_value = "draft"
     self.project_message.text = ""
 
@@ -91,6 +98,15 @@ class Projects(ProjectsTemplate):
     )
     self.project_type_dropdown.items = result["object_types"]
     self.project_type_dropdown.selected_value = project["object_type"]
+    self.engineering_profile_dropdown.items = [
+      ("Комплексный HVAC-проект", "combined"),
+      ("VRV / VRF", "vrv_vrf"),
+      ("Вентиляция", "ventilation"),
+      ("Сплит / мультисплит", "split_multi"),
+    ]
+    self.engineering_profile_dropdown.selected_value = (
+      (project["object_parameters"] or {}).get("engineering_profile") or "combined"
+    )
     self.project_status_dropdown.items = result["statuses"]
     self.project_status_dropdown.selected_value = project["status"]
     self.room_rows.items = result["rooms"]
@@ -100,6 +116,19 @@ class Projects(ProjectsTemplate):
     self.engineering_control_button.visible = True
     self._load_engineering_snapshot()
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
+
+  def _project_parameters_with_profile(self):
+    raw = self.object_parameters_box.text or "{}"
+    try:
+      parameters = json.loads(raw)
+    except Exception:
+      parameters = {}
+    if not isinstance(parameters, dict):
+      parameters = {}
+    profile = self.engineering_profile_dropdown.selected_value or "combined"
+    parameters["engineering_profile"] = profile
+    parameters["engineering_workflow_version"] = 1
+    return json.dumps(parameters, ensure_ascii=False, separators=(",", ":"))
 
   def _save_project(self):
     self.save_project_button.enabled = False
