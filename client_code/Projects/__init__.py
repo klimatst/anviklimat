@@ -57,6 +57,8 @@ class Projects(ProjectsTemplate):
     self.rooms_panel.visible = False
     self.systems_panel.visible = False
     self.room_editor.visible = False
+    self.engineering_lifecycle_panel.visible = False
+    self.engineering_control_button.visible = False
     self.project_code_label.text = "Новый проект"
     self.project_title_box.text = ""
     self.object_name_box.text = ""
