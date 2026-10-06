@@ -1,4 +1,5 @@
 import anvil.server
+import re
 import anvil.users
 from anvil.tables import app_tables, order_by, query as q
 from datetime import datetime, timezone
@@ -372,10 +373,12 @@ def _product_specs_map(product):
     raw = str(row["value"] or "").strip().replace(",", ".")
     if not key or not raw:
       continue
-    first_token = raw.replace("×", " ").replace("x", " ").split()[0]
+    match = re.search(r"[-+]?\d+(?:\.\d+)?", raw.replace("×", " "))
+    if match is None:
+      continue
     try:
-      values[key] = float(first_token)
-    except (TypeError, ValueError, IndexError):
+      values[key] = float(match.group(0))
+    except (TypeError, ValueError):
       continue
   return values
 
@@ -556,13 +559,22 @@ def get_engineering_decision(project_id, system_id):
 
     price_ready = price is not None and price["sale_price"] is not None
     compatible = not compatibility_issues
-    decision = "recommended" if not hard_fail and compatible and score >= 75 else "candidate"
+    normalized_score = round(max(0.0, min(100.0, score)), 1)
+    evidence = 0
+    evidence += 1 if capacity is not None else 0
+    evidence += 1 if target and target > 0 else 0
+    evidence += 1 if price_ready else 0
+    evidence += 1 if compatible else 0
+    confidence = round((evidence / 4.0) * 100.0, 1)
+    decision = "recommended" if not hard_fail and compatible and normalized_score >= 75 and confidence >= 75 else "candidate"
     ranked.append({
       "product_id": product.get_id(),
       "label": _product_label(product),
       "model": product["model"] or "",
       "sku": product["sku"] or "",
-      "score": round(max(0.0, min(100.0, score)), 1),
+      "score": normalized_score,
+      "confidence": confidence,
+      "decision_state": "validated" if decision == "recommended" and confidence >= 75 else "review",
       "capacity": capacity,
       "target": target or None,
       "capacity_unit": "кВт" if family in ("conditioning", "vrv_vrf") else "м³/ч",
@@ -585,6 +597,8 @@ def get_engineering_decision(project_id, system_id):
     "target_capacity_kw": target_kw or None,
     "target_airflow_m3h": target_airflow or None,
     "selection_ready": bool(selected),
+    "selection_confidence": selected[0]["confidence"] if selected else 0,
+    "selection_state": ("validated" if selected and selected[0]["decision"] == "recommended" and selected[0]["confidence"] >= 75 else "review"),
     "top_candidate": selected[0] if selected else None,
     "candidates": selected,
     "message": "Подбор построен только на фактических характеристиках каталога и доступных расчётных данных. Неполные данные понижает confidence и требуют инженерной проверки."
