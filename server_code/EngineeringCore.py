@@ -606,6 +606,113 @@ def get_engineering_decision(project_id, system_id):
 
 
 @anvil.server.callable(require_user=True)
+def apply_engineering_recommendation(project_id, system_id, product_id):
+  """Apply a validated Smart Selection candidate to the existing system graph."""
+  project = _project(project_id)
+  if project is None:
+    return {"ok": False, "message": "Проект недоступен."}
+  if not isinstance(system_id, str) or not system_id:
+    return {"ok": False, "message": "Некорректная система."}
+  system = app_tables.systems.get_by_id(system_id)
+  if system is None or system["project"].get_id() != project.get_id():
+    return {"ok": False, "message": "Система не принадлежит проекту."}
+  if not isinstance(product_id, str) or not product_id:
+    return {"ok": False, "message": "Выберите товар из рекомендации."}
+  product = app_tables.products.get_by_id(product_id)
+  if product is None or not product["active"]:
+    return {"ok": False, "message": "Рекомендуемый товар больше недоступен."}
+
+  decision = get_engineering_decision(project_id, system_id)
+  if not decision.get("ok"):
+    return {"ok": False, "message": decision.get("message", "Smart Selection недоступен.")}
+  candidate = next(
+    (item for item in decision.get("candidates", [])
+     if item.get("product_id") == product_id),
+    None
+  )
+  if candidate is None:
+    return {"ok": False, "message": "Товар не прошёл актуальную инженерную проверку."}
+  if candidate.get("decision") != "recommended" or candidate.get("confidence", 0) < 75:
+    return {
+      "ok": False,
+      "message": "Автоприменение доступно только для подтверждённой рекомендации с confidence ≥ 75."
+    }
+  if not candidate.get("compatible"):
+    return {"ok": False, "message": "Товар не прошёл проверку совместимости."}
+
+  now = datetime.now(timezone.utc)
+  label = candidate.get("label") or _product_label(product)
+  selection = {
+    "engine_version": decision.get("version", DECISION_ENGINE_VERSION),
+    "family": decision.get("family", "other"),
+    "score": candidate.get("score", 0),
+    "confidence": candidate.get("confidence", 0),
+    "target": candidate.get("target"),
+    "capacity": candidate.get("capacity"),
+    "capacity_unit": candidate.get("capacity_unit", ""),
+    "validated_at": now.isoformat()
+  }
+  existing = next(iter(app_tables.system_components.search(
+    q.fetch_only("product", "kind", "name", "quantity", "properties"),
+    system=system, product=product
+  )[:1]), None)
+  if existing is None:
+    component = app_tables.system_components.add_row(
+      system=system,
+      product=product,
+      kind="equipment",
+      name=label,
+      quantity=1.0,
+      properties={"engineering_selection": selection, "bom_unit": "шт."},
+      product_snapshot={
+        "label": label,
+        "model": product["model"] or "",
+        "sku": product["sku"] or "",
+        "catalog_updated_at": product["updated_at"].isoformat() if product["updated_at"] else ""
+      },
+      position_x=0.0,
+      position_y=0.0,
+      sort_order=0.0
+    )
+  else:
+    properties = dict(existing["properties"] or {})
+    properties["engineering_selection"] = selection
+    properties.setdefault("bom_unit", "шт.")
+    existing.update(
+      kind="equipment", name=label, quantity=1.0, properties=properties,
+      product_snapshot={
+        "label": label,
+        "model": product["model"] or "",
+        "sku": product["sku"] or "",
+        "catalog_updated_at": product["updated_at"].isoformat() if product["updated_at"] else ""
+      }
+    )
+    component = existing
+
+  system.update(status="configured", updated_at=now)
+  Core.log_audit(
+    actor=anvil.users.get_user(),
+    action="engineering.selection_applied",
+    entity_type="system",
+    entity_id=system_id,
+    details={
+      "product_id": product_id,
+      "score": candidate.get("score", 0),
+      "confidence": candidate.get("confidence", 0)
+    },
+    created_at=now
+  )
+  return {
+    "ok": True,
+    "system_id": system_id,
+    "component_id": component.get_id(),
+    "product_id": product_id,
+    "selection": selection,
+    "message": "Рекомендация подтверждена и добавлена в состав системы. Следующий шаг — сформировать BOM."
+  }
+
+
+@anvil.server.callable(require_user=True)
 def get_project_engineering_decisions(project_id):
   """Return explainable Smart Selection candidates for every system in a project."""
   project = _project(project_id)
