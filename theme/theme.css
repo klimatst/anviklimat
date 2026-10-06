@@ -28,3 +28,150 @@ html,body{overflow-x:hidden}
 @media (max-width:1050px){.admin-hub-hero{grid-template-columns:1fr}.admin-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.anvil-role-admin-grid{grid-template-columns:1fr}.anvil-role-admin-sidebar{position:relative;top:auto;max-height:none}.calculator-grid{grid-template-columns:1fr}}
 @media (max-width:760px){.site-header,.premium-header{grid-template-columns:1fr;gap:8px;padding:10px 14px}.site-search{order:3}.site-header-actions{justify-content:flex-start;overflow:auto}.site-categories{top:0}.page-main{width:min(100% - 20px,1440px);padding:20px 0 38px}.hero-panel{grid-template-columns:1fr;min-height:auto;padding:28px 20px}.hero-visual{width:min(68vw,300px);margin:20px auto 0}.landing-overview,.system-cards,.contacts-view,.settings-grid,.calculator-fields-two,.calculator-fields-three,.calculator-fields-four,.installation-totals,.anvil-role-form-grid,.anvil-role-form-grid-3{grid-template-columns:1fr}.tool-band{grid-template-columns:1fr}.section-intro,.calculator-heading{align-items:flex-start;flex-direction:column}.anvil-role-h1{font-size:28px}.anvil-role-card,.anvil-role-calculator-card,.anvil-role-calculator-result{padding:17px}.admin-hub-hero{padding:22px}.admin-metrics-grid{grid-template-columns:1fr 1fr}.anvil-role-admin-module-row{grid-template-columns:1fr}.anvil-role-sticky-actions{position:relative;bottom:auto}}
 @media (max-width:430px){.admin-metrics-grid{grid-template-columns:1fr}.hero-copy .anvil-role-h1{font-size:39px}.anvil-button>button{width:100%}.hero-actions,.tool-actions,.page-actions{display:grid;grid-template-columns:1fr}.calculator-actions .anvil-button{width:100%}}
+
+/* ============================================================
+   KLIMAECO SAFE VISUAL SKIN
+   Visual-only: no layout/position/grid overrides.
+   ============================================================ */
+.eco-site-shell[class*="site-theme--"]{
+  --ke-bg:var(--u-bg,var(--blank-bg));
+  --ke-surface:var(--u-surface,var(--blank-surface));
+  --ke-surface2:var(--u-surface-2,var(--blank-surface-muted));
+  --ke-line:var(--u-line,var(--blank-border));
+  --ke-text:var(--u-text,var(--blank-text));
+  --ke-muted:var(--u-muted,var(--blank-muted));
+  --ke-accent:var(--u-accent,var(--blank-primary));
+  color:var(--ke-text);
+  background-color:var(--ke-bg);
+}
+.eco-site-shell[class*="site-theme--"] .site-header,
+.eco-site-shell[class*="site-theme--"] .eco-header{
+  border-bottom:1px solid var(--ke-line);
+}
+.eco-site-shell[class*="site-theme--"] .site-categories,
+.eco-site-shell[class*="site-theme--"] .eco-navigation{
+  border-bottom:1px solid var(--ke-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-h1{
+  color:var(--ke-text)!important;
+  font-weight:850;
+  letter-spacing:-.035em;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-section-heading{
+  color:var(--ke-text)!important;
+  font-weight:800;
+  letter-spacing:-.025em;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-lede,
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-copy,
+.eco-site-shell[class*="site-theme--"] .anvil-role-status-message{
+  color:var(--ke-muted)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-service-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-calculator-card,
+.eco-site-shell[class*="site-theme--"] .anvil-role-calculator-result,
+.eco-site-shell[class*="site-theme--"] .anvil-role-result-panel,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-panel,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-settings,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile{
+  color:var(--ke-text);
+  background:var(--ke-surface);
+  border-color:var(--ke-line);
+}
+.eco-site-shell[class*="site-theme--"] input.anvil-text-box,
+.eco-site-shell[class*="site-theme--"] textarea.anvil-text-area,
+.eco-site-shell[class*="site-theme--"] select{
+  color:var(--ke-text)!important;
+  background:var(--ke-surface2)!important;
+  border-color:var(--ke-line)!important;
+}
+.eco-site-shell[class*="site-theme--"] input.anvil-text-box:focus,
+.eco-site-shell[class*="site-theme--"] textarea.anvil-text-area:focus,
+.eco-site-shell[class*="site-theme--"] select:focus{
+  border-color:var(--ke-accent)!important;
+  box-shadow:0 0 0 3px rgba(var(--theme-accent-rgb),.12)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button>button{
+  border-color:var(--ke-line);
+  color:var(--ke-text);
+  background:var(--ke-surface2);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-button>button:hover{
+  border-color:var(--ke-accent);
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-primary-action>button,
+.eco-site-shell[class*="site-theme--"] .anvil-role-search-action>button,
+.eco-site-shell[class*="site-theme--"] .anvil-role-header-admin>button{
+  color:var(--theme-button-text,var(--u-on-accent,#fff))!important;
+  background:linear-gradient(135deg,var(--theme-accent-bright,var(--ke-accent)),var(--ke-accent))!important;
+  border-color:var(--ke-accent)!important;
+}
+.eco-site-shell[class*="site-theme--"] .anvil-role-eyebrow,
+.eco-site-shell[class*="site-theme--"] .service-index,
+.eco-site-shell[class*="site-theme--"] .anvil-role-admin-tile-code{
+  color:var(--theme-accent-bright,var(--ke-accent))!important;
+}
+.eco-site-shell[class*="site-theme--"] .admin-hub-hero,
+.eco-site-shell[class*="site-theme--"] .admin-module-panel,
+.eco-site-shell[class*="site-theme--"] .admin-metrics-panel,
+.eco-site-shell[class*="site-theme--"] .admin-attention-panel,
+.eco-site-shell[class*="site-theme--"] .admin-audit-panel,
+.eco-site-shell[class*="site-theme--"] .admin-hub-module-panel,
+.eco-site-shell[class*="site-theme--"] .admin-hub-metrics-panel,
+.eco-site-shell[class*="site-theme--"] .admin-hub-attention,
+.eco-site-shell[class*="site-theme--"] .admin-hub-audit{
+  color:var(--ke-text);
+  background:var(--ke-surface);
+  border-color:var(--ke-line);
+}
+.eco-site-shell[class*="site-theme--"] .admin-module-card,
+.eco-site-shell[class*="site-theme--"] .admin-metric-card{
+  color:var(--ke-text);
+  background:var(--ke-surface2);
+  border-color:var(--ke-line);
+}
+.eco-site-shell[class*="site-theme--"] .admin-module-card:hover,
+.eco-site-shell[class*="site-theme--"] .admin-metric-card:hover{
+  border-color:var(--ke-accent);
+}
+.eco-site-shell.site-theme--arctic-light,
+.eco-site-shell.site-theme--titanium-light{
+  color:var(--ke-text);
+}
+.eco-site-shell.site-theme--arctic-light .anvil-role-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-service-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-calculator-card,
+.eco-site-shell.site-theme--arctic-light .anvil-role-calculator-result,
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-panel,
+.eco-site-shell.site-theme--arctic-light .anvil-role-admin-tile,
+.eco-site-shell.site-theme--titanium-light .anvil-role-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-service-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-calculator-card,
+.eco-site-shell.site-theme--titanium-light .anvil-role-calculator-result,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-panel,
+.eco-site-shell.site-theme--titanium-light .anvil-role-admin-tile{
+  box-shadow:0 8px 28px rgba(20,40,48,.08);
+}
+.eco-site-shell[class*="site-theme--"] a{
+  color:var(--ke-accent);
+}
+.eco-site-shell[class*="site-theme--"] table{
+  color:var(--ke-text);
+}
+.eco-site-shell[class*="site-theme--"] th{
+  background:var(--ke-surface2);
+  color:var(--ke-text);
+  border-color:var(--ke-line);
+}
+.eco-site-shell[class*="site-theme--"] td{
+  border-color:var(--ke-line);
+}
+@media(prefers-reduced-motion:reduce){
+  .eco-site-shell[class*="site-theme--"] *,
+  .eco-site-shell[class*="site-theme--"] *::before,
+  .eco-site-shell[class*="site-theme--"] *::after{
+    animation:none!important;
+    transition:none!important;
+  }
+}
