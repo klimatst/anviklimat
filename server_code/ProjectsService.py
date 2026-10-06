@@ -130,6 +130,16 @@ def get_projects_page(search_text="", cursor=None):
         (obj["parameters"] or {}).get("engineering_profile", "combined")
         if obj is not None else "combined"
       ),
+      "engineering_profile_title": {
+        "combined": "Комплексный HVAC",
+        "vrv_vrf": "VRV / VRF",
+        "ventilation": "Вентиляция",
+        "split_multi": "Сплит / мультисплит"
+      }.get(
+        (obj["parameters"] or {}).get("engineering_profile", "combined")
+        if obj is not None else "combined",
+        "Комплексный HVAC"
+      ),
       "engineering_goal": (
         (obj["parameters"] or {}).get("engineering_goal", "design")
         if obj is not None else "design"
