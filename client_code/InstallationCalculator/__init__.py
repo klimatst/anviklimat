@@ -671,6 +671,9 @@ class InstallationCalculator(InstallationCalculatorTemplate):
         self._inputs(), self._material_selections_for_server(), project_id,
         self.equipment_dropdown.selected_value, self.quote_terms_box.text or ""
       )
+    except Exception as exc:
+      self.installation_message.text = "Не удалось создать предложение по монтажу: {}".format(exc)
+      return
     finally:
       self.create_installation_quote_button.enabled = bool(
         self._signed_in and self._can_quote and project_id
