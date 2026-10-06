@@ -25,6 +25,7 @@
       <anvil-component type="ColumnPanel" name="pdf_intake_panel" prop:role="admin-panel">
         <anvil-component type="Label" name="pdf_intake_heading" prop:role="section-heading" prop:text="Импорт в черновики каталога"></anvil-component>
         <anvil-component type="Label" name="pdf_intake_intro" prop:role="lede" prop:text="PDF обрабатывается по страницам. Большие XLSX передаются последовательными частями до 4 МБ; обработка книги сохраняет строки пакетами. Каталог изменится только после вашего утверждения черновика."></anvil-component>
+        <anvil-component type="ColumnPanel" name="draft_upload_panel" prop:role="admin-panel">
         <div class="xlsx-upload-panel">
           <div class="xlsx-upload-copy">
             <strong>Большой каталог XLSX</strong>
@@ -43,10 +44,16 @@
           <anvil-component type="Button" name="parse_pdf_button" prop:text="Обработать в черновики" prop:role="primary-action"></anvil-component>
           <anvil-component type="Label" name="pdf_intake_message" prop:role="status-message" prop:text="Для распознавания сканов PDF нужен подключённый мультимодальный ИИ. Изображения загружаются в Cloudinary с резервом ImageKit; ключи задаются только в серверных настройках Anvil."></anvil-component>
         </div>
+        </anvil-component>
         <div class="pdf-draft-workspace">
           <div class="pdf-draft-list-panel">
             <anvil-component type="Label" name="pdf_drafts_heading" prop:role="section-heading" prop:text="Черновики и история PDF / XLSX"></anvil-component>
             <anvil-component type="Button" name="refresh_pdf_drafts_button" prop:text="Обновить список" prop:role="secondary-button"></anvil-component>
+            <div class="pdf-draft-pagination">
+              <anvil-component type="Button" name="previous_pdf_draft_page_button" prop:text="Назад" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+              <anvil-component type="Label" name="pdf_draft_page_label" prop:role="status-message" prop:text="Страница 1 из 1"></anvil-component>
+              <anvil-component type="Button" name="next_pdf_draft_page_button" prop:text="Вперёд" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+            </div>
             <anvil-component type="RepeatingPanel" name="pdf_draft_rows" prop:role="pdf-draft-list" prop:item_template="Minimal_Theme_4.ImportEngine.PDFDraftListItem"></anvil-component>
           </div>
           <anvil-component type="ColumnPanel" name="pdf_review_panel" prop:role="card" prop:visible="false">
@@ -56,6 +63,11 @@
             <anvil-component type="Button" name="pause_pdf_button" prop:text="Остановить после страницы" prop:role="secondary-button" prop:visible="false"></anvil-component>
             <anvil-component type="Button" name="resume_pdf_button" prop:text="Продолжить с checkpoint" prop:role="secondary-button" prop:visible="false"></anvil-component>
             <anvil-component type="Button" name="retry_pdf_button" prop:text="Повторить ошибки" prop:role="secondary-button" prop:visible="false"></anvil-component>
+            <div class="pdf-draft-pagination">
+              <anvil-component type="Button" name="previous_pdf_product_page_button" prop:text="Предыдущие товары" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+              <anvil-component type="Label" name="pdf_product_page_label" prop:role="status-message" prop:text=""></anvil-component>
+              <anvil-component type="Button" name="next_pdf_product_page_button" prop:text="Следующие товары" prop:role="secondary-button" prop:enabled="false"></anvil-component>
+            </div>
             <anvil-component type="RepeatingPanel" name="pdf_product_rows" prop:role="pdf-draft-products" prop:item_template="Minimal_Theme_4.ImportEngine.PDFDraftItem"></anvil-component>
             <div class="pdf-review-actions">
               <anvil-component type="Button" name="add_pdf_product_button" prop:text="Добавить строку товара" prop:role="secondary-button"></anvil-component>

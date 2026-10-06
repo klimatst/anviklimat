@@ -15,6 +15,19 @@ class ImportEngine(ImportEngineTemplate):
     self._preview_token = None
     if not Access.require_permission_form("import.manage"):
       return
+    self._drafts_only = bool(properties.get("drafts_only"))
+    self._pdf_draft_page = 1
+    self._pdf_draft_page_count = 1
+    self._pdf_product_page = 1
+    self._pdf_product_page_size = 50
+    self._can_add_draft_products = Access.has_permission("catalog.manage")
+    if self._drafts_only:
+      self.page_title.text = "Черновики каталога"
+      self.pdf_intake_heading.text = "Черновики каталога"
+      self.pdf_drafts_heading.text = "Очередь импорта"
+      self.import_panel.visible = False
+      self.draft_upload_panel.visible = False
+      self.history_panel.visible = False
     self.source_type_dropdown.items = [
       ("Файл", "upload"), ("URL feed", "url"), ("API", "api")
     ]
@@ -93,9 +106,24 @@ class ImportEngine(ImportEngineTemplate):
     result = anvil.server.call("get_product_imports")
     self.import_rows.items = result["rows"] if result["ok"] else []
 
-  def _load_pdf_drafts(self):
-    result = anvil.server.call("get_pdf_catalog_drafts")
-    self.pdf_draft_rows.items = result["rows"] if result["ok"] else []
+  def _load_pdf_drafts(self, page=None):
+    if page is not None:
+      self._pdf_draft_page = max(1, int(page))
+    result = anvil.server.call("get_pdf_catalog_drafts", self._pdf_draft_page, 50)
+    if not result["ok"]:
+      self.pdf_draft_rows.items = []
+      self.pdf_draft_page_label.text = result.get("message", "Не удалось загрузить черновики.")
+      self.previous_pdf_draft_page_button.enabled = False
+      self.next_pdf_draft_page_button.enabled = False
+      return
+    self._pdf_draft_page = result["page"]
+    self._pdf_draft_page_count = result["page_count"]
+    self.pdf_draft_rows.items = result["rows"]
+    self.pdf_draft_page_label.text = "Страница {} из {} · черновиков: {}".format(
+      self._pdf_draft_page, self._pdf_draft_page_count, result["total"]
+    )
+    self.previous_pdf_draft_page_button.enabled = self._pdf_draft_page > 1
+    self.next_pdf_draft_page_button.enabled = self._pdf_draft_page < self._pdf_draft_page_count
 
   def _start_pdf_status_polling(self):
     """Refresh an asynchronously processed draft until it becomes editable."""
@@ -134,7 +162,21 @@ class ImportEngine(ImportEngineTemplate):
       self._pdf_status_refresh_busy = False
 
   def _render_pdf_products(self):
-    self.pdf_product_rows.items = self._pdf_products
+    total = len(self._pdf_products)
+    page_count = max(1, (total + self._pdf_product_page_size - 1) // self._pdf_product_page_size)
+    self._pdf_product_page = min(max(self._pdf_product_page, 1), page_count)
+    start = (self._pdf_product_page - 1) * self._pdf_product_page_size
+    visible_products = self._pdf_products[start:start + self._pdf_product_page_size]
+    for index, product in enumerate(visible_products, start=start):
+      product["_draft_position"] = index
+      product["_draft_id"] = self._pdf_draft_id
+      product["can_add_to_catalog"] = self._can_add_draft_products
+    self.pdf_product_rows.items = visible_products
+    self.pdf_product_page_label.text = "Товары: {} · страница {} из {} · показано до 50".format(
+      total, self._pdf_product_page, page_count
+    )
+    self.previous_pdf_product_page_button.enabled = self._pdf_product_page > 1
+    self.next_pdf_product_page_button.enabled = self._pdf_product_page < page_count
     for row in self.pdf_product_rows.get_components():
       getattr(row, "set_categories")(self._pdf_categories)
       getattr(row, "set_media")(self._pdf_image_options)
@@ -148,6 +190,7 @@ class ImportEngine(ImportEngineTemplate):
     self._pdf_draft_id = result["id"]
     self._pdf_categories = result["category_options"]
     self._pdf_image_options = result.get("image_options", [])
+    self._pdf_product_page = 1
     defaults = {
       "brand": "", "model": "", "sku": "", "type": "",
       "series": "",
@@ -157,7 +200,9 @@ class ImportEngine(ImportEngineTemplate):
       "markup": "", "installation_price": "", "minimum_stock": "",
       "quantity": "", "image_url": "", "extra_image_urls": "",
       "documents_json": "[]", "source_page": None,
-      "confidence": None, "evidence": ""
+      "confidence": None, "evidence": "", "added_to_catalog": False,
+      "source_category": "", "source_subcategory": "",
+      "category_suggestion": None, "category_alternatives": []
     }
     self._pdf_products = []
     for product in result["products"]:
@@ -290,19 +335,32 @@ class ImportEngine(ImportEngineTemplate):
   def _current_pdf_products(self):
     return [getattr(row, "get_product_data")() for row in self.pdf_product_rows.get_components()]
 
+  def _sync_visible_pdf_products(self):
+    start = (self._pdf_product_page - 1) * self._pdf_product_page_size
+    for offset, product in enumerate(self._current_pdf_products()):
+      position = start + offset
+      if position < len(self._pdf_products):
+        self._pdf_products[position].update(product)
+
   def _save_pdf_draft(self, action):
     if not self._pdf_draft_id:
       self.pdf_review_message.text = "Сначала откройте черновик импорта."
       return
-    products = self._current_pdf_products() if action != "reject" else []
+    if action != "reject":
+      self._sync_visible_pdf_products()
+    products = list(self._pdf_products) if action != "reject" else []
     result = anvil.server.call(
       "save_pdf_catalog_draft", self._pdf_draft_id, products, action
     )
     if not result["ok"]:
       details = result.get("errors", [])
-      self.pdf_review_message.text = result["message"]
+      message = result["message"]
       if details:
-        self.pdf_review_message.text += "\n" + "\n".join(details)
+        message += "\n" + "\n".join(details)
+      if action == "approve":
+        self._open_pdf_draft(self._pdf_draft_id)
+        self._load_pdf_drafts()
+      self.pdf_review_message.text = message
       return
     self.pdf_review_message.text = result["message"]
     if action in ("approve", "reject"):
@@ -485,19 +543,86 @@ class ImportEngine(ImportEngineTemplate):
   def pdf_draft_rows_pdf_draft_open(self, draft_id, **event_args):
     self._open_pdf_draft(draft_id)
 
+  @handle("previous_pdf_draft_page_button", "click")
+  def previous_pdf_draft_page_button_click(self, **event_args):
+    self._load_pdf_drafts(self._pdf_draft_page - 1)
+
+  @handle("next_pdf_draft_page_button", "click")
+  def next_pdf_draft_page_button_click(self, **event_args):
+    self._load_pdf_drafts(self._pdf_draft_page + 1)
+
+  @handle("previous_pdf_product_page_button", "click")
+  def previous_pdf_product_page_button_click(self, **event_args):
+    self._sync_visible_pdf_products()
+    self._pdf_product_page -= 1
+    self._render_pdf_products()
+
+  @handle("next_pdf_product_page_button", "click")
+  def next_pdf_product_page_button_click(self, **event_args):
+    self._sync_visible_pdf_products()
+    self._pdf_product_page += 1
+    self._render_pdf_products()
+
   @handle("pdf_product_rows", "x-pdf-product-remove")
   def pdf_product_rows_pdf_product_remove(self, product, **event_args):
-    for index, current in enumerate(self._pdf_products):
-      if current is product or current == product:
-        del self._pdf_products[index]
-        break
-    else:
+    self._sync_visible_pdf_products()
+    target_id = product.get("_draft_item_id")
+    target_position = product.get("_draft_position")
+    index = next((index for index, current in enumerate(self._pdf_products)
+                  if target_id and current.get("_draft_item_id") == target_id), None)
+    if index is None and isinstance(target_position, int):
+      index = target_position if target_position < len(self._pdf_products) else None
+    if index is None:
       return
+    if self._pdf_products[index].get("added_to_catalog"):
+      self.pdf_review_message.text = "Этот товар уже добавлен в каталог и не может быть удалён из черновика."
+      return
+    del self._pdf_products[index]
     self._render_pdf_products()
+
+  @handle("pdf_product_rows", "x-pdf-product-add-to-catalog")
+  def pdf_product_rows_add_to_catalog(self, draft_id, draft_item_id, position,
+                                      product, **event_args):
+    if not self._can_add_draft_products:
+      self.pdf_review_message.text = "Для добавления товара требуется право управления каталогом."
+      return
+    if not self._pdf_draft_id or draft_id != self._pdf_draft_id:
+      self.pdf_review_message.text = "Откройте нужный черновик и повторите добавление."
+      return
+    self._sync_visible_pdf_products()
+    saved = anvil.server.call(
+      "save_pdf_catalog_draft", self._pdf_draft_id,
+      list(self._pdf_products), "save"
+    )
+    if not saved["ok"]:
+      self.pdf_review_message.text = saved["message"]
+      self._open_pdf_draft(self._pdf_draft_id)
+      return
+    self._open_pdf_draft(self._pdf_draft_id)
+    target = None
+    if draft_item_id:
+      target = next((item for item in self._pdf_products
+                     if item.get("_draft_item_id") == draft_item_id), None)
+    if target is None and isinstance(position, int) and not isinstance(position, bool):
+      if 0 <= position < len(self._pdf_products):
+        target = self._pdf_products[position]
+    if target is None or not target.get("_draft_item_id"):
+      self.pdf_review_message.text = "Не удалось найти сохранённую строку товара. Обновите черновик."
+      return
+    result = None
+    try:
+      result = anvil.server.call(
+        "add_pdf_draft_product_to_catalog", self._pdf_draft_id,
+        target["_draft_item_id"], target
+      )
+    finally:
+      self._open_pdf_draft(self._pdf_draft_id)
+      self._load_pdf_drafts()
+    self.pdf_review_message.text = result["message"]
 
   @handle("add_pdf_product_button", "click")
   def add_pdf_product_button_click(self, **event_args):
-    self._pdf_products = self._current_pdf_products()
+    self._sync_visible_pdf_products()
     self._pdf_products.append({
       "brand": "", "model": "", "sku": "", "type": "",
       "series": "",
@@ -507,8 +632,10 @@ class ImportEngine(ImportEngineTemplate):
       "markup": "", "installation_price": "", "minimum_stock": "",
       "quantity": "", "image_url": "", "extra_image_urls": "",
       "documents_json": "[]", "source_page": None,
-      "confidence": None, "evidence": ""
+      "confidence": None, "evidence": "", "added_to_catalog": False,
+      "source_category": "", "source_subcategory": ""
     })
+    self._pdf_product_page = (len(self._pdf_products) - 1) // self._pdf_product_page_size + 1
     self._render_pdf_products()
 
   @handle("save_pdf_draft_button", "click")

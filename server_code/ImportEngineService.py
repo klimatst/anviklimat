@@ -2,6 +2,7 @@ import anvil.secrets
 import csv
 import base64
 from datetime import datetime, timezone
+import difflib
 import hashlib
 import importlib
 import ipaddress
@@ -55,7 +56,12 @@ MAX_PDF_IMAGE_BYTES = 8 * 1024 * 1024
 MAX_PDF_TOTAL_IMAGE_BYTES = 30 * 1024 * 1024
 MAX_PDF_DRAFTS = 50
 ALLOWED_FORMATS = {"csv", "xlsx", "xml", "json"}
-CATEGORY_FIELDS = ("category", "category_code", "категория", "код_категории")
+CATEGORY_FIELDS = (
+  "category", "category_code", "category_name", "category_path",
+  "product_category", "категория", "категория_товара", "код_категории",
+  "путь_категории", "группа", "группа_товаров", "товарная_группа",
+  "раздел", "раздел_каталога", "категория_верхнего_уровня"
+)
 SPEC_FIELDS = {
   "capacity": ("capacity", "capacity_kw", "производительность", "мощность_охлаждения"),
   "airflow": ("airflow", "air_flow", "расход_воздуха"),
@@ -593,46 +599,203 @@ def _number(value, label, maximum=None):
   return parsed, None
 
 
-def _match_category(value, categories, root=None):
-  normalized = value.strip().casefold()
-  if not normalized:
+_CATEGORY_PHRASE_ALIASES = (
+  (("air conditioner", "air conditioners", "air conditioning", "aircon",
+    "сплит-система", "сплит система", "сплит-системы", "сплит системы",
+    "кондиционирование", "кондиционеры воздуха"), "кондиционер"),
+  (("heat pump", "тепловые насосы", "тепловой насос"), "тепловой насос"),
+  (("fan coil", "fan-coil", "фанкойлы", "фанкойл"), "фанкойл"),
+  (("air handling unit", "ahu", "приточная установка",
+    "приточно-вытяжная установка"), "вентиляционная установка"),
+  (("ductwork", "air duct", "воздуховоды", "воздуховод"), "воздуховод"),
+)
+_CATEGORY_TOKEN_SUFFIXES = (
+  "иями", "ями", "ами", "ого", "ему", "ыми", "ими", "ее", "ие",
+  "ая", "яя", "ые", "ое", "ой", "ый", "ий", "ую", "юю", "ам",
+  "ям", "ах", "ях", "ов", "ев", "ей", "а", "я", "ы", "и", "е", "о", "s"
+)
+_CATEGORY_STOP_WORDS = {
+  "оборудование", "категория", "товар", "товары", "раздел", "для",
+  "система", "систем", "системы", "the", "and", "unit", "units"
+}
+
+
+def _category_field(row, name):
+  if isinstance(row, dict):
+    return row.get(name)
+  try:
+    return row[name]
+  except (KeyError, TypeError, AttributeError):
     return None
 
-  def is_under_root(row):
-    if root is None:
-      return True
-    parent = row["parent"]
-    while parent is not None:
-      if parent.get_id() == root.get_id():
-        return True
-      parent = parent["parent"]
+
+def _category_code(row):
+  value = _category_field(row, "code")
+  return value.strip() if isinstance(value, str) else ""
+
+
+def _category_parent(row, by_code):
+  parent = _category_field(row, "parent")
+  if parent is not None:
+    return parent
+  parent_code = _category_field(row, "parent_code")
+  if isinstance(parent_code, str):
+    return by_code.get(parent_code)
+  return None
+
+
+def _category_path(row, by_code):
+  stored_path = _category_field(row, "path")
+  if isinstance(stored_path, str) and stored_path.strip():
+    return stored_path.strip()
+  title = _category_field(row, "title")
+  if (isinstance(row, dict) and isinstance(title, str)
+      and re.search(r"\s(?:/|>|→|::)\s", title)):
+    return title.strip()
+  parts = []
+  current = row
+  visited = set()
+  while current is not None:
+    code = _category_code(current)
+    identity = code or str(_category_field(current, "id") or id(current))
+    if identity in visited:
+      break
+    visited.add(identity)
+    title = _category_field(current, "title")
+    if isinstance(title, str) and title.strip():
+      parts.insert(0, title.strip())
+    current = _category_parent(current, by_code)
+  return " / ".join(parts)
+
+
+def _category_normalized_text(value):
+  text = str(value or "").strip().casefold().replace("ё", "е")
+  text = re.sub(r"\s+", " ", text)
+  for variants, replacement in _CATEGORY_PHRASE_ALIASES:
+    for variant in variants:
+      escaped = re.escape(variant.casefold().replace("ё", "е"))
+      text = re.sub(
+        r"(?<![a-z0-9а-я]){}(?![a-z0-9а-я])".format(escaped), replacement, text
+      )
+  tokens = re.findall(r"[a-z0-9а-я]+", text)
+  normalized = []
+  for token in tokens:
+    for suffix in _CATEGORY_TOKEN_SUFFIXES:
+      if len(token) > len(suffix) + 3 and token.endswith(suffix):
+        token = token[:-len(suffix)]
+        break
+    if token and token not in _CATEGORY_STOP_WORDS:
+      normalized.append(token)
+  return " ".join(normalized)
+
+
+def _category_similarity(value, row, by_code):
+  query = _category_normalized_text(value)
+  title = str(_category_field(row, "title") or "")
+  code = _category_code(row)
+  path = _category_path(row, by_code)
+  normalized_title = _category_normalized_text(title)
+  normalized_path = _category_normalized_text(path)
+  normalized_code = _category_normalized_text(code.replace("_", " "))
+  if not query:
+    return 0.0
+  if query in (normalized_title, normalized_path, normalized_code):
+    return 1.0
+
+  query_leaf = re.split(r"\s*(?:[/\\>|→»]+|::|\n)\s*", str(value).strip())[-1]
+  query_leaf = _category_normalized_text(query_leaf)
+  if query_leaf in (normalized_title, normalized_code):
+    return 0.99
+
+  query_tokens = set(query.split())
+  scores = []
+  for candidate in (normalized_title, normalized_path, normalized_code):
+    if not candidate:
+      continue
+    candidate_tokens = set(candidate.split())
+    sequence = difflib.SequenceMatcher(None, query, candidate).ratio()
+    overlap = len(query_tokens & candidate_tokens)
+    token_score = (
+      2.0 * overlap / (len(query_tokens) + len(candidate_tokens))
+      if overlap else 0.0
+    )
+    scores.extend((sequence, token_score))
+  if query_leaf:
+    for candidate in (normalized_title, normalized_code):
+      if candidate:
+        scores.append(difflib.SequenceMatcher(None, query_leaf, candidate).ratio())
+  return max(scores) if scores else 0.0
+
+
+def _category_is_under_root(row, root, by_code):
+  root_code = _category_code(root)
+  if not root_code:
     return False
+  current = _category_parent(row, by_code)
+  visited = set()
+  while current is not None:
+    code = _category_code(current)
+    if code == root_code:
+      return True
+    identity = code or str(_category_field(current, "id") or id(current))
+    if identity in visited:
+      break
+    visited.add(identity)
+    current = _category_parent(current, by_code)
+  return False
 
-  path_parts = [part.strip().casefold() for part in re.split(
-    r"\s*(?:[/\\>|→»]+|::)\s*", value
-  ) if part.strip()]
-  if not path_parts:
+
+def _rank_categories(value, categories, root=None):
+  by_code = {_category_code(row): row for row in categories if _category_code(row)}
+  ranked = []
+  for row in categories:
+    if root is not None and not _category_is_under_root(row, root, by_code):
+      continue
+    score = _category_similarity(value, row, by_code)
+    if score > 0:
+      ranked.append((score, row, _category_path(row, by_code)))
+  ranked.sort(key=lambda item: (-item[0], item[2].casefold()))
+  return ranked, by_code
+
+
+def _category_suggestions(value, categories, root=None, limit=3):
+  ranked, by_code = _rank_categories(value, categories, root)
+  suggestions = []
+  for score, row, path in ranked[:limit]:
+    current = row
+    ancestors = []
+    visited = set()
+    while current is not None:
+      code = _category_code(current)
+      identity = code or str(_category_field(current, "id") or id(current))
+      if identity in visited:
+        break
+      visited.add(identity)
+      ancestors.insert(0, current)
+      current = _category_parent(current, by_code)
+    if not ancestors:
+      continue
+    suggestions.append({
+      "category_code": _category_code(ancestors[0]),
+      "subcategory_code": _category_code(ancestors[-1]) if len(ancestors) > 1 else "",
+      "title": path, "confidence": round(min(1.0, score), 2)
+    })
+  return suggestions
+
+
+def _match_category(value, categories, root=None):
+  if not isinstance(value, str) or not value.strip():
     return None
-  matches = [row for row in categories
-             if ((row["code"] or "").casefold() == path_parts[-1]
-                 or (row["title"] or "").casefold() == path_parts[-1])
-             and is_under_root(row)]
-  if len(matches) == 1:
-    return matches[0]
-  for ancestor_title in reversed(path_parts[:-1]):
-    scoped = []
-    for row in matches:
-      parent = row["parent"]
-      while parent is not None:
-        if ((parent["code"] or "").casefold() == ancestor_title
-            or (parent["title"] or "").casefold() == ancestor_title):
-          scoped.append(row)
-          break
-        parent = parent["parent"]
-    matches = scoped
-    if len(matches) == 1:
-      return matches[0]
-  return matches[0] if len(matches) == 1 else None
+  ranked, _ = _rank_categories(value, categories, root)
+  if not ranked:
+    return None
+  best_score, best_row, _ = ranked[0]
+  second_score = ranked[1][0] if len(ranked) > 1 else 0.0
+  # Only auto-assign a strong, clearly separated match. Similar or duplicate
+  # labels remain unassigned for an administrator to confirm in the draft.
+  if best_score < 0.82 or (len(ranked) > 1 and best_score - second_score < 0.10):
+    return None
+  return best_row
 
 
 def _prepare_record(record, categories, source_name, source_url, series_rows=None):
@@ -1507,44 +1670,81 @@ def _find_reusable_media(digest):
   return app_tables.media_objects.get(checksum=digest)
 
 
-def _pdf_draft_rows(import_row):
+def _pdf_draft_item_rows(import_row):
   rows = list(app_tables.pdf_draft_items.search(
     q.fetch_only("position", "data"), **{"import": import_row}
   ))
-  return [dict(row["data"] or {}) for row in sorted(
-    rows, key=lambda item: item["position"] or 0
-  )]
+  return sorted(rows, key=lambda item: item["position"] or 0)
+
+
+def _pdf_draft_rows(import_row):
+  return [dict(row["data"] or {}) for row in _pdf_draft_item_rows(import_row)]
 
 
 def _save_pdf_draft_rows(import_row, products):
-  existing = list(app_tables.pdf_draft_items.search(
-    q.fetch_only("position", "data"), **{"import": import_row}
-  ))
-  existing.sort(key=lambda row: row["position"] or 0)
+  existing = _pdf_draft_item_rows(import_row)
+  existing_by_id = {str(row.get_id()): row for row in existing}
+  used_ids = set()
   for position, product in enumerate(products):
-    if position < len(existing):
-      row = existing[position]
-      if row["position"] != position or row["data"] != product:
-        row.update(position=position, data=product)
+    if not isinstance(product, dict):
+      continue
+    draft_item_id = product.get("_draft_item_id")
+    row = existing_by_id.get(str(draft_item_id)) if draft_item_id else None
+    if row is None and not draft_item_id and position < len(existing):
+      fallback = existing[position]
+      if str(fallback.get_id()) not in used_ids:
+        row = fallback
+    data = dict(product)
+    data.pop("_draft_item_id", None)
+    data.pop("_draft_position", None)
+    data.pop("_draft_id", None)
+    data.pop("category_suggestion", None)
+    data.pop("category_alternatives", None)
+    if row is not None:
+      existing_data = row["data"] or {}
+      if existing_data.get("added_to_catalog"):
+        # A client must not be able to alter a catalog product by submitting
+        # a stale or hand-crafted draft payload after the row was added.
+        data = dict(existing_data)
+      else:
+        data.pop("added_to_catalog", None)
+      if row["position"] != position or row["data"] != data:
+        row.update(position=position, data=data)
+      used_ids.add(str(row.get_id()))
     else:
+      data.pop("added_to_catalog", None)
       cast(Any, app_tables.pdf_draft_items).add_row(
-        **{"import": import_row, "position": position, "data": product}
+        **{"import": import_row, "position": position, "data": data}
       )
-  for row in existing[len(products):]:
-    row.delete()
+  next_position = len(products)
+  for row in existing:
+    row_id = str(row.get_id())
+    if row_id in used_ids:
+      continue
+    data = row["data"] or {}
+    if data.get("added_to_catalog"):
+      if row["position"] != next_position:
+        row.update(position=next_position)
+      next_position += 1
+    else:
+      row.delete()
 
 
 def _xlsx_draft_product(record, category_rows, image_context, warnings):
-  prepared_category = _match_category(_value(record, CATEGORY_FIELDS), category_rows)
+  source_category = _value(record, CATEGORY_FIELDS)
+  source_subcategory = _value(record, FIELD_ALIASES["subcategory"])
+  category_by_code = {row["code"]: row for row in category_rows if row.get("code")}
+  prepared_category = _match_category(source_category, category_rows)
+  if prepared_category is None and source_subcategory:
+    prepared_category = _match_category(source_subcategory, category_rows)
   category = prepared_category
   subcategory = None
-  if category is not None and category.get("parent") is not None:
+  if category is not None and _category_parent(category, category_by_code) is not None:
     subcategory = category
-    while category.get("parent") is not None:
-      category = category["parent"]
-  subcategory_value = _value(record, FIELD_ALIASES["subcategory"])
-  if subcategory_value and category is not None:
-    subcategory = _match_category(subcategory_value, category_rows, category)
+    while _category_parent(category, category_by_code) is not None:
+      category = _category_parent(category, category_by_code)
+  if source_subcategory and category is not None:
+    subcategory = _match_category(source_subcategory, category_rows, category)
     if subcategory is None:
       warnings.append("Лист «{}», строка {}: подкатегория не сопоставлена.".format(
         record.get("__source_sheet", ""), record.get("__source_row", "")
@@ -1684,6 +1884,8 @@ def _xlsx_draft_product(record, category_rows, image_context, warnings):
     "type": _value(record, FIELD_ALIASES["type"]),
     "series": _value(record, FIELD_ALIASES["series"]),
     "description": _value(record, FIELD_ALIASES["description"]),
+    "source_category": source_category[:240],
+    "source_subcategory": source_subcategory[:240],
     "category_code": category["code"] if category is not None else "",
     "subcategory_code": subcategory["code"] if subcategory is not None else "",
     "specs_json": json.dumps(specs, ensure_ascii=False, indent=2),
@@ -1734,8 +1936,32 @@ def _pdf_products_from_ai(ai_result, category_rows):
       category_code = ""
     if not isinstance(subcategory_code, str):
       subcategory_code = ""
+    category_source = raw.get("category_path") or raw.get("category_name") or raw.get("category") or ""
+    subcategory_source = raw.get("subcategory_name") or raw.get("subcategory") or ""
+    if not isinstance(category_source, str):
+      category_source = str(category_source or "")
+    if not isinstance(subcategory_source, str):
+      subcategory_source = str(subcategory_source or "")
+    if not category_source and category_code:
+      category_source = category_code
     selected_code = subcategory_code or category_code
     selected = by_code.get(selected_code) or by_code.get(category_code)
+    if selected is None and category_source:
+      selected = _match_category(category_source, category_rows)
+    if subcategory_source:
+      root_for_subcategory = selected
+      if root_for_subcategory is not None and root_for_subcategory.get("parent_code"):
+        while root_for_subcategory and root_for_subcategory.get("parent_code"):
+          root_for_subcategory = by_code.get(root_for_subcategory["parent_code"])
+      suggested_subcategory = _match_category(
+        subcategory_source, category_rows, root_for_subcategory
+      ) if root_for_subcategory is not None else _match_category(
+        subcategory_source, category_rows
+      )
+      if suggested_subcategory is not None:
+        selected = suggested_subcategory
+    if selected is None and not category_source and category_code:
+      selected = _match_category(category_code, category_rows)
     root = selected
     while root is not None and root.get("parent_code"):
       root = by_code.get(root["parent_code"])
@@ -1815,6 +2041,8 @@ def _pdf_products_from_ai(ai_result, category_rows):
       "type": str(raw.get("type") or "")[:80],
       "series": str(raw.get("series") or "")[:100],
       "description": str(raw.get("description") or "")[:2000],
+      "source_category": category_source[:240],
+      "source_subcategory": subcategory_source[:240],
       "category_code": root["code"] if root is not None else "",
       "subcategory_code": normalized_subcategory,
       "specs_json": json.dumps(safe_specs, ensure_ascii=False, indent=2),
@@ -3310,17 +3538,22 @@ def pause_pdf_catalog_draft(draft_id):
 
 @anvil.server.callable(require_user=True)
 @Core.permission_guard("import.manage")
-def get_pdf_catalog_drafts():
+def get_pdf_catalog_drafts(page=1, page_size=50):
   Core.require_permission("import.manage")
+  if isinstance(page, bool) or not isinstance(page, int) or page < 1:
+    return {"ok": False, "message": "Номер страницы должен быть положительным целым числом."}
+  if isinstance(page_size, bool) or not isinstance(page_size, int) or page_size < 1:
+    return {"ok": False, "message": "Размер страницы должен быть положительным целым числом."}
+  page_size = min(page_size, 50)
   fields = q.fetch_only(
     "source_name", "status", "total", "processed",
     "imported", "created_at", "updated_at", "checkpoint", "source_file"
   )
   rows = list(app_tables.imports.search(
     fields, order_by("created_at", ascending=False), format="pdf"
-  )[:MAX_PDF_DRAFTS]) + list(app_tables.imports.search(
+  )) + list(app_tables.imports.search(
     fields, order_by("created_at", ascending=False), format="xlsx"
-  )[:MAX_PDF_DRAFTS])
+  ))
   rows.sort(key=lambda row: row["created_at"] or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
   result_rows = []
   for row in rows:
@@ -3351,7 +3584,15 @@ def get_pdf_catalog_drafts():
       "created_at": row["created_at"].strftime("%Y-%m-%d %H:%M UTC")
       if row["created_at"] else ""
     })
-  return {"ok": True, "rows": result_rows}
+  total = len(result_rows)
+  page_count = max(1, (total + page_size - 1) // page_size)
+  page = min(page, page_count)
+  first = (page - 1) * page_size
+  return {
+    "ok": True, "rows": result_rows[first:first + page_size],
+    "page": page, "page_size": page_size,
+    "page_count": page_count, "total": total
+  }
 
 
 @anvil.server.callable(require_user=True)
@@ -3374,6 +3615,36 @@ def get_pdf_catalog_draft(draft_id):
   products = _pdf_draft_rows(import_row)
   if not products:
     products = checkpoint.get("products", [])
+  draft_item_rows = _pdf_draft_item_rows(import_row)
+  if draft_item_rows:
+    products = []
+    for position, draft_item_row in enumerate(draft_item_rows):
+      product = dict(draft_item_row["data"] or {})
+      product["_draft_item_id"] = str(draft_item_row.get_id())
+      product["_draft_position"] = position
+      products.append(product)
+  for product in products:
+    if not isinstance(product, dict):
+      continue
+    if product.get("category_code") and product.get("source_subcategory") and not product.get("subcategory_code"):
+      category_root = by_code.get(product.get("category_code"))
+      suggestions = _category_suggestions(
+        product.get("source_subcategory"), categories, category_root
+      )
+    elif not product.get("category_code"):
+      category_source = product.get("source_category") or product.get("source_subcategory") or ""
+      suggestions = _category_suggestions(category_source, categories)
+    else:
+      suggestions = []
+    suggestions = [item for item in suggestions if item["confidence"] >= 0.40]
+    if suggestions:
+      top_score = suggestions[0]["confidence"]
+      second_score = suggestions[1]["confidence"] if len(suggestions) > 1 else 0
+      suggestions[0]["safe_to_apply"] = (
+        top_score >= 0.82 and top_score - second_score >= 0.10
+      )
+    product["category_suggestion"] = suggestions[0] if suggestions else None
+    product["category_alternatives"] = suggestions[1:3]
   image_options = []
   seen_image_urls = set()
   for page_row in app_tables.pdf_draft_pages.search(
@@ -3476,6 +3747,7 @@ def _clean_pdf_product(product):
   text_fields = {
     "brand": 80, "model": 120, "sku": 80, "type": 80,
     "series": 100, "description": 2000, "category_code": 100, "subcategory_code": 100,
+    "source_category": 240, "source_subcategory": 240,
     "evidence": 400, "sale_price": 40, "currency": 3,
     "purchase_price": 40, "special_price": 40, "discount": 40,
     "markup": 40, "installation_price": 40, "minimum_stock": 40,
@@ -3515,6 +3787,13 @@ def _clean_pdf_product(product):
     elif len(str(value)) > 1000:
       return None, "Значение характеристики слишком длинное."
   cleaned["specs_json"] = json.dumps(specs, ensure_ascii=False, indent=2)
+  draft_item_id = product.get("_draft_item_id")
+  cleaned["_draft_item_id"] = draft_item_id if isinstance(draft_item_id, str) else None
+  draft_position = product.get("_draft_position")
+  cleaned["_draft_position"] = (
+    draft_position if isinstance(draft_position, int) and not isinstance(draft_position, bool)
+    and draft_position >= 0 else None
+  )
   for field in (
     "sale_price", "purchase_price", "special_price", "discount",
     "markup", "installation_price", "quantity", "minimum_stock"
@@ -3583,6 +3862,127 @@ def _clean_pdf_product(product):
   return cleaned, None
 
 
+def _pdf_product_record(product):
+  """Build the catalogue import shape from a validated draft product."""
+  record = {
+    "brand": product["brand"], "model": product["model"],
+    "sku": product["sku"], "type": product["type"],
+    "series": product["series"], "description": product["description"],
+    "category_code": product["category_code"],
+    "subcategory_code": product["subcategory_code"],
+    "sale_price": product["sale_price"],
+    "purchase_price": product["purchase_price"],
+    "special_price": product["special_price"],
+    "discount": product["discount"], "markup": product["markup"],
+    "installation_price": product["installation_price"],
+    "currency": product["currency"], "quantity": product["quantity"],
+    "minimum_stock": product["minimum_stock"],
+    "image_url": product["image_urls"][0] if product["image_urls"] else ""
+  }
+  record["specifications"] = json.loads(product["specs_json"] or "{}")
+  return record
+
+
+def _attach_pdf_product_media(import_row, product, product_row, now):
+  """Attach all validated draft images and documents without duplicating them."""
+  media_rows = list(app_tables.product_media.search(
+    q.fetch_only("url", "type", "is_primary"), product=product_row
+  ))
+  existing_urls = {row["url"] for row in media_rows if row["url"]}
+  for image_index, image_url in enumerate(product["image_urls"]):
+    if image_url in existing_urls:
+      continue
+    make_primary = image_index == 0 and not existing_urls
+    app_tables.product_media.add_row(
+      product=product_row, url=image_url,
+      type="primary" if make_primary else "gallery",
+      is_primary=make_primary, sort_order=image_index,
+      alt_text="{} {}".format(product["brand"], product["model"]).strip(),
+      source="{}: {}".format(import_row["format"].upper(), import_row["source_name"]),
+      checksum="", created_at=now
+    )
+    existing_urls.add(image_url)
+  for document in json.loads(product["documents_json"] or "[]"):
+    if next(iter(app_tables.catalog_documents.search(
+      q.fetch_only("url"), product=product_row, url=document["url"]
+    )), None) is None:
+      app_tables.catalog_documents.add_row(
+        title=document["title"], kind="technical", product=product_row,
+        url=document["url"], sort_order=0, created_at=now
+      )
+
+
+def _mark_pdf_draft_item_added(import_row, draft_item_row, product_row, now):
+  data = dict(draft_item_row["data"] or {})
+  data["added_to_catalog"] = True
+  data["catalog_product_id"] = str(product_row.get_id())
+  data["added_at"] = now.isoformat()
+  draft_item_row.update(data=data)
+  imported_count = (import_row["imported"] or 0) + 1
+  import_row.update(imported=imported_count, updated_at=now)
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def add_pdf_draft_product_to_catalog(draft_id, draft_item_id, product):
+  user = Core.require_permission("import.manage")
+  Core.require_permission("catalog.manage")
+  if not isinstance(draft_id, str) or not draft_id:
+    return {"ok": False, "message": "Выберите черновик импорта."}
+  if not isinstance(draft_item_id, str) or not draft_item_id:
+    return {"ok": False, "message": "Сначала сохраните строку товара в черновике."}
+  import_row = app_tables.imports.get_by_id(draft_id)
+  if import_row is None or import_row["format"] not in ("pdf", "xlsx"):
+    return {"ok": False, "message": "Черновик импорта не найден."}
+  expected_status = "xlsx_draft" if import_row["format"] == "xlsx" else "pdf_draft"
+  if import_row["status"] != expected_status:
+    return {"ok": False, "message": "Черновик закрыт или ещё обрабатывается."}
+  draft_item_row = app_tables.pdf_draft_items.get_by_id(draft_item_id)
+  if (draft_item_row is None or draft_item_row["import"] is None
+      or draft_item_row["import"].get_id() != import_row.get_id()):
+    return {"ok": False, "message": "Строка товара не принадлежит этому черновику."}
+  stored_data = dict(draft_item_row["data"] or {})
+  if stored_data.get("added_to_catalog"):
+    return {"ok": True, "already_added": True,
+            "message": "Этот товар уже добавлен в каталог."}
+  if not isinstance(product, dict):
+    return {"ok": False, "message": "Проверьте данные товара."}
+  product = dict(product)
+  product["_draft_item_id"] = draft_item_id
+  cleaned, error = _clean_pdf_product(product)
+  if error:
+    return {"ok": False, "message": error}
+
+  Catalog.ensure_catalog_categories()
+  category_rows = list(app_tables.catalog_categories.search(active=True))
+  record = _pdf_product_record(cleaned)
+  _, error = _prepare_record(record, category_rows, import_row["source_name"], "")
+  if error:
+    return {"ok": False, "message": error}
+  now = datetime.now(timezone.utc)
+  state, message = _apply_record(record, category_rows, import_row, "", now)
+  identity_key, product_row = Catalog.find_import_product(
+    cleaned["brand"], cleaned["model"], cleaned["sku"]
+  )
+  if product_row is None or (state == "skipped" and message != "Данные товара не изменились."):
+    _log(import_row, "warning", message or "Товар не добавлен из-за конфликта каталога.",
+         draft_item_row["position"] + 1 if draft_item_row["position"] is not None else None)
+    return {"ok": False, "message": message or "Товар не добавлен из-за конфликта каталога."}
+  _attach_pdf_product_media(import_row, cleaned, product_row, now)
+  _mark_pdf_draft_item_added(import_row, draft_item_row, product_row, now)
+  _log(import_row, "info", "Товар {} добавлен из черновика в каталог.".format(
+    cleaned["model"]
+  ), draft_item_row["position"] + 1 if draft_item_row["position"] is not None else None)
+  Core.log_audit(
+    actor=user, action="catalog.{}_draft_product_added".format(import_row["format"]),
+    entity_type="import", entity_id=import_row.get_id(),
+    details={"draft_item_id": draft_item_id, "product_id": str(product_row.get_id()),
+             "identity_key": identity_key}, created_at=now
+  )
+  return {"ok": True, "already_added": False,
+          "message": "Товар добавлен в каталог; строка сохранена в черновике."}
+
+
 @anvil.server.callable(require_user=True)
 @Core.permission_guard("import.manage")
 def save_pdf_catalog_draft(draft_id, products=None, action="save"):
@@ -3603,7 +4003,11 @@ def save_pdf_catalog_draft(draft_id, products=None, action="save"):
   checkpoint = import_row["checkpoint"] or {}
   if action == "reject":
     now = datetime.now(timezone.utc)
-    products_count = len(_pdf_draft_rows(import_row)) or len(checkpoint.get("products", []))
+    draft_rows = _pdf_draft_item_rows(import_row)
+    products_count = len(draft_rows) or len(checkpoint.get("products", []))
+    added_count = sum(
+      1 for row in draft_rows if (row["data"] or {}).get("added_to_catalog")
+    )
     import_row.update(
       status="xlsx_rejected" if is_xlsx else "pdf_rejected",
       source_file=None, processed=products_count,
@@ -3613,10 +4017,16 @@ def save_pdf_catalog_draft(draft_id, products=None, action="save"):
       _delete_xlsx_upload_chunks(import_row)
     Core.log_audit(
       actor=user, action="catalog.{}_draft_rejected".format(import_row["format"]), entity_type="import",
-      entity_id=import_row.get_id(), details={"products": products_count},
+      entity_id=import_row.get_id(),
+      details={"products": products_count, "already_added": added_count},
       created_at=now
     )
-    return {"ok": True, "message": "Черновик {} отклонён; товары не добавлены в каталог.".format(import_row["format"].upper())}
+    message = (
+      "Черновик {} отклонён. Уже добавленные товары остались в каталоге; остальные строки не добавлены."
+      .format(import_row["format"].upper()) if added_count else
+      "Черновик {} отклонён; товары не добавлены в каталог.".format(import_row["format"].upper())
+    )
+    return {"ok": True, "message": message}
 
   if not isinstance(products, list) or len(products) > MAX_PDF_DRAFT_PRODUCTS:
     return {"ok": False, "message": "В черновике может быть не более {} товарных строк.".format(MAX_PDF_DRAFT_PRODUCTS)}
@@ -3648,39 +4058,33 @@ def save_pdf_catalog_draft(draft_id, products=None, action="save"):
 
   Catalog.ensure_catalog_categories()
   category_rows = list(app_tables.catalog_categories.search(active=True))
+  persisted_rows = _pdf_draft_item_rows(import_row)
+  persisted_by_id = {str(row.get_id()): row for row in persisted_rows}
+  pending_products = []
+  for index, product in enumerate(cleaned_products):
+    row = persisted_by_id.get(product.get("_draft_item_id")) if product.get("_draft_item_id") else None
+    if row is None and index < len(persisted_rows):
+      row = persisted_rows[index]
+    if row is not None and (row["data"] or {}).get("added_to_catalog"):
+      continue
+    pending_products.append((index, product))
+
   import_records = []
   validation_errors = []
-  for index, product in enumerate(cleaned_products, start=1):
-    record = {
-      "brand": product["brand"], "model": product["model"],
-      "sku": product["sku"], "type": product["type"],
-      "series": product["series"],
-      "description": product["description"],
-      "category_code": product["category_code"],
-      "subcategory_code": product["subcategory_code"],
-      "sale_price": product["sale_price"],
-      "purchase_price": product["purchase_price"],
-      "special_price": product["special_price"],
-      "discount": product["discount"], "markup": product["markup"],
-      "installation_price": product["installation_price"],
-      "currency": product["currency"], "quantity": product["quantity"],
-      "minimum_stock": product["minimum_stock"],
-      "image_url": product["image_urls"][0] if product["image_urls"] else ""
-    }
-    specs = json.loads(product["specs_json"] or "{}")
-    record["specifications"] = specs
+  for index, product in pending_products:
+    record = _pdf_product_record(product)
     _, error = _prepare_record(record, category_rows, import_row["source_name"], "")
     if error:
-      validation_errors.append("Товар {}: {}".format(index, error))
-    import_records.append(record)
-  duplicates = _duplicate_indexes(import_records)
+      validation_errors.append("Товар {}: {}".format(index + 1, error))
+    import_records.append((index, product, record))
+  duplicates = _duplicate_indexes([record for _, _, record in import_records])
   if duplicates:
     first_seen = {}
-    for index, record in enumerate(import_records):
+    for offset, (index, _, record) in enumerate(import_records):
       key = _record_key(record)
       if key is None:
         continue
-      if index in duplicates:
+      if offset in duplicates:
         validation_errors.append(
           "Товары {} и {} дублируют друг друга.".format(
             first_seen[key] + 1, index + 1
@@ -3693,64 +4097,65 @@ def save_pdf_catalog_draft(draft_id, products=None, action="save"):
 
   now = datetime.now(timezone.utc)
   _save_pdf_draft_rows(import_row, cleaned_products)
-  imported = 0
-  skipped = 0
-  for index, record in enumerate(import_records):
+  persisted_rows = _pdf_draft_item_rows(import_row)
+  persisted_by_id = {str(row.get_id()): row for row in persisted_rows}
+  newly_added = 0
+  unresolved = []
+  for index, prepared, record in import_records:
     state, message = _apply_record(record, category_rows, import_row, "", now)
-    prepared = cleaned_products[index]
-    _, product_row = Catalog.find_import_product(
+    identity_key, product_row = Catalog.find_import_product(
       prepared["brand"], prepared["model"], prepared["sku"]
     )
-    if product_row is not None:
-      media_rows = list(app_tables.product_media.search(
-        q.fetch_only("url", "type", "is_primary"), product=product_row
-      ))
-      existing_urls = {row["url"] for row in media_rows if row["url"]}
-      for image_index, image_url in enumerate(prepared["image_urls"]):
-        if image_url in existing_urls:
-          continue
-        app_tables.product_media.add_row(
-          product=product_row, url=image_url,
-          type="primary" if image_index == 0 and not existing_urls else "gallery",
-          is_primary=(image_index == 0 and not existing_urls), sort_order=image_index,
-          alt_text="{} {}".format(prepared["brand"], prepared["model"]).strip(),
-          source="{}: {}".format(import_row["format"].upper(), import_row["source_name"]),
-          checksum="", created_at=now
-        )
-        existing_urls.add(image_url)
-      for document in json.loads(prepared["documents_json"] or "[]"):
-        if next(iter(app_tables.catalog_documents.search(
-          q.fetch_only("url"), product=product_row, url=document["url"]
-        )), None) is None:
-          app_tables.catalog_documents.add_row(
-            title=document["title"], kind="technical", product=product_row,
-            url=document["url"], sort_order=0,
-            created_at=now
-          )
-    if state == "imported":
-      imported += 1
-    else:
-      skipped += 1
-      _log(import_row, "warning", message or "Запись не изменила существующий товар.", index + 1)
+    unchanged_existing = state == "skipped" and message == "Данные товара не изменились."
+    if product_row is None or (state == "skipped" and not unchanged_existing):
+      error_message = message or "Товар не добавлен из-за конфликта каталога."
+      unresolved.append("Товар {}: {}".format(index + 1, error_message))
+      _log(import_row, "warning", error_message, index + 1)
+      continue
+    _attach_pdf_product_media(import_row, prepared, product_row, now)
+    item_id = prepared.get("_draft_item_id")
+    draft_item_row = persisted_by_id.get(item_id) if item_id else None
+    if draft_item_row is None and index < len(persisted_rows):
+      draft_item_row = persisted_rows[index]
+    if draft_item_row is None:
+      unresolved.append("Товар {}: не найдена сохранённая строка черновика.".format(index + 1))
+      continue
+    _mark_pdf_draft_item_added(import_row, draft_item_row, product_row, now)
+    newly_added += 1
+
+  checkpoint.pop("products", None)
+  imported = import_row["imported"] or 0
+  skipped = import_row["skipped"] or 0
+  if unresolved:
+    import_row.update(
+      checkpoint=checkpoint, total=len(cleaned_products), imported=imported,
+      skipped=skipped, updated_at=now
+    )
+    return {
+      "ok": False, "message": "Часть товаров добавлена. Исправьте ошибки и запустите утверждение повторно.",
+      "errors": unresolved
+    }
+
   checkpoint.pop("products", None)
   import_row.update(
-    checkpoint=checkpoint, status="xlsx_approved" if is_xlsx else "pdf_approved", total=len(import_records),
-    processed=len(import_records), imported=imported, skipped=skipped,
+    checkpoint=checkpoint, status="xlsx_approved" if is_xlsx else "pdf_approved", total=len(cleaned_products),
+    processed=len(cleaned_products), imported=imported, skipped=skipped,
     source_file=import_row["source_file"] if checkpoint.get("needs_retry") else None,
     updated_at=now
   )
   if is_xlsx:
     _delete_xlsx_upload_chunks(import_row)
-  _log(import_row, "info", "Утверждено товаров: {}; без изменений: {}.".format(imported, skipped))
+  _log(import_row, "info", "Утверждено товаров: {}; добавлено сейчас: {}.".format(imported, newly_added))
   Core.log_audit(
     actor=user, action="catalog.{}_draft_approved".format(import_row["format"]), entity_type="import",
     entity_id=import_row.get_id(),
-    details={"products": len(import_records), "imported": imported, "skipped": skipped},
+    details={"products": len(cleaned_products), "imported": imported,
+             "added_now": newly_added, "skipped": skipped},
     created_at=now
   )
   return {
     "ok": True,
-    "message": "Черновик утверждён. Добавлено/обновлено: {}; без изменений: {}.".format(imported, skipped)
+    "message": "Черновик утверждён. Всего добавлено/обновлено: {}; добавлено сейчас: {}.".format(imported, newly_added)
   }
 
 

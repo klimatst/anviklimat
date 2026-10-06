@@ -29,6 +29,58 @@ class PDFDraftItem(PDFDraftItemTemplate):
     ]
     self.category_dropdown.selected_value = self.item.get("category_code")
     self._set_subcategories(self.item.get("subcategory_code"))
+    suggestion = self.item.get("category_suggestion")
+    if isinstance(suggestion, dict):
+      source_category = self.item.get("source_category") or self.item.get("source_subcategory")
+      self.category_suggestion_label.text = "Источник: {} · возможная категория: {} · совпадение {}%{}".format(
+        source_category or "не указан",
+        suggestion.get("title", ""),
+        int((suggestion.get("confidence") or 0) * 100),
+        " · проверьте вручную" if not suggestion.get("safe_to_apply") else ""
+      )
+      self.apply_category_suggestion_button.visible = bool(
+        suggestion.get("category_code") and suggestion.get("safe_to_apply")
+      ) and not self.item.get("added_to_catalog")
+    else:
+      source_category = self.item.get("source_category") or self.item.get("source_subcategory")
+      self.category_suggestion_label.text = (
+        "Источник: {} · категория не распознана — выберите вручную.".format(source_category)
+        if source_category else "Категория не распознана — выберите вручную."
+      )
+      self.apply_category_suggestion_button.visible = False
+    alternatives = self.item.get("category_alternatives") or []
+    self.category_alternatives_label.text = "Варианты: " + " · ".join(
+      "{} ({}%)".format(item.get("title", ""), int((item.get("confidence") or 0) * 100))
+      for item in alternatives[:3] if isinstance(item, dict) and item.get("title")
+    ) if alternatives else ""
+    if self.item.get("added_to_catalog"):
+      self.catalog_add_status.text = "Товар уже добавлен в каталог."
+      self.add_to_catalog_button.visible = False
+      self.add_to_catalog_button.enabled = False
+      self.remove_button.visible = False
+      for component_name in (
+        "brand_box", "model_box", "sku_box", "type_box", "category_dropdown",
+        "subcategory_dropdown", "price_box", "purchase_price_box", "special_price_box",
+        "discount_box", "markup_box", "installation_price_box", "currency_box",
+        "quantity_box", "minimum_stock_box", "series_box", "description_box",
+        "specs_box", "media_image_dropdown", "set_primary_image_button",
+        "add_gallery_image_button", "image_url_box", "extra_images_box", "documents_box"
+      ):
+        getattr(self, component_name).enabled = False
+    else:
+      self.catalog_add_status.text = ""
+      self.add_to_catalog_button.visible = bool(self.item.get("can_add_to_catalog"))
+      self.add_to_catalog_button.enabled = True
+      self.remove_button.visible = True
+      for component_name in (
+        "brand_box", "model_box", "sku_box", "type_box", "category_dropdown",
+        "subcategory_dropdown", "price_box", "purchase_price_box", "special_price_box",
+        "discount_box", "markup_box", "installation_price_box", "currency_box",
+        "quantity_box", "minimum_stock_box", "series_box", "description_box",
+        "specs_box", "media_image_dropdown", "set_primary_image_button",
+        "add_gallery_image_button", "image_url_box", "extra_images_box", "documents_box"
+      ):
+        getattr(self, component_name).enabled = True
 
   def set_media(self, images):
     self.media_image_dropdown.items = [("Выберите фото из исходного файла", None)] + [
@@ -86,6 +138,37 @@ class PDFDraftItem(PDFDraftItemTemplate):
   @handle("category_dropdown", "change")
   def category_dropdown_change(self, **event_args):
     self._set_subcategories()
+
+  @handle("apply_category_suggestion_button", "click")
+  def apply_category_suggestion_button_click(self, **event_args):
+    suggestion = self.item.get("category_suggestion")
+    if not isinstance(suggestion, dict) or not suggestion.get("safe_to_apply"):
+      return
+    root_code = suggestion.get("category_code")
+    if root_code not in self._categories_by_code:
+      return
+    root = self._categories_by_code[root_code]
+    if root.get("parent_code"):
+      return
+    self.category_dropdown.selected_value = root_code
+    self._set_subcategories(suggestion.get("subcategory_code") or None)
+    self.apply_category_suggestion_button.visible = False
+    self.category_suggestion_label.text = "Подсказка применена. Проверьте выбор и сохраните черновик."
+
+  @handle("add_to_catalog_button", "click")
+  def add_to_catalog_button_click(self, **event_args):
+    draft_id = self.item.get("_draft_id")
+    draft_item_id = self.item.get("_draft_item_id")
+    if not draft_id or not draft_item_id:
+      self.catalog_add_status.text = "Сначала сохраните черновик, чтобы товар получил отдельную запись."
+      return
+    product = self.get_product_data()
+    self.add_to_catalog_button.enabled = False
+    self.parent.raise_event(
+      "x-pdf-product-add-to-catalog", draft_id=draft_id,
+      draft_item_id=draft_item_id, position=self.item.get("_draft_position"),
+      product=product
+    )
 
   @handle("image_url_box", "change")
   def image_url_box_change(self, **event_args):

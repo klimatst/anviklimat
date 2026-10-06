@@ -69,6 +69,11 @@
       <anvil-component type="TextBox" name="series_box" prop:placeholder="Название или код серии" writeback:text="self.item['series']"></anvil-component>
     </div>
   </div>
+  <div class="pdf-draft-category-hint">
+    <anvil-component type="Label" name="category_suggestion_label" prop:role="status-message" prop:text=""></anvil-component>
+    <anvil-component type="Label" name="category_alternatives_label" prop:role="pdf-category-alternatives" prop:text=""></anvil-component>
+    <anvil-component type="Button" name="apply_category_suggestion_button" prop:text="Применить подсказку" prop:role="secondary-button" prop:visible="false"></anvil-component>
+  </div>
   <anvil-component type="Label" name="description_label" prop:text="Описание из документа"></anvil-component>
   <anvil-component type="TextArea" name="description_box" writeback:text="self.item['description']"></anvil-component>
   <anvil-component type="Label" name="specs_label" prop:text="Все характеристики и единицы измерения · JSON"></anvil-component>
@@ -89,5 +94,9 @@
   <anvil-component type="Label" name="documents_label" prop:text="Документы · JSON [{title, url}]"></anvil-component>
   <anvil-component type="TextArea" name="documents_box" writeback:text="self.item['documents_json']"></anvil-component>
   <anvil-component type="Label" name="evidence_label" prop:role="pdf-draft-evidence" prop:text=""></anvil-component>
+  <div class="pdf-draft-product-actions">
+    <anvil-component type="Button" name="add_to_catalog_button" prop:text="Добавить товар в каталог" prop:role="primary-action" prop:visible="false"></anvil-component>
+    <anvil-component type="Label" name="catalog_add_status" prop:role="status-message" prop:text=""></anvil-component>
+  </div>
   <anvil-component type="Button" name="remove_button" prop:text="Убрать из черновика" prop:role="secondary-button"></anvil-component>
 </anvil-form>

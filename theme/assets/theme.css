@@ -1874,6 +1874,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .pdf-draft-workspace { display: grid; grid-template-columns: minmax(215px, .72fr) minmax(0, 1.55fr); align-items: start; gap: 11px; }
 .pdf-draft-list-panel { min-width: 0; padding: 11px; border: 1px solid rgba(91, 145, 158, .2); border-radius: 10px; background: rgba(5, 13, 17, .34); }
 .pdf-draft-list-panel > .anvil-role-section-heading { margin: 0 0 8px; font-size: 13px; }
+.pdf-draft-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin: 7px 0; }
+.pdf-draft-pagination .anvil-role-status-message { flex: 1 1 145px; margin: 0; text-align: center; font-size: 9px; }
+.pdf-draft-pagination .anvil-button > button { min-height: 28px; padding-inline: 8px; font-size: 9px; }
 .pdf-draft-list > div { display: grid; gap: 6px; }
 .anvil-role-pdf-draft-list-item { min-width: 0; margin: 0; padding: 9px; border: 1px solid rgba(117, 157, 168, .14); border-radius: 8px; background: linear-gradient(145deg, rgba(20, 30, 37, .9), rgba(8, 13, 18, .95)); }
 .anvil-role-pdf-draft-list-item .anvil-role-section-heading { margin: 0 0 4px; font-size: 11px; }
@@ -1891,6 +1894,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
 .pdf-draft-product textarea.anvil-text-area { min-height: 60px; padding: 7px; font-size: 10px; }
 .pdf-draft-product .pdf-draft-fields + .anvil-label { margin-top: 8px; }
 .pdf-draft-product .anvil-role-pdf-draft-evidence { display: block; margin: 7px 0; padding: 7px 8px; border-left: 2px solid rgba(var(--theme-accent-rgb), .44); color: #91aeb4; background: rgba(var(--theme-accent-rgb), .035); font-size: 9px; line-height: 1.5; white-space: pre-line; }
+.pdf-draft-category-hint { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px 8px; margin: 7px 0; }
+.pdf-draft-category-hint .anvil-role-status-message,
+.pdf-draft-category-hint .anvil-role-pdf-category-alternatives { display: block; min-width: 0; margin: 0; color: #a9c0c4; font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+.pdf-draft-category-hint .anvil-role-pdf-category-alternatives { grid-column: 1 / -1; color: #829ba1; }
 .pdf-draft-product .anvil-button > button { min-height: 29px; padding-inline: 9px; font-size: 9px; }
 .anvil-role-pdf-draft-image { display: block; width: min(100%, 190px); max-height: 150px; margin: 8px 0; object-fit: contain; border: 1px solid rgba(117, 157, 168, .2); border-radius: 8px; background: rgba(4, 10, 13, .7); }
 .pdf-draft-images { margin-top: 9px; padding: 9px; border: 1px solid rgba(91, 145, 158, .16); border-radius: 8px; background: rgba(5, 13, 17, .26); }
