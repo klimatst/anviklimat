@@ -84,7 +84,7 @@ def prime_session_context(context):
 def get_site_theme():
   """Read and cache the public site theme for subsequent page layouts."""
   global _SITE_THEME_CACHE
-  if _SITE_THEME_CACHE not in ("blue", "graphite", "ice", "amber", "crimson", "violet"):
+  if _SITE_THEME_CACHE not in ("graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light"):
     try:
       theme = anvil.server.call("get_current_site_theme")
     except Exception:
