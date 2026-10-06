@@ -19,6 +19,14 @@ class Form1(Form1Template):
     self.home_gallery_empty.text = "Откройте полную галерею, чтобы посмотреть реализованные проекты."
     self.home_gallery_empty.visible = True
 
+  @handle("hero_project_button", "click")
+  def hero_project_button_click(self, **event_args):
+    Access.open_window("Projects")
+
+  @handle("hero_catalog_button", "click")
+  def hero_catalog_button_click(self, **event_args):
+    Access.open_window("Catalog")
+
   @handle("catalog_all_button", "click")
   def catalog_all_button_click(self, **event_args):
     Access.open_window("Catalog")
