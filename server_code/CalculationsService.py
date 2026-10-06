@@ -1568,7 +1568,8 @@ def save_structured_calculation(user, formula, inputs, coefficients, result, uni
 
 @anvil.server.callable
 def get_hvac_calculation_setup():
-  _ensure_seed_formulas()
+  # Setup is read-only reference data; seed formulas lazily on first calculation.
+  # Avoid a table lookup/write path on every calculator screen open.
   user = anvil.users.get_user()
   return {
     "ok": True,
