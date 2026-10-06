@@ -88,10 +88,10 @@ def get_site_theme():
     try:
       theme = anvil.server.call("get_current_site_theme")
     except Exception:
-      return "blue"
+      return "graphite"
     _SITE_THEME_CACHE = theme if theme in (
       "blue", "graphite", "ice", "amber", "crimson", "violet"
-    ) else "blue"
+    ) else "graphite"
   return _SITE_THEME_CACHE
 
 
