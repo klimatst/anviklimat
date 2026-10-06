@@ -174,7 +174,16 @@ class Projects(ProjectsTemplate):
     snapshot = result["snapshot"]
     self.engineering_stage_label.text = "{} · {}%".format(snapshot["stage_title"], snapshot["progress"])
     self.engineering_stage_description.text = snapshot["stage_description"]
-    self.engineering_score_label.text = "Engineering Score: {}/100".format(snapshot["engineering_score"])
+    profile_titles = {
+      "combined": "Комплексный HVAC",
+      "vrv_vrf": "VRV / VRF",
+      "ventilation": "Вентиляция",
+      "split_multi": "Сплит / мультисплит"
+    }
+    self.engineering_score_label.text = "Engineering Score: {}/100 · {}".format(
+      snapshot["engineering_score"],
+      profile_titles.get(snapshot.get("engineering_profile"), "HVAC")
+    )
     self.engineering_lifecycle_label.text = (
       "Объект {} · {} помещений · {} систем · {} компонентов · {} расчётов · {} смет · {} сервисных записей"
       .format(snapshot["object_name"] or "не задан", snapshot["room_count"], snapshot["system_count"],
