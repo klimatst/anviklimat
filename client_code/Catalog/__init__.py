@@ -74,7 +74,7 @@ class Catalog(CatalogTemplate):
 
   def _load_categories(self, category_code=None):
     try:
-      result = anvil.server.call("get_catalog_menu_tree", False, True)
+      result = anvil.server.call("get_catalog_menu_tree", True, True)
     except Exception as exc:
       self.catalog_message.text = "Сервер каталога временно недоступен. Показаны основные категории."
       result = self._fallback_catalog_result()
