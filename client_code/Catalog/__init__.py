@@ -16,6 +16,7 @@ class Catalog(CatalogTemplate):
     self._active_category_code = None
     self._category_navigation_open = False
     self._filters_open = False
+    self._filters_loaded = False
     self._categories = []
     self._categories_by_code = {}
     self._categories_by_id = {}
@@ -74,7 +75,6 @@ class Catalog(CatalogTemplate):
     self.product_detail_overlay.visible = False
 
     self._load_categories(category_code or ("air-conditioning" if not search_query else None))
-    self._load_filter_options()
     if self.sync_lovable_requested:
       self._sync_lovable_catalog()
     self._load_page()
@@ -147,6 +147,11 @@ class Catalog(CatalogTemplate):
 
     self._select_category(category_code, load=False)
 
+  def _ensure_filter_options(self):
+    if self._filters_loaded:
+      return
+    self._load_filter_options()
+
   def _load_filter_options(self):
     try:
       result = anvil.server.call("get_catalog_filter_options", self._filter_category_value())
@@ -179,6 +184,7 @@ class Catalog(CatalogTemplate):
     for name in ("brand_filter", "compressor_filter", "country_filter", "mode_filter",
                  "energy_filter", "installation_filter", "warranty_filter", "indoor_type_filter"):
       getattr(self, name).selected_value = None
+    self._filters_loaded = True
 
   def _scope_codes(self, category_code=None):
     if category_code in ("direction-home", "direction-business"):
@@ -254,7 +260,8 @@ class Catalog(CatalogTemplate):
     self._active_category_code = category_code
     self._refresh_heading()
     if load:
-      self._load_filter_options()
+      if self._filters_loaded:
+        self._load_filter_options()
       self._reset_and_load()
 
   def _reset_and_load(self):
@@ -433,6 +440,7 @@ class Catalog(CatalogTemplate):
 
   @handle("show_filters_button", "click")
   def show_filters_button_click(self, **event_args):
+    self._ensure_filter_options()
     self._filters_open = not self._filters_open
     self.catalog_view.classes["catalog-filters-open"] = self._filters_open
     self.show_filters_button.text = "Скрыть фильтры" if self._filters_open else "Фильтры"
