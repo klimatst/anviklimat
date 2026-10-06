@@ -16,6 +16,7 @@ _ADMIN_FORM_TITLES = {
   "Catalog": "Каталог и товары",
   "Catalog.ProductEditor": "Карточка товара",
   "Catalog.Orders": "Заявки каталога",
+  "PricePage": "Цены на монтаж",
   "Catalog.Media": "Медиа каталога",
   "Catalog.Taxonomy": "Категории и бренды",
   "ImportEngine": "Импорт каталога",
