@@ -752,7 +752,7 @@ def get_project_calculation_context(project_id):
   profile_to_calculation = {
     "combined": "ac",
     "vrv_vrf": "vrf_vrv",
-    "ventilation": "ac",
+    "ventilation": None,
     "split_multi": "ac"
   }
   return {
