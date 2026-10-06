@@ -1,0 +1,17 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="prices_conditioners_button" prop:text="Кондиционеры" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="prices_vrf_button" prop:text="VRV / VRF" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="prices_ventilation_button" prop:text="Вентиляция" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="На главную" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Цены"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <anvil-component type="ColumnPanel" name="price_shell" prop:role="card">
+      <anvil-component type="Label" name="price_status" prop:role="status-message" prop:text=""></anvil-component>
+      <anvil-component type="Html" name="price_html"></anvil-component>
+    </anvil-component>
+  </anvil-block>
+</anvil-form>
