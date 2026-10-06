@@ -513,6 +513,20 @@ def sync_hisense_lovable_catalog(force=False):
     series = series_map.get((assigned_category.get_id(), row["series"].casefold()))
     product = _find_product(row["model"], row["ns_code"])
     is_new = product is None
+    full_description = (
+      "{} Серия: {}. Тип: {}. "
+      "Охлаждение: {} кВт; обогрев: {} кВт; энергоэффективность: {}; "
+      "шум: {} дБ; внутренний блок: {}; наружный блок: {}; вес: {} кг. "
+      "НС-код: {}. Прайс-лист: {}."
+    ).format(
+      _category_description(row["category"]), row["series"],
+      _unit_type(row["series"], row["category"]),
+      row["cool"] or "—", row["heat"] or "—", row["energy"] or "—",
+      row["noise"] or "—", row["indoor_dim"] or "—",
+      row["outdoor_dim"] or "—", row["weight"] or "—",
+      row["ns_code"] or "—", CATALOG_VERSION
+    )[:2000]
+
     if product is None:
       product = app_tables.products.add_row(
         identity_key=Catalog.product_identity_key("Hisense", row["model"], row["ns_code"]),
@@ -520,9 +534,7 @@ def sync_hisense_lovable_catalog(force=False):
         sku_key=(row["ns_code"] or "").casefold(),
         category=category, subcategory=subcategory, series=series,
         type=_unit_type(row["series"], row["category"]),
-        description="{} Серия: {}. Прайс-лист от {}. Артикул НС: {}.".format(
-          _category_description(row["category"]), row["series"], CATALOG_VERSION, row["ns_code"]
-        )[:2000],
+        description=full_description,
         active=True, created_at=now, updated_at=now
       )
     else:
@@ -531,9 +543,7 @@ def sync_hisense_lovable_catalog(force=False):
         sku_key=(row["ns_code"] or "").casefold(),
         category=category, subcategory=subcategory, series=series,
         type=_unit_type(row["series"], row["category"]),
-        description="{} Серия: {}. Прайс-лист от {}. Артикул НС: {}.".format(
-          _category_description(row["category"]), row["series"], CATALOG_VERSION, row["ns_code"]
-        )[:2000],
+        description=full_description,
         active=True, updated_at=now
       )
 
