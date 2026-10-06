@@ -40,8 +40,8 @@
         </div>
         <div class="studio-integration-guide">
           <strong>Куда отправляются фото импорта</strong>
-          <anvil-component type="Label" name="media_storage_destination" prop:role="status-message" prop:text="Ручные фото карточек хранятся в Anvil Media; импорт PDF/XLSX отправляется в Cloudinary или ImageKit. Ссылки и контрольные суммы записываются отдельно."></anvil-component>
-          <anvil-component type="Label" name="media_storage_credentials" prop:role="status-message" prop:text="Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET. ImageKit: IMAGEKIT_PRIVATE_KEY. Добавьте ключи в этой панели или в Anvil → Services → Secrets."></anvil-component>
+          <anvil-component type="Label" name="media_storage_destination" prop:role="status-message" prop:text="Фото каталога можно хранить в GitHub: при наличии GITHUB_CATALOG_TOKEN новые изображения публикуются в репозитории, а Anvil хранит только быструю HTTPS-ссылку. Без токена сохраняется безопасный резерв Anvil Media."></anvil-component>
+          <anvil-component type="Label" name="media_storage_credentials" prop:role="status-message" prop:text="GitHub: GITHUB_CATALOG_TOKEN · Cloudinary: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET · ImageKit: IMAGEKIT_PRIVATE_KEY. Секреты задаются в этой панели или в Anvil → Services → Secrets."></anvil-component>
         </div>
         <div class="studio-integration-actions">
           <anvil-component type="Button" name="open_media_settings_button" prop:role="secondary-button" prop:text="Фото и хранилище"></anvil-component>
