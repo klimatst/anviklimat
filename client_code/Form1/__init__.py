@@ -64,8 +64,3 @@ class Form1(Form1Template):
   @handle("open_gallery_button", "click")
   def open_gallery_button_click(self, **event_args):
     Access.open_window("Gallery")
-
-
-  @handle("digital_twin_home_button", "click")
-  def digital_twin_home_button_click(self, **event_args):
-    Access.open_window("Projects")
