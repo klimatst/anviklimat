@@ -353,6 +353,19 @@ class AdminTools(AdminToolsTemplate):
         result.get("generated_at")
       )
     )
+    try:
+      quality = anvil.server.call("get_engineering_quality_gate")
+      if quality.get("ok"):
+        if quality.get("healthy"):
+          self.engineering_quality_status.text = "QUALITY GATE · OK"
+        else:
+          self.engineering_quality_status.text = (
+            "QUALITY GATE · {} замечаний".format(quality.get("issue_count", 0))
+          )
+      else:
+        self.engineering_quality_status.text = "QUALITY GATE · недоступен"
+    except Exception:
+      self.engineering_quality_status.text = "QUALITY GATE · ошибка проверки"
 
   def _load_dashboard(self):
     try:
