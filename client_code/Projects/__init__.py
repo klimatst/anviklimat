@@ -21,6 +21,8 @@ class Projects(ProjectsTemplate):
     self._current_cursor = None
     self._next_cursor = None
     self.project_editor.visible = False
+    self.engineering_lifecycle_panel.visible = False
+    self.engineering_control_button.visible = False
     self.project_calculation_button.visible = False
     self.rooms_panel.visible = False
     self.room_editor.visible = False
@@ -92,6 +94,9 @@ class Projects(ProjectsTemplate):
     self.room_rows.items = result["rooms"]
     self.system_rows.items = result["systems"]
     self.project_message.text = ""
+    self.engineering_lifecycle_panel.visible = True
+    self.engineering_control_button.visible = True
+    self._load_engineering_snapshot()
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
 
   def _save_project(self):
@@ -120,6 +125,31 @@ class Projects(ProjectsTemplate):
       self._open_project(self._project_id)
       self._cursor_stack = []
       self._load_page()
+
+
+  def _load_engineering_snapshot(self):
+    if not self._project_id:
+      return
+    try:
+      result = anvil.server.call("get_project_engineering_snapshot", self._project_id)
+    except Exception as exc:
+      self.engineering_stage_label.text = "Инженерный контур временно недоступен"
+      self.engineering_stage_description.text = str(exc)
+      return
+    if not result.get("ok"):
+      self.engineering_stage_label.text = "Инженерный контур недоступен"
+      self.engineering_stage_description.text = result.get("message", "")
+      return
+    snapshot = result["snapshot"]
+    self.engineering_stage_label.text = "{} · {}%".format(snapshot["stage_title"], snapshot["progress"])
+    self.engineering_stage_description.text = snapshot["stage_description"]
+    self.engineering_score_label.text = "Engineering Score: {}/100".format(snapshot["engineering_score"])
+    self.engineering_lifecycle_label.text = (
+      "Объект {} · {} помещений · {} систем · {} компонентов · {} расчётов · {} смет · {} сервисных записей"
+      .format(snapshot["object_name"] or "не задан", snapshot["room_count"], snapshot["system_count"],
+              snapshot["system_component_count"], snapshot["calculation_count"], snapshot["estimate_count"],
+              snapshot["service_count"])
+    )
 
   def _start_room(self):
     self._room_id = None
@@ -179,6 +209,10 @@ class Projects(ProjectsTemplate):
   def project_calculation_button_click(self, **event_args):
     if self._project_id:
       Access.open_window("Calculations", project_id=self._project_id)
+
+  @handle("engineering_control_button", "click")
+  def engineering_control_button_click(self, **event_args):
+    Access.open_admin_window("EngineeringControlRoom", window_title="Engineering Control Room")
 
 
   @handle("home_button", "click")
