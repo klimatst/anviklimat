@@ -55,6 +55,8 @@ class Calculations(CalculationsTemplate):
     self.save_calculation_button.enabled = self._signed_in
     self.create_quote_button.enabled = False
     self._load_projects()
+    if self._project_id:
+      self._apply_project_context(self._project_id)
     self._bind_auto_calculation()
     if module_code in self.profile_buttons:
       self._set_profile(module_code, calculate=False)
@@ -130,6 +132,70 @@ class Calculations(CalculationsTemplate):
     self.project_next_button.visible = result["has_more"]
     self.project_previous_button.visible = bool(self._project_cursor_stack)
     self.project_status.text = "Проектов на странице: {}. Используйте пагинацию для остальных.".format(len(result["rows"]))
+
+  def _apply_project_context(self, project_id):
+    if not project_id or not self._signed_in:
+      return
+    try:
+      result = anvil.server.call("get_project_calculation_context", project_id)
+    except Exception as exc:
+      self.project_status.text = "Контекст проекта недоступен: {}".format(exc)
+      return
+    if not result.get("ok"):
+      self.project_status.text = result.get("message", "Контекст проекта недоступен.")
+      return
+    project = result["project"]
+    self._updating_controls = True
+    try:
+      calc_profile = project.get("calculation_profile")
+      if calc_profile in self.profile_buttons:
+        self._set_profile(calc_profile, calculate=False)
+      rooms = project.get("rooms") or []
+      if rooms:
+        room = rooms[0]
+        self.room_name_box.text = room.get("name") or "Помещение 1"
+        self.area_box.text = str(room.get("area") or "")
+        self.height_box.text = str(room.get("height") or "")
+        room_parameters = room.get("parameters") or {}
+        if room_parameters.get("room_type") in self._room_type_titles:
+          self.room_type_dropdown.selected_value = room_parameters["room_type"]
+        if room_parameters.get("floor_type") in ("regular", "top"):
+          self.floor_type_dropdown.selected_value = room_parameters["floor_type"]
+        if room_parameters.get("exposure") in ("shade", "normal", "high"):
+          self.exposure_dropdown.selected_value = room_parameters["exposure"]
+        if room_parameters.get("people_count") is not None:
+          self.people_box.text = str(room_parameters["people_count"])
+        if room_parameters.get("equipment_kw") is not None:
+          self.equipment_heat_box.text = str(room_parameters["equipment_kw"])
+      goal_titles = {
+        "design": "проектирование",
+        "optimization": "оптимизация",
+        "modernization": "модернизация",
+        "commercial": "коммерческое предложение",
+        "installation": "подготовка к монтажу",
+        "service": "сервис"
+      }
+      priority_titles = {
+        "standard": "стандарт",
+        "speed": "сроки",
+        "capex": "CAPEX",
+        "opex": "OPEX",
+        "reliability": "надёжность"
+      }
+      details = [
+        "{} · {}".format(project["code"], project["title"]),
+        "цель: {}".format(goal_titles.get(project.get("engineering_goal"), project.get("engineering_goal", "проектирование"))),
+        "приоритет: {}".format(priority_titles.get(project.get("project_priority"), project.get("project_priority", "стандарт")))
+      ]
+      if project.get("constraints"):
+        details.append("ограничения: {}".format(project["constraints"][:180]))
+      if rooms:
+        details.append("автоматически загружено помещение: {}".format(rooms[0].get("name") or "№1"))
+      else:
+        details.append("помещения пока не заведены")
+      self.project_status.text = "Контекст проекта загружен · " + " · ".join(details)
+    finally:
+      self._updating_controls = False
 
   def _set_context_message(self):
     if self._system_id:
@@ -446,6 +512,8 @@ class Calculations(CalculationsTemplate):
   def project_dropdown_change(self, **event_args):
     self._project_id = self.project_dropdown.selected_value
     self._set_context_message()
+    if self._project_id:
+      self._apply_project_context(self._project_id)
     if self._ready:
       self._calculate_hvac()
 
