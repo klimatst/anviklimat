@@ -272,6 +272,8 @@ class AdminTools(AdminToolsTemplate):
     self.orders_button.visible = self._module_available_by_permission("catalog.manage")
     self.configure_widgets_button.visible = self._is_admin
     self.settings_button.visible = self._is_admin
+    self.design_button.visible = self._is_admin
+    self.health_button.visible = self._is_admin
     self.diagnostics_button.visible = self._is_admin
     self.missing_images_button.visible = self._module_available_by_permission("catalog.manage")
     self.catalog_button.visible = self._module_available_by_permission("catalog.manage")
@@ -438,6 +440,14 @@ class AdminTools(AdminToolsTemplate):
   @handle("settings_button", "click")
   def settings_button_click(self, **event_args):
     Access.open_admin_window("AdminSettings", window_title="Центр настроек")
+
+  @handle("design_button", "click")
+  def design_button_click(self, **event_args):
+    Access.open_admin_window("AdminSettings", window_title="Design Studio · визуальная система", start_section="design.visual.system", open_editor=True)
+
+  @handle("health_button", "click")
+  def health_button_click(self, **event_args):
+    Access.open_admin_window("SystemDiagnostics", window_title="System Health Center")
 
   @handle("diagnostics_button", "click")
   def diagnostics_button_click(self, **event_args):
