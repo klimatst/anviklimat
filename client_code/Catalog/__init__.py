@@ -133,12 +133,26 @@ class Catalog(CatalogTemplate):
     self._series = result.get("series", [])
 
     def page_nodes(nodes):
-      return [
-        dict(row, menu_mode=False, menu_label=row["title"],
-             selected=row["code"] == category_code,
-             children=page_nodes(row.get("children", [])))
-        for row in nodes
-      ]
+      safe_nodes = []
+      for raw in nodes or []:
+        if not isinstance(raw, dict):
+          continue
+        children = page_nodes(raw.get("children") or [])
+        node = dict(raw)
+        node.setdefault("id", node.get("code"))
+        node.setdefault("code", node.get("id"))
+        node.setdefault("title", "Категория")
+        node.setdefault("children", children)
+        node["children"] = children
+        node.setdefault("has_children", bool(children))
+        node["has_children"] = bool(children) or bool(node.get("has_children"))
+        node.setdefault("expand_icon", "›" if node["has_children"] else "")
+        node["expand_icon"] = node["expand_icon"] or ("›" if node["has_children"] else "")
+        node["menu_mode"] = False
+        node["menu_label"] = node.get("title") or "Категория"
+        node["selected"] = node.get("code") == category_code
+        safe_nodes.append(node)
+      return safe_nodes
     self.category_tree.items = page_nodes(result.get("tree", []))
     if self.can_edit_catalog:
       self.new_category_parent.items = [("Основной раздел", None)] + [
