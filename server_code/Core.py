@@ -346,7 +346,7 @@ def get_public_shell_data():
   import CatalogService
   import SiteMenuService
 
-  catalog = CatalogService.get_catalog_menu_tree(include_counts=False)
+  catalog = CatalogService.get_catalog_menu_tree(False, False)
   return {
     "ok": True,
     "site_theme": _current_site_theme(),
