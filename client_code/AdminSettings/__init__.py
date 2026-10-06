@@ -211,6 +211,9 @@ class AdminSettings(AdminSettingsTemplate):
     self.save_secret_button.enabled = False
     try:
       result = anvil.server.call("save_admin_secret", name, value)
+    except Exception as exc:
+      self.secret_editor_status.text = "Не удалось сохранить секрет: {}".format(exc)
+      return
     finally:
       self.save_secret_button.enabled = True
     self.secret_editor_status.text = result["message"]
@@ -232,6 +235,10 @@ class AdminSettings(AdminSettingsTemplate):
     self.clear_secret_button.enabled = False
     try:
       result = anvil.server.call("clear_admin_secret", secret_name)
+    except Exception as exc:
+      self.secrets_status.text = "Не удалось удалить секрет: {}".format(exc)
+      self.secret_editor_status.text = self.secrets_status.text
+      return
     finally:
       self.clear_secret_button.enabled = True
     self._load_secrets()
@@ -475,6 +482,9 @@ class AdminSettings(AdminSettingsTemplate):
     self.ai_tools_status.text = "ИИ обрабатывает текст…"
     try:
       result = anvil.server.call("run_admin_ai_tool", tool_id, source_text)
+    except Exception as exc:
+      self.ai_tools_status.text = "Не удалось выполнить AI-инструмент: {}".format(exc)
+      return
     finally:
       self.run_ai_tool_button.enabled = True
     if not result["ok"]:
@@ -540,6 +550,9 @@ class AdminSettings(AdminSettingsTemplate):
         "save_admin_studio_section", section["id"], values,
         self.module_enabled.checked
       )
+    except Exception as exc:
+      self.settings_status.text = "Не удалось сохранить настройки: {}".format(exc)
+      return
     finally:
       self.save_section_button.enabled = True
     self.settings_status.text = result["message"]
@@ -775,6 +788,9 @@ class AdminSettings(AdminSettingsTemplate):
     self.save_widgets_button.enabled = False
     try:
       result = anvil.server.call("save_admin_dashboard_widgets", widget_settings)
+    except Exception as exc:
+      self.widgets_status.text = "Не удалось сохранить Dashboard: {}".format(exc)
+      return
     finally:
       self.save_widgets_button.enabled = True
     self.widgets_status.text = result["message"]
@@ -880,6 +896,11 @@ class AdminSettings(AdminSettingsTemplate):
     self.extension_save_button.enabled = False
     try:
       result = anvil.server.call("save_admin_studio_extensions", candidate)
+    except Exception as exc:
+      message = "Не удалось сохранить расширения: {}".format(exc)
+      self.extensions_status.text = message
+      self.extension_editor_status.text = message
+      return
     finally:
       self.extension_save_button.enabled = True
     self.extensions_status.text = result["message"]
