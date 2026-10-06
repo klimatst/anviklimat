@@ -90,7 +90,7 @@ def get_site_theme():
     except Exception:
       return "graphite"
     _SITE_THEME_CACHE = theme if theme in (
-      "blue", "graphite", "ice", "amber", "crimson", "violet"
+      "graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light"
     ) else "graphite"
   return _SITE_THEME_CACHE
 
