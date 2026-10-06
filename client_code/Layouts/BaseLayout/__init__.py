@@ -155,7 +155,7 @@ class BaseLayout(BaseLayoutTemplate):
     if not result["ok"]:
       self._admin_options = options
       self.admin_global_picker_title.text = "Результаты поиска"
-      self.admin_global_picker_intro.text = result["message"]
+      self.admin_global_picker_intro.text = result.get("message") or "Совпадений не найдено."
       self.admin_global_picker_rows.items = [
         {"label": option[0], "option_index": index}
         for index, option in enumerate(options)
@@ -175,12 +175,12 @@ class BaseLayout(BaseLayoutTemplate):
       if route is None:
         continue
       form_name, permission, property_name = route
-      properties = {property_name: row["id"]}
-      if row["kind"] in ("order", "user"):
+      if not row.get("id"):\n        continue\n      properties = {property_name: row.get("id")}
+      if row.get("kind") in ("order", "user"):
         properties[property_name] = term
-      properties["window_title"] = row["title"]
+      properties["window_title"] = row.get("title") or "Запись"
       options.append((
-        "{} · {}".format(row["title"], row["detail"]),
+        "{} · {}".format(row.get("title") or "Запись", row.get("detail") or ""),
         form_name, properties, permission
       ))
 
