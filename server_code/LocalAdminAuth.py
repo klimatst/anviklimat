@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 import anvil.server
 import anvil.users
-import bcrypt
+import bcrypt  # type: ignore[reportMissingImports]  # Declared in server requirements.
 from anvil.tables import app_tables
 
 
@@ -47,7 +47,6 @@ def _ensure_local_admin_user(admin_role):
       confirmed_email=True,
       remembered_logins={},
       role=admin_role,
-      last_login=None,
       n_password_failures=0,
       permissions=["*"],
     )

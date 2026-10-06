@@ -510,7 +510,8 @@ def _calculate_installation(profile, raw_inputs, raw_materials=None,
       else "installation.pricing.acPremium"
     )
     configured_rate = AdminStudio.get_admin_studio_setting(price_key, None)
-    if Calculations.is_finite_number(configured_rate) and configured_rate >= 0:
+    if (Calculations.is_finite_number(configured_rate)
+        and isinstance(configured_rate, (int, float)) and configured_rate >= 0):
       rate_per_unit = configured_rate
       complexity_factor = 1.0
   elif profile == "vrf_vrv":
@@ -520,9 +521,11 @@ def _calculate_installation(profile, raw_inputs, raw_materials=None,
     configured_route = AdminStudio.get_admin_studio_setting(
       "installation.pricing.vrfMainRoute", None
     )
-    if Calculations.is_finite_number(configured_unit) and configured_unit >= 0:
+    if (Calculations.is_finite_number(configured_unit)
+        and isinstance(configured_unit, (int, float)) and configured_unit >= 0):
       rate_per_unit = configured_unit
-    if Calculations.is_finite_number(configured_route) and configured_route >= 0:
+    if (Calculations.is_finite_number(configured_route)
+        and isinstance(configured_route, (int, float)) and configured_route >= 0):
       rate_per_m = configured_route
   for value, label in (
     (rate_per_unit, "работа за единицу"),

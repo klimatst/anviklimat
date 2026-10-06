@@ -463,7 +463,7 @@ class Catalog(CatalogTemplate):
           "description": row.get("series_description") or "",
           "power_range": row.get("series_power_range") or "",
           "is_new": bool(row.get("series_is_new")),
-          "image_url": row.get("series_image_url") or "",
+          "image_url": row.get("series_image_url") or row.get("image_url") or "",
           "documents": row.get("series_documents", []),
           "models": [], "expanded": group_key == self._expanded_series_key
         }
