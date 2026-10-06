@@ -719,7 +719,11 @@ class AdminSettings(AdminSettingsTemplate):
 
   @handle("restore_ventilation_button", "click")
   def restore_ventilation_button_click(self, **event_args):
-    backups = anvil.server.call("list_ventilation_backups").get("backups", [])
+    try:
+      backups = anvil.server.call("list_ventilation_backups").get("backups", [])
+    except Exception as exc:
+      self.settings_status.text = "Не удалось получить резервные копии: {}".format(exc)
+      return
     if not backups:
       self.settings_status.text = "Резервных копий пока нет."
       return
