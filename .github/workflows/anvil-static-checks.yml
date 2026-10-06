@@ -1,0 +1,40 @@
+name: Anvil static checks
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  python-syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile Python sources
+        shell: bash
+        run: |
+          python -m compileall -q client_code server_code
+      - name: Check duplicate server definitions
+        shell: python
+        run: |
+          import pathlib, ast, sys
+          errors = []
+          for path in pathlib.Path("server_code").rglob("*.py"):
+              try:
+                  tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+              except SyntaxError as exc:
+                  errors.append(f"{path}: {exc}")
+                  continue
+              names = {}
+              for node in tree.body:
+                  if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                      names.setdefault(node.name, []).append(node.lineno)
+              for name, lines in names.items():
+                  if len(lines) > 1:
+                      errors.append(f"{path}: duplicate top-level {name}: {lines}")
+          if errors:
+              print("\n".join(errors))
+              sys.exit(1)
+          print("Server syntax and duplicate-definition checks passed.")
