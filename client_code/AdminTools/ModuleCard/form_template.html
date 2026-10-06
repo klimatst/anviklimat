@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="admin-module-card">
+  <div class="admin-module-card__top">
+    <anvil-component type="Label" name="module_icon" prop:role="admin-module-icon" bind:text="self.item['icon']"></anvil-component>
+    <anvil-component type="Label" name="module_badge" prop:role="admin-module-badge" bind:text="self.item['badge']"></anvil-component>
+  </div>
+  <anvil-component type="Label" name="module_title" prop:role="admin-module-title" bind:text="self.item['title']"></anvil-component>
+  <anvil-component type="Label" name="module_description" prop:role="admin-module-description" bind:text="self.item['description']"></anvil-component>
+  <anvil-component type="Button" name="open_button" prop:role="admin-module-open" prop:text="Открыть модуль"></anvil-component>
+</anvil-form>

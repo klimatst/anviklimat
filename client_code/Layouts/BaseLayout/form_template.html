@@ -115,29 +115,29 @@
         </div>
         <div class="admin-sidebar-context">
           <span class="admin-sidebar-context__dot"></span>
-          <div><strong>Рабочая среда</strong><small>Данные сайта и каталога</small></div>
+          <div><strong>Админ-пространство</strong><small>10 редакторов · модули проекта</small></div>
         </div>
         <anvil-component type="Button" name="admin_dashboard_nav" prop:text="Обзор проекта" prop:role="admin-dashboard-nav"></anvil-component>
-        <anvil-component type="Label" name="admin_global_nav_label" prop:role="eyebrow" prop:text="РАЗДЕЛЫ"></anvil-component>
+        <anvil-component type="Label" name="admin_global_nav_label" prop:role="eyebrow" prop:text="РАЗДЕЛЫ ПРОЕКТА"></anvil-component>
         <div class="admin-sidebar-menu">
-          <anvil-component type="Button" name="admin_catalog_nav" prop:text="Каталог и импорт" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_content_nav" prop:text="Контент и галерея" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_engineering_nav" prop:text="Инженерные инструменты" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_operations_nav" prop:text="Клиенты и сервис" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_social_nav" prop:text="Соцсети и каналы" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_system_nav" prop:text="Пользователи и система" prop:role="admin-nav"></anvil-component>
-          <anvil-component type="Button" name="admin_ai_nav" prop:text="ИИ и интеграции" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_catalog_nav" prop:text="▦  Каталог и импорт" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_content_nav" prop:text="▤  Контент и страницы" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_engineering_nav" prop:text="⌁  Инженерные модули" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_operations_nav" prop:text="◌  CRM и обслуживание" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_social_nav" prop:text="◎  Каналы и уведомления" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_system_nav" prop:text="⚙  Пользователи и система" prop:role="admin-nav"></anvil-component>
+          <anvil-component type="Button" name="admin_ai_nav" prop:text="✧  ИИ и подключения" prop:role="admin-nav"></anvil-component>
         </div>
         <anvil-component type="ColumnPanel" name="admin_global_subnav" prop:role="admin-subnav" prop:visible="false">
           <div class="admin-subnav__handle"><span></span><span></span><span></span></div>
-          <anvil-component type="Label" name="admin_global_picker_eyebrow" prop:role="eyebrow" prop:text="РАЗДЕЛ"></anvil-component>
+          <anvil-component type="Label" name="admin_global_picker_eyebrow" prop:role="eyebrow" prop:text="РАБОЧИЙ МОДУЛЬ"></anvil-component>
           <anvil-component type="Label" name="admin_global_picker_title" prop:role="section-heading" prop:text=""></anvil-component>
           <anvil-component type="Label" name="admin_global_picker_intro" prop:role="status-message" prop:text=""></anvil-component>
           <anvil-component type="RepeatingPanel" name="admin_global_picker_rows" prop:role="admin-picker-options" prop:item_template="Minimal_Theme_4.AdminTools.ToolOptionItem"></anvil-component>
-          <anvil-component type="Button" name="admin_global_close_button" prop:text="Закрыть окно" prop:role="secondary-button"></anvil-component>
+          <anvil-component type="Button" name="admin_global_close_button" prop:text="Назад к разделам" prop:role="secondary-button"></anvil-component>
         </anvil-component>
         <div class="admin-sidebar-footer">
-          <span>CMS · v2</span><span>Серверные права включены</span>
+          <span>KLIMA ECO · ADMIN</span><span>Права проверяются на сервере</span>
         </div>
       </anvil-component>
     </aside>
@@ -145,15 +145,15 @@
       <main class="page-main eco-main">
         <anvil-component type="ColumnPanel" name="admin_topbar" prop:role="admin-topbar" prop:visible="false">
           <div class="admin-topbar__identity">
-            <anvil-component type="Label" name="admin_topbar_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · CMS"></anvil-component>
+            <anvil-component type="Label" name="admin_topbar_eyebrow" prop:role="eyebrow" prop:text="ЭКО-КЛИМАТ · ЦЕНТР УПРАВЛЕНИЯ"></anvil-component>
             <anvil-component type="Label" name="admin_breadcrumb" prop:role="h1" prop:text="Обзор проекта"></anvil-component>
-            <span class="admin-topbar__trail">Управление сайтом · каталогом · заявками</span>
+            <span class="admin-topbar__trail">Сайт · редакторы · рабочие модули</span>
           </div>
           <div class="admin-topbar__tools">
-            <span class="admin-system-status"><span></span> Система в сети</span>
+            <span class="admin-system-status"><span></span> Панель управления</span>
             <div class="admin-global-search">
-              <anvil-component type="TextBox" name="admin_search_box" prop:role="admin-global-search-box" prop:placeholder="Поиск по товарам, страницам, заявкам…"></anvil-component>
-              <anvil-component type="Button" name="admin_search_button" prop:role="primary-action" prop:text="Найти"></anvil-component>
+              <anvil-component type="TextBox" name="admin_search_box" prop:role="admin-global-search-box" prop:placeholder="Найти модуль, товар, страницу…"></anvil-component>
+              <anvil-component type="Button" name="admin_search_button" prop:role="primary-action" prop:text="Поиск"></anvil-component>
             </div>
             <anvil-component type="Button" name="admin_profile_button" prop:text="Профиль" prop:role="secondary-button"></anvil-component>
             <anvil-component type="Button" name="admin_global_home_button" prop:text="На сайт" prop:role="secondary-button"></anvil-component>

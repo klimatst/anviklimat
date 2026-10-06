@@ -4863,6 +4863,295 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
   background: rgba(99, 217, 169, .07);
   font-size: 8px;
 }
+
+/* Module workspace: a compact, dark editor dashboard with distinct tools. */
+.admin-hub {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  max-width: 1560px;
+  margin: 0 auto;
+  color: var(--admin-text, #e9f4f0);
+}
+.admin-hub-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 166px;
+  padding: clamp(22px, 3vw, 34px);
+  overflow: hidden;
+  border: 1px solid rgba(102, 215, 171, .2);
+  border-radius: 20px;
+  background: radial-gradient(ellipse at 77% 0, rgba(65, 191, 145, .18), transparent 34%), linear-gradient(120deg, #14272e, #101d23 62%, #10231f);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .18), inset 0 1px rgba(255, 255, 255, .035);
+}
+.admin-hub-hero::after {
+  position: absolute;
+  right: -52px;
+  bottom: -116px;
+  width: 290px;
+  height: 250px;
+  border: 1px solid rgba(111, 222, 182, .14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 18px rgba(111, 222, 182, .025), 0 0 0 38px rgba(111, 222, 182, .018);
+  content: "";
+  pointer-events: none;
+}
+.admin-hub-hero__copy { position: relative; z-index: 1; max-width: 760px; }
+.admin-hub-hero__copy .anvil-role-eyebrow,
+.admin-hub-section-heading .anvil-role-eyebrow,
+.admin-hub-panel-heading .anvil-role-eyebrow {
+  display: block;
+  margin: 0 0 8px;
+  color: #70d9ae;
+  font-size: 9px;
+  font-weight: 820;
+  letter-spacing: .17em;
+}
+.admin-hub-hero__copy .anvil-role-lede {
+  display: block;
+  max-width: 710px;
+  color: #dcece7;
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 760;
+  line-height: 1.22;
+  letter-spacing: -.035em;
+}
+.admin-hub-hero__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.admin-hub-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 27px;
+  padding: 5px 9px;
+  border: 1px solid rgba(99, 217, 169, .23);
+  border-radius: 999px;
+  color: #9ce2c3;
+  background: rgba(80, 177, 139, .1);
+  font-size: 8px;
+  font-weight: 730;
+}
+.admin-hub-chip i { width: 6px; height: 6px; border-radius: 50%; background: #6cdaa9; box-shadow: 0 0 0 4px rgba(108, 218, 169, .1); }
+.admin-hub-chip--quiet { border-color: rgba(162, 194, 193, .13); color: #93aaa8; background: rgba(255, 255, 255, .025); }
+.admin-hub-hero__status {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  min-width: 235px;
+  padding: 14px 16px;
+  border: 1px solid rgba(148, 194, 181, .19);
+  border-radius: 14px;
+  background: rgba(4, 14, 18, .38);
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+}
+.admin-hub-status-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid rgba(106, 217, 171, .24);
+  border-radius: 11px;
+  color: #75dfb5;
+  background: rgba(83, 190, 148, .11);
+  font-size: 15px;
+}
+.admin-hub-hero__status strong { display: block; color: #d1e8df; font-size: 10px; }
+.admin-hub-hero__status .anvil-role-role-badge { display: block; margin-top: 4px; color: #82aaa0; font-size: 8px; line-height: 1.45; }
+.admin-hub-module-panel,
+.admin-hub-metrics-panel,
+.admin-hub-attention,
+.anvil-role-admin-hub-audit {
+  min-width: 0;
+  padding: clamp(16px, 2vw, 23px);
+  border: 1px solid var(--admin-line, rgba(169, 207, 208, .14));
+  border-radius: 17px;
+  background: linear-gradient(145deg, rgba(18, 31, 37, .97), rgba(12, 21, 26, .98));
+  box-shadow: 0 14px 36px rgba(0, 0, 0, .13), inset 0 1px rgba(255,255,255,.025);
+}
+.admin-hub-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 15px;
+  min-width: 0;
+}
+.admin-hub-section-heading .anvil-role-section-heading,
+.admin-hub-panel-heading .anvil-role-section-heading {
+  display: block;
+  margin: 0;
+  color: #e4f0ec;
+  font-size: clamp(17px, 1.8vw, 22px);
+  font-weight: 760;
+  letter-spacing: -.025em;
+}
+.admin-hub-section-heading > .anvil-role-status-message { margin: 0 0 2px; color: #7f9998; font-size: 9px; text-align: right; }
+.admin-hub-module-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 250px);
+  gap: 9px;
+  margin: 17px 0 14px;
+}
+.admin-hub-module-toolbar input.anvil-text-box,
+.admin-hub-module-toolbar select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 41px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid rgba(132, 169, 170, .19);
+  border-radius: 10px;
+  color: #e5f1ed;
+  background: #0d191e;
+  font-size: 11px;
+}
+.admin-hub-module-toolbar input.anvil-text-box::placeholder { color: #657e80; }
+.admin-hub-module-toolbar input.anvil-text-box:focus,
+.admin-hub-module-toolbar select:focus { border-color: rgba(99, 217, 169, .52); outline: 2px solid rgba(99, 217, 169, .1); }
+.anvil-role-admin-module-grid { min-width: 0; }
+.anvil-role-admin-module-grid > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 11px;
+}
+.anvil-role-admin-module-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+  align-content: start;
+  min-width: 0;
+  min-height: 184px;
+  margin: 0;
+  padding: 15px;
+  border: 1px solid rgba(129, 164, 164, .15);
+  border-radius: 13px;
+  background: linear-gradient(155deg, rgba(26, 43, 49, .92), rgba(16, 28, 33, .98));
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+  transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.anvil-role-admin-module-card:hover,
+.anvil-role-admin-module-card:focus-within {
+  border-color: rgba(105, 218, 171, .39);
+  background: linear-gradient(155deg, rgba(28, 51, 52, .97), rgba(16, 29, 33, .99));
+  box-shadow: 0 12px 25px rgba(0, 0, 0, .17), inset 0 1px rgba(255,255,255,.04);
+  transform: translateY(-2px);
+}
+.admin-module-card__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.anvil-role-admin-module-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  margin: 0;
+  border: 1px solid rgba(100, 215, 169, .19);
+  border-radius: 11px;
+  color: #85e2b9;
+  background: rgba(80, 183, 143, .1);
+  font-size: 15px;
+  font-weight: 780;
+}
+.anvil-role-admin-module-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  margin: 0;
+  padding: 4px 7px;
+  border: 1px solid rgba(129, 168, 166, .14);
+  border-radius: 999px;
+  color: #769594;
+  background: rgba(3, 12, 15, .28);
+  font-size: 7px;
+  font-weight: 820;
+  letter-spacing: .09em;
+}
+.anvil-role-admin-module-title { display: block; margin: 0 0 6px; color: #e2eeea; font-size: 13px; font-weight: 760; line-height: 1.35; }
+.anvil-role-admin-module-description { display: block; margin-bottom: 13px; color: #829b9a; font-size: 9px; line-height: 1.55; }
+.anvil-button.anvil-role-admin-module-open { align-self: end; margin: auto 0 0; }
+.anvil-button.anvil-role-admin-module-open > button {
+  min-height: 31px;
+  padding: 6px 9px;
+  border: 1px solid rgba(99, 217, 169, .18);
+  border-radius: 8px;
+  color: #9cddc0;
+  background: rgba(68, 161, 125, .07);
+  font-size: 8px;
+  font-weight: 720;
+  transition: .15s ease;
+}
+.anvil-button.anvil-role-admin-module-open > button::after { margin-left: 7px; color: #62d7a7; content: "↗"; }
+.anvil-button.anvil-role-admin-module-open > button:hover { border-color: rgba(99, 217, 169, .39); color: #e5fff3; background: rgba(68, 161, 125, .16); }
+.admin-hub-metrics-heading { margin: 1px 1px -8px; }
+.admin-hub-metrics-panel { padding: 15px; }
+.anvil-role-admin-metrics > div { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
+.anvil-role-admin-metric-card {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  min-height: 105px;
+  padding: 13px;
+  border: 1px solid rgba(129, 164, 164, .13);
+  border-radius: 12px;
+  background: rgba(5, 14, 18, .36);
+}
+.anvil-role-admin-metric-value { color: #9be6c5; font-size: 24px; font-weight: 820; letter-spacing: -.035em; }
+.anvil-role-admin-metric-label { margin-top: 4px; color: #8ca5a3; font-size: 9px; line-height: 1.45; }
+.admin-hub-lower { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.admin-hub-attention, .anvil-role-admin-hub-audit { display: grid; align-content: start; gap: 11px; }
+.admin-hub-panel-heading { display: flex; align-items: center; gap: 10px; }
+.admin-hub-panel-icon {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  border: 1px solid rgba(99, 217, 169, .19);
+  border-radius: 9px;
+  color: #78dbb2;
+  background: rgba(66, 157, 122, .09);
+  font-size: 12px;
+  font-weight: 850;
+}
+.admin-hub-panel-icon--alert { color: #f0c87e; border-color: rgba(229, 187, 107, .19); background: rgba(155, 111, 42, .1); }
+.admin-hub-panel-heading .anvil-role-eyebrow { margin-bottom: 4px; font-size: 7px; }
+.admin-hub-panel-heading .anvil-role-section-heading { font-size: 14px; }
+.anvil-role-admin-hub-attention-title { display: block; color: #e1eee8; font-size: 13px; font-weight: 760; }
+.admin-hub-attention .anvil-role-status-message { margin: 0; color: #91a9a6; font-size: 9px; line-height: 1.6; white-space: pre-line; }
+.admin-hub-card-footnote { margin-top: 2px; padding-top: 10px; border-top: 1px solid rgba(133, 170, 168, .1); color: #637c7c; font-size: 8px; }
+.anvil-role-admin-hub-audit { display: flex; flex-direction: column; }
+.anvil-role-admin-hub-audit-list { display: block; color: #92aaa6; font-size: 9px; line-height: 1.75; white-space: pre-line; overflow-wrap: anywhere; }
+.admin-hub-footer { display: flex; align-items: center; gap: 8px; margin-top: -5px; padding: 0 3px; color: #627b7c; font-size: 8px; line-height: 1.45; }
+.admin-hub-footer__dot { width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: #5ec997; box-shadow: 0 0 0 3px rgba(94, 201, 151, .09); }
+@media (max-width: 1180px) {
+  .anvil-role-admin-module-grid > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .anvil-role-admin-metrics > div { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 780px) {
+  .admin-hub-hero { align-items: stretch; flex-direction: column; gap: 17px; }
+  .admin-hub-hero__status { min-width: 0; }
+  .admin-hub-lower { grid-template-columns: minmax(0, 1fr); }
+  .anvil-role-admin-metrics > div { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+  .admin-hub { gap: 13px; }
+  .admin-hub-hero { min-height: auto; padding: 18px; border-radius: 15px; }
+  .admin-hub-module-panel, .admin-hub-metrics-panel, .admin-hub-attention, .anvil-role-admin-hub-audit { padding: 14px; border-radius: 14px; }
+  .admin-hub-section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .admin-hub-section-heading > .anvil-role-status-message { text-align: left; }
+  .admin-hub-module-toolbar { grid-template-columns: minmax(0, 1fr); }
+  .anvil-role-admin-module-grid > div, .anvil-role-admin-metrics > div { grid-template-columns: minmax(0, 1fr); }
+  .anvil-role-admin-module-card { min-height: 160px; }
+  .admin-hub-chip { font-size: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .anvil-role-admin-module-card, .anvil-button.anvil-role-admin-module-open > button { transition: none; }
+}
 .anvil-button.anvil-role-admin-metric-open > button:hover {
   border-color: rgba(99, 217, 169, .5);
   color: #dcfff0;

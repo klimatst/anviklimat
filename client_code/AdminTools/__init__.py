@@ -26,22 +26,142 @@ METRIC_ROUTES = {
   "settings_total": ("AdminSettings", "Центр настроек")
 }
 
-METRIC_GROUP_ROUTES = {
-  "Каталог": "Catalog",
-  "Медиа": "Catalog.Media",
-  "Заказы": "Catalog.Orders",
-  "Контент": "CMS",
-  "Рабочие процессы": "Operations",
-  "Проекты": "Projects",
-  "Пользователи": "AdminUsers",
-  "Интеграции": "AIOperator",
-  "Импорт и экспорт": "ImportEngine",
-  "Система": "SystemDiagnostics"
-}
+
+MODULES = [
+  {
+    "id": "pages", "title": "Редактор страниц", "group": "Редакторы",
+    "description": "Создание, изменение и публикация страниц и материалов сайта.",
+    "icon": "▤", "badge": "CMS", "form": "CMS", "permission": "cms.manage",
+    "properties": {"window_title": "Редактор страниц · CMS"}
+  },
+  {
+    "id": "navigation", "title": "Меню и навигация", "group": "Редакторы",
+    "description": "Настройка ссылок, порядка разделов и пунктов меню.",
+    "icon": "⌘", "badge": "САЙТ", "form": "SiteMenu", "permission": "cms.manage",
+    "properties": {"window_title": "Меню и навигация сайта"}
+  },
+  {
+    "id": "appearance", "title": "Цвета и тема", "group": "Редакторы",
+    "description": "Палитра, плотность интерфейса и эффекты переходов.",
+    "icon": "◉", "badge": "ДИЗАЙН", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Редактор темы и цветов", "start_section": "site.appearance", "open_editor": True}
+  },
+  {
+    "id": "typography", "title": "Типографика", "group": "Редакторы",
+    "description": "Размеры текста, начертания и иерархия заголовков.",
+    "icon": "Aa", "badge": "ДИЗАЙН", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Редактор типографики", "start_section": "site.typography", "open_editor": True}
+  },
+  {
+    "id": "header", "title": "Шапка и навигация", "group": "Редакторы",
+    "description": "Контактная полоса, быстрые кнопки и поведение шапки.",
+    "icon": "▱", "badge": "БЛОКИ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Редактор шапки сайта", "start_section": "site.header", "open_editor": True}
+  },
+  {
+    "id": "homepage", "title": "Главная страница", "group": "Редакторы",
+    "description": "Первый экран, блоки витрины и главные действия.",
+    "icon": "⌂", "badge": "БЛОКИ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Конструктор главной", "start_section": "site.home.hero", "open_editor": True}
+  },
+  {
+    "id": "seo", "title": "SEO сайта", "group": "Редакторы",
+    "description": "Заголовки, описания и правила индексации страниц.",
+    "icon": "⌕", "badge": "ПОИСК", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "SEO редактор сайта", "start_section": "site.seo", "open_editor": True}
+  },
+  {
+    "id": "catalog_seo", "title": "SEO каталога", "group": "Редакторы",
+    "description": "Шаблоны поисковых заголовков и индексация каталога.",
+    "icon": "⌕", "badge": "КАТАЛОГ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "SEO редактор каталога", "start_section": "site.seo.catalog", "open_editor": True}
+  },
+  {
+    "id": "scripts", "title": "Редактор CSS и JavaScript", "group": "Редакторы",
+    "description": "Управляемые расширения оформления и поведения сайта.",
+    "icon": "{ }", "badge": "КОД", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "CSS и JavaScript · расширения", "start_tab": "extensions"}
+  },
+  {
+    "id": "ai_content", "title": "AI редактор", "group": "Редакторы",
+    "description": "Инструменты генерации и редактирования контента проекта.",
+    "icon": "✧", "badge": "AI STUDIO", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "AI Studio · редакторы контента", "start_tab": "ai_tools"}
+  },
+  {
+    "id": "catalog", "title": "Каталог и товары", "group": "Каталог",
+    "description": "Карточки, цены, категории, бренды и остатки.",
+    "icon": "▦", "badge": "ТОВАРЫ", "form": "Catalog", "permission": "catalog.manage",
+    "properties": {"window_title": "Каталог товаров"}
+  },
+  {
+    "id": "media", "title": "Медиа и фотохранилище", "group": "Каталог",
+    "description": "Фото товаров, облачные ссылки и записи без изображений.",
+    "icon": "▧", "badge": "МЕДИА", "form": "Catalog.Media", "permission": "catalog.manage",
+    "properties": {"window_title": "Медиа каталога"}
+  },
+  {
+    "id": "drafts", "title": "Черновики импорта", "group": "Каталог",
+    "description": "Проверка PDF/XLSX, категории и точечное добавление товаров.",
+    "icon": "⇧", "badge": "ИМПОРТ", "form": "ImportEngine", "permission": "import.manage",
+    "properties": {"window_title": "Черновики импорта", "drafts_only": True}
+  },
+  {
+    "id": "calculations", "title": "Формулы и расчёты", "group": "Инженерия",
+    "description": "Инженерные формулы, правила расчётов и калькуляторы.",
+    "icon": "∑", "badge": "РАСЧЁТЫ", "form": "Calculations", "permission": "calculations.manage",
+    "properties": {"window_title": "Инженерные расчёты"}
+  },
+  {
+    "id": "ventilation", "title": "Расчёт вентиляции", "group": "Инженерия",
+    "description": "Страница вентиляции, поля калькулятора, формулы и тарифы.",
+    "icon": "↗", "badge": "ИНЖЕНЕРИЯ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Управление вентиляцией", "start_section": "ventilation.page", "open_editor": True}
+  },
+  {
+    "id": "projects", "title": "Проекты и системы", "group": "Инженерия",
+    "description": "Объекты, помещения и спецификации оборудования.",
+    "icon": "⌗", "badge": "ПРОЕКТЫ", "form": "Projects", "permission": "projects.manage",
+    "properties": {"window_title": "Проекты и системы"}
+  },
+  {
+    "id": "crm", "title": "Клиенты и обслуживание", "group": "Операции",
+    "description": "CRM, сделки, сервисные обращения и задачи.",
+    "icon": "◌", "badge": "CRM", "form": "Operations", "permission": "operations.manage",
+    "properties": {"window_title": "CRM и обслуживание", "section": "crm"}
+  },
+  {
+    "id": "widgets", "title": "Виджеты Dashboard", "group": "Система",
+    "description": "Состав рабочего стола и порядок ключевых показателей.",
+    "icon": "▥", "badge": "РАБОЧИЙ СТОЛ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Настройка Dashboard", "start_tab": "widgets"}
+  },
+  {
+    "id": "secrets", "title": "Секреты и API", "group": "Система",
+    "description": "Cloudinary, AI-провайдеры и защищённые серверные ключи.",
+    "icon": "⌑", "badge": "ИНТЕГРАЦИИ", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Секреты и подключения", "start_tab": "secrets"}
+  },
+  {
+    "id": "backups", "title": "Резервные копии", "group": "Система",
+    "description": "Экспорт, восстановление и резервирование данных проекта.",
+    "icon": "⤓", "badge": "БЕЗОПАСНОСТЬ", "form": "Backup", "permission": None,
+    "properties": {"window_title": "Резервные копии"}
+  },
+  {
+    "id": "diagnostics", "title": "Диагностика системы", "group": "Система",
+    "description": "Сводка проверок, журнал событий и состояние модулей.",
+    "icon": "⌁", "badge": "СИСТЕМА", "form": "SystemDiagnostics", "permission": None,
+    "properties": {"window_title": "Системная диагностика"}
+  }
+]
+
+
+MODULE_GROUPS = ("Редакторы", "Каталог", "Инженерия", "Операции", "Система")
 
 
 class AdminTools(AdminToolsTemplate):
-  """The landing page for staff: live status, attention items and shortcuts."""
+  """The redesigned module workspace for staff and administrators."""
 
   def __init__(self, **properties):
     super().__init__(**properties)
@@ -50,19 +170,50 @@ class AdminTools(AdminToolsTemplate):
 
     self._context = Access.get_session_context()
     self._is_admin = self._context["role_code"] == "admin"
-    permissions = set(self._context["permissions"])
-
-    self.orders_button.visible = (
-      self._is_admin or "catalog.manage" in permissions
-    )
+    self._permissions = set(self._context["permissions"])
+    self._modules = [module for module in MODULES if self._module_available(module)]
+    self.module_group_dropdown.items = [("Все модули", "Все")] + [
+      (group, group) for group in MODULE_GROUPS
+      if any(module["group"] == group for module in self._modules)
+    ]
+    self.module_group_dropdown.selected_value = "Все"
+    self.orders_button.visible = self._module_available_by_permission("catalog.manage")
     self.configure_widgets_button.visible = self._is_admin
     self.settings_button.visible = self._is_admin
     self.diagnostics_button.visible = self._is_admin
-    self.missing_images_button.visible = self.orders_button.visible
-    self.catalog_button.visible = self.orders_button.visible
-    self.content_button.visible = self._is_admin or "cms.manage" in permissions
+    self.missing_images_button.visible = self._module_available_by_permission("catalog.manage")
+    self.catalog_button.visible = self._module_available_by_permission("catalog.manage")
+    self.content_button.visible = self._module_available_by_permission("cms.manage")
     self.audit_panel.visible = self._is_admin
+    self._render_modules()
     self._load_dashboard()
+
+  def _module_available_by_permission(self, permission):
+    return self._is_admin or permission in self._permissions or "*" in self._permissions
+
+  def _module_available(self, module):
+    permission = module.get("permission")
+    return self._is_admin if permission is None else self._module_available_by_permission(permission)
+
+  def _filtered_modules(self):
+    term = (self.module_search_box.text or "").strip().casefold()
+    selected_group = self.module_group_dropdown.selected_value or "Все"
+    modules = self._modules
+    if selected_group != "Все":
+      modules = [module for module in modules if module["group"] == selected_group]
+    if term:
+      modules = [module for module in modules if term in " ".join((
+        module["title"], module["description"], module["badge"], module["group"]
+      )).casefold()]
+    return [dict(module) for module in modules]
+
+  def _render_modules(self):
+    filtered = self._filtered_modules()
+    self.module_rows.items = filtered
+    self.module_status.text = "{} из {} модулей · {} визуальных редакторов".format(
+      len(filtered), len(self._modules),
+      sum(1 for module in self._modules if module["group"] == "Редакторы")
+    )
 
   def _load_dashboard(self):
     result = anvil.server.call("get_admin_dashboard")
@@ -70,43 +221,41 @@ class AdminTools(AdminToolsTemplate):
       self.analytics_summary.items = []
       self.analytics_status.text = result["message"]
       self.attention_summary.text = "Не удалось загрузить состояние проекта."
+      self.attention_detail.text = "Обновите данные или откройте раздел диагностики."
       return
 
     self.analytics_summary.items = result["widgets"]
-    self.analytics_status.text = "Виджетов на рабочем столе: {}".format(
+    self.analytics_status.text = "Показателей: {}".format(
       result["widgets_available_count"]
     )
     self.analytics_updated.text = "Обновлено: {} UTC".format(result["as_of"])
 
     missing_images = next(
       (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Товары без изображений"),
-      0
+       if metric["label"] == "Товары без изображений"), 0
     )
     new_orders = next(
       (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Новые заявки каталога"),
-      0
+       if metric["label"] == "Новые заявки каталога"), 0
     )
     incomplete_products = next(
       (metric["value"] for metric in result["metrics"]
-       if metric["label"] == "Товары без описания"),
-      0
+       if metric["label"] == "Товары без описания"), 0
     )
     attention = []
     if new_orders:
       attention.append("Новых заявок: {}".format(new_orders))
     if missing_images:
-      attention.append("Товаров без изображений: {}".format(missing_images))
+      attention.append("Товаров без фото: {}".format(missing_images))
     if incomplete_products:
       attention.append("Карточек без описания: {}".format(incomplete_products))
     self.attention_summary.text = (
       "Требуют внимания: {}".format(len(attention)) if attention else
-      "Все ключевые показатели загружены"
+      "Критических задач нет"
     )
     self.attention_detail.text = (
       "\n".join(attention) if attention else
-      "Критичных задач по каталогу нет. Данные сводки получены из текущих таблиц проекта."
+      "Каталог, заявки и страницы готовы к работе. Показатели загружены из проекта."
     )
 
     if self._is_admin:
@@ -114,13 +263,20 @@ class AdminTools(AdminToolsTemplate):
         result.get("recent_audit", [])
       ) or "В журнале пока нет событий."
 
-  @handle("refresh_button", "click")
-  def refresh_button_click(self, **event_args):
-    self.refresh_button.enabled = False
-    try:
-      self._load_dashboard()
-    finally:
-      self.refresh_button.enabled = True
+  @handle("module_search_box", "change")
+  def module_search_box_change(self, **event_args):
+    self._render_modules()
+
+  @handle("module_group_dropdown", "change")
+  def module_group_dropdown_change(self, **event_args):
+    self._render_modules()
+
+  @handle("module_rows", "x-open-admin-module")
+  def module_rows_open_admin_module(self, module_id, **event_args):
+    module = next((item for item in self._modules if item["id"] == module_id), None)
+    if module is None:
+      return
+    Access.open_admin_window(module["form"], **dict(module["properties"]))
 
   @handle("analytics_summary", "x-open-metric")
   def analytics_summary_open_metric(self, metric, **event_args):
@@ -141,9 +297,7 @@ class AdminTools(AdminToolsTemplate):
       )
       return
     route = METRIC_ROUTES.get(metric_id)
-    target = route[0] if route else METRIC_GROUP_ROUTES.get(
-      str(metric.get("group") or ""), "AdminSettings"
-    )
+    target = route[0] if route else "AdminSettings"
     if route:
       title = route[1]
     properties = {"window_title": title}
@@ -151,25 +305,35 @@ class AdminTools(AdminToolsTemplate):
       properties["section"] = "service" if metric_id.startswith("service_") else "crm"
     Access.open_admin_window(target, **properties)
 
+  @handle("refresh_button", "click")
+  def refresh_button_click(self, **event_args):
+    self.refresh_button.enabled = False
+    try:
+      self._load_dashboard()
+    finally:
+      self.refresh_button.enabled = True
+
   @handle("orders_button", "click")
   def orders_button_click(self, **event_args):
-    Access.open_admin_window("Catalog.Orders")
+    Access.open_admin_window("Catalog.Orders", window_title="Заявки каталога")
 
   @handle("missing_images_button", "click")
   def missing_images_button_click(self, **event_args):
-    Access.open_admin_window("Catalog.Media")
+    Access.open_admin_window("Catalog.Media", window_title="Медиа каталога")
 
   @handle("catalog_button", "click")
   def catalog_button_click(self, **event_args):
-    Access.open_admin_window("Catalog")
+    Access.open_admin_window("Catalog", window_title="Каталог товаров")
 
   @handle("content_button", "click")
   def content_button_click(self, **event_args):
-    Access.open_admin_window("CMS")
+    Access.open_admin_window("CMS", window_title="Страницы и контент")
 
   @handle("configure_widgets_button", "click")
   def configure_widgets_button_click(self, **event_args):
-    Access.open_admin_window("AdminSettings", window_title="Настройки Dashboard")
+    Access.open_admin_window(
+      "AdminSettings", window_title="Настройка Dashboard", start_tab="widgets"
+    )
 
   @handle("settings_button", "click")
   def settings_button_click(self, **event_args):
@@ -177,4 +341,4 @@ class AdminTools(AdminToolsTemplate):
 
   @handle("diagnostics_button", "click")
   def diagnostics_button_click(self, **event_args):
-    Access.open_admin_window("SystemDiagnostics")
+    Access.open_admin_window("SystemDiagnostics", window_title="Системная диагностика")
