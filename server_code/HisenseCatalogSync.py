@@ -61,7 +61,10 @@ PHOTO_URLS = {
   "accessory": "https://images.breez.ru/catalog/hisense/accessories/accessories-01.png",
 }
 
-IMAGE_SOURCE = "Lovable Hisense catalog · external catalog CDN"
+IMAGE_SOURCE = "GitHub · synced from Lovable Hisense catalog"
+CDN_IMAGE_SOURCE = "Lovable Hisense catalog · external catalog CDN"
+
+GITHUB_PHOTO_BASE = "https://raw.githubusercontent.com/klimatst/anviklimat/master/theme/assets/catalog/hisense"
 SOURCE_URL = "https://github.com/klimatst/anviklimat/blob/master/server_code/HisenseLovableCatalogData.py"
 
 
@@ -282,7 +285,9 @@ def _parse_rows():
         "heat": _safe_float(heat), "energy": energy or "", "noise": noise or "",
         "indoor_dim": indoor_dim or "", "outdoor_dim": outdoor_dim or "",
         "weight": weight or "", "series": series, "ns_code": ns_code or "",
-        "category": category, "photo_key": photo_key, "photo_url": photo_url
+        "category": category, "photo_key": photo_key,
+        "photo_url": (GITHUB_PHOTO_BASE + "/" + photo_key + ".png") if photo_key else "",
+        "photo_fallback_url": photo_url
       })
   return rows
 
@@ -548,6 +553,7 @@ def sync_hisense_lovable_catalog(force=False):
     _upsert_spec(product, "Тип оборудования", _unit_type(row["series"], row["category"]), "", 100)
     _upsert_spec(product, "Категория Lovable", row["category"], "", 110)
     _upsert_spec(product, "Фото", row["photo_url"], "", 120)
+    _upsert_spec(product, "Резервная ссылка фото", row.get("photo_fallback_url", ""), "", 125)
     _upsert_spec(product, "Источник фото", IMAGE_SOURCE, "", 130)
     _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])
     source = next(iter(app_tables.product_sources.search(product=product)), None)
