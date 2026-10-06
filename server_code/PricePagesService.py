@@ -383,6 +383,11 @@ def _seed_price_pages():
         "seo_description": meta["seo_description"],
         "keywords": "цены, монтаж, кондиционеры, VRV, VRF, вентиляция, ЭКО-КЛИМАТ",
         "social_image_url": meta["image"],
+        "price_source": {
+          "conditioners": SOURCE_CONDITIONING,
+          "vrf": SOURCE_VRF,
+          "ventilation": SOURCE_VENTILATION,
+        }[code],
         "price_category": "prices",
         "price_code": code,
       },
@@ -445,7 +450,7 @@ def get_price_page(code):
     "code": code,
     "slug": slug,
     "title": meta["title"],
-    "html": PAGE_HTML[code](_fallback=True) if False else PAGE_HTML[code](),
+    "html": PAGE_HTML[code](),
     "updated_at": "",
     "source": {
       "conditioners": SOURCE_CONDITIONING,
