@@ -1065,3 +1065,68 @@ html,body{overflow-x:hidden}
 .eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-card *{color:inherit}
 @media(max-width:1050px){.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.eco-site-shell[class*="site-theme--"] .catalog-view .catalog-product-grid{grid-template-columns:1fr}}
+
+/* KLIMA ECO COMPACT WORKSPACE OVERRIDES */
+:root{--ke-content-max:1240px;--ke-workspace-max:1180px;--ke-panel:#10191f;--ke-panel-2:#0c1419;--ke-line:rgba(145,177,184,.16);--ke-accent:var(--blank-primary)}
+.page-main,.eco-main{width:min(var(--ke-content-max),calc(100% - 32px));padding:28px 0 48px}
+.page-title-wrap{margin-bottom:16px}
+.page-title-wrap .anvil-role-h1{font-size:28px}
+.admin-os{width:min(var(--ke-workspace-max),100%);margin:0 auto;display:grid;grid-template-columns:188px minmax(0,1fr);gap:14px;align-items:start}
+.admin-os__sidebar{position:sticky;top:88px;align-self:start;padding:14px;border:1px solid var(--ke-line);border-radius:14px;background:linear-gradient(160deg,#111c22,#0b1217);box-shadow:0 16px 38px rgba(0,0,0,.22)}
+.admin-os__brand{display:flex;align-items:center;gap:9px;padding:4px 4px 15px;margin-bottom:10px;border-bottom:1px solid var(--ke-line)}
+.admin-os__brand-mark{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;color:#06110f;background:linear-gradient(145deg,#b2ecd9,var(--theme-accent-strong));font-size:13px;font-weight:900}
+.admin-os__brand strong{display:block;font-size:9px;letter-spacing:.14em;color:#edf7f6}
+.admin-os__brand small{display:block;margin-top:3px;color:#71848a;font-size:7px;letter-spacing:.13em}
+.admin-os__section-label{margin:11px 5px 6px;color:#61747a;font-size:8px;font-weight:800;letter-spacing:.16em}
+.anvil-button.admin-sidebar-link>button{width:100%;min-height:34px;margin:2px 0;padding:0 9px;border-color:transparent;border-radius:8px;color:#8fa2a7;background:transparent;box-shadow:none;text-align:left;font-size:10px;font-weight:700}
+.anvil-button.admin-sidebar-link>button:hover,.anvil-button.admin-sidebar-link-active>button{border-color:rgba(var(--theme-accent-rgb),.2);color:#e9f8f5;background:rgba(var(--theme-accent-rgb),.075);transform:none}
+.admin-os__sidebar-foot{display:flex;align-items:center;gap:6px;margin:13px 4px 2px;padding-top:10px;border-top:1px solid var(--ke-line);color:#65777d;font-size:7px;font-weight:800;letter-spacing:.11em}
+.admin-os__live-dot{width:6px;height:6px;border-radius:50%;background:#55c59d;box-shadow:0 0 9px rgba(85,197,157,.5)}
+.admin-os__workspace{min-width:0}
+.admin-os__topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:10px;padding:14px 16px;border:1px solid var(--ke-line);border-radius:13px;background:rgba(14,23,28,.88)}
+.admin-os__status{display:flex;flex-direction:column;align-items:flex-end;color:#63767c;font-size:7px;font-weight:800;letter-spacing:.14em}
+.admin-os__status strong{margin-top:3px;color:var(--ke-accent);font-size:8px}
+.admin-os__engineering{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px;padding:14px 16px;border:1px solid rgba(var(--theme-accent-rgb),.19);border-radius:13px;background:linear-gradient(110deg,rgba(18,39,41,.72),rgba(12,21,26,.95))}
+.admin-os__engineering .anvil-role-section-heading{margin:2px 0 3px;font-size:16px}
+.admin-os__engineering .anvil-role-status-message{margin:0;font-size:10px}
+.admin-os__toolbar{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:9px}
+.admin-os__toolbar .anvil-role-section-heading{margin:2px 0 0;font-size:18px}
+.admin-os__toolbar-controls{width:min(300px,45%)}
+.admin-os__toolbar-controls input.anvil-text-box{min-height:36px;font-size:10px}
+.admin-os__toolbar-controls .anvil-role-status-message{display:none}
+.admin-os__attention{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;margin-top:14px;padding:12px 15px;border:1px solid var(--ke-line);border-radius:12px;background:#0d161b}
+.admin-os__attention .anvil-role-section-heading{margin:2px 0;font-size:14px}
+.admin-os__attention .anvil-role-status-message{margin:0;font-size:9px}
+.anvil-role-admin-module-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.anvil-role-admin-module-card{min-width:0;min-height:150px;padding:14px;border:1px solid var(--ke-line);border-radius:11px;background:linear-gradient(145deg,#121d23,#0d151a);box-shadow:inset 0 1px rgba(255,255,255,.035);transition:transform 150ms ease,border-color 150ms ease}
+.anvil-role-admin-module-card:hover{transform:translateY(-2px);border-color:rgba(var(--theme-accent-rgb),.32)}
+.admin-module-card__top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.admin-module-card__identity{display:flex;align-items:center;gap:7px}
+.admin-module-card__index{color:#55676d;font-size:7px;letter-spacing:.14em}
+.anvil-role-admin-module-icon{color:var(--ke-accent);font-size:16px;font-weight:800}
+.anvil-role-admin-module-badge{padding:3px 6px;border:1px solid rgba(var(--theme-accent-rgb),.17);border-radius:999px;color:#789095;background:rgba(var(--theme-accent-rgb),.035);font-size:7px;font-weight:800;letter-spacing:.1em}
+.anvil-role-admin-module-title{display:block;margin-bottom:5px;color:#e7f1f1;font-size:13px;font-weight:750}
+.anvil-role-admin-module-description{display:block;min-height:34px;color:#788b90;font-size:9px;line-height:1.45}
+.admin-module-card__rail{height:1px;margin:11px 0;background:linear-gradient(90deg,rgba(var(--theme-accent-rgb),.3),transparent)}
+.admin-module-card__command{display:flex;justify-content:space-between;align-items:center;color:#596c72;font-size:7px;font-weight:800;letter-spacing:.12em}
+.anvil-button.admin-module-open>button{min-height:28px;padding:0 9px;border-radius:7px;font-size:9px}
+@media(max-width:850px){.admin-os{grid-template-columns:1fr}.admin-os__sidebar{position:static;display:flex;gap:5px;overflow-x:auto}.admin-os__brand,.admin-os__section-label,.admin-os__sidebar-foot{display:none}.anvil-button.admin-sidebar-link>button{white-space:nowrap}.anvil-role-admin-module-grid{grid-template-columns:1fr}.admin-os__toolbar{align-items:stretch;flex-direction:column}.admin-os__toolbar-controls{width:100%}}
+@media(max-width:650px){.page-main,.eco-main{width:calc(100% - 20px);padding-top:18px}.admin-os__engineering{align-items:flex-start;flex-direction:column}.admin-os__attention{grid-template-columns:1fr}}
+
+/* KLIMA ECO COMPACT STUDIO OVERRIDES */
+.admin-settings-studio{width:min(1040px,100%);margin:0 auto}
+.studio-hero{min-height:128px;padding:18px 20px;margin-bottom:10px;border-radius:14px}
+.studio-hero__copy{max-width:700px}.studio-hero-stats{gap:8px}.studio-count{min-width:90px;padding:9px 10px;border-radius:9px;font-size:9px}
+.studio-tabs{gap:4px!important;margin-bottom:9px!important;padding:4px!important;border-radius:10px}
+.studio-tab,.studio-tab-active{min-height:34px!important;padding:0 10px!important;font-size:9px!important;border-radius:7px!important}
+.studio-command-bar{gap:12px;padding:8px 11px;margin-bottom:10px;border-radius:9px;font-size:8px}
+.studio-integration-strip{display:grid!important;grid-template-columns:minmax(0,1.3fr) minmax(180px,.7fr);gap:10px!important;padding:12px!important;margin-bottom:10px!important;border-radius:12px!important}
+.studio-integration-guide,.studio-integration-actions{grid-column:1/-1}.studio-integration-guide{padding:9px 11px!important;border-radius:8px!important}
+.studio-integration-guide .anvil-role-status-message{font-size:8px}.studio-integration-actions{display:flex;gap:6px;flex-wrap:wrap}.studio-integration-actions .anvil-button>button{min-height:31px;padding:0 9px;font-size:8px}
+.studio-settings-workspace{display:grid!important;grid-template-columns:210px minmax(0,1fr);gap:10px!important;min-height:420px}
+.studio-section-rail{padding:10px!important;border-radius:11px!important}.studio-rail-heading input{min-height:34px!important;font-size:9px}
+.studio-settings-main{padding:15px!important;border-radius:11px!important}.studio-section-heading .anvil-role-studio-section-title{font-size:18px}
+.studio-category-summary{margin-top:12px!important;padding:10px!important;border-radius:8px!important}
+.studio-summary-points{gap:5px!important}.studio-summary-points span{font-size:8px!important}
+.studio-modal-overlay{padding:18px!important}.studio-settings-modal,.studio-secret-modal{width:min(700px,calc(100vw - 36px))!important;max-height:calc(100vh - 36px)!important;padding:18px!important;border-radius:14px!important}
+@media(max-width:760px){.admin-settings-studio{width:100%}.studio-hero{flex-direction:column}.studio-settings-workspace{grid-template-columns:1fr!important}.studio-section-rail{max-height:240px;overflow:auto}.studio-integration-strip{grid-template-columns:1fr!important}}

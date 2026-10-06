@@ -194,10 +194,14 @@ class Projects(ProjectsTemplate):
       return
     finally:
       self.save_project_button.enabled = True
-    self.project_message.text = result["message"]
-    if result["ok"]:
-      self._project_id = result["project_id"]
-      self._open_project(self._project_id)
+    if not isinstance(result, dict):
+      self.project_message.text = "Сервер вернул некорректный ответ при сохранении проекта."
+      return
+    self.project_message.text = result.get("message", "Проект сохранён." if result.get("ok") else "Проект не сохранён.")
+    if result.get("ok"):
+      self._project_id = result.get("project_id")
+      if self._project_id:
+        self._open_project(self._project_id)
       self._cursor_stack = []
       self._load_page()
 
