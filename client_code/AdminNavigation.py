@@ -11,7 +11,8 @@ MENU = {
       ("Категории", "Catalog.Taxonomy", {"window_title": "Категории каталога", "category_view": "categories"}, "catalog.manage"),
       ("Подкатегории", "Catalog.Taxonomy", {"window_title": "Подкатегории каталога", "category_view": "subcategories"}, "catalog.manage"),
       ("Бренды и поля каталога", "Catalog.Taxonomy", {"window_title": "Справочники каталога", "category_view": "all"}, "catalog.manage"),
-      ("Товары, категории и цены", "Catalog", {"window_title": "Каталог · товары и цены"}, "catalog.manage"),
+      ("Каталог · товары и цены", "Catalog", {"window_title": "Каталог · товары и цены"}, "catalog.manage"),
+      ("Структура каталога · категории и бренды", "Catalog.Taxonomy", {"window_title": "Структура каталога"}, "catalog.manage"),
       ("Черновики импорта · 50 на страницу", "ImportEngine", {"window_title": "Черновики каталога", "drafts_only": True}, "import.manage"),
       ("Импорт каталога · PDF и таблицы", "ImportEngine", {"window_title": "Импорт каталога"}, "import.manage"),
       ("Совместимость оборудования", "Compatibility", {"window_title": "Совместимость"}, "catalog.manage")
