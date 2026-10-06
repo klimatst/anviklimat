@@ -83,7 +83,7 @@
 
         <anvil-component type="ColumnPanel" name="media_panel" prop:role="product-editor-section" prop:visible="false">
           <anvil-component type="Label" name="media_heading" prop:role="section-heading" prop:text="Изображения модели"></anvil-component>
-          <anvil-component type="Label" name="media_help" prop:role="status-message" prop:text="Используйте только фотографии этой модели. До 20 изображений на товар, до 8 МБ каждое."></anvil-component>
+          <anvil-component type="Label" name="media_help" prop:role="status-message" prop:text="Фотографии этой модели. До 20 изображений на товар, до 8 МБ каждое. При настроенном GitHub-токене изображения публикуются в GitHub, а в Anvil сохраняется только URL."></anvil-component>
           <anvil-component type="FileLoader" name="image_files" prop:text="Выбрать изображения" prop:file_types=".jpg,.jpeg,.png,.webp,.gif" prop:multiple="true"></anvil-component>
           <anvil-component type="Button" name="upload_images_button" prop:text="Загрузить изображения" prop:role="secondary-button"></anvil-component>
           <anvil-component type="Label" name="media_status" prop:role="status-message" prop:text=""></anvil-component>
