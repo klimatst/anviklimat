@@ -3,19 +3,36 @@
     <anvil-component type="Button" name="home_button" prop:text="В админ-панель" prop:role="secondary-button"></anvil-component>
   </anvil-block>
   <anvil-block slot="content">
-    <div class="taxonomy-view">
-      <anvil-component type="Label" name="taxonomy_intro" prop:role="lede" prop:text="Управляйте деревом каталога, брендами и производителями оборудования. Используемые записи защищены от случайного удаления."></anvil-component>
-      <anvil-component type="Label" name="taxonomy_message" prop:role="status-message" prop:text=""></anvil-component>
-      <div class="taxonomy-grid">
+    <div class="taxonomy-view taxonomy-command-center">
+      <div class="taxonomy-hero">
+        <div>
+          <span class="taxonomy-kicker">КАТАЛОГ · СТРУКТУРА</span>
+          <anvil-component type="Label" name="taxonomy_intro" prop:role="lede" prop:text="Настройте дерево каталога один раз: направление → категория → подкатегория → серия. Все изменения сразу влияют на витрину сайта."></anvil-component>
+        </div>
+        <div class="taxonomy-hero-status">
+          <span class="taxonomy-live-dot"></span>
+          <anvil-component type="Label" name="taxonomy_message" prop:role="status-message" prop:text=""></anvil-component>
+        </div>
+      </div>
+      <div class="taxonomy-grid taxonomy-grid-pro">
         <anvil-component type="ColumnPanel" name="category_panel" prop:role="taxonomy-panel">
-          <anvil-component type="Label" name="category_list_heading" prop:role="section-heading" prop:text="Категории и подкатегории"></anvil-component>
+          <div class="taxonomy-panel-heading">
+            <div>
+              <span class="taxonomy-kicker">01 · ДЕРЕВО</span>
+              <anvil-component type="Label" name="category_list_heading" prop:role="section-heading" prop:text="Категории и подкатегории"></anvil-component>
+            </div>
+            <span class="taxonomy-panel-hint">Выберите узел для редактирования</span>
+          </div>
           <div class="taxonomy-actions">
             <anvil-component type="Button" name="new_category_button" prop:text="Новая категория" prop:role="secondary-button"></anvil-component>
             <anvil-component type="Button" name="new_subcategory_button" prop:text="Новая подкатегория" prop:role="secondary-button"></anvil-component>
           </div>
           <anvil-component type="RepeatingPanel" name="category_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.Taxonomy.CategoryAdminItem"></anvil-component>
-          <div class="taxonomy-editor">
-            <anvil-component type="Label" name="category_editor_heading" prop:role="section-heading" prop:text="Новая категория"></anvil-component>
+          <div class="taxonomy-editor taxonomy-editor-pro">
+            <div class="taxonomy-editor-header">
+              <span class="taxonomy-kicker">РЕДАКТОР УЗЛА</span>
+              <anvil-component type="Label" name="category_editor_heading" prop:role="section-heading" prop:text="Новая категория"></anvil-component>
+            </div>
             <anvil-component type="TextBox" name="category_title_box" prop:placeholder="Название категории"></anvil-component>
             <anvil-component type="DropDown" name="category_parent_dropdown"></anvil-component>
             <anvil-component type="CheckBox" name="category_active_checkbox" prop:text="Показывать в каталоге"></anvil-component>
@@ -61,13 +78,22 @@
           </anvil-component>
         </anvil-component>
         <anvil-component type="ColumnPanel" name="brand_panel" prop:role="taxonomy-panel">
-          <anvil-component type="Label" name="brand_list_heading" prop:role="section-heading" prop:text="Бренды и марки"></anvil-component>
+          <div class="taxonomy-panel-heading">
+            <div>
+              <span class="taxonomy-kicker">02 · СПРАВОЧНИК</span>
+              <anvil-component type="Label" name="brand_list_heading" prop:role="section-heading" prop:text="Бренды и производители"></anvil-component>
+            </div>
+            <span class="taxonomy-panel-hint">Бренд используется карточками товаров</span>
+          </div>
           <div class="taxonomy-actions">
             <anvil-component type="Button" name="new_brand_button" prop:text="Новый бренд" prop:role="secondary-button"></anvil-component>
           </div>
           <anvil-component type="RepeatingPanel" name="brand_rows" prop:role="taxonomy-list" prop:item_template="Minimal_Theme_4.Catalog.Taxonomy.BrandAdminItem"></anvil-component>
-          <div class="taxonomy-editor">
-            <anvil-component type="Label" name="brand_editor_heading" prop:role="section-heading" prop:text="Новый бренд"></anvil-component>
+          <div class="taxonomy-editor taxonomy-editor-pro">
+            <div class="taxonomy-editor-header">
+              <span class="taxonomy-kicker">РЕДАКТОР БРЕНДА</span>
+              <anvil-component type="Label" name="brand_editor_heading" prop:role="section-heading" prop:text="Новый бренд"></anvil-component>
+            </div>
             <anvil-component type="TextBox" name="brand_name_box" prop:placeholder="Название производителя"></anvil-component>
             <div class="taxonomy-actions">
               <anvil-component type="Button" name="save_brand_button" prop:text="Сохранить бренд" prop:role="primary-action"></anvil-component>
