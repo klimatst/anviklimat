@@ -59,12 +59,16 @@ class BaseLayout(BaseLayoutTemplate):
     self.catalog_nav.visible = self._navigation_settings["catalog"]
     self.news_nav.visible = self._navigation_settings["news"]
     self.profile_nav.visible = self._navigation_settings["account"]
-    context = Access.get_cached_session_context() or {}\n    if email and context.get("role_code", "user") == "user":
+    context = Access.get_cached_session_context() or {}
+    if email and context.get("role_code", "user") == "user":
       try:
         context = Access.get_session_context()
       except anvil.server.RuntimeUnavailableError:
         context = Access.get_cached_session_context()
-    self.admin_panel_nav.visible = context.get("role_code") == "admin" or (\n      context.get("role_code") == "moderator"\n      and "dashboard.view" in (context.get("permissions") or [])\n    )
+    self.admin_panel_nav.visible = context.get("role_code") == "admin" or (
+      context.get("role_code") == "moderator"
+      and "dashboard.view" in (context.get("permissions") or [])
+    )
     self.profile_nav.text = email.split("@", 1)[0] if email else "Войти"
 
   def _configure_admin_sidebar(self):
@@ -84,7 +88,8 @@ class BaseLayout(BaseLayoutTemplate):
       # This fallback only controls the client-side navigation. Server-side
       # permission checks remain authoritative for every protected action.
       context = Access.get_cached_session_context()
-    self._admin_role = context.get("role_code", "user")\n    self._admin_permissions = set(context.get("permissions") or [])
+    self._admin_role = context.get("role_code", "user")
+    self._admin_permissions = set(context.get("permissions") or [])
     allowed = {
       category: bool(self._available_admin_options(category))
       for category in AdminNavigation.MENU
@@ -146,7 +151,13 @@ class BaseLayout(BaseLayoutTemplate):
             or lowered in str(definition.get("title") or "").lower()):
           options.append(option)
 
-    try:\n      result = anvil.server.call("search_admin_workspace", term)\n    except Exception:\n      result = {"ok": False, "message": "Поиск временно недоступен."}\n    if not isinstance(result, dict):\n      result = {"ok": False, "message": "Поиск вернул некорректный ответ."}\n    if not result.get("ok"):
+    try:
+      result = anvil.server.call("search_admin_workspace", term)
+    except Exception:
+      result = {"ok": False, "message": "Поиск временно недоступен."}
+    if not isinstance(result, dict):
+      result = {"ok": False, "message": "Поиск вернул некорректный ответ."}
+    if not result.get("ok"):
       self._admin_options = options
       self.admin_global_picker_title.text = "Результаты поиска"
       self.admin_global_picker_intro.text = result.get("message") or "Совпадений не найдено."
@@ -164,11 +175,16 @@ class BaseLayout(BaseLayoutTemplate):
       "page": ("CMS", "cms.manage", "selected_page_id"),
       "user": ("AdminUsers", None, "search_query")
     }
-    for row in result.get("results") or []:\n      if not isinstance(row, dict):\n        continue\n      route = route_map.get(row.get("kind"))
+    for row in result.get("results") or []:
+      if not isinstance(row, dict):
+        continue
+      route = route_map.get(row.get("kind"))
       if route is None:
         continue
       form_name, permission, property_name = route
-      if not row.get("id"):\n        continue\n      properties = {property_name: row.get("id")}
+      if not row.get("id"):
+        continue
+      properties = {property_name: row.get("id")}
       if row.get("kind") in ("order", "user"):
         properties[property_name] = term
       properties["window_title"] = row.get("title") or "Запись"
