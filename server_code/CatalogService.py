@@ -1932,7 +1932,10 @@ def get_catalog_filter_options(category_id=None):
     if brand is not None:
       brand_counts[brand.get_id()] = brand_counts.get(brand.get_id(), 0) + 1
 
-  relevant_keys = ("Компрессор", "Страна", "Режим работы", "Класс энергоэффективности")
+  relevant_keys = (
+    "Компрессор", "Страна", "Режим работы", "Класс энергоэффективности",
+    "Способ установки", "Гарантия производителя", "Тип внутреннего блока"
+  )
   values = {key: set() for key in relevant_keys}
   if product_ids:
     for row in app_tables.product_specs.search(
@@ -1951,13 +1954,19 @@ def get_catalog_filter_options(category_id=None):
     if count:
       brands.append({"id": brand.get_id(), "title": brand["name"], "count": count})
 
+  fixed_installation = sorted(values.get("Способ установки", set()) or {"Горизонтальный"}, key=str.casefold)
+  fixed_warranty = sorted(values.get("Гарантия производителя", set()), key=str.casefold)
+  fixed_indoor_types = sorted(values.get("Тип внутреннего блока", set()), key=str.casefold)
   return {
     "ok": True,
     "brands": brands,
     "compressors": sorted(values["Компрессор"], key=str.casefold),
     "countries": sorted(values["Страна"], key=str.casefold),
     "operation_modes": sorted(values["Режим работы"], key=str.casefold),
-    "energy_classes": sorted(values["Класс энергоэффективности"], key=str.casefold)
+    "energy_classes": sorted(values["Класс энергоэффективности"], key=str.casefold),
+    "installations": fixed_installation,
+    "warranties": fixed_warranty,
+    "indoor_types": fixed_indoor_types
   }
 
 
@@ -1966,7 +1975,7 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
                    series_id=None, available_only=False, minimum_price=None,
                    maximum_price=None, sort_by="model_asc", brand_id=None,
                    compressor="", country="", operation_mode="", energy_class="",
-                   minimum_area=None, maximum_area=None):
+                   minimum_area=None, maximum_area=None, extra_filters=None):
   user = _current_user()
   _ensure_categories()
   can_edit = Core.has_permission(user, "catalog.manage")
@@ -2131,6 +2140,76 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     expressions.append(q.any_of(*[
       q.all_of(identity_key=product["identity_key"])
       for product in area_products
+    ]))
+
+  if extra_filters is None:
+    extra_filters = {}
+  if not isinstance(extra_filters, dict):
+    return {"ok": False, "message": "Некорректные дополнительные фильтры.", "rows": [], "has_more": False}
+
+  numeric_filter_specs = {
+    "cooling": ("Мощность охлаждения", "Охлаждение, кВт", "Холодопроизводительность"),
+    "heating": ("Мощность обогрева", "Обогрев, кВт", "Теплопроизводительность"),
+    "consumption_cooling": ("Потребляемая мощность (охлаждение)", "Потребляемая мощность охлаждения"),
+    "consumption_heating": ("Потребляемая мощность (обогрев)", "Потребляемая мощность обогрева"),
+    "power": ("Мощность", "Мощность, кВт"),
+    "current": ("Рабочий ток", "Рабочий ток, А"),
+    "airflow": ("Производительность", "Производительность, м³/ч", "Расход воздуха", "Воздушный расход"),
+    "indoor_units": ("Количество внутренних блоков", "Внутренние блоки")
+  }
+  for filter_key, spec_keys in numeric_filter_specs.items():
+    minimum = extra_filters.get("minimum_" + filter_key)
+    maximum = extra_filters.get("maximum_" + filter_key)
+    minimum, error = _number_value({"value": minimum}, "value", "Минимум")
+    if error:
+      return {"ok": False, "message": error, "rows": [], "has_more": False}
+    maximum, error = _number_value({"value": maximum}, "value", "Максимум")
+    if error:
+      return {"ok": False, "message": error, "rows": [], "has_more": False}
+    if minimum is None and maximum is None:
+      continue
+    spec_rows = []
+    for spec_key in spec_keys:
+      spec_rows.extend(list(app_tables.product_specs.search(
+        q.fetch_only("product", "value"), key=spec_key, visible=True
+      )[:10001]))
+    matches = []
+    for spec_row in spec_rows:
+      product = spec_row["product"]
+      if product is None:
+        continue
+      try:
+        number = float(str(spec_row["value"] or "").replace(",", ".").replace("×", " ").split()[0])
+      except (TypeError, ValueError, IndexError):
+        continue
+      if minimum is not None and number < minimum:
+        continue
+      if maximum is not None and number > maximum:
+        continue
+      matches.append(product)
+    if not matches:
+      return {"ok": True, "rows": [], "has_more": False, "next_cursor": None}
+    expressions.append(q.any_of(*[
+      q.all_of(identity_key=product["identity_key"]) for product in matches
+    ]))
+
+  text_filter_specs = {
+    "installation": "Способ установки",
+    "warranty": "Гарантия производителя",
+    "indoor_type": "Тип внутреннего блока"
+  }
+  for filter_key, spec_key in text_filter_specs.items():
+    wanted = str(extra_filters.get(filter_key) or "").strip()
+    if not wanted:
+      continue
+    matching = list(app_tables.product_specs.search(
+      q.fetch_only("product"), key=spec_key, value=q.ilike(wanted), visible=True
+    )[:5001])
+    products_for_spec = [row["product"] for row in matching if row["product"] is not None]
+    if not products_for_spec:
+      return {"ok": True, "rows": [], "has_more": False, "next_cursor": None}
+    expressions.append(q.any_of(*[
+      q.all_of(identity_key=product["identity_key"]) for product in products_for_spec
     ]))
 
   if minimum_price is not None or maximum_price is not None:
