@@ -109,6 +109,9 @@ class Projects(ProjectsTemplate):
         },
         self._project_id
       )
+    except Exception as exc:
+      self.project_message.text = "Не удалось сохранить проект: {}".format(exc)
+      return
     finally:
       self.save_project_button.enabled = True
     self.project_message.text = result["message"]
@@ -151,6 +154,9 @@ class Projects(ProjectsTemplate):
         },
         self._room_id
       )
+    except Exception as exc:
+      self.room_message.text = "Не удалось сохранить помещение: {}".format(exc)
+      return
     finally:
       self.save_room_button.enabled = True
     self.room_message.text = result["message"]
