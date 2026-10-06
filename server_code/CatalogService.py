@@ -584,25 +584,22 @@ def get_catalog_menu_tree(include_counts=True, include_series=True):
     row["id"]: dict(row, children=[]) for row in categories
   }
   roots = []
-  direct_product_ids: dict[str, set[str]] = {}
+  direct_product_counts = {}
 
-  # The header only needs the navigation tree. Full product counts and the
-  # series payload are useful to the Catalog form, but expensive on every
-  # public page load, so they are opt-in.
+  # Count each product once at its most specific linked category. Parent
+  # totals are then derived from children, avoiding large in-memory ID sets.
   if include_counts:
     for product in app_tables.products.search(
       q.fetch_only("category", "subcategory"), active=True
     ):
-      for field in ("category", "subcategory"):
-        category = product[field]
-        if category is not None:
-          category_id = category.get_id()
-          direct_product_ids.setdefault(category_id, set()).add(product.get_id())
+      category = product["subcategory"] or product["category"]
+      if category is not None:
+        category_id = category.get_id()
+        direct_product_counts[category_id] = direct_product_counts.get(category_id, 0) + 1
 
   for row in categories:
     node = by_id[row["id"]]
-    node["product_ids"] = set(direct_product_ids.get(row["id"], set()))
-    node["product_count"] = len(node["product_ids"])
+    node["product_count"] = direct_product_counts.get(row["id"], 0)
     node["menu_label"] = row["title"]
     node["menu_mode"] = True
     node["has_children"] = False
@@ -624,9 +621,7 @@ def get_catalog_menu_tree(include_counts=True, include_series=True):
       children = order_tree(node["children"], path)
       node["children"] = children
       if include_counts:
-        for child in children:
-          node["product_ids"].update(child["product_ids"])
-        node["product_count"] = len(node["product_ids"])
+        node["product_count"] += sum(child["product_count"] for child in children)
       node["has_children"] = bool(children)
       node["child_count"] = len(children)
       node["expand_icon"] = "›" if children else ""
@@ -635,13 +630,6 @@ def get_catalog_menu_tree(include_counts=True, include_series=True):
 
   roots = order_tree(roots)
 
-  if include_counts:
-    def remove_count_sets(nodes):
-      for node in nodes:
-        node.pop("product_ids", None)
-        remove_count_sets(node["children"])
-
-    remove_count_sets(roots)
 
   for category in categories:
     node = by_id[category["id"]]
