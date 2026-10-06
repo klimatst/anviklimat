@@ -724,6 +724,55 @@ def run_calculation(code, inputs, save_result=False, expected_version=None,
   return computed
 
 
+@anvil.server.callable(require_user=True)
+def get_project_calculation_context(project_id):
+  user = _current_user()
+  if not isinstance(project_id, str) or not project_id:
+    return {"ok": False, "message": "Некорректный проект."}
+  project = app_tables.projects.get_by_id(project_id)
+  if project is None or not Core.can_access_project(project, user):
+    return {"ok": False, "message": "Проект недоступен этой учётной записи."}
+  obj = project["object"]
+  parameters = (obj["parameters"] or {}) if obj is not None else {}
+  rooms = []
+  if obj is not None:
+    for room in app_tables.rooms.search(
+      q.fetch_only("name", "area", "height", "parameters"),
+      order_by("name"), object=obj
+    )[:20]:
+      room_parameters = room["parameters"] or {}
+      rooms.append({
+        "id": room.get_id(),
+        "name": room["name"] or "",
+        "area": room["area"],
+        "height": room["height"],
+        "parameters": room_parameters
+      })
+  profile = parameters.get("engineering_profile") or "combined"
+  profile_to_calculation = {
+    "combined": "ac",
+    "vrv_vrf": "vrf_vrv",
+    "ventilation": "ac",
+    "split_multi": "ac"
+  }
+  return {
+    "ok": True,
+    "project": {
+      "id": project.get_id(),
+      "code": project["code"],
+      "title": project["title"],
+      "status": project["status"],
+      "object_name": obj["name"] if obj is not None else "",
+      "engineering_profile": profile,
+      "calculation_profile": profile_to_calculation.get(profile, "ac"),
+      "engineering_goal": parameters.get("engineering_goal") or "design",
+      "project_priority": parameters.get("project_priority") or "standard",
+      "constraints": parameters.get("constraints") or "",
+      "rooms": rooms
+    }
+  }
+
+
 HVAC_PROFILES = [
   {"code": "ac", "title": "Кондиционеры", "formula": "ac_room_load_kw"},
   {"code": "vrf_vrv", "title": "VRV / VRF", "formula": "ac_room_load_kw"},
