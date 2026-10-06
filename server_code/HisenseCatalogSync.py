@@ -13,6 +13,7 @@ from anvil.tables import app_tables, order_by, query as q
 
 import Core
 from HisenseLovableCatalogData import CATALOG_PARTS
+import HisenseXlsxImageIndex
 
 
 SYNC_STATE_KEY = "hisense_lovable_catalog_sync_v1"
@@ -403,9 +404,11 @@ def _upsert_photo(product, url, model, photo_key):
     "master/theme/assets/catalog/hisense/"
   )
   for row in list(app_tables.product_media.search(product=product)):
+    row_url = row["url"] or ""
     if (
-      not isinstance(row["file"], anvil.Media) and
-      (row["url"] or "").startswith(repository_photo_prefix)
+      not isinstance(row["file"], anvil.Media)
+      and row_url.startswith(repository_photo_prefix)
+      and "/xlsx/" not in row_url
     ):
       row.delete()
   if not url:
@@ -447,6 +450,38 @@ def _upsert_photo(product, url, model, photo_key):
     alt_text="Hisense " + model, is_primary=True,
     sort_order=0, created_at=datetime.now(timezone.utc), checksum=""
   )
+
+
+def _sync_xlsx_gallery(product, model):
+  """Attach all model-linked XLSX images as non-destructive gallery media."""
+  if not HisenseXlsxImageIndex.READY:
+    return 0
+  urls = HisenseXlsxImageIndex.image_urls_for_model(model)[:12]
+  if not urls:
+    return 0
+  existing = {
+    row["url"]: row for row in app_tables.product_media.search(product=product)
+    if row["url"]
+  }
+  added = 0
+  for order, url in enumerate(urls, start=1):
+    row = existing.get(url)
+    if row is None:
+      app_tables.product_media.add_row(
+        product=product, file_id="", file=None, url=url,
+        source="Hisense XLSX catalog 15.09.2026",
+        type="gallery", alt_text="Hisense " + model,
+        is_primary=False, sort_order=100 + order,
+        created_at=datetime.now(timezone.utc), checksum=""
+      )
+      added += 1
+    elif row["file"] is None:
+      row.update(
+        source="Hisense XLSX catalog 15.09.2026",
+        type="gallery", is_primary=False,
+        sort_order=100 + order, alt_text="Hisense " + model
+      )
+  return added
 
 
 def _write_sync_state(total, created, updated, series_created, actor):
@@ -599,7 +634,7 @@ def sync_hisense_lovable_catalog(force=False):
     _upsert_spec(product, "Фото", "", "", 120)
     _upsert_spec(product, "Резервная ссылка фото", "", "", 125)
     _upsert_spec(product, "Источник фото", "", "", 130)
-    _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])
+    _upsert_photo(product, row["photo_url"], row["model"], row["photo_key"])\n    _sync_xlsx_gallery(product, row["model"])
     source = next(iter(app_tables.product_sources.search(product=product)), None)
     source_values = {
       "url": SOURCE_URL, "publisher": "Lovable · Hisense catalog",
