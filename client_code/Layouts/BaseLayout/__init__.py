@@ -29,7 +29,7 @@ class BaseLayout(BaseLayoutTemplate):
     # session context and extensions in one request to avoid a chain of
     # synchronous server round-trips on every page open.
     if bootstrap.get("ok"):
-      self._apply_site_theme(bootstrap.get("site_theme", "blue"))
+      self._apply_site_theme(bootstrap.get("site_theme", "graphite"))
       catalog = bootstrap.get("catalog") or {}
       self.nav_catalog_tree.items = self._apply_catalog_menu_result(catalog)
       Access.prime_session_context(bootstrap.get("session_context"))
@@ -47,7 +47,7 @@ class BaseLayout(BaseLayoutTemplate):
 
   def _apply_site_theme(self, theme_code):
     if not isinstance(theme_code, str) or theme_code not in SITE_THEME_CODES:
-      theme_code = "blue"
+      theme_code = "graphite"
     for code in SITE_THEME_CODES:
       self.classes["site-theme--" + code] = code == theme_code
 
