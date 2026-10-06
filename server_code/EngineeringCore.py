@@ -629,3 +629,54 @@ def get_project_engineering_decisions(project_id):
     "systems": result,
     "message": "Smart Selection построен отдельно для каждой инженерной системы проекта; результаты не смешиваются между контурами."
   }
+
+
+@anvil.server.callable(require_user=True)
+def get_engineering_control_room():
+  user = anvil.users.get_user()
+  if user is None:
+    return {"ok": False, "message": "Требуется вход."}
+  context = Core.get_access_context()
+  if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
+    return {"ok": False, "message": "Недостаточно прав."}
+  projects = list(app_tables.projects.search(order_by("updated_at", ascending=False))[:250])
+  active_statuses = {"calculation", "review", "ready", "quoted", "approved", "installation", "commissioning"}
+  active_projects = sum(1 for p in projects if p["status"] in active_statuses)
+  systems = list(app_tables.systems.search()[:500])
+  calculations = list(app_tables.calculations.search()[:1000])
+  estimates = list(app_tables.estimates.search()[:300])
+  needs_attention = 0
+  recent = []
+  for project in projects[:12]:
+    snapshot_result = get_project_engineering_snapshot(project.get_id())
+    if snapshot_result.get("ok"):
+      snapshot = snapshot_result["snapshot"]
+      if snapshot.get("risk_flags"):
+        needs_attention += 1
+      recent.append({
+        "id": project.get_id(), "code": project["code"] or "",
+        "title": project["title"] or "Без названия",
+        "status": project["status"] or "draft",
+        "stage_title": snapshot["stage_title"],
+        "progress": snapshot["progress"],
+        "engineering_score": snapshot["engineering_score"],
+        "risk_count": len(snapshot.get("risk_flags") or [])
+      })
+  quality = get_engineering_quality_gate()
+  quality_ok = quality.get("ok") and quality.get("healthy")
+  return {
+    "ok": True,
+    "metrics": {
+      "projects": len(projects), "active_projects": active_projects,
+      "needs_attention": needs_attention, "systems": len(systems),
+      "calculations": len(calculations), "estimates": len(estimates),
+      "quality_gate_ok": bool(quality_ok), "quality_issue_count": quality.get("issue_count", 0),
+      "quality_high_count": quality.get("high_count", 0)
+    },
+    "recent_projects": recent,
+    "quality_gate": {
+      "healthy": bool(quality_ok), "issue_count": quality.get("issue_count", 0),
+      "high_count": quality.get("high_count", 0), "issues": quality.get("issues", [])[:12]
+    },
+    "generated_at": datetime.now(timezone.utc)
+  }
