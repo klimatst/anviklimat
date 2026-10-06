@@ -27,8 +27,9 @@ class EngineeringControlRoom(EngineeringControlRoomTemplate):
     self.systems_metric.text = "СИСТЕМЫ\n{}".format(m["systems"])
     self.calculations_metric.text = "РАСЧЁТЫ\n{}".format(m["calculations"])
     self.estimates_metric.text = "СМЕТЫ\n{}".format(m["estimates"])
+    self.quality_metric.text = "QUALITY GATE\n{} · {} проблем".format("OK" if m.get("quality_gate_ok") else "ATTENTION", m.get("quality_issue_count", 0))
     self.recent_rows.items = result.get("recent_projects", [])
-    self.status.text = "Система синхронизирована · данные берутся из единого инженерного ядра."
+    self.status.text = "Система синхронизирована · Quality Gate: {} критических проблем.".format(m.get("quality_high_count", 0))
 
   @handle("refresh_button", "click")
   def refresh_button_click(self, **event_args):
