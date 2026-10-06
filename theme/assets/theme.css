@@ -5559,3 +5559,147 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Catalog Pro detail dialog: dark, wide, readable, and order-first. */
+.anvil-role-product-detail-overlay,
+.anvil-role-product-detail-overlay * {
+  box-sizing: border-box;
+}
+.anvil-role-catalog-product-dialog {
+  width: min(1180px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  padding: 26px;
+  border: 1px solid rgba(var(--theme-accent-rgb), .28);
+  border-radius: 20px;
+  color: #dce9e7;
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(var(--theme-accent-rgb), .09), transparent 35%),
+    radial-gradient(ellipse at 95% 100%, rgba(38, 95, 83, .14), transparent 34%),
+    linear-gradient(145deg, #111d22, #071014 70%, #050b0e);
+  box-shadow: 0 30px 110px rgba(0,0,0,.72);
+}
+.anvil-role-catalog-product-content {
+  min-width: 0;
+}
+.catalog-detail-summary {
+  grid-template-columns: minmax(360px, .82fr) minmax(0, 1.18fr);
+  gap: 26px;
+}
+.anvil-role-catalog-detail-photo,
+.anvil-role-catalog-detail-photo img {
+  height: 420px;
+  min-height: 320px;
+  border: 1px solid rgba(118, 163, 164, .18);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(63, 123, 116, .12), transparent 48%),
+    linear-gradient(145deg, #0d171b, #050b0e);
+  object-fit: contain;
+}
+.anvil-role-catalog-photo-placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  padding: 20px;
+  border: 1px dashed rgba(118, 163, 164, .18);
+  border-radius: 16px;
+  color: #718486;
+  background: #081013;
+  text-align: center;
+}
+.catalog-detail-copy .anvil-role-h1 {
+  margin: 0 0 10px;
+  font-size: clamp(28px, 3.2vw, 42px);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+}
+.catalog-detail-copy .anvil-role-section-heading {
+  margin: 0 0 14px;
+  font-size: 15px;
+}
+.catalog-detail-facts {
+  gap: 8px 16px;
+}
+.catalog-detail-facts .anvil-label {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(118, 163, 164, .08);
+  color: #8fa5a5;
+  font-size: 11px;
+}
+.catalog-detail-facts .anvil-role-catalog-detail-price {
+  color: #a8efcf;
+  font-size: 26px;
+  font-weight: 820;
+}
+.anvil-role-catalog-detail-description,
+.anvil-role-catalog-detail-specs,
+.anvil-role-catalog-detail-sources {
+  color: #b8c8c6;
+  font-size: 12px;
+  line-height: 1.75;
+}
+.anvil-role-catalog-product-content > .anvil-role-section-heading {
+  margin: 24px 0 8px;
+  font-size: 17px;
+}
+.anvil-role-catalog-detail-admin-pricing {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid rgba(95, 147, 153, .17);
+  border-radius: 14px;
+  background: #0a1418;
+}
+.anvil-role-catalog-order-request {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid rgba(var(--theme-accent-rgb), .28);
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, rgba(20, 60, 51, .20), rgba(7, 15, 18, .92));
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+}
+.anvil-role-catalog-order-request .anvil-role-section-heading {
+  margin-top: 0;
+  font-size: 20px;
+}
+.anvil-role-catalog-order-request input.anvil-text-box,
+.anvil-role-catalog-order-request textarea.anvil-text-area {
+  width: 100%;
+  min-height: 46px;
+  margin: 0;
+  border-color: rgba(118, 163, 164, .22);
+  background: #071013;
+  color: #e4efed;
+}
+.anvil-role-catalog-order-request textarea.anvil-text-area {
+  min-height: 112px;
+  resize: vertical;
+}
+.anvil-role-catalog-order-request .anvil-button > button {
+  min-height: 48px;
+  font-size: 12px;
+  font-weight: 760;
+}
+.anvil-role-catalog-document-list > div {
+  display: grid;
+  gap: 8px;
+}
+.anvil-role-catalog-document-list .anvil-role-catalog-document-item {
+  background: #091317;
+}
+@media (max-width: 820px) {
+  .anvil-role-catalog-product-dialog {
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+    padding: 18px;
+    border-radius: 16px;
+  }
+  .catalog-detail-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .anvil-role-catalog-detail-photo,
+  .anvil-role-catalog-detail-photo img {
+    height: min(62vh, 360px);
+  }
+}
