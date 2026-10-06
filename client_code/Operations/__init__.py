@@ -166,6 +166,9 @@ class Operations(OperationsTemplate):
         },
         self._client_id
       )
+    except Exception as exc:
+      self.client_save_message.text = "Не удалось сохранить клиента: {}".format(exc)
+      return
     finally:
       self.save_client_button.enabled = True
     self.client_save_message.text = result["message"]
