@@ -6882,3 +6882,23 @@ input:focus, textarea:focus, select:focus { border-color: var(--app-neon); box-s
   .anvil-role-product-detail-overlay{padding:8px}
   .anvil-role-product-detail-overlay > .anvil-role-catalog-product-dialog{max-height:calc(100vh - 16px);border-radius:12px}
 }
+
+/* Global storefront breathing room: larger desktop canvas without changing
+   compact mobile behavior. */
+.page-main.eco-main{
+  padding-left:max(18px,calc((100% - 1500px)/2));
+  padding-right:max(18px,calc((100% - 1500px)/2));
+}
+.eco-navigation__inner{
+  width:min(1500px,calc(100% - 32px));
+  margin-inline:auto;
+}
+@media (max-width:700px){
+  .page-main.eco-main{
+    padding-left:12px;
+    padding-right:12px;
+  }
+  .eco-navigation__inner{
+    width:100%;
+  }
+}
