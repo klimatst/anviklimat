@@ -243,7 +243,7 @@ class BaseLayout(BaseLayoutTemplate):
     if (
       isinstance(_PUBLIC_SHELL_CACHE, dict)
       and _PUBLIC_SHELL_CACHE_EMAIL == email
-      and now - _PUBLIC_SHELL_CACHE_AT < 30
+      and now - _PUBLIC_SHELL_CACHE_AT < 5
     ):
       return _PUBLIC_SHELL_CACHE
 
