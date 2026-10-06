@@ -12,6 +12,7 @@ class PricePage(PricePageTemplate):
   def __init__(self, page_code="ventilation", **properties):
     super().__init__(**properties)
     self._page_code = page_code if page_code in PRICE_CODES else "ventilation"
+    self.ventilation_quote_calculator.visible = self._page_code == "ventilation"
     self._load_page()
 
   def _load_page(self):
@@ -29,6 +30,7 @@ class PricePage(PricePageTemplate):
       return
     self.page_title.text = result["title"]
     self.price_html.html = result["html"]
+    self.ventilation_quote_calculator.visible = self._page_code == "ventilation"
     self.price_status.visible = False
     document.title = "{} | ЭКО-КЛИМАТ".format(result["title"])
 

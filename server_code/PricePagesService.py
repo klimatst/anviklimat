@@ -7,6 +7,7 @@ into the existing CMS so an administrator can edit them without touching code.
 
 from datetime import datetime, timezone
 import html
+import math
 
 import anvil.server
 from anvil.tables import app_tables, order_by
@@ -38,6 +39,133 @@ PRICE_META = {
     "image": "/_/theme/catalog/ventilation.jpg",
   },
 }
+
+VENTILATION_ESTIMATOR_RATE_FIELDS = (
+  ("equipment_supply_500", "Оборудование приточной установки · до 500 м³/ч", "₽/шт.", 145000),
+  ("equipment_supply_1000", "Оборудование приточной установки · до 1 000 м³/ч", "₽/шт.", 225000),
+  ("equipment_supply_3000", "Оборудование приточной установки · до 3 000 м³/ч", "₽/шт.", 520000),
+  ("equipment_supply_5500", "Оборудование приточной установки · свыше 3 000 м³/ч", "₽/шт.", 960000),
+  ("equipment_exhaust_1000", "Оборудование вытяжной установки · до 1 000 м³/ч", "₽/шт.", 95000),
+  ("equipment_exhaust_3000", "Оборудование вытяжной установки · до 3 000 м³/ч", "₽/шт.", 180000),
+  ("equipment_exhaust_5000", "Оборудование вытяжной установки · до 5 000 м³/ч", "₽/шт.", 325000),
+  ("equipment_exhaust_5500", "Оборудование вытяжной установки · свыше 5 000 м³/ч", "₽/шт.", 510000),
+  ("equipment_supply_exhaust_1000", "Оборудование приточно-вытяжной установки · до 1 000 м³/ч", "₽/шт.", 340000),
+  ("equipment_supply_exhaust_3000", "Оборудование приточно-вытяжной установки · до 3 000 м³/ч", "₽/шт.", 650000),
+  ("equipment_supply_exhaust_5000", "Оборудование приточно-вытяжной установки · до 5 000 м³/ч", "₽/шт.", 980000),
+  ("equipment_supply_exhaust_5500", "Оборудование приточно-вытяжной установки · свыше 5 000 м³/ч", "₽/шт.", 1450000),
+  ("install_supply_500", "Монтаж приточной установки · до 500 м³/ч", "₽/шт.", 18600),
+  ("install_supply_1000", "Монтаж приточной установки · до 1 000 м³/ч", "₽/шт.", 24000),
+  ("install_supply_3000", "Монтаж приточной установки · до 3 000 м³/ч", "₽/шт.", 30000),
+  ("install_supply_5500", "Монтаж приточной установки · от 5 500 м³/ч", "₽/шт.", 60000),
+  ("install_exhaust_1000", "Монтаж вытяжной установки · до 1 000 м³/ч", "₽/шт.", 12000),
+  ("install_exhaust_3000", "Монтаж вытяжной установки · до 3 000 м³/ч", "₽/шт.", 15000),
+  ("install_exhaust_5000", "Монтаж вытяжной установки · до 5 000 м³/ч", "₽/шт.", 24000),
+  ("install_exhaust_5500", "Монтаж вытяжной установки · от 5 500 м³/ч", "₽/шт.", 30000),
+  ("install_supply_exhaust_1000", "Монтаж приточно-вытяжной установки · до 1 000 м³/ч", "₽/шт.", 29000),
+  ("install_supply_exhaust_3000", "Монтаж приточно-вытяжной установки · до 3 000 м³/ч", "₽/шт.", 36000),
+  ("install_supply_exhaust_5000", "Монтаж приточно-вытяжной установки · до 5 000 м³/ч", "₽/шт.", 53000),
+  ("install_supply_exhaust_5500", "Монтаж приточно-вытяжной установки · от 5 500 м³/ч", "₽/шт.", 60000),
+  ("install_addon_recovery", "Доплата за монтаж рекуперации · ориентир", "₽/шт.", 8500),
+  ("install_addon_cooling", "Доплата за монтаж охлаждения · ориентир", "₽/шт.", 12000),
+  ("equipment_addon_recovery", "Оборудование для рекуперации · ориентир", "₽/шт.", 85000),
+  ("equipment_addon_cooling", "Оборудование для охлаждения · ориентир", "₽/шт.", 120000),
+  ("fan_round_100", "Монтаж круглого вентилятора · Ø100 мм", "₽/шт.", 3100),
+  ("fan_round_125", "Монтаж круглого вентилятора · Ø125 мм", "₽/шт.", 3400),
+  ("fan_round_160", "Монтаж круглого вентилятора · Ø160 мм", "₽/шт.", 4500),
+  ("fan_round_200", "Монтаж круглого вентилятора · Ø200 мм", "₽/шт.", 4700),
+  ("fan_round_250", "Монтаж круглого вентилятора · Ø250 мм", "₽/шт.", 6200),
+  ("fan_rect_400x200", "Монтаж канального вентилятора · 400×200 мм", "₽/шт.", 4000),
+  ("fan_rect_500x250", "Монтаж канального вентилятора · 500×250 мм", "₽/шт.", 5100),
+  ("fan_roof", "Монтаж крышного вентилятора · ориентир", "₽/шт.", 6000),
+  ("fan_radial", "Монтаж радиального вентилятора · ориентир", "₽/шт.", 6000),
+  ("duct_rigid_50", "Монтаж жёстких воздуховодов · площадь до 50 м²", "₽/м²", 2020),
+  ("duct_rigid_100", "Монтаж жёстких воздуховодов · площадь до 100 м²", "₽/м²", 1860),
+  ("duct_rigid_500", "Монтаж жёстких воздуховодов · площадь до 500 м²", "₽/м²", 1580),
+  ("duct_rigid_1000", "Монтаж жёстких воздуховодов · площадь до 1 000 м²", "₽/м²", 1420),
+  ("duct_rigid_over_1000", "Монтаж жёстких воздуховодов · свыше 1 000 м²", "₽/м²", 1370),
+  ("duct_flexible_100", "Монтаж гибких воздуховодов · D100", "₽/м", 310),
+  ("duct_flexible_160", "Монтаж гибких воздуховодов · D160", "₽/м", 370),
+  ("duct_flexible_200", "Монтаж гибких воздуховодов · D200", "₽/м", 390),
+  ("duct_flexible_250", "Монтаж гибких воздуховодов · D250", "₽/м", 470),
+  ("install_filter", "Монтаж фильтра", "₽/шт.", 1450),
+  ("install_diffuser", "Монтаж диффузора", "₽/шт.", 480),
+  ("install_throttle_damper", "Монтаж дроссель-клапана", "₽/шт.", 750),
+  ("install_outer_grille", "Монтаж наружной решётки", "₽/шт.", 5500),
+  ("install_smoke_damper", "Монтаж клапана дымоудаления", "₽/шт.", 1500),
+  ("install_binding_unit", "Монтаж узла обвязки", "₽/шт.", 10200),
+  ("install_silencer", "Монтаж шумоглушителя · ориентир", "₽/шт.", 1700),
+  ("install_valve", "Монтаж клапана · ориентир", "₽/шт.", 700),
+  ("install_automation", "Монтаж комплекта автоматики · ориентир", "₽/компл.", 3500),
+  ("install_branch", "Монтаж ответвления · ориентир", "₽/шт.", 900),
+  ("material_rigid_duct_m2", "Материал жёсткого воздуховода · ориентир", "₽/м²", 950),
+  ("material_flexible_100", "Материал гибкого воздуховода · D100 · ориентир", "₽/м", 370),
+  ("material_flexible_160", "Материал гибкого воздуховода · D160 · ориентир", "₽/м", 450),
+  ("material_flexible_200", "Материал гибкого воздуховода · D200 · ориентир", "₽/м", 530),
+  ("material_flexible_250", "Материал гибкого воздуховода · D250 · ориентир", "₽/м", 650),
+  ("labor_pipe_m", "Прокладка инженерной трубы · ориентир", "₽/м", 420),
+  ("material_pipe_m", "Инженерная труба и изоляция · ориентир", "₽/м", 560),
+  ("material_branch_fitting", "Фасонная часть на ответвление · ориентир", "₽/шт.", 650),
+  ("material_support_m", "Крепёж и подвесы воздуховодов · ориентир", "₽/м", 140),
+  ("material_consumables_m", "Лента, герметик и расходники · ориентир", "₽/м", 110),
+  ("material_fan", "Вентилятор и комплектующие · ориентир", "₽/шт.", 9500),
+  ("material_filter", "Фильтр · ориентир", "₽/шт.", 2800),
+  ("material_diffuser", "Диффузор · ориентир", "₽/шт.", 900),
+  ("material_throttle_damper", "Дроссель-клапан · ориентир", "₽/шт.", 1500),
+  ("material_outer_grille", "Наружная решётка · ориентир", "₽/шт.", 3800),
+  ("material_smoke_damper", "Клапан дымоудаления · ориентир", "₽/шт.", 8500),
+  ("material_binding_unit", "Узел обвязки · ориентир", "₽/шт.", 6000),
+  ("material_silencer", "Шумоглушитель · ориентир", "₽/шт.", 6500),
+  ("material_valve", "Воздушный клапан · ориентир", "₽/шт.", 1200),
+  ("material_automation", "Комплект автоматики · ориентир", "₽/компл.", 16000),
+  ("air_per_person_m3h", "Расчётный приток на одного человека", "м³/ч·чел.", 60),
+)
+DEFAULT_VENTILATION_ESTIMATOR_RATES = {
+  code: default_value
+  for code, label, unit, default_value in VENTILATION_ESTIMATOR_RATE_FIELDS
+}
+
+
+def validate_ventilation_estimator_rates(raw_rates):
+  """Validate admin-managed ventilation estimator tariffs."""
+  if raw_rates is None:
+    raw_rates = {}
+  if not isinstance(raw_rates, dict):
+    return None, "Тарифы калькулятора должны быть объектом."
+  allowed = DEFAULT_VENTILATION_ESTIMATOR_RATES
+  unknown = set(raw_rates) - set(allowed)
+  if unknown:
+    return None, "В настройках есть неизвестные коды тарифов: {}.".format(
+      ", ".join(sorted(unknown))
+    )
+  rates = dict(allowed)
+  for code, value in raw_rates.items():
+    if isinstance(value, str):
+      value = value.strip().replace(",", ".")
+      try:
+        value = float(value)
+      except (TypeError, ValueError, OverflowError):
+        return None, "Проверьте цену «{}» — требуется число.".format(code)
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+      return None, "Проверьте цену «{}» — требуется число.".format(code)
+    maximum = 1000 if code == "air_per_person_m3h" else 100000000
+    if not math.isfinite(value) or value < 0 or value > maximum:
+      unit = dict((item[0], item[2]) for item in VENTILATION_ESTIMATOR_RATE_FIELDS).get(code, "")
+      return None, "Значение «{}» должно быть от 0 до {} {}.".format(
+        code, maximum, unit
+      )
+    unit = dict((item[0], item[2]) for item in VENTILATION_ESTIMATOR_RATE_FIELDS).get(code, "₽")
+    rates[code] = int(value + 0.5) if unit.startswith("₽") else round(value, 2)
+  return rates, None
+
+
+def ventilation_estimator_rate_rows(raw_rates=None):
+  rates, error = validate_ventilation_estimator_rates(raw_rates)
+  if error:
+    rates = dict(DEFAULT_VENTILATION_ESTIMATOR_RATES)
+  return [
+    {"code": code, "label": label, "unit": unit, "value": str(rates[code])}
+    for code, label, unit, default_value in VENTILATION_ESTIMATOR_RATE_FIELDS
+  ]
 
 BASE_STYLE = """
 <style>
@@ -383,26 +511,38 @@ def _seed_price_pages():
     slug = "prices-{}".format(code)
     page = app_tables.cms_pages.get(slug=slug)
     if page is not None:
+      if code == "ventilation":
+        settings = page["settings"] or {}
+        if not isinstance(settings.get("ventilation_estimator_rates"), dict):
+          settings["ventilation_estimator_rates"] = dict(
+            DEFAULT_VENTILATION_ESTIMATOR_RATES
+          )
+          page.update(settings=settings, updated_at=now)
       continue
+    settings = {
+      "publish_date": now.strftime("%d.%m.%Y"),
+      "excerpt": meta["seo_description"],
+      "seo_title": meta["seo_title"],
+      "seo_description": meta["seo_description"],
+      "keywords": "цены, монтаж, кондиционеры, VRV, VRF, вентиляция, ЭКО-КЛИМАТ",
+      "social_image_url": meta["image"],
+      "price_source": {
+        "conditioners": SOURCE_CONDITIONING,
+        "vrf": SOURCE_VRF,
+        "ventilation": SOURCE_VENTILATION,
+      }[code],
+      "price_category": "prices",
+      "price_code": code,
+    }
+    if code == "ventilation":
+      settings["ventilation_estimator_rates"] = dict(
+        DEFAULT_VENTILATION_ESTIMATOR_RATES
+      )
     page = app_tables.cms_pages.add_row(
       slug=slug,
       title=meta["title"],
       status="published",
-      settings={
-        "publish_date": now.strftime("%d.%m.%Y"),
-        "excerpt": meta["seo_description"],
-        "seo_title": meta["seo_title"],
-        "seo_description": meta["seo_description"],
-        "keywords": "цены, монтаж, кондиционеры, VRV, VRF, вентиляция, ЭКО-КЛИМАТ",
-        "social_image_url": meta["image"],
-        "price_source": {
-          "conditioners": SOURCE_CONDITIONING,
-          "vrf": SOURCE_VRF,
-          "ventilation": SOURCE_VENTILATION,
-        }[code],
-        "price_category": "prices",
-        "price_code": code,
-      },
+      settings=settings,
       updated_at=now
     )
     app_tables.cms_modules.add_row(
@@ -418,6 +558,25 @@ def _seed_price_pages():
       details={"slugs": created},
       created_at=now
     )
+
+
+@anvil.server.callable
+def get_ventilation_estimator_rates():
+  _seed_price_pages()
+  page = app_tables.cms_pages.get(slug="prices-ventilation")
+  settings = page["settings"] or {} if page is not None else {}
+  rates, error = validate_ventilation_estimator_rates(
+    settings.get("ventilation_estimator_rates")
+  )
+  return {
+    "ok": True,
+    "rates": rates or dict(DEFAULT_VENTILATION_ESTIMATOR_RATES),
+    "notice": (
+      "В расценки материалов включён ориентир; точную смету подтвердит специалист."
+      if not error else
+      "Некорректные тарифы в настройках. Пока используются базовые значения."
+    ),
+  }
 
 
 @anvil.server.callable

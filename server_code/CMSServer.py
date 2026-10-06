@@ -83,7 +83,7 @@ def _text(value, label, maximum, required=True):
   return value, None
 
 
-def _decode_small_object(raw, label, maximum=4000):
+def _decode_small_object(raw, label, maximum=4000, allow_nested=False):
   if isinstance(raw, dict):
     data = raw
   elif isinstance(raw, str) and len(raw) <= maximum:
@@ -103,11 +103,14 @@ def _decode_small_object(raw, label, maximum=4000):
   for key, value in data.items():
     if not isinstance(key, str) or not key or len(key) > 64:
       return None, "Проверьте название параметра в поле «{}».".format(label)
-    if value is not None and not isinstance(value, (str, int, float, bool)):
-      return None, "CMS принимает короткие текстовые значения и числа."
-    value_limit = 40000 if key == "html" else 2000
-    if isinstance(value, str) and len(value) > value_limit:
-      return None, "Текст модуля слишком длинный."
+    if value is None or isinstance(value, (str, int, float, bool)):
+      value_limit = 40000 if key == "html" else 2000
+      if isinstance(value, str) and len(value) > value_limit:
+        return None, "Текст модуля слишком длинный."
+      continue
+    if allow_nested and isinstance(value, (dict, list)):
+      continue
+    return None, "CMS принимает короткие текстовые значения и числа."
   return data, None
 
 
@@ -148,6 +151,13 @@ def _validate_page_settings(settings):
     or news_category not in NEWS_CATEGORY_CODES
   ):
     return None, "Выберите рубрику новостей из списка."
+  if "ventilation_estimator_rates" in settings:
+    rates, error = PricePagesService.validate_ventilation_estimator_rates(
+      settings["ventilation_estimator_rates"]
+    )
+    if error:
+      return None, error
+    settings["ventilation_estimator_rates"] = rates
   return settings, None
 
 
@@ -226,11 +236,17 @@ def get_cms_page(page_id):
     q.fetch_only("code", "position", "content", "enabled"),
     order_by("position"), page=page
   )[:MAX_MODULES]
+  settings = page["settings"] or {}
   return {
     "ok": True, "page": _page_record(page),
-    "settings": page["settings"] or {},
+    "settings": settings,
     "modules": [_module_record(row) for row in module_rows],
-    "module_types": MODULE_TYPES
+    "module_types": MODULE_TYPES,
+    "ventilation_estimator_rate_rows": (
+      PricePagesService.ventilation_estimator_rate_rows(
+        settings.get("ventilation_estimator_rates")
+      ) if page["slug"] == "prices-ventilation" else []
+    )
   }
 
 
@@ -250,7 +266,9 @@ def save_cms_page(title, slug, settings_raw, page_id=None):
   slug = slug or ""
   if not SLUG_RE.fullmatch(slug):
     return {"ok": False, "message": "Адрес должен содержать латинские буквы, цифры и дефис."}
-  settings, error = _decode_small_object(settings_raw, "Настройки страницы")
+  settings, error = _decode_small_object(
+    settings_raw, "Настройки страницы", maximum=12000, allow_nested=True
+  )
   if error:
     return {"ok": False, "message": error}
   settings, error = _validate_page_settings(settings)

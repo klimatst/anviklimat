@@ -1,0 +1,71 @@
+<anvil-form container="ColumnPanel" prop:role="ventilation-quote">
+  <div class="ventilation-quote-heading">
+    <div>
+      <anvil-component type="Label" name="quote_eyebrow" prop:role="eyebrow" prop:text="РАСЧЁТ СТОИМОСТИ"></anvil-component>
+      <anvil-component type="Label" name="quote_heading" prop:role="section-heading" prop:text="Соберите предварительную смету"></anvil-component>
+      <anvil-component type="Label" name="quote_lede" prop:role="lede" prop:text="Добавляйте оборудование, укажите метраж воздуховодов и труб — стоимость и расходники пересчитаются автоматически."></anvil-component>
+    </div>
+    <anvil-component type="Label" name="estimate_total" prop:role="ventilation-quote-total" prop:text="—"></anvil-component>
+  </div>
+
+  <div class="ventilation-quote-layout">
+    <anvil-component type="ColumnPanel" name="quote_input_panel" prop:role="ventilation-quote-input">
+      <anvil-component type="Label" name="quote_installation_heading" prop:role="ventilation-subheading" prop:text="Установка и оборудование"></anvil-component>
+      <div class="ventilation-quote-fields">
+        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="installation_type_label" prop:text="Тип установки"></anvil-component><anvil-component type="DropDown" name="installation_type_dropdown"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="installation_flow_label" prop:text="Производительность, м³/ч"></anvil-component><anvil-component type="TextBox" name="installation_flow_box" prop:placeholder="500"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="installation_count_label" prop:text="Количество установок, шт."></anvil-component><anvil-component type="TextBox" name="installation_count_box" prop:placeholder="1"></anvil-component></div>
+        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="equipment_unit_price_label" prop:text="Цена одной установки, ₽ (если известна)"></anvil-component><anvil-component type="TextBox" name="equipment_unit_price_box" prop:placeholder="0"></anvil-component></div>
+      </div>
+      <div class="ventilation-quote-checks"><anvil-component type="CheckBox" name="recovery_checkbox" prop:text="Рекуперация"></anvil-component><anvil-component type="CheckBox" name="cooling_checkbox" prop:text="Охлаждение воздуха"></anvil-component></div>
+
+      <anvil-component type="Label" name="quote_air_distribution_heading" prop:role="ventilation-subheading" prop:text="Воздуховоды и трубопроводы"></anvil-component>
+      <div class="ventilation-quote-fields">
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_type_label" prop:text="Тип воздуховода"></anvil-component><anvil-component type="DropDown" name="duct_type_dropdown"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_diameter_label" prop:text="Диаметр гибкого воздуховода"></anvil-component><anvil-component type="DropDown" name="duct_diameter_dropdown"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="duct_length_label" prop:text="Длина воздуховодов, м"></anvil-component><anvil-component type="TextBox" name="duct_length_box" prop:placeholder="20"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="rigid_duct_area_label" prop:text="Площадь жёстких каналов, м²"></anvil-component><anvil-component type="TextBox" name="rigid_duct_area_box" prop:placeholder="10"></anvil-component></div>
+        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="pipe_length_label" prop:text="Длина инженерных труб, м"></anvil-component><anvil-component type="TextBox" name="pipe_length_box" prop:placeholder="0"></anvil-component></div>
+      </div>
+
+      <anvil-component type="Label" name="quote_elements_heading" prop:role="ventilation-subheading" prop:text="Элементы, монтаж и расходники"></anvil-component>
+      <div class="ventilation-quote-fields">
+        <div class="ventilation-quote-field ventilation-quote-wide"><anvil-component type="Label" name="fan_installation_label" prop:text="Тип вентилятора для установки"></anvil-component><anvil-component type="DropDown" name="fan_installation_dropdown"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="fan_count_label" prop:text="Вентиляторы, шт."></anvil-component><anvil-component type="TextBox" name="fan_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="fan_equipment_price_label" prop:text="Цена вентилятора, ₽/шт."></anvil-component><anvil-component type="TextBox" name="fan_equipment_price_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="branch_count_label" prop:text="Ответвления, шт."></anvil-component><anvil-component type="TextBox" name="branch_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="filter_count_label" prop:text="Фильтры, шт."></anvil-component><anvil-component type="TextBox" name="filter_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="diffuser_count_label" prop:text="Диффузоры, шт."></anvil-component><anvil-component type="TextBox" name="diffuser_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="throttle_damper_count_label" prop:text="Дроссель-клапаны, шт."></anvil-component><anvil-component type="TextBox" name="throttle_damper_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="outer_grille_count_label" prop:text="Наружные решётки, шт."></anvil-component><anvil-component type="TextBox" name="outer_grille_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="smoke_damper_count_label" prop:text="Клапаны дымоудаления, шт."></anvil-component><anvil-component type="TextBox" name="smoke_damper_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="binding_unit_count_label" prop:text="Узлы обвязки, шт."></anvil-component><anvil-component type="TextBox" name="binding_unit_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="silencer_count_label" prop:text="Шумоглушители, шт."></anvil-component><anvil-component type="TextBox" name="silencer_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="valve_count_label" prop:text="Воздушные клапаны, шт."></anvil-component><anvil-component type="TextBox" name="valve_count_box" prop:placeholder="0"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="automation_count_label" prop:text="Комплекты автоматики, шт."></anvil-component><anvil-component type="TextBox" name="automation_count_box" prop:placeholder="0"></anvil-component></div>
+      </div>
+
+      <anvil-component type="Label" name="quote_extra_heading" prop:role="ventilation-subheading" prop:text="Дополнительная графа"></anvil-component>
+      <div class="ventilation-quote-fields">
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="extra_work_description_label" prop:text="Доп. материал или работа"></anvil-component><anvil-component type="TextBox" name="extra_work_description_box" prop:placeholder="Например, демонтаж или доставка"></anvil-component></div>
+        <div class="ventilation-quote-field"><anvil-component type="Label" name="extra_work_price_label" prop:text="Сумма, ₽"></anvil-component><anvil-component type="TextBox" name="extra_work_price_box" prop:placeholder="0"></anvil-component></div>
+      </div>
+      <div class="ventilation-quote-actions"><anvil-component type="Button" name="reset_button" prop:text="Сбросить" prop:role="secondary-button"></anvil-component><anvil-component type="Button" name="calculate_button" prop:text="Пересчитать" prop:role="primary-action"></anvil-component></div>
+      <anvil-component type="Label" name="estimate_message" prop:role="ventilation-quote-note" prop:text=""></anvil-component>
+      <anvil-component type="Label" name="estimate_notice" prop:role="ventilation-quote-note" prop:text=""></anvil-component>
+    </anvil-component>
+
+    <anvil-component type="ColumnPanel" name="quote_result_panel" prop:role="ventilation-quote-result">
+      <anvil-component type="Label" name="quote_result_heading" prop:role="ventilation-subheading" prop:text="Расшифровка сметы"></anvil-component>
+      <div class="ventilation-quote-totals">
+        <div><anvil-component type="Label" name="equipment_total_label" prop:text="Оборудование"></anvil-component><anvil-component type="Label" name="equipment_total" prop:role="ventilation-quote-total-line" prop:text="0 ₽"></anvil-component></div>
+        <div><anvil-component type="Label" name="installation_total_label" prop:text="Монтаж"></anvil-component><anvil-component type="Label" name="installation_total" prop:role="ventilation-quote-total-line" prop:text="0 ₽"></anvil-component></div>
+        <div><anvil-component type="Label" name="materials_total_label" prop:text="Материалы и расходники"></anvil-component><anvil-component type="Label" name="materials_total" prop:role="ventilation-quote-total-line" prop:text="0 ₽"></anvil-component></div>
+        <div><anvil-component type="Label" name="additional_total_label" prop:text="Дополнительные работы"></anvil-component><anvil-component type="Label" name="additional_total" prop:role="ventilation-quote-total-line" prop:text="0 ₽"></anvil-component></div>
+      </div>
+      <div class="ventilation-estimate-table-head"><span>Раздел</span><span>Позиция</span><span>Кол-во</span><span>Цена</span><span>Сумма</span></div>
+      <anvil-component type="RepeatingPanel" name="breakdown_rows" prop:role="ventilation-estimate-lines" prop:item_template="Minimal_Theme_4.PricePage.QuoteCalculator.LineItem"></anvil-component>
+      <anvil-component type="Label" name="quote_disclaimer" prop:role="ventilation-quote-note" prop:text="Смета ориентировочная. Тарифы монтажа и материалов можно изменить в админке; стоимость оборудования можно указать вручную."></anvil-component>
+    </anvil-component>
+  </div>
+</anvil-form>

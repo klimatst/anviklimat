@@ -1,0 +1,7 @@
+<anvil-form container="ColumnPanel" prop:role="cms-ventilation-rate-item">
+  <div class="cms-ventilation-rate-row">
+    <anvil-component type="Label" name="rate_label" prop:role="cms-ventilation-rate-label" prop:text=""></anvil-component>
+    <anvil-component type="TextBox" name="rate_value_box" writeback:text="self.item['value']" prop:role="cms-ventilation-rate-value" prop:placeholder="0"></anvil-component>
+    <anvil-component type="Label" name="rate_unit" prop:role="cms-ventilation-rate-unit" prop:text="₽"></anvil-component>
+  </div>
+</anvil-form>
