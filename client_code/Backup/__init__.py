@@ -22,6 +22,9 @@ class Backup(BackupTemplate):
     self.create_backup_button.enabled = False
     try:
       result = anvil.server.call("create_database_backup")
+    except Exception as exc:
+      self.backup_message.text = "Не удалось создать резервную копию: {}".format(exc)
+      return
     finally:
       self.create_backup_button.enabled = True
     if not result["ok"]:
@@ -40,6 +43,9 @@ class Backup(BackupTemplate):
     self.inspect_backup_button.enabled = False
     try:
       result = anvil.server.call("inspect_database_backup", self.restore_file.file)
+    except Exception as exc:
+      self.restore_message.text = "Не удалось проверить резервную копию: {}".format(exc)
+      return
     finally:
       self.inspect_backup_button.enabled = True
     self.restore_message.text = result["message"]
@@ -56,6 +62,9 @@ class Backup(BackupTemplate):
     self.restore_backup_button.enabled = False
     try:
       result = anvil.server.call("restore_database_backup", self.restore_file.file)
+    except Exception as exc:
+      self.restore_message.text = "Не удалось восстановить резервную копию: {}".format(exc)
+      return
     finally:
       self.restore_backup_button.enabled = True
     self.restore_message.text = result["message"]
