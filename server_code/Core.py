@@ -14,10 +14,10 @@ DEFAULT_SETTINGS = {
   "contact_email": "",
   "contact_phone": "+79257873848",
   "contact_address": "",
-  "site_theme": "blue"
+  "site_theme": "graphite"
 }
 SITE_THEME_CODES = frozenset((
-  "blue", "graphite", "ice", "amber", "crimson", "violet"
+  "graphite", "carbon-amber", "carbon-red", "arctic-light", "titanium-light"
 ))
 AUDIT_LOG_LIMIT = 1000
 AUDIT_LOG_PRUNE_BATCH = 100
