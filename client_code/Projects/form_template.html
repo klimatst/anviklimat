@@ -74,4 +74,9 @@
   <anvil-block slot="title">
     <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Проекты HVAC"></anvil-component>
   </anvil-block>
-</anvil-form>
+</anvil-form>      <anvil-component type="ColumnPanel" name="engineering_action_panel" prop:role="card" prop:visible="false">
+        <anvil-component type="Label" name="engineering_action_heading" prop:role="section-heading" prop:text="NEXT ACTIONS · Инженерный маршрут"></anvil-component>
+        <anvil-component type="Label" name="engineering_action_message" prop:role="status-message" prop:text=""></anvil-component>
+        <anvil-component type="RepeatingPanel" name="engineering_action_rows" prop:item_template="Minimal_Theme_4.Projects.EngineeringActionItem"></anvil-component>
+      </anvil-component>
+
