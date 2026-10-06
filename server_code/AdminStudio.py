@@ -13,6 +13,7 @@ from anvil.tables import app_tables, query as q
 import Core
 import AI
 import Config
+import HisenseCatalogSync
 
 
 STATE_KEY = "admin_studio_v1"
