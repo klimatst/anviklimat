@@ -211,3 +211,46 @@ html,body{overflow-x:hidden}
 .digital-twin-home-band__actions span{font-size:11px;letter-spacing:.08em;opacity:.65;text-transform:uppercase}
 @media(max-width:760px){.digital-twin-home-band{flex-direction:column;align-items:flex-start}.digital-twin-home-band__actions{align-items:flex-start;min-width:0}}
 .site-theme--arctic-light .digital-twin-home-band,.site-theme--titanium-light .digital-twin-home-band{background:linear-gradient(135deg,rgba(20,120,145,.06),rgba(255,255,255,.88));border-color:rgba(20,70,85,.14)}
+
+
+/* KLIMAЭКО catalog integrity layer: keep storefront surfaces on the active theme.
+   Explicitly override browser/default white panels that can leak through nested Anvil components. */
+.catalog-view,
+.catalog-view .catalog-main,
+.catalog-view .catalog-content,
+.catalog-view .catalog-products,
+.catalog-view .catalog-category-strip,
+.catalog-view .catalog-navigation,
+.catalog-view .catalog-filters,
+.catalog-view .catalog-reference-links,
+.catalog-view .catalog-product-grid,
+.catalog-view .anvil-container,
+.catalog-view .anvil-panel {
+  background: var(--eco-surface, #141c23) !important;
+  color: var(--eco-text, #e7f0f3);
+}
+.catalog-view .catalog-card,
+.catalog-view .catalog-category-card,
+.catalog-view .catalog-product-card,
+.catalog-view .catalog-reference-links > * {
+  background: var(--eco-surface-strong, #10171d) !important;
+  color: var(--eco-text, #e7f0f3) !important;
+  border-color: var(--eco-border, #2b3a44) !important;
+}
+.catalog-view img {
+  background: transparent;
+}
+.catalog-view .catalog-empty,
+.catalog-view .catalog-message,
+.catalog-view .catalog-breadcrumbs,
+.catalog-view .catalog-toolbar,
+.catalog-view .catalog-filter-panel {
+  background: transparent !important;
+}
+.catalog-view .anvil-textbox,
+.catalog-view .anvil-dropdown,
+.catalog-view .anvil-textarea {
+  background: var(--eco-control-bg, #10171d) !important;
+  color: var(--eco-text, #e7f0f3) !important;
+  border-color: var(--eco-border, #2b3a44) !important;
+}
