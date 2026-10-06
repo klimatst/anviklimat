@@ -94,7 +94,7 @@ SETTINGS_SECTIONS = [
     _toggle("pricing.show_currency", "Показывать обозначение валюты", True)),
   _section("site.appearance", "Сайт", "Оформление сайта",
     "Цветовая тема и визуальная плотность публичной части.",
-    _core("site_theme", "Цветовая тема", "select", "blue", _THEMES),
+    _core("site_theme", "Цветовая тема", "select", "graphite", _THEMES),
     _select("site.density", "Плотность блоков", "standard", _DENSITY),
     _toggle("site.motion", "Анимация переходов", True)),
   _section("site.typography", "Сайт", "Типографика",
