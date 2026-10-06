@@ -113,6 +113,12 @@ MODULES = [
     "properties": {"window_title": "Инженерные расчёты"}
   },
   {
+    "id": "installation_pricing", "title": "Монтаж · цены как в Lovable", "group": "Инженерия",
+    "description": "Большой редактор тарифов монтажа с теми же 15 основными позициями и структурой цен.",
+    "icon": "₽", "badge": "PRICING", "form": "AdminSettings", "permission": None,
+    "properties": {"window_title": "Монтаж · цены и тарифы", "start_section": "engineering.installation.pricing", "open_editor": True}
+  },
+  {
     "id": "ventilation", "title": "Расчёт вентиляции", "group": "Инженерия",
     "description": "Страница вентиляции, поля калькулятора, формулы и тарифы.",
     "icon": "↗", "badge": "ИНЖЕНЕРИЯ", "form": "AdminSettings", "permission": None,
@@ -216,7 +222,14 @@ class AdminTools(AdminToolsTemplate):
     )
 
   def _load_dashboard(self):
-    result = anvil.server.call("get_admin_dashboard")
+    try:
+      result = anvil.server.call("get_admin_dashboard")
+    except Exception as exc:
+      self.analytics_summary.items = []
+      self.analytics_status.text = "Сводка проекта временно недоступна: {}".format(exc)
+      self.attention_summary.text = "Не удалось загрузить состояние проекта."
+      self.attention_detail.text = "Откройте диагностику или повторите обновление."
+      return
     if not result["ok"]:
       self.analytics_summary.items = []
       self.analytics_status.text = result["message"]
