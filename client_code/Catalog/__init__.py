@@ -569,6 +569,9 @@ class Catalog(CatalogTemplate):
         else self.bulk_value_box.text or "",
         self.bulk_mode_dropdown.selected_value
       )
+    except Exception as exc:
+      self.bulk_message.text = "Не удалось выполнить массовое изменение: {}".format(exc)
+      return
     finally:
       self.bulk_apply_button.enabled = bool(self._selected_ids)
     self.bulk_message.text = result["message"]
