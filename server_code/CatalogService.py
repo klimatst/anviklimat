@@ -8,6 +8,9 @@ import math
 import uuid
 import zipfile
 import xml.etree.ElementTree as ET
+import base64
+import urllib.error
+import urllib.request
 from typing import Any, cast
 from urllib.parse import urlsplit
 
@@ -3059,6 +3062,85 @@ def _catalog_xlsx(columns, records):
   return result.getvalue()
 
 
+_GITHUB_CATALOG_REPO = "klimatst/anviklimat"
+_GITHUB_CATALOG_BRANCH = "master"
+_GITHUB_CATALOG_DIR = "theme/assets/catalog/products"
+
+
+def _github_catalog_token():
+  try:
+    import anvil.secrets
+    token = anvil.secrets.get_secret("GITHUB_CATALOG_TOKEN")
+  except Exception:
+    return ""
+  return token.strip() if isinstance(token, str) else ""
+
+
+def _safe_github_filename(value):
+  value = str(value or "").strip()
+  value = re.sub(r"[^A-Za-z0-9._-]+", "-", value)
+  value = value.strip(".-")[:96]
+  return value or "image"
+
+
+def _publish_catalog_image_to_github(media, product, index=0):
+  """Upload a catalog image to GitHub and return a raw URL.
+  Disabled when GITHUB_CATALOG_TOKEN is not configured, preserving the old
+  Anvil Media fallback without changing existing installations.
+  """
+  token = _github_catalog_token()
+  if not token or not isinstance(media, anvil.Media) or product is None:
+    return ""
+
+  data = media.get_bytes()
+  if not data:
+    return ""
+
+  model = _safe_github_filename(product["model"] or "product")
+  checksum = hashlib.sha256(data).hexdigest()[:12]
+  extension = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+    "image/gif": ".gif"
+  }.get(media.content_type, ".bin")
+  filename = "{}-{}-{}{}".format(model, index + 1, checksum, extension)
+  path = "{}/{}".format(_GITHUB_CATALOG_DIR, filename)
+  api_url = "https://api.github.com/repos/{}/contents/{}".format(
+    _GITHUB_CATALOG_REPO, urllib.parse.quote(path, safe="/")
+  )
+  payload = json.dumps({
+    "message": "Catalog photo: {}".format(product["model"] or filename),
+    "content": base64.b64encode(data).decode("ascii"),
+    "branch": _GITHUB_CATALOG_BRANCH
+  }).encode("utf-8")
+  request = urllib.request.Request(
+    api_url,
+    data=payload,
+    method="PUT",
+    headers={
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "Content-Type": "application/json",
+      "User-Agent": "klimatst-anviklimat-catalog/1.0"
+    }
+  )
+  try:
+    with urllib.request.urlopen(request, timeout=30) as response:
+      if response.status not in (200, 201):
+        return ""
+  except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError):
+    return ""
+  return "https://raw.githubusercontent.com/{}/{}/{}".format(
+    _GITHUB_CATALOG_REPO, _GITHUB_CATALOG_BRANCH, path
+  )
+
+
+def _github_catalog_configured():
+  return bool(_github_catalog_token())
+
+
 @anvil.server.callable(require_user=True)
 @Core.permission_guard("catalog.manage")
 def upload_product_images(product_id, uploaded_files):
@@ -3119,21 +3201,38 @@ def upload_product_images(product_id, uploaded_files):
     [row["sort_order"] or 0 for row in existing_rows] or [-1]
   ) + 1
   created_rows = []
+  github_used = 0
+  github_ready = _github_catalog_configured()
   for index, media in enumerate(checked_files):
     is_primary = not has_primary and index == 0
+    checksum = hashlib.sha256(media.get_bytes()).hexdigest()
+    github_url = _publish_catalog_image_to_github(media, product, index) if github_ready else ""
+    if github_url:
+      file_value = None
+      url_value = github_url
+      source_value = "github-catalog"
+      github_used += 1
+      size_value = 0
+    else:
+      # Safe fallback for apps that have not configured the GitHub token yet.
+      file_value = media
+      url_value = ""
+      source_value = "admin-upload"
+      size_value = media.length
+
     created_rows.append(app_tables.product_media.add_row(
       product=product,
       file_id=uuid.uuid4().hex,
-      file=media,
-      url="",
-      source="admin-upload",
+      file=file_value,
+      url=url_value,
+      source=source_value,
       type="primary" if is_primary else "gallery",
       alt_text=(media.name or product["model"] or "Фото модели")[:160],
       is_primary=is_primary,
       sort_order=sort_order_value + index,
-      size=media.length,
+      size=size_value,
       created_at=now,
-      checksum=hashlib.sha256(media.get_bytes()).hexdigest()
+      checksum=checksum
     ))
     if is_primary:
       has_primary = True
@@ -3142,9 +3241,15 @@ def upload_product_images(product_id, uploaded_files):
     entity_type="product", entity_id=product_id,
     details={"count": len(created_rows)}, created_at=now
   )
+  storage_note = (
+    " Фото опубликованы в GitHub и сайт использует прямые быстрые ссылки."
+    if github_used else
+    " GitHub не настроен — использовано встроенное хранилище Anvil."
+  )
   return {
     "ok": True, "images": _product_media_admin_rows(product),
-    "message": "Загружено изображений: {}.".format(len(created_rows))
+    "message": "Загружено изображений: {}.{}"
+      .format(len(created_rows), storage_note)
   }
 
 
