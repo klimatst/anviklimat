@@ -113,12 +113,35 @@ def get_project_engineering_snapshot(project_id):
   }
   index = _stage(snapshot)
   key, title, description = STAGES[index]
+  next_actions = {
+    0: "Заполнить инженерный бриф и зафиксировать объект.",
+    1: "Добавить помещения и основные исходные нагрузки.",
+    2: "Запустить расчёты по помещениям и проверить исходные допущения.",
+    3: "Выбрать системы и связать оборудование с расчётами.",
+    4: "Сформировать спецификацию и проверить совместимость.",
+    5: "Проверить смету, КП и готовность к передаче в монтаж.",
+    6: "Зафиксировать пусконаладку и передать объект в сервис.",
+    7: "Поддерживать сервисную историю и жизненный цикл оборудования."
+  }
+  risk_flags = []
+  if not object_ready:
+    risk_flags.append("Не задан объект")
+  if object_ready and not snapshot["room_count"]:
+    risk_flags.append("Нет помещений")
+  if snapshot["room_count"] and not snapshot["calculation_count"]:
+    risk_flags.append("Нет расчётов")
+  if snapshot["calculation_count"] and not snapshot["system_count"]:
+    risk_flags.append("Нет инженерных систем")
+  if snapshot["system_count"] and not snapshot["system_component_count"]:
+    risk_flags.append("Нет компонентов систем")
   snapshot.update({
     "stage_key": key,
     "stage_title": title,
     "stage_description": description,
     "stage_index": index,
     "progress": round(index / float(len(STAGES) - 1) * 100),
+    "next_action": next_actions[index],
+    "risk_flags": risk_flags[:6],
     "engineering_score": min(
       100,
       (12 if object_ready else 0) +
