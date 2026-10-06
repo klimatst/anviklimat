@@ -7,6 +7,7 @@ import anvil.server
 import anvil.users
 from anvil.tables import app_tables, order_by, query as q
 import Core
+import PricePagesService
 
 
 PAGE_STATES = {"draft", "published"}
@@ -205,6 +206,7 @@ def _ensure_reference_articles():
 @anvil.server.callable(require_user=True)
 @Core.permission_guard("cms.manage")
 def get_cms_pages():
+  PricePagesService._seed_price_pages()
   rows = app_tables.cms_pages.search(
     q.fetch_only("slug", "title", "status", "updated_at"),
     order_by("title")
@@ -482,6 +484,8 @@ def publish_cms_page(page_id):
 
 @anvil.server.callable
 def get_published_cms_page(slug):
+  if isinstance(slug, str) and slug.startswith("prices-"):
+    PricePagesService._seed_price_pages()
   if not isinstance(slug, str) or not SLUG_RE.fullmatch(slug):
     return {"ok": False, "message": "Некорректный адрес страницы."}
   page = app_tables.cms_pages.get(slug=slug, status="published")
@@ -510,11 +514,14 @@ def get_published_cms_page(slug):
 @anvil.server.callable
 def get_published_cms_pages():
   _ensure_reference_articles()
-  rows = app_tables.cms_pages.search(
-    q.fetch_only("slug", "title", "status", "updated_at", "settings"),
-    order_by("updated_at", ascending=False),
-    status="published"
-  )[:100]
+  rows = [
+    row for row in app_tables.cms_pages.search(
+      q.fetch_only("slug", "title", "status", "updated_at", "settings"),
+      order_by("updated_at", ascending=False),
+      status="published"
+    )[:120]
+    if (row["settings"] or {}).get("price_category") != "prices"
+  ][:100]
   records = []
   for row in rows:
     record = _page_record(row)
