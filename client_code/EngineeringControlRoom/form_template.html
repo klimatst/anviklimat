@@ -1,0 +1,32 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="projects_button" prop:text="Проекты" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="refresh_button" prop:text="Обновить" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="home_button" prop:text="В панель" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Engineering Control Room"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <div class="engineering-control-room">
+      <section class="engineering-control-hero">
+        <anvil-component type="Label" name="eyebrow" prop:role="eyebrow" prop:text="КЛИМАЭКО · ENGINEERING OS"></anvil-component>
+        <anvil-component type="Label" name="heading" prop:role="section-heading" prop:text="Единый центр инженерного производства"></anvil-component>
+        <anvil-component type="Label" name="intro" prop:role="lede" prop:text="Проект начинается с объекта и проходит одну связанную цепочку: объект → помещения → расчёты → системы → оборудование → смета → монтаж → сервис."></anvil-component>
+        <anvil-component type="Label" name="status" prop:role="status-message" prop:text="Загрузка…"></anvil-component>
+      </section>
+      <section class="engineering-control-metrics">
+        <anvil-component type="Label" name="projects_metric" prop:role="card" prop:text="Проекты"></anvil-component>
+        <anvil-component type="Label" name="active_metric" prop:role="card" prop:text="В работе"></anvil-component>
+        <anvil-component type="Label" name="attention_metric" prop:role="card" prop:text="Требуют внимания"></anvil-component>
+        <anvil-component type="Label" name="systems_metric" prop:role="card" prop:text="Системы"></anvil-component>
+        <anvil-component type="Label" name="calculations_metric" prop:role="card" prop:text="Расчёты"></anvil-component>
+        <anvil-component type="Label" name="estimates_metric" prop:role="card" prop:text="Сметы"></anvil-component>
+      </section>
+      <section class="engineering-control-panel">
+        <anvil-component type="Label" name="recent_heading" prop:role="section-heading" prop:text="Последние проекты"></anvil-component>
+        <anvil-component type="RepeatingPanel" name="recent_rows" prop:role="admin-module-grid" prop:item_template="Minimal_Theme_4.EngineeringControlRoom.ProjectItem"></anvil-component>
+      </section>
+    </div>
+  </anvil-block>
+</anvil-form>
