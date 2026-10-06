@@ -1,6 +1,6 @@
 <anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
   <anvil-block slot="actions">
-    <anvil-component type="Button" name="new_project_button" prop:text="Новый проект" prop:role="primary-action"></anvil-component>
+    <anvil-component type="Button" name="new_project_button" prop:text="Начать инженерный проект" prop:role="primary-action"></anvil-component>
     <anvil-component type="Button" name="catalog_button" prop:text="Каталог" prop:role="secondary-button"></anvil-component>
     <anvil-component type="Button" name="calculations_button" prop:text="Расчёты" prop:role="secondary-button"></anvil-component>
     <anvil-component type="Button" name="compatibility_button" prop:text="Совместимость" prop:role="secondary-button"></anvil-component>
@@ -9,7 +9,7 @@
   <anvil-block slot="content">
     <div class="projects-view">
       <anvil-component type="ColumnPanel" name="project_list_panel" prop:role="card">
-        <anvil-component type="Label" name="projects_intro" prop:role="lede" prop:text="Единая карточка проекта связывает объект, помещения, системы и расчёты."></anvil-component>
+        <anvil-component type="Label" name="projects_intro" prop:role="lede" prop:text="Начните с инженерного брифа: объект → помещения → инженерный профиль → расчёт → подбор → проект → смета → монтаж → сервис. Данные вводятся один раз и используются всей системой."></anvil-component>
         <anvil-component type="TextBox" name="project_search_box" prop:placeholder="Название или код проекта"></anvil-component>
         <anvil-component type="Button" name="project_search_button" prop:text="Найти" prop:role="secondary-button"></anvil-component>
         <anvil-component type="Label" name="projects_message" prop:role="status-message" prop:text=""></anvil-component>
@@ -19,7 +19,7 @@
       </anvil-component>
       <anvil-component type="ColumnPanel" name="project_editor" prop:role="card" prop:visible="false">
         <anvil-component type="Label" name="project_code_label" prop:role="eyebrow" prop:text=""></anvil-component>
-        <anvil-component type="Label" name="project_editor_heading" prop:role="section-heading" prop:text="Карточка проекта и объекта"></anvil-component>
+        <anvil-component type="Label" name="project_editor_heading" prop:role="section-heading" prop:text="01 · Инженерный бриф объекта"></anvil-component>
         <anvil-component type="TextBox" name="project_title_box" prop:placeholder="Название проекта"></anvil-component>
         <anvil-component type="TextBox" name="object_name_box" prop:placeholder="Название объекта"></anvil-component>
         <anvil-component type="DropDown" name="project_type_dropdown"></anvil-component>
@@ -31,7 +31,7 @@
         <anvil-component type="TextArea" name="object_constraints_box" prop:placeholder="Ограничения объекта: высота, шум, сроки, бюджет, архитектура, доступ и т. п."></anvil-component>
         <anvil-component type="TextArea" name="object_parameters_box" prop:placeholder="Дополнительные параметры объекта в JSON, до 4 КБ"></anvil-component>
         <anvil-component type="DropDown" name="project_status_dropdown"></anvil-component>
-        <anvil-component type="Button" name="save_project_button" prop:text="Сохранить проект" prop:role="primary-action"></anvil-component>
+        <anvil-component type="Button" name="save_project_button" prop:text="Создать и открыть проект" prop:role="primary-action"></anvil-component>
         <anvil-component type="Button" name="project_calculation_button" prop:text="Расчёты проекта" prop:role="secondary-button" prop:visible="false"></anvil-component>
         <anvil-component type="Button" name="engineering_control_button" prop:text="Engineering Control Room" prop:role="primary-action" prop:visible="false"></anvil-component>
         <anvil-component type="Button" name="cancel_project_button" prop:text="Закрыть карточку" prop:role="secondary-button"></anvil-component>
