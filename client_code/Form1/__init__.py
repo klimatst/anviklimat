@@ -29,6 +29,22 @@ class Form1(Form1Template):
     self.home_gallery_rows.items = []
     self.home_gallery_empty.text = "Откройте полную галерею, чтобы посмотреть реализованные проекты."
     self.home_gallery_empty.visible = True
+    try:
+      gallery = anvil.server.call("get_public_gallery_page")
+      items = gallery.get("items", []) if isinstance(gallery, dict) else []
+      self.home_gallery_rows.items = items[:6]
+      self.home_gallery_empty.visible = not bool(items)
+      settings = gallery.get("settings", {}) if isinstance(gallery, dict) else {}
+      columns = settings.get("columns", 3)
+      self.home_gallery_rows.role = [
+        "gallery-grid",
+        "gallery-grid-columns-{}".format(columns if columns in (2, 3, 4) else 3),
+        "gallery-grid-ratio-{}".format(settings.get("image_ratio", "landscape")),
+        "gallery-grid-preview"
+      ]
+      self.home_gallery_intro.text = settings.get("gallery_intro") or self.home_gallery_intro.text
+    except Exception:
+      pass
 
   @handle("hero_project_button", "click")
   def hero_project_button_click(self, **event_args):
