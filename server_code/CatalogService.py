@@ -407,6 +407,16 @@ def _category_image_url(category_code, media=None):
   if isinstance(media, anvil.Media):
     return media.get_url()
   filename = CATALOG_CATEGORY_PHOTOS.get(category_code)
+  if not filename and isinstance(category_code, str):
+    # Subcategories inherit the image of their nearest known catalog family,
+    # so category cards never become visually empty just because a child
+    # category has no dedicated artwork yet.
+    matches = [
+      (root, image) for root, image in CATALOG_CATEGORY_PHOTOS.items()
+      if category_code.startswith(root + "-")
+    ]
+    if matches:
+      filename = max(matches, key=lambda pair: len(pair[0]))[1]
   return "_/theme/catalog/" + filename if filename else ""
 
 
@@ -559,7 +569,12 @@ def get_catalog_categories():
 @anvil.server.callable
 def get_catalog_menu_tree(include_counts=True):
   """Return live category rows grouped into the two catalogue directions."""
-  _ensure_categories()
+  # Public navigation is read-mostly. Do not rewrite/migrate the category
+  # tree on every page load; initialize it only when the table is empty.
+  if next(iter(app_tables.catalog_categories.search(
+    q.fetch_only("code"), q.page_size(1)
+  )), None) is None:
+    _ensure_categories()
   categories = _category_options()
   by_id: dict[str, dict[str, Any]] = {
     row["id"]: dict(row, children=[]) for row in categories
