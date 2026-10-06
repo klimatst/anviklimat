@@ -23,6 +23,7 @@ class Projects(ProjectsTemplate):
     self.project_editor.visible = False
     self.engineering_lifecycle_panel.visible = False
     self.engineering_action_panel.visible = False
+    self.engineering_decision_panel.visible = False
     self.engineering_control_button.visible = False
     self.project_calculation_button.visible = False
     self.rooms_panel.visible = False
@@ -153,6 +154,7 @@ class Projects(ProjectsTemplate):
     self.engineering_control_button.visible = True
     self._load_engineering_snapshot()
     self._load_engineering_actions()
+    self._load_engineering_decision()
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
 
   def _project_parameters_with_profile(self):
@@ -268,6 +270,59 @@ class Projects(ProjectsTemplate):
       "Engineering Score: {} · приоритетных действий: {}"
       .format(result.get("engineering_score", 0), len(result.get("actions", [])))
     )
+
+
+  def _load_engineering_decision(self):
+    if not self._project_id:
+      return
+    system_id = None
+    items = getattr(self.system_rows, "items", None) or []
+    if items and isinstance(items[0], dict):
+      system_id = items[0].get("id")
+    if not system_id:
+      self.engineering_decision_panel.visible = False
+      return
+    try:
+      result = anvil.server.call("get_engineering_decision", self._project_id, system_id)
+    except Exception as exc:
+      self.engineering_decision_panel.visible = True
+      self.engineering_decision_message.text = "Smart Selection недоступен: {}".format(exc)
+      self.engineering_decision_rows.items = []
+      return
+    if not result.get("ok"):
+      self.engineering_decision_panel.visible = True
+      self.engineering_decision_message.text = result.get("message", "Подбор недоступен.")
+      self.engineering_decision_rows.items = []
+      return
+    labels = {"recommended": "RECOMMENDED · Рекомендация", "candidate": "CANDIDATE · Кандидат"}
+    rows = []
+    for item in result.get("candidates", []):
+      candidate = dict(item)
+      candidate["decision_label"] = labels.get(candidate.get("decision"), "Кандидат")
+      candidate["score_label"] = "Decision Score: {}/100".format(candidate.get("score", 0))
+      capacity = candidate.get("capacity")
+      target = candidate.get("target")
+      unit = candidate.get("capacity_unit") or ""
+      if capacity is not None and target is not None:
+        candidate["capacity_label"] = "Ёмкость: {} {} · цель: {} {}".format(capacity, unit, target, unit)
+      elif capacity is not None:
+        candidate["capacity_label"] = "Ёмкость: {} {}".format(capacity, unit)
+      else:
+        candidate["capacity_label"] = "Структурированная ёмкость не найдена"
+      candidate["readiness_label"] = (
+        "Коммерчески готово · совместимость подтверждена"
+        if candidate.get("price_ready") and candidate.get("compatible") else
+        "Нужна цена · совместимость подтверждена"
+        if candidate.get("compatible") else
+        "Нужна инженерная проверка совместимости"
+      )
+      candidate["reasons_label"] = "Почему: " + (" · ".join(candidate.get("reasons") or []) or "Недостаточно подтверждённых факторов.")
+      candidate["warnings_label"] = "Контроль: " + (" · ".join(candidate.get("warnings") or []) or "Критических замечаний нет.")
+      rows.append(candidate)
+    self.engineering_decision_panel.visible = True
+    self.engineering_decision_rows.items = rows
+    self.engineering_decision_summary.text = "Цель: {} кВт · кандидатов: {}".format(result.get("target_capacity_kw") or "—", len(rows))
+    self.engineering_decision_message.text = result.get("message", "")
 
   def _start_room(self):
     self._room_id = None
