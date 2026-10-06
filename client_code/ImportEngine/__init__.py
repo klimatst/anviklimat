@@ -406,7 +406,8 @@ class ImportEngine(ImportEngineTemplate):
         self.pdf_intake_message.text = result["message"]
         self._load_pdf_drafts()
         self._open_pdf_draft(result.get("upload_id") or result.get("draft_id"))
-        self._start_pdf_status_polling()
+        if result.get("status") == "pdf_processing":
+          self._start_pdf_status_polling()
         return
 
       chunk_size = int(result["chunk_size"])
