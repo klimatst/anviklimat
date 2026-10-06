@@ -424,6 +424,7 @@ class Projects(ProjectsTemplate):
     rows = []
     for item in result.get("candidates", [])[:12]:
       candidate = dict(item)
+      candidate["system_id"] = system_id
       candidate["decision_label"] = "SELECTED SYSTEM · {}".format(candidate.get("decision", "candidate").upper())
       candidate["score_label"] = "Decision Score: {}/100 · Confidence: {}%".format(candidate.get("score", 0), candidate.get("confidence", 0))
       capacity, target, unit = candidate.get("capacity"), candidate.get("target"), candidate.get("capacity_unit") or ""
