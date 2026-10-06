@@ -90,9 +90,15 @@ MODULES = [
   },
   {
     "id": "catalog", "title": "Каталог и товары", "group": "Каталог",
-    "description": "Карточки, цены, категории, бренды и остатки.",
+    "description": "Карточки, цены, категории, серии, характеристики и остатки.",
     "icon": "▦", "badge": "ТОВАРЫ", "form": "Catalog", "permission": "catalog.manage",
     "properties": {"window_title": "Каталог товаров"}
+  },
+  {
+    "id": "catalog_structure", "title": "Структура и категории", "group": "Каталог",
+    "description": "Дерево разделов, подкатегории, бренды и поля карточек. Изменения сразу видны на сайте.",
+    "icon": "⌘", "badge": "СТРУКТУРА", "form": "Catalog.Taxonomy", "permission": "catalog.manage",
+    "properties": {"window_title": "Структура каталога · категории"}
   },
   {
     "id": "lovable_catalog_sync", "title": "Hisense · синхронизация Lovable", "group": "Каталог",
