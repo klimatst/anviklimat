@@ -1807,7 +1807,7 @@ native_deps:
 package_name: Minimal_Theme_4
 runtime_options:
   client_version: '3'
-  server_spec: {base: python310-minimal}
+  server_spec: {base: python310-machine-learning}
   version: 3
 secrets:
   new_key:
