@@ -664,7 +664,7 @@ def get_engineering_control_room():
         "engineering_score": snapshot["engineering_score"],
         "risk_count": len(snapshot.get("risk_flags") or [])
       })
-  quality = get_engineering_quality_gate()
+  quality = get_engineering_quality_gate(80)
   quality_ok = quality.get("ok") and quality.get("healthy")
   return {
     "ok": True,
