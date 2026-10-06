@@ -73,6 +73,12 @@ def clear_session_context():
   global _SESSION_CONTEXT
   _SESSION_CONTEXT = None
 
+def prime_session_context(context):
+  """Seed the session cache from the initial public shell bootstrap."""
+  global _SESSION_CONTEXT
+  if isinstance(context, dict):
+    _SESSION_CONTEXT = context
+
 
 def get_site_theme():
   """Read and cache the public site theme for subsequent page layouts."""
