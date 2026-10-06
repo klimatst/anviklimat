@@ -43,7 +43,7 @@ def get_session_context():
   if _SESSION_CONTEXT is None:
     try:
       _SESSION_CONTEXT = anvil.server.call("get_access_context")
-    except anvil.server.RuntimeUnavailableError:
+    except Exception:
       user = anvil.users.get_user()
       return {
         "email": user["email"] if user is not None else "",
@@ -80,7 +80,7 @@ def get_site_theme():
   if _SITE_THEME_CACHE not in ("blue", "graphite", "ice", "amber", "crimson", "violet"):
     try:
       theme = anvil.server.call("get_current_site_theme")
-    except anvil.server.RuntimeUnavailableError:
+    except Exception:
       return "blue"
     _SITE_THEME_CACHE = theme if theme in (
       "blue", "graphite", "ice", "amber", "crimson", "violet"
