@@ -44,17 +44,54 @@ class Operations(OperationsTemplate):
     self._load_context()
 
   def _load_context(self, selected_client_id=None):
-    options = anvil.server.call("get_operations_options")
+    try:
+      options = anvil.server.call("get_operations_bootstrap")
+    except Exception as exc:
+      self.crm_message.text = "Не удалось загрузить рабочую среду: {}".format(exc)
+      return
+    if not options.get("ok"):
+      self.crm_message.text = options.get("message", "Рабочая среда недоступна.")
+      return
     if self._can_manage_operations:
-      self.task_status_dropdown.items = options["task_statuses"]
-      self._load_clients(selected_client_id)
-      self._load_projects()
-      self._load_tasks()
+      self.task_status_dropdown.items = options.get("task_statuses", [])
+      self._clients = options.get("clients", [])
+      self.client_rows.items = self._clients
+      client_options = [("Клиент не назначен", None)] + [
+        ("{} · {}".format(row["name"], row["email"] or row["phone"]), row["id"])
+        for row in self._clients
+      ]
+      for dropdown in (self.project_client_dropdown, self.task_client_dropdown):
+        dropdown.items = client_options
+      self.crm_message.text = "Клиентов: {}".format(len(self._clients))
+      self._projects = options.get("projects", [])
+      project_options = [("Выберите проект", None)] + [
+        ("{} · {}".format(row["code"], row["title"]), row["id"])
+        for row in self._projects
+      ]
+      for dropdown in (
+        self.project_link_dropdown, self.task_project_dropdown,
+        self.estimate_project_dropdown, self.service_project_dropdown
+      ):
+        dropdown.items = project_options
+      self.project_message.text = "Проектов в списке: {}".format(len(self._projects))
+      tasks = options.get("tasks", [])
+      for row in tasks:
+        row["can_complete"] = row["status"] not in ("done", "cancelled")
+      self.task_rows.items = tasks
+      self.task_message.text = "Задач: {}".format(len(tasks))
     elif self._can_manage_service:
-      self._load_service_projects()
+      projects = options.get("service_projects", [])
+      self.service_project_dropdown.items = [("Выберите проект", None)] + [
+        ("{} · {}".format(row["code"], row["title"]), row["id"]) for row in projects
+      ]
+      self.project_message.text = "Проектов на странице: {}".format(len(projects))
     if self._can_manage_service:
-      self.service_type_dropdown.items = options["service_types"]
-      self.service_status_dropdown.items = options["service_statuses"]
+      self.service_type_dropdown.items = options.get("service_types", [])
+      self.service_status_dropdown.items = options.get("service_statuses", [])
+    if selected_client_id:
+      self.project_client_dropdown.selected_value = selected_client_id
+      self.task_client_dropdown.selected_value = selected_client_id
+
 
   def _load_service_projects(self, search_text=""):
     result = anvil.server.call("get_projects_page", search_text, None)

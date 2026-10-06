@@ -215,6 +215,70 @@ def submit_public_enquiry(payload):
 
 
 @anvil.server.callable(require_user=True)
+def get_operations_bootstrap():
+  """Load the operations workspace in one round trip."""
+  user = _user()
+  can_operations = Core.has_permission(user, "operations.manage")
+  can_service = Core.has_permission(user, "service.manage")
+  if not (can_operations or can_service):
+    raise anvil.server.PermissionDenied("Недостаточно прав для раздела операций.")
+  payload = {
+    "ok": True,
+    "task_statuses": TASK_STATUSES,
+    "quote_statuses": list(QUOTE_STATUSES.items()),
+    "service_types": SERVICE_TYPES,
+    "service_statuses": SERVICE_STATUSES,
+    "clients": [], "projects": [], "tasks": []
+  }
+  if can_operations:
+    clients = app_tables.crm_clients.search(
+      q.fetch_only("name", "client_type", "email", "phone", "updated_at"),
+      order_by("name")
+    )[:100]
+    payload["clients"] = [{
+      "id": row.get_id(), "name": row["name"],
+      "client_type": row["client_type"] or "",
+      "email": row["email"] or "", "phone": row["phone"] or "",
+      "display_type": "Организация" if row["client_type"] == "organization" else "Частный клиент"
+    } for row in clients]
+    projects = app_tables.projects.search(
+      q.fetch_only("code", "title", "status", "updated_at"),
+      order_by("updated_at", ascending=False)
+    )[:100]
+    payload["projects"] = [{
+      "id": row.get_id(), "code": row["code"] or "",
+      "title": row["title"] or "", "status": row["status"] or ""
+    } for row in projects]
+    tasks = app_tables.crm_tasks.search(
+      q.fetch_only(
+        "title", "status", "due_at", "client", "project",
+        client=q.fetch_only("name"),
+        project=q.fetch_only("code", "title")
+      ),
+      order_by("due_at", ascending=True)
+    )[:100]
+    payload["tasks"] = [{
+      "id": row.get_id(), "title": row["title"],
+      "status": row["status"] or "open",
+      "status_title": dict(TASK_STATUSES).get(row["status"], "Открыта"),
+      "due_label": row["due_at"].isoformat() if row["due_at"] else "Срок не задан",
+      "client_title": _client_label(row["client"]),
+      "project_title": _project_label(row["project"])
+    } for row in tasks]
+  if can_service:
+    projects = payload["projects"] if payload["projects"] else app_tables.projects.search(
+      q.fetch_only("code", "title", "status", "updated_at"),
+      order_by("updated_at", ascending=False)
+    )[:100]
+    payload["service_projects"] = [{
+      "id": row.get_id(), "code": row["code"] or "",
+      "title": row["title"] or "", "status": row["status"] or ""
+    } for row in projects]
+  else:
+    payload["service_projects"] = []
+  return payload
+
+@anvil.server.callable(require_user=True)
 def get_operations_options():
   user = _user()
   if not (

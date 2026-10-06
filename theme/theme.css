@@ -1249,3 +1249,45 @@ html,body{overflow-x:hidden}
 @media(prefers-reduced-motion:reduce){
   .catalog-product-card,.anvil-role-admin-module-card{transition:none!important;transform:none!important}
 }
+
+
+/* KLIMA ECO ENGINEERING WORKSPACE POLISH */
+.engineering-control-room{
+  display:grid;
+  gap:10px;
+}
+.engineering-control-room .anvil-role-card,
+.engineering-control-room .anvil-role-panel{
+  background:linear-gradient(145deg,#111b21,#0c1419)!important;
+  border:1px solid rgba(145,177,184,.14)!important;
+  border-radius:12px!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.14)!important;
+}
+.engineering-control-room .anvil-role-card:hover{
+  border-color:rgba(var(--theme-accent-rgb),.28)!important;
+}
+.operations-view,.projects-view,.calculations-view{
+  display:block;
+}
+.operations-view .anvil-role-section-heading,
+.projects-view .anvil-role-section-heading,
+.calculations-view .anvil-role-section-heading{
+  letter-spacing:-.01em;
+}
+.operations-view .anvil-role-repeating-panel,
+.projects-view .anvil-role-repeating-panel,
+.calculations-view .anvil-role-repeating-panel{
+  min-width:0;
+}
+.operations-view input,.operations-view select,.operations-view textarea,
+.projects-view input,.projects-view select,.projects-view textarea,
+.calculations-view input,.calculations-view select,.calculations-view textarea{
+  max-width:100%;
+}
+.catalog-view .catalog-product-card img,
+.catalog-view .catalog-product-photo-frame img{
+  content-visibility:auto;
+}
+@media(max-width:760px){
+  .engineering-control-room{gap:8px}
+}
