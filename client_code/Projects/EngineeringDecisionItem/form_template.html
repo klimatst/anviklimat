@@ -1,0 +1,9 @@
+<anvil-form container="ColumnPanel" prop:role="card">
+  <anvil-component type="Label" name="decision_badge" prop:role="eyebrow" bind:text="self.item['decision_label']"></anvil-component>
+  <anvil-component type="Label" name="decision_title" prop:role="section-heading" bind:text="self.item['label']"></anvil-component>
+  <anvil-component type="Label" name="decision_score" prop:role="role-badge" bind:text="self.item['score_label']"></anvil-component>
+  <anvil-component type="Label" name="decision_capacity" prop:role="lede" bind:text="self.item['capacity_label']"></anvil-component>
+  <anvil-component type="Label" name="decision_status" prop:role="status-message" bind:text="self.item['readiness_label']"></anvil-component>
+  <anvil-component type="Label" name="decision_reasons" prop:role="status-message" bind:text="self.item['reasons_label']"></anvil-component>
+  <anvil-component type="Label" name="decision_warnings" prop:role="status-message" bind:text="self.item['warnings_label']"></anvil-component>
+</anvil-form>
