@@ -266,6 +266,10 @@ class PlanStudio(PlanStudioTemplate):
     self._render()
     self.plan_file_loader.clear()
 
+  @handle("plan_canvas", "show")
+  def plan_canvas_show(self, **event_args):
+    self._render()
+
   @handle("plan_canvas", "mouse_down")
   def plan_canvas_mouse_down(self, x, y, button, keys, **event_args):
     if button != 1:
