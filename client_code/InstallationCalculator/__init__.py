@@ -142,7 +142,11 @@ class InstallationCalculator(InstallationCalculatorTemplate):
     if not self._signed_in:
       self.project_dropdown.enabled = False
       return
-    result = anvil.server.call("get_projects_page", "", cursor)
+    try:
+      result = anvil.server.call("get_projects_page", "", cursor)
+    except Exception as exc:
+      self.project_status.text = "Не удалось загрузить проекты: {}".format(exc)
+      return
     if not result["ok"]:
       self.project_status.text = result["message"]
       return
