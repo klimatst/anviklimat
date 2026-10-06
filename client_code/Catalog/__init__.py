@@ -73,7 +73,13 @@ class Catalog(CatalogTemplate):
     self._load_page()
 
   def _load_categories(self, category_code=None):
-    result = anvil.server.call("get_catalog_menu_tree")
+    try:
+      result = anvil.server.call("get_catalog_menu_tree")
+    except Exception as exc:
+      self.catalog_message.text = "Не удалось загрузить каталог: {}".format(exc)
+      self.category_tree.items = []
+      self.category_tiles.items = []
+      return
     if not result["ok"]:
       self.catalog_message.text = "Не удалось загрузить дерево каталога."
       self.category_tree.items = []
@@ -300,15 +306,21 @@ class Catalog(CatalogTemplate):
       self.previous_button.visible = False
       self.next_button.visible = False
       return
-    result = anvil.server.call(
-      "search_catalog", self.search_box.text or "",
+    try:
+      result = anvil.server.call(
+        "search_catalog", self.search_box.text or "",
       self._filter_category_value(), cursor,
       self.status_filter.selected_value or "active",
       self.series_filter.selected_value,
       bool(self.available_filter.checked),
       self.minimum_price_box.text or "", self.maximum_price_box.text or "",
-      self.sort_filter.selected_value or "model_asc"
-    )
+        self.sort_filter.selected_value or "model_asc"
+      )
+    except Exception as exc:
+      self.product_series_rows.items = []
+      self.next_button.visible = False
+      self.catalog_message.text = "Ошибка загрузки моделей: {}".format(exc)
+      return
     if not result["ok"]:
       self.product_series_rows.items = []
       self.next_button.visible = False
@@ -417,14 +429,18 @@ class Catalog(CatalogTemplate):
     if selected_only and not product_ids:
       self.catalog_message.text = "Сначала выберите модели для экспорта."
       return
-    result = anvil.server.call(
-      "export_catalog", self.search_box.text or "",
+    try:
+      result = anvil.server.call(
+        "export_catalog", self.search_box.text or "",
       self._filter_category_value(), product_ids,
       self.export_format_dropdown.selected_value or "csv",
       self.series_filter.selected_value, bool(self.available_filter.checked),
       self.minimum_price_box.text or "", self.maximum_price_box.text or "",
-      self.status_filter.selected_value or "active"
-    )
+        self.status_filter.selected_value or "active"
+      )
+    except Exception as exc:
+      self.catalog_message.text = "Ошибка экспорта каталога: {}".format(exc)
+      return
     self.catalog_message.text = result["message"]
     if result["ok"]:
       anvil.media.download(result["file"])
