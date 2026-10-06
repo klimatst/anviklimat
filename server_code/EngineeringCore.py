@@ -66,6 +66,17 @@ def get_project_engineering_snapshot(project_id):
   quotes = list(app_tables.quotes.search(project=project)[:50])
   services = list(app_tables.service.search(project=project)[:200])
   component_count = 0
+  system_family_counts = {"VRV / VRF": 0, "Вентиляция": 0, "Кондиционирование": 0, "Другое": 0}
+  for system in systems:
+    system_type = str(system["type"] or "").lower()
+    if "vrf" in system_type or "vrv" in system_type:
+      system_family_counts["VRV / VRF"] += 1
+    elif "vent" in system_type or "air" in system_type and "condition" not in system_type:
+      system_family_counts["Вентиляция"] += 1
+    elif any(token in system_type for token in ("condition", "split", "multi")):
+      system_family_counts["Кондиционирование"] += 1
+    else:
+      system_family_counts["Другое"] += 1
   for system in systems:
     component_count += len(list(app_tables.system_components.search(system=system)[:500]))
 
@@ -87,6 +98,7 @@ def get_project_engineering_snapshot(project_id):
     "estimate_count": len(estimates),
     "quote_count": len(quotes),
     "service_count": len(services),
+    "system_family_counts": system_family_counts,
   }
   index = _stage(snapshot)
   key, title, description = STAGES[index]
