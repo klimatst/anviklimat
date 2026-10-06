@@ -15,7 +15,11 @@ PROFILES = [
 class Calculations(CalculationsTemplate):
   def __init__(self, project_id=None, system_id=None, module_code=None, **properties):
     super().__init__(**properties)
-    setup = anvil.server.call("get_hvac_calculation_setup")
+    try:
+      setup = anvil.server.call("get_hvac_calculation_setup")
+    except Exception as exc:
+      self._set_server_error("Не удалось загрузить настройки расчётов: {}".format(exc))
+      return
     self._profile = "ac"
     self._project_id = project_id
     self._context_project_id = project_id
@@ -55,8 +59,20 @@ class Calculations(CalculationsTemplate):
     if module_code in self.profile_buttons:
       self._set_profile(module_code, calculate=False)
     self._ready = True
+    if properties.get("open_formula_editor") and self._can_edit_formulas:
+      self.formula_tools_panel.visible = True
+      try:
+        self._load_admin_formulas(properties.get("formula_code"))
+      except Exception as exc:
+        self.formula_editor_message.text = "Не удалось открыть редактор формул: {}".format(exc)
     self._set_context_message()
     self._calculate_hvac()
+
+
+  def _set_server_error(self, message):
+    self.calculation_message.text = message
+    self.result_panel.visible = False
+    self.formula_tools_panel.visible = False
 
   def _set_defaults(self):
     defaults = {
