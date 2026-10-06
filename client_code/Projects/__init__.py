@@ -73,6 +73,9 @@ class Projects(ProjectsTemplate):
     self.project_calculation_button.visible = False
     self.project_type_dropdown.selected_value = "other"
     self.engineering_profile_dropdown.selected_value = "combined"
+    self.engineering_goal_dropdown.selected_value = "design"
+    self.project_priority_dropdown.selected_value = "standard"
+    self.object_constraints_box.text = ""
     self.project_status_dropdown.selected_value = "draft"
     self.project_message.text = ""
 
@@ -104,9 +107,11 @@ class Projects(ProjectsTemplate):
       ("Вентиляция", "ventilation"),
       ("Сплит / мультисплит", "split_multi"),
     ]
-    self.engineering_profile_dropdown.selected_value = (
-      (project["object_parameters"] or {}).get("engineering_profile") or "combined"
-    )
+    project_parameters = project["object_parameters"] or {}
+    self.engineering_profile_dropdown.selected_value = project_parameters.get("engineering_profile") or "combined"
+    self.engineering_goal_dropdown.selected_value = project_parameters.get("engineering_goal") or "design"
+    self.project_priority_dropdown.selected_value = project_parameters.get("project_priority") or "standard"
+    self.object_constraints_box.text = project_parameters.get("constraints", "") or ""
     self.project_status_dropdown.items = result["statuses"]
     self.project_status_dropdown.selected_value = project["status"]
     self.room_rows.items = result["rooms"]
@@ -127,7 +132,10 @@ class Projects(ProjectsTemplate):
       return raw
     profile = self.engineering_profile_dropdown.selected_value or "combined"
     parameters["engineering_profile"] = profile
-    parameters["engineering_workflow_version"] = 1
+    parameters["engineering_goal"] = self.engineering_goal_dropdown.selected_value or "design"
+    parameters["project_priority"] = self.project_priority_dropdown.selected_value or "standard"
+    parameters["constraints"] = (self.object_constraints_box.text or "").strip()[:500]
+    parameters["engineering_workflow_version"] = 2
     return json.dumps(parameters, ensure_ascii=False, separators=(",", ":"))
 
   def _save_project(self):
