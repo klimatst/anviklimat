@@ -1,6 +1,6 @@
 import anvil.server
 import anvil.users
-from anvil.tables import app_tables, order_by
+from anvil.tables import app_tables, order_by, query as q
 from datetime import datetime, timezone
 import Core
 
@@ -15,6 +15,78 @@ STAGES = (
   ("installation", "Монтаж", "Проект передан в монтаж и пусконаладку."),
   ("service", "Сервис", "Объект переведён в жизненный цикл обслуживания."),
 )
+
+
+
+
+def _project(project_id):
+  if not project_id:
+    return None
+  project = app_tables.projects.get_by_id(project_id)
+  user = anvil.users.get_user()
+  if project is None or user is None or not Core.can_access_project(project, user):
+    return None
+  return project
+
+
+def _stage(snapshot):
+  if snapshot["service_completed_count"] > 0 and snapshot["project_status"] in ("active", "completed", "service"):
+    return 7
+  if snapshot["commissioning_completed_count"] > 0 or snapshot["project_status"] in ("commissioning", "active"):
+    return 6
+  if snapshot["approved_quote_count"] > 0 or snapshot["project_status"] in ("approved", "installation"):
+    return 5
+  if snapshot["estimate_count"] > 0 and snapshot["bom_line_count"] > 0:
+    return 5
+  if snapshot["system_component_count"] > 0 or snapshot["system_count"] > 0:
+    return 4
+  if snapshot["calculation_count"] > 0:
+    return 3
+  if snapshot["room_count"] > 0:
+    return 2
+  if snapshot["object_ready"]:
+    return 1
+  return 0
+
+
+def _product_label(product):
+  if product is None:
+    return "Товар не указан"
+  brand = product["brand"]
+  return "{} {}".format(brand["name"] if brand is not None else "", product["model"] or "").strip()
+
+
+def _products_for_system(system):
+  products = {}
+  for row in app_tables.system_components.search(q.fetch_only("product"), system=system)[:200]:
+    product = row["product"]
+    if product is not None:
+      products[product.get_id()] = product
+  return products
+
+
+def _candidate_compatibility_issues(product, existing_products):
+  issues = []
+  for existing in existing_products.values():
+    if existing is None or existing.get_id() == product.get_id():
+      continue
+    rules = list(app_tables.compatibility.search(
+      q.fetch_only("product", "compatible_product", "type", "rule"),
+      q.any_of(q.all_of(product=product, compatible_product=existing), q.all_of(product=existing, compatible_product=product)),
+      enabled=True
+    )[:20])
+    for rule in rules:
+      first, second = rule["product"], rule["compatible_product"]
+      if first is None or second is None:
+        continue
+      if rule["type"] == "incompatible":
+        issues.append("{} несовместимо с {}.".format(_product_label(product), _product_label(second if first.get_id() == product.get_id() else first)))
+      elif rule["type"] == "required":
+        required = second if first.get_id() == product.get_id() else first
+        if required.get_id() not in existing_products:
+          issues.append("{} требует {}.".format(_product_label(product), _product_label(required)))
+  return issues[:5]
+
 
 
 
@@ -475,36 +547,10 @@ def get_engineering_decision(project_id, system_id):
       score += 5
       reasons.append("Модель уже находится в составе текущей системы.")
 
-    compatibility_issues = []
-    # Validate a candidate against every current product by using existing rules.
-    if existing_products:
-      candidate_match = q.any_of(*[
-        q.all_of(product=candidate) for candidate in existing_products.values()
-      ])
-      matches = list(app_tables.compatibility.search(
-        q.fetch_only("product", "compatible_product", "type", "rule"),
-        q.any_of(
-          q.all_of(product=product, compatible_product=candidate_match),
-          q.all_of(compatible_product=product, product=candidate_match)
-        ),
-        enabled=True
-      )[:120])
-      for rule in matches:
-        first = rule["product"]
-        second = rule["compatible_product"]
-        if first is None or second is None:
-          continue
-        if rule["type"] == "incompatible":
-          compatibility_issues.append("{} несовместимо с {}.".format(
-            _product_label(product), _product_label(second if first.get_id() == product.get_id() else first)
-          ))
-        elif rule["type"] == "required":
-          compatibility_issues.append("{} требует дополнительный совместимый компонент.".format(
-            _product_label(product)
-          ))
-      if compatibility_issues:
-        score -= min(30, 10 * len(compatibility_issues))
-        warnings.extend(compatibility_issues[:3])
+    compatibility_issues = _candidate_compatibility_issues(product, existing_products)
+    if compatibility_issues:
+      score -= min(30, 10 * len(compatibility_issues))
+      warnings.extend(compatibility_issues[:3])
 
     price_ready = price is not None and price["sale_price"] is not None
     compatible = not compatibility_issues
