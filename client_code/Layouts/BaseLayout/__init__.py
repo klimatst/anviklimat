@@ -4,13 +4,6 @@ from anvil.js.window import document
 import anvil.server
 import anvil.users
 from ... import Access, AdminExtensions, AdminNavigation, NewsCategories
-import time
-
-
-_PUBLIC_SHELL_CACHE = None
-_PUBLIC_SHELL_CACHE_AT = 0.0
-_PUBLIC_SHELL_CACHE_EMAIL = None
-
 SITE_THEME_CODES = ("blue", "graphite", "ice", "amber", "crimson", "violet")
 
 
@@ -236,28 +229,11 @@ class BaseLayout(BaseLayoutTemplate):
     }]
 
   def _load_public_shell_data(self):
-    global _PUBLIC_SHELL_CACHE, _PUBLIC_SHELL_CACHE_AT, _PUBLIC_SHELL_CACHE_EMAIL
-    user = anvil.users.get_user()
-    email = user["email"] if user is not None else ""
-    now = time.monotonic()
-    if (
-      isinstance(_PUBLIC_SHELL_CACHE, dict)
-      and _PUBLIC_SHELL_CACHE_EMAIL == email
-      and now - _PUBLIC_SHELL_CACHE_AT < 5
-    ):
-      return _PUBLIC_SHELL_CACHE
-
     try:
       result = anvil.server.call("get_public_shell_data")
     except Exception:
       return {}
-    if not isinstance(result, dict):
-      return {}
-
-    _PUBLIC_SHELL_CACHE = result
-    _PUBLIC_SHELL_CACHE_EMAIL = email
-    _PUBLIC_SHELL_CACHE_AT = now
-    return result
+    return result if isinstance(result, dict) else {}
 
   def _apply_catalog_menu_result(self, result):
     if not isinstance(result, dict):
