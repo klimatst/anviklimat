@@ -58,11 +58,11 @@ def _section(code, group, title, description, *fields):
 
 
 _THEMES = [
-  ("GRAPHITE · Чёрная сталь", "graphite"),
-  ("CARBON · Янтарь", "carbon-amber"),
-  ("CARBON · Красный титан", "carbon-red"),
-  ("ARCTIC · Светлый лёд", "arctic-light"),
-  ("TITANIUM · Светлый металл", "titanium-light")
+  ("01 · GRAPHITE BRUTAL · Чёрная сталь", "graphite"),
+  ("02 · CARBON FIRE · Янтарный металл", "carbon-amber"),
+  ("03 · CARBON RED · Красный титан", "carbon-red"),
+  ("04 · ARCTIC PRO · Светлый лёд", "arctic-light"),
+  ("05 · TITANIUM PRO · Светлый металл", "titanium-light")
 ]
 _ON_OFF = [("Включено", "on"), ("Выключено", "off")]
 _DENSITY = [("Компактно", "compact"), ("Стандартно", "standard"),
