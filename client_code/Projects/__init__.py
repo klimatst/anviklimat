@@ -22,6 +22,7 @@ class Projects(ProjectsTemplate):
     self._next_cursor = None
     self.project_editor.visible = False
     self.engineering_lifecycle_panel.visible = False
+    self.engineering_action_panel.visible = False
     self.engineering_control_button.visible = False
     self.project_calculation_button.visible = False
     self.rooms_panel.visible = False
@@ -148,8 +149,10 @@ class Projects(ProjectsTemplate):
     self.system_rows.items = result["systems"]
     self.project_message.text = ""
     self.engineering_lifecycle_panel.visible = True
+    self.engineering_action_panel.visible = True
     self.engineering_control_button.visible = True
     self._load_engineering_snapshot()
+    self._load_engineering_actions()
     self.room_message.text = "Помещений: {}".format(len(result["rooms"]))
 
   def _project_parameters_with_profile(self):
@@ -245,6 +248,25 @@ class Projects(ProjectsTemplate):
       snapshot.get("installation_count", 0),
       snapshot.get("commissioning_completed_count", 0),
       snapshot.get("service_completed_count", 0)
+    )
+
+  def _load_engineering_actions(self):
+    if not self._project_id:
+      return
+    try:
+      result = anvil.server.call("get_project_action_center", self._project_id)
+    except Exception as exc:
+      self.engineering_action_rows.items = []
+      self.engineering_action_message.text = "Маршрут действий временно недоступен: {}".format(exc)
+      return
+    if not result.get("ok"):
+      self.engineering_action_rows.items = []
+      self.engineering_action_message.text = result.get("message", "Маршрут действий недоступен.")
+      return
+    self.engineering_action_rows.items = result.get("actions", [])
+    self.engineering_action_message.text = (
+      "Engineering Score: {} · приоритетных действий: {}"
+      .format(result.get("engineering_score", 0), len(result.get("actions", [])))
     )
 
   def _start_room(self):
