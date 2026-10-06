@@ -2013,6 +2013,8 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
   if active_filter != "all":
     filters["active"] = active_filter == "active"
   ascending = sort_by in ("model_asc", "popular", "price_asc")
+  price_sort = sort_by in ("price_asc", "price_desc")
+  query_limit = 10001 if price_sort else PAGE_SIZE + 1
   expressions = [
     q.fetch_only(
       "identity_key", "model", "sku", "type", "description", "active", "brand",
@@ -2026,10 +2028,9 @@ def search_catalog(search_text="", category_id=None, cursor=None, active_filter=
     ),
     order_by("model", ascending=ascending),
     order_by("identity_key", ascending=ascending),
-    q.page_size(PAGE_SIZE + 1),
+    q.page_size(query_limit),
     q.all_of(identity_key=q.not_(q.ilike("demo|%")))
   ]
-  price_sort = sort_by in ("price_asc", "price_desc")
   offset = 0
   if cursor:
     if not isinstance(cursor, str) or len(cursor) > 600:
