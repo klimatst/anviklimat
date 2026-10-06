@@ -52,6 +52,8 @@ def get_session_context():
         "role_code": "user", "role_title": "Пользователь",
         "permissions": [], "runtime_unavailable": True
       }
+  if not isinstance(_SESSION_CONTEXT, dict):
+    _SESSION_CONTEXT = None
   return _SESSION_CONTEXT
 
 
@@ -171,26 +173,26 @@ def set_admin_navigation_category(category):
 
 
 def has_permission(permission):
-  context = get_session_context()
-  return context["role_code"] == "admin" or permission in context["permissions"]
+  context = get_session_context() or {}
+  return context.get("role_code") == "admin" or permission in (context.get("permissions") or [])
 
 
 def require_permission_form(permission):
-  context = get_session_context()
+  context = get_session_context() or {}
   if context.get("runtime_unavailable"):
     Notification(
       "Сервер Anvil не отвечает. Права доступа не удалось проверить; "
       "повторите вход, когда сервер приложения восстановится.", style="warning"
     ).show()
     return False
-  if context["role_code"] == "admin" or permission in context["permissions"]:
+  if context.get("role_code") == "admin" or permission in (context.get("permissions") or []):
     return True
   Notification("Недостаточно прав для этого раздела.").show()
   return False
 
 
 def require_staff_form():
-  context = get_session_context()
+  context = get_session_context() or {}
   if context.get("runtime_unavailable"):
     Notification(
       "Сервер Anvil не отвечает. Админ-панель не может проверить права доступа.",
@@ -208,14 +210,14 @@ def require_staff_form():
 
 
 def require_admin_form():
-  context = get_session_context()
+  context = get_session_context() or {}
   if context.get("runtime_unavailable"):
     Notification(
       "Сервер Anvil не отвечает. Административный доступ не подтверждён.",
       style="warning"
     ).show()
     return False
-  if context["role_code"] == "admin":
+  if context.get("role_code") == "admin":
     return True
   Notification("Раздел доступен только ADMIN.", style="warning").show()
   return False
