@@ -28,3 +28,31 @@ html,body{overflow-x:hidden}
 @media (max-width:1050px){.admin-hub-hero{grid-template-columns:1fr}.admin-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.anvil-role-admin-grid{grid-template-columns:1fr}.anvil-role-admin-sidebar{position:relative;top:auto;max-height:none}.calculator-grid{grid-template-columns:1fr}}
 @media (max-width:760px){.site-header,.premium-header{grid-template-columns:1fr;gap:8px;padding:10px 14px}.site-search{order:3}.site-header-actions{justify-content:flex-start;overflow:auto}.site-categories{top:0}.page-main{width:min(100% - 20px,1440px);padding:20px 0 38px}.hero-panel{grid-template-columns:1fr;min-height:auto;padding:28px 20px}.hero-visual{width:min(68vw,300px);margin:20px auto 0}.landing-overview,.system-cards,.contacts-view,.settings-grid,.calculator-fields-two,.calculator-fields-three,.calculator-fields-four,.installation-totals,.anvil-role-form-grid,.anvil-role-form-grid-3{grid-template-columns:1fr}.tool-band{grid-template-columns:1fr}.section-intro,.calculator-heading{align-items:flex-start;flex-direction:column}.anvil-role-h1{font-size:28px}.anvil-role-card,.anvil-role-calculator-card,.anvil-role-calculator-result{padding:17px}.admin-hub-hero{padding:22px}.admin-metrics-grid{grid-template-columns:1fr 1fr}.anvil-role-admin-module-row{grid-template-columns:1fr}.anvil-role-sticky-actions{position:relative;bottom:auto}}
 @media (max-width:430px){.admin-metrics-grid{grid-template-columns:1fr}.hero-copy .anvil-role-h1{font-size:39px}.anvil-button>button{width:100%}.hero-actions,.tool-actions,.page-actions{display:grid;grid-template-columns:1fr}.calculator-actions .anvil-button{width:100%}}
+
+/* ADMIN COMMAND DECK — final layout correction */
+.admin-hub{width:100%;max-width:1440px;margin:0 auto}
+.admin-hub-module-panel,.admin-hub-metrics-panel,.admin-hub-attention,.admin-hub-audit{border:1px solid rgba(145,177,184,.16);border-radius:18px;background:linear-gradient(145deg,rgba(18,28,34,.97),rgba(9,16,21,.99));box-shadow:inset 0 1px rgba(255,255,255,.045),0 18px 55px rgba(0,0,0,.16)}
+.admin-hub-module-panel,.admin-hub-metrics-panel{padding:20px}
+.admin-hub-section-heading{display:flex;justify-content:space-between;align-items:end;gap:18px;margin:18px 0 10px}
+.admin-hub-module-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:9px;margin:14px 0}
+.admin-hub-module-toolbar .anvil-text-box,.admin-hub-module-toolbar .anvil-dropdown{min-width:0}
+.admin-hub-module-panel .anvil-repeating-panel,.admin-hub-metrics-panel .anvil-repeating-panel{width:100%}
+.admin-hub-metrics-heading{margin-top:26px}
+.admin-hub-lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:14px}
+.admin-hub-attention,.admin-hub-audit{padding:20px}
+.admin-hub-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.admin-hub-panel-heading .anvil-role-section-heading{margin:0}
+.admin-module-card{height:100%;padding:18px;border:1px solid rgba(145,177,184,.13);border-radius:14px;background:linear-gradient(145deg,rgba(21,32,38,.94),rgba(10,17,22,.98));transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.admin-module-card:hover{transform:translateY(-2px);border-color:rgba(var(--theme-accent-rgb),.36);box-shadow:0 14px 35px rgba(0,0,0,.2)}
+.admin-module-card__top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.admin-module-card__identity{display:flex;align-items:center;gap:8px}
+.admin-module-card__index{font-size:8px;letter-spacing:.16em;color:#657980}
+.admin-module-card__command{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid rgba(145,177,184,.1)}
+.admin-module-card__command>span{font-size:8px;letter-spacing:.14em;color:#60737a}
+.admin-module-card__command .anvil-button>button{min-height:32px;padding:0 10px}
+.admin-metric-card{height:100%;min-height:112px;padding:16px;border:1px solid rgba(145,177,184,.13);border-radius:13px;background:rgba(8,15,20,.64)}
+.admin-metric-card__footer{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;padding-top:9px;border-top:1px solid rgba(145,177,184,.09)}
+.admin-metric-card__footer>span{font-size:7px;letter-spacing:.15em;color:#61747b}
+.admin-metric-card__footer .anvil-button>button{min-height:29px;padding:0 8px;font-size:9px}
+.admin-hub-footer{display:flex;align-items:center;gap:8px;margin-top:14px;color:#63767d;font-size:10px}
+@media (max-width:760px){.admin-hub-section-heading{align-items:flex-start;flex-direction:column}.admin-hub-module-toolbar{grid-template-columns:1fr}.admin-hub-lower{grid-template-columns:1fr}.admin-hub-module-panel,.admin-hub-metrics-panel,.admin-hub-attention,.admin-hub-audit{padding:15px}}
