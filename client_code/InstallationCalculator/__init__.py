@@ -33,7 +33,12 @@ class InstallationCalculator(InstallationCalculatorTemplate):
       ("Высотные работы", "height_work")
     ]
     self.complexity_dropdown.selected_value = "standard"
-    self.room_type_dropdown.items = anvil.server.call("get_hvac_calculation_setup")["room_types"]
+    try:
+      room_type_setup = anvil.server.call("get_hvac_calculation_setup")
+      self.room_type_dropdown.items = room_type_setup["room_types"]
+    except Exception as exc:
+      self.room_type_dropdown.items = [("Квартира", "apartment")]
+      self.installation_message.text = "Настройки помещения временно недоступны: {}".format(exc)
     self.room_type_dropdown.selected_value = "apartment"
     self.floor_type_dropdown.items = [
       ("Обычный этаж", "regular"), ("Последний этаж / кровля", "top")
@@ -53,7 +58,11 @@ class InstallationCalculator(InstallationCalculatorTemplate):
     self.vent_install_fields.visible = False
     self._apply_profile_fields()
     self.material_price_status.text = "Цена и единица берутся из карточки товара каталога."
-    options = anvil.server.call("get_installation_options")
+    try:
+      options = anvil.server.call("get_installation_options")
+    except Exception as exc:
+      options = {"can_view_installer": False, "materials": []}
+      self.installation_message.text = "Каталог материалов временно недоступен: {}".format(exc)
     self._can_view_installer = bool(options.get("can_view_installer"))
     self._materials = options["materials"] if self._can_view_installer else []
     self.estimate_kind_dropdown.items = [
