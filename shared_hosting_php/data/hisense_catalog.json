@@ -1,10 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source": "server_code/HisenseLovableCatalogData.py",
   "source_url": "https://github.com/klimatst/anviklimat/blob/master/server_code/HisenseLovableCatalogData.py",
   "brand": "Hisense",
   "product_count": 241,
-  "notes": "Реальные строки каталога из исходного проекта; не демонстрационные товары. Для семейств с опубликованной фотографией используется проверенный CDN URL из HisenseCatalogSync.py; для остальных — локальный тематический fallback.",
+  "photo_asset_directory": "shared_hosting_php/assets/images/hisense/",
+  "notes": "241 real catalog rows from source-controlled Anvil project data. Product image URLs are local repository assets mirrored from theme/assets/catalog/hisense/photo_sources.json by the image-sync workflow.",
   "products": [
     {
       "brand": "Hisense",
@@ -13,7 +14,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЕЦИАЛЬНАЯ СЕРИЯ СПЛИТ-СИСТЕМ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761747.",
       "price": 85000,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-superior-dc-inverter/sensation-slider-pro-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation.png",
+      "photo_key": "sensation",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -72,7 +74,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЕЦИАЛЬНАЯ СЕРИЯ СПЛИТ-СИСТЕМ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761748.",
       "price": 92000,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-superior-dc-inverter/sensation-slider-pro-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation.png",
+      "photo_key": "sensation",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -131,7 +134,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЕЦИАЛЬНАЯ СЕРИЯ СПЛИТ-СИСТЕМ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761750.",
       "price": 91000,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-carbon-superior-dc-inverter/sensation-slider-pro-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation-carbon.png",
+      "photo_key": "sensation-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -190,7 +194,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЕЦИАЛЬНАЯ СЕРИЯ СПЛИТ-СИСТЕМ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761751.",
       "price": 97000,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-carbon-superior-dc-inverter/sensation-slider-pro-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation-carbon.png",
+      "photo_key": "sensation-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -249,7 +254,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761739.",
       "price": 64900,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -308,7 +314,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761741.",
       "price": 69900,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -367,7 +374,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761742.",
       "price": 107000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -426,7 +434,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761744.",
       "price": 71500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -485,7 +494,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761745.",
       "price": 77900,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -544,7 +554,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1761746.",
       "price": 117000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -603,7 +614,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1768379.",
       "price": 37000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-eu-dc-inverter/vibe-pro-carbon-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-carbon.png",
+      "photo_key": "vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -662,7 +674,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1768382.",
       "price": 43500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-eu-dc-inverter/vibe-pro-carbon-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-carbon.png",
+      "photo_key": "vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -721,7 +734,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1768384.",
       "price": 67600,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-eu-dc-inverter/vibe-pro-carbon-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-carbon.png",
+      "photo_key": "vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -780,7 +794,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760786.",
       "price": 37000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-eu-dc-inverter/vibe-pro-silver-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-silver.png",
+      "photo_key": "vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -839,7 +854,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760788.",
       "price": 43500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-eu-dc-inverter/vibe-pro-silver-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-silver.png",
+      "photo_key": "vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -898,7 +914,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760791.",
       "price": 37000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-eu-dc-inverter/vibe-pro-silver-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-silver.png",
+      "photo_key": "vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -957,7 +974,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760793.",
       "price": 43500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-eu-dc-inverter/vibe-pro-silver-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe-pro-silver.png",
+      "photo_key": "vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1016,7 +1034,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760625.",
       "price": 26200,
-      "image_url": "https://images.breez.ru/catalog/hisense/expert-pro-2-0-eu-dc-inverter/expert-pro-2-0-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/expert.png",
+      "photo_key": "expert",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1075,7 +1094,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760626.",
       "price": 28800,
-      "image_url": "https://images.breez.ru/catalog/hisense/expert-pro-2-0-eu-dc-inverter/expert-pro-2-0-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/expert.png",
+      "photo_key": "expert",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1134,7 +1154,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760627.",
       "price": 34900,
-      "image_url": "https://images.breez.ru/catalog/hisense/expert-pro-2-0-eu-dc-inverter/expert-pro-2-0-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/expert.png",
+      "photo_key": "expert",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1193,7 +1214,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760628.",
       "price": 60200,
-      "image_url": "https://images.breez.ru/catalog/hisense/expert-pro-2-0-eu-dc-inverter/expert-pro-2-0-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/expert.png",
+      "photo_key": "expert",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1252,7 +1274,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760629.",
       "price": 75100,
-      "image_url": "https://images.breez.ru/catalog/hisense/expert-pro-2-0-eu-dc-inverter/expert-pro-2-0-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/expert.png",
+      "photo_key": "expert",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1311,7 +1334,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760590.",
       "price": 25000,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1370,7 +1394,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760591.",
       "price": 27600,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1429,7 +1454,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760592.",
       "price": 33400,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1488,7 +1514,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760594.",
       "price": 57600,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1547,7 +1574,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760595.",
       "price": 71800,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1606,7 +1634,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760717.",
       "price": 24500,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1665,7 +1694,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760718.",
       "price": 27000,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1724,7 +1754,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760720.",
       "price": 32800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1783,7 +1814,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760726.",
       "price": 56500,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1842,7 +1874,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760753.",
       "price": 70400,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1901,7 +1934,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760581.",
       "price": 23800,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -1960,7 +1994,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760583.",
       "price": 26100,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2019,7 +2054,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760584.",
       "price": 31600,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2078,7 +2114,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760585.",
       "price": 54300,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2137,7 +2174,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760586.",
       "price": 67600,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2196,7 +2234,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760820.",
       "price": 23000,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2255,7 +2294,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760834.",
       "price": 25300,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2314,7 +2354,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760847.",
       "price": 30900,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2373,7 +2414,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760863.",
       "price": 53800,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2432,7 +2474,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код НС-1760875.",
       "price": 67200,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2491,7 +2534,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код BR-00176664.",
       "price": 31800,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2550,7 +2594,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код BR-00176665.",
       "price": 34100,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2609,7 +2654,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код BR-00176666.",
       "price": 39700,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2668,7 +2714,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ ИНВЕРТОРНОГО ТИПА. Номенклатурный код BR-00176667.",
       "price": 76000,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2727,7 +2774,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760777.",
       "price": 20900,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2786,7 +2834,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760778.",
       "price": 22600,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2845,7 +2894,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760781.",
       "price": 30700,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2904,7 +2954,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760783.",
       "price": 51300,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -2963,7 +3014,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760784.",
       "price": 64800,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3022,7 +3074,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1714463.",
       "price": 101000,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-strong-vibe-a/classic-strong-vibe-a-05.png",
+      "image_url": "assets/images/hisense/strong-vibe.png",
+      "photo_key": "strong-vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3081,7 +3134,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760630.",
       "price": 20500,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-classic-a-wi-fi/split-system-goal-2-0-classic-a-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal-classic.png",
+      "photo_key": "goal-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3140,7 +3194,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760631.",
       "price": 22100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-classic-a-wi-fi/split-system-goal-2-0-classic-a-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal-classic.png",
+      "photo_key": "goal-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3199,7 +3254,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760632.",
       "price": 30100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-classic-a-wi-fi/split-system-goal-2-0-classic-a-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal-classic.png",
+      "photo_key": "goal-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3258,7 +3314,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760633.",
       "price": 50300,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-system-goal-2-0-dc-inverter-wi-fi/split-system-goal-2-0-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/goal.png",
+      "photo_key": "goal",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3317,7 +3374,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760634.",
       "price": 63500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3376,7 +3434,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760566.",
       "price": 19100,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3435,7 +3494,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760567.",
       "price": 20900,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3494,7 +3554,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код НС-1760568.",
       "price": 28300,
-      "image_url": "https://images.breez.ru/catalog/hisense/classic-split-system-city-a/classic-split-system-city-a-01.png",
+      "image_url": "assets/images/hisense/city.png",
+      "photo_key": "city",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3553,7 +3614,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176626.",
       "price": 23600,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom-classic.png",
+      "photo_key": "zoom-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3612,7 +3674,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176628.",
       "price": 25200,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom-classic.png",
+      "photo_key": "zoom-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3671,7 +3734,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176629.",
       "price": 32000,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom-classic.png",
+      "photo_key": "zoom-classic",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3730,7 +3794,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176630.",
       "price": 49200,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-2-0-dc-inverter/zoom-2-0-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/zoom.png",
+      "photo_key": "zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3789,7 +3854,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176631.",
       "price": 59800,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3848,7 +3914,8 @@
       "category_code": "air-conditioning-wall",
       "description": "СПЛИТ-СИСТЕМЫ КЛАССИЧЕСКОГО ТИПА. Номенклатурный код BR-00176632.",
       "price": 73600,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-dc-inverter/vibe-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vibe.png",
+      "photo_key": "vibe",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3907,7 +3974,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1187852.",
       "price": 43400,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -3966,7 +4034,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1187854.",
       "price": 54300,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4025,7 +4094,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1413682.",
       "price": 68700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4084,7 +4154,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1413686.",
       "price": 90900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4143,7 +4214,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1413687.",
       "price": 101800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4202,7 +4274,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1413689.",
       "price": 123100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4261,7 +4334,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1187871.",
       "price": 54900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4320,7 +4394,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1187872.",
       "price": 62100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4379,7 +4454,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1187873.",
       "price": 85400,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4438,7 +4514,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1187874.",
       "price": 107900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4497,7 +4574,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1187875.",
       "price": 120100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4556,7 +4634,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187863.",
       "price": 46900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4615,7 +4694,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187865.",
       "price": 48700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4674,7 +4754,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187867.",
       "price": 64200,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4733,7 +4814,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187868.",
       "price": 94800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4792,7 +4874,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187869.",
       "price": 112100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4851,7 +4934,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1187870.",
       "price": 121600,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4910,7 +4994,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1349686.",
       "price": 86300,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -4969,7 +5054,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1187876.",
       "price": 132700,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5028,7 +5114,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1187877.",
       "price": 160900,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5087,7 +5174,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1766427.",
       "price": 54300,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5146,7 +5234,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1766428.",
       "price": 69700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5205,7 +5294,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1766429.",
       "price": 91900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5264,7 +5354,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1766430.",
       "price": 105800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5323,7 +5414,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА. Номенклатурный код НС-1766431.",
       "price": 129100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5382,7 +5474,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1766436.",
       "price": 56900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5441,7 +5534,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1766437.",
       "price": 68100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5500,7 +5594,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1766438.",
       "price": 89400,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5559,7 +5654,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1766439.",
       "price": 107900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5618,7 +5714,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА. Номенклатурный код НС-1766440.",
       "price": 122100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5677,7 +5774,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1766420.",
       "price": 51700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5736,7 +5834,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1766421.",
       "price": 67200,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5795,7 +5894,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1766422.",
       "price": 95800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5854,7 +5954,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1766423.",
       "price": 113100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5913,7 +6014,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА. Номенклатурный код НС-1766424.",
       "price": 125600,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -5972,7 +6074,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1766433.",
       "price": 87300,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6031,7 +6134,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1766434.",
       "price": 141700,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6090,7 +6194,8 @@
       "category_code": "air-conditioning-column",
       "description": "СПЛИТ-СИСТЕМЫ КОЛОННОГО ТИПА. Номенклатурный код НС-1766435.",
       "price": 170900,
-      "image_url": "https://images.breez.ru/catalog/hisense/kolonnie-vn-bloky-vrf/kolonnie-vn-bloky-vrf-01.png",
+      "image_url": "assets/images/hisense/column.png",
+      "photo_key": "column",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6149,7 +6254,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710582.",
       "price": 76220,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6208,7 +6314,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710583.",
       "price": 81170,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6267,7 +6374,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710585.",
       "price": 97160,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6326,7 +6434,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710587.",
       "price": 134100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6385,7 +6494,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710589.",
       "price": 161800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6444,7 +6554,8 @@
       "category_code": "air-conditioning-cassette",
       "description": "СПЛИТ-СИСТЕМЫ КАССЕТНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710590.",
       "price": 174700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kasset-heavy-eu-dc-inverter/split-sistem-kasset-heavy-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/cassette.png",
+      "photo_key": "cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6503,7 +6614,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710591.",
       "price": 61800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6562,7 +6674,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710592.",
       "price": 69600,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6621,7 +6734,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710594.",
       "price": 78300,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6680,7 +6794,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710596.",
       "price": 96000,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6739,7 +6854,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710597.",
       "price": 135600,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6798,7 +6914,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710598.",
       "price": 153700,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6857,7 +6974,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710600.",
       "price": 177200,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6916,7 +7034,8 @@
       "category_code": "air-conditioning-duct",
       "description": "СПЛИТ-СИСТЕМЫ КАНАЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710110.",
       "price": 306500,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/duct.png",
+      "photo_key": "duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -6975,7 +7094,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710605.",
       "price": 95650,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7034,7 +7154,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710624.",
       "price": 129900,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7093,7 +7214,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710625.",
       "price": 158200,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7152,7 +7274,8 @@
       "category_code": "air-conditioning-floor-ceiling",
       "description": "СПЛИТ-СИСТЕМЫ НАПОЛЬНО-ПОТОЛОЧНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710626.",
       "price": 179100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/floor.png",
+      "photo_key": "floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7211,7 +7334,8 @@
       "category_code": "air-conditioning-split-systems",
       "description": "СПЛИТ-СИСТЕМЫ КОНСОЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710602.",
       "price": 61600,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-konsol-eu-dc-inverter-r32/split-sistem-konsol-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/console.png",
+      "photo_key": "console",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7270,7 +7394,8 @@
       "category_code": "air-conditioning-split-systems",
       "description": "СПЛИТ-СИСТЕМЫ КОНСОЛЬНОГО ТИПА A++ Wi-Fi. Номенклатурный код НС-1710603.",
       "price": 68390,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-konsol-eu-dc-inverter-r32/split-sistem-konsol-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/console.png",
+      "photo_key": "console",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7329,7 +7454,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1487958.",
       "price": 51480,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7388,7 +7514,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1487967.",
       "price": 55940,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7447,7 +7574,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1662570.",
       "price": 76930,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7506,7 +7634,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1487971.",
       "price": 79520,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7565,7 +7694,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1487972.",
       "price": 91860,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7624,7 +7754,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1667605.",
       "price": 128350,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7683,7 +7814,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter. Номенклатурный код НС-1487974.",
       "price": 140310,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7742,7 +7874,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1498110.",
       "price": 53980,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7801,7 +7934,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1498111.",
       "price": 59940,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7860,7 +7994,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1693724.",
       "price": 80930,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7919,7 +8054,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1498114.",
       "price": 83520,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -7978,7 +8114,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1498115.",
       "price": 95860,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8037,7 +8174,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1693021.",
       "price": 134850,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8096,7 +8234,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ MULTI EU DC Inverter LP. Номенклатурный код НС-1498117.",
       "price": 146810,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8155,7 +8294,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ ULTRA MULTI DC Inverter. Номенклатурный код НС-1051000.",
       "price": 134900,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8214,7 +8354,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ ULTRA MULTI DC Inverter. Номенклатурный код НС-1130095.",
       "price": 144530,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8273,7 +8414,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "НАРУЖНЫЕ БЛОКИ ULTRA MULTI DC Inverter. Номенклатурный код НС-1051097.",
       "price": 18400,
-      "image_url": "assets/images/conditioners.jpg",
+      "image_url": "assets/images/hisense/multi-outdoor.png",
+      "photo_key": "multi-outdoor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8322,7 +8464,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ SENSATION SLIDER PRO MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761722.",
       "price": 29700,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-superior-dc-inverter/sensation-slider-pro-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation.png",
+      "photo_key": "sensation",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8376,7 +8519,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ SENSATION SLIDER PRO MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761724.",
       "price": 32200,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-superior-dc-inverter/sensation-slider-pro-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation.png",
+      "photo_key": "sensation",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8430,7 +8574,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ SENSATION SLIDER PRO CARBON MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761728.",
       "price": 35700,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-carbon-superior-dc-inverter/sensation-slider-pro-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation-carbon.png",
+      "photo_key": "sensation-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8484,7 +8629,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ SENSATION SLIDER PRO CARBON MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761729.",
       "price": 37200,
-      "image_url": "https://images.breez.ru/catalog/hisense/sensation-slider-pro-carbon-superior-dc-inverter/sensation-slider-pro-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/sensation-carbon.png",
+      "photo_key": "sensation-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8538,7 +8684,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761682.",
       "price": 22700,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8592,7 +8739,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761683.",
       "price": 24500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8646,7 +8794,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761684.",
       "price": 37500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-superior-dc-inverter/vision-pro-2-0-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision.png",
+      "photo_key": "vision",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8700,7 +8849,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 CARBON MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761685.",
       "price": 29300,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8754,7 +8904,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 CARBON MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761686.",
       "price": 32500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8808,7 +8959,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VISION PRO 2.0 CARBON MULTI Superior DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1761687.",
       "price": 47500,
-      "image_url": "https://images.breez.ru/catalog/hisense/vision-pro-2-0-carbon-superior-dc-inverter/vision-pro-2-0-carbon-superior-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/vision-carbon.png",
+      "photo_key": "vision-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8862,7 +9014,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO SILVER MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766357.",
       "price": 20520,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-multi-eu-dc-inverter/vibe-pro-silver-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-silver.png",
+      "photo_key": "multi-vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8916,7 +9069,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO SILVER MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766358.",
       "price": 23090,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-silver-multi-eu-dc-inverter/vibe-pro-silver-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-silver.png",
+      "photo_key": "multi-vibe-pro-silver",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -8970,7 +9124,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CHAMPAGNE MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766354.",
       "price": 20520,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-champagne-multi-eu-dc-inverter/vibe-pro-champagne-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-champagne.png",
+      "photo_key": "multi-vibe-pro-champagne",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9024,7 +9179,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CHAMPAGNE MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766355.",
       "price": 23090,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-champagne-multi-eu-dc-inverter/vibe-pro-champagne-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-champagne.png",
+      "photo_key": "multi-vibe-pro-champagne",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9078,7 +9234,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CARBON MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766350.",
       "price": 20520,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-multi-eu-dc-inverter/vibe-pro-carbon-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-carbon.png",
+      "photo_key": "multi-vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9132,7 +9289,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CARBON MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766351.",
       "price": 23090,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-multi-eu-dc-inverter/vibe-pro-carbon-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-carbon.png",
+      "photo_key": "multi-vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9186,7 +9344,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CARBON MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766352.",
       "price": 26890,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-multi-eu-dc-inverter/vibe-pro-carbon-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-carbon.png",
+      "photo_key": "multi-vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9240,7 +9399,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO CARBON MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766353.",
       "price": 29740,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-carbon-multi-eu-dc-inverter/vibe-pro-carbon-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro-carbon.png",
+      "photo_key": "multi-vibe-pro-carbon",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9294,7 +9454,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766345.",
       "price": 16090,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-multi-eu-dc-inverter/vibe-pro-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro.png",
+      "photo_key": "multi-vibe-pro",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9348,7 +9509,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766346.",
       "price": 18050,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-multi-eu-dc-inverter/vibe-pro-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro.png",
+      "photo_key": "multi-vibe-pro",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9402,7 +9564,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766347.",
       "price": 21580,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-multi-eu-dc-inverter/vibe-pro-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro.png",
+      "photo_key": "multi-vibe-pro",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9456,7 +9619,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ VIBE PRO MULTI EU DC Inverter NEW 2026 Wi-Fi. Номенклатурный код НС-1766349.",
       "price": 24740,
-      "image_url": "https://images.breez.ru/catalog/hisense/vibe-pro-multi-eu-dc-inverter/vibe-pro-multi-eu-dc-inverter-01.png",
+      "image_url": "assets/images/hisense/multi-vibe-pro.png",
+      "photo_key": "multi-vibe-pro",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9510,7 +9674,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ ZOOM MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1691569.",
       "price": 14160,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-dc-inverter-wi-fi/zoom-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/multi-zoom.png",
+      "photo_key": "multi-zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9564,7 +9729,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ ZOOM MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1691576.",
       "price": 14440,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-dc-inverter-wi-fi/zoom-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/multi-zoom.png",
+      "photo_key": "multi-zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9618,7 +9784,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ ZOOM MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1691579.",
       "price": 15770,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-dc-inverter-wi-fi/zoom-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/multi-zoom.png",
+      "photo_key": "multi-zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9672,7 +9839,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ ZOOM MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1691581.",
       "price": 19290,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-dc-inverter-wi-fi/zoom-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/multi-zoom.png",
+      "photo_key": "multi-zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9726,7 +9894,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ ZOOM MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1695573.",
       "price": 23280,
-      "image_url": "https://images.breez.ru/catalog/hisense/zoom-dc-inverter-wi-fi/zoom-dc-inverter-wi-fi-01.png",
+      "image_url": "assets/images/hisense/multi-zoom.png",
+      "photo_key": "multi-zoom",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9780,7 +9949,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ PREMIUM BLACK FM DC Inverter Wi-Fi. Номенклатурный код НС-1693907.",
       "price": 17870,
-      "image_url": "https://images.breez.ru/catalog/hisense/vn-bl-premium-black-free-match-dc-2023/vn-bl-premium-black-free-match-dc-2023-01.png",
+      "image_url": "assets/images/hisense/multi-premium-black.png",
+      "photo_key": "multi-premium-black",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9834,7 +10004,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАСТЕННЫЕ БЛОКИ PREMIUM BLACK FM DC Inverter Wi-Fi. Номенклатурный код НС-1693913.",
       "price": 20220,
-      "image_url": "https://images.breez.ru/catalog/hisense/vn-bl-premium-black-free-match-dc-2023/vn-bl-premium-black-free-match-dc-2023-01.png",
+      "image_url": "assets/images/hisense/multi-premium-black.png",
+      "photo_key": "multi-premium-black",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9888,7 +10059,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КОНСОЛЬНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707796.",
       "price": 26800,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-konsol-eu-dc-inverter-r32/split-sistem-konsol-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-console.png",
+      "photo_key": "multi-console",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9942,7 +10114,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КОНСОЛЬНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707798.",
       "price": 28890,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-konsol-eu-dc-inverter-r32/split-sistem-konsol-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-console.png",
+      "photo_key": "multi-console",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -9996,7 +10169,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАНАЛЬНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707856.",
       "price": 27000,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-duct.png",
+      "photo_key": "multi-duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10050,7 +10224,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАНАЛЬНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707857.",
       "price": 30100,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-duct.png",
+      "photo_key": "multi-duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10104,7 +10279,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАНАЛЬНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707858.",
       "price": 35200,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-kanal-heavy-eu-dc-inverter-r32/split-sistem-kanal-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-duct.png",
+      "photo_key": "multi-duct",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10158,7 +10334,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАССЕТНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1710576.",
       "price": 36720,
-      "image_url": "https://images.breez.ru/catalog/hisense/hi-invert-split-sistemi-kassetnogo-tipa/hi-invert-split-sistemi-kassetnogo-tipa-01.png",
+      "image_url": "assets/images/hisense/multi-cassette.png",
+      "photo_key": "multi-cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10212,7 +10389,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАССЕТНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1710579.",
       "price": 38070,
-      "image_url": "https://images.breez.ru/catalog/hisense/hi-invert-split-sistemi-kassetnogo-tipa/hi-invert-split-sistemi-kassetnogo-tipa-01.png",
+      "image_url": "assets/images/hisense/multi-cassette.png",
+      "photo_key": "multi-cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10266,7 +10444,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ КАССЕТНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1710580.",
       "price": 45360,
-      "image_url": "https://images.breez.ru/catalog/hisense/hi-invert-split-sistemi-kassetnogo-tipa/hi-invert-split-sistemi-kassetnogo-tipa-01.png",
+      "image_url": "assets/images/hisense/multi-cassette.png",
+      "photo_key": "multi-cassette",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10320,7 +10499,8 @@
       "category_code": "air-conditioning-multi-split",
       "description": "ВНУТРЕННИЕ НАПОЛЬНО-ПОТОЛОЧНЫЕ БЛОКИ MULTI EU DC Inverter Wi-Fi. Номенклатурный код НС-1707815.",
       "price": 43850,
-      "image_url": "https://images.breez.ru/catalog/hisense/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32/split-sistem-pol-potolok-heavy-eu-dc-inverter-r32-01.png",
+      "image_url": "assets/images/hisense/multi-floor.png",
+      "photo_key": "multi-floor",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10374,7 +10554,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ V. Номенклатурный код НС-1406803.",
       "price": 22390,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-v/mob-cond-v-01.png",
+      "image_url": "assets/images/hisense/mobileV.png",
+      "photo_key": "mobileV",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10423,7 +10604,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ V. Номенклатурный код НС-1406805.",
       "price": 25590,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-v/mob-cond-v-01.png",
+      "image_url": "assets/images/hisense/mobileV.png",
+      "photo_key": "mobileV",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10472,7 +10654,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ W. Номенклатурный код НС-1413640.",
       "price": 22390,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-w/mob-cond-w-01.png",
+      "image_url": "assets/images/hisense/mobileW.png",
+      "photo_key": "mobileW",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10521,7 +10704,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ W. Номенклатурный код НС-1413641.",
       "price": 25590,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-w/mob-cond-w-01.png",
+      "image_url": "assets/images/hisense/mobileW.png",
+      "photo_key": "mobileW",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10570,7 +10754,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ С. Номенклатурный код НС-1610901.",
       "price": 29590,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-c/mob-cond-c-01.png",
+      "image_url": "assets/images/hisense/mobileC.png",
+      "photo_key": "mobileC",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10619,7 +10804,8 @@
       "category_code": "air-conditioning-portable",
       "description": "МОБИЛЬНЫЕ КОНДИЦИОНЕРЫ СЕРИИ С. Номенклатурный код НС-1610903.",
       "price": 33590,
-      "image_url": "https://images.breez.ru/catalog/hisense/mob-cond-c/mob-cond-c-01.png",
+      "image_url": "assets/images/hisense/mobileC.png",
+      "photo_key": "mobileC",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10668,7 +10854,8 @@
       "category_code": "dehumidification",
       "description": "БЫТОВЫЕ ОСУШИТЕЛИ ВОЗДУХА. Номенклатурный код НС-1614102.",
       "price": 10899,
-      "image_url": "https://images.breez.ru/catalog/hisense/osushit-vozd-air-go-pro/osushit-vozd-air-go-pro-01.png",
+      "image_url": "assets/images/hisense/dehumidifier.png",
+      "photo_key": "dehumidifier",
       "specifications": [
         [
           "Холодопроизводительность",
@@ -10722,7 +10909,8 @@
       "category_code": "materials-consumables",
       "description": "Аксессуары для мобильных кондиционеров. Номенклатурный код НС-1488394.",
       "price": 1090,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10746,7 +10934,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1419957.",
       "price": 2600,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10770,7 +10959,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1494331.",
       "price": 6900,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10794,7 +10984,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1096207.",
       "price": 13300,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10818,7 +11009,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1492600.",
       "price": 4900,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10842,7 +11034,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1708480.",
       "price": 8700,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10866,7 +11059,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1732008.",
       "price": 900,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10890,7 +11084,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1539835.",
       "price": 3300,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10914,7 +11109,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код НС-1761312.",
       "price": 1700,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10938,7 +11134,8 @@
       "category_code": "materials-consumables",
       "description": "Wi-Fi модули, адаптеры, пульты. Номенклатурный код BR-00177741.",
       "price": 2400,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10962,7 +11159,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1489615.",
       "price": 2860,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -10986,7 +11184,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1514830.",
       "price": 3530,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11010,7 +11209,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1514831.",
       "price": 3740,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11034,7 +11234,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1514832.",
       "price": 3530,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11058,7 +11259,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1514833.",
       "price": 3960,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11082,7 +11284,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1489617.",
       "price": 3880,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11106,7 +11309,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1703122.",
       "price": 4390,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11130,7 +11334,8 @@
       "category_code": "materials-consumables",
       "description": "ДРЕНАЖНЫЕ НАСОСЫ. Номенклатурный код НС-1703123.",
       "price": 8050,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11154,7 +11359,8 @@
       "category_code": "materials-consumables",
       "description": "ЗИМНИЕ КОМПЛЕКТЫ И УСТРОЙСТВА РОТАЦИЙ. Номенклатурный код НС-1725244.",
       "price": 3619,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11178,7 +11384,8 @@
       "category_code": "materials-consumables",
       "description": "ЗИМНИЕ КОМПЛЕКТЫ И УСТРОЙСТВА РОТАЦИЙ. Номенклатурный код НС-1725246.",
       "price": 4067,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11202,7 +11409,8 @@
       "category_code": "materials-consumables",
       "description": "ЗИМНИЕ КОМПЛЕКТЫ И УСТРОЙСТВА РОТАЦИЙ. Номенклатурный код НС-1077763.",
       "price": 6370,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11226,7 +11434,8 @@
       "category_code": "materials-consumables",
       "description": "ЗИМНИЕ КОМПЛЕКТЫ И УСТРОЙСТВА РОТАЦИЙ. Номенклатурный код НС-1077764.",
       "price": 2280,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11250,7 +11459,8 @@
       "category_code": "materials-consumables",
       "description": "ЗИМНИЙ КОМПЛЕКТ (Работа на охлаждение до -40℃). Номенклатурный код НС-1194171.",
       "price": 7100,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11274,7 +11484,8 @@
       "category_code": "materials-consumables",
       "description": "ЭКРАНЫ-ОТРАЖАТЕЛИ. Номенклатурный код НС-1609753.",
       "price": 1990,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11298,7 +11509,8 @@
       "category_code": "materials-consumables",
       "description": "ЭКРАНЫ-ОТРАЖАТЕЛИ. Номенклатурный код НС-1609758.",
       "price": 2620,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11322,7 +11534,8 @@
       "category_code": "materials-consumables",
       "description": "ЭКРАНЫ-ОТРАЖАТЕЛИ. Номенклатурный код НС-1609759.",
       "price": 1940,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11346,7 +11559,8 @@
       "category_code": "materials-consumables",
       "description": "ЭКРАНЫ-ОТРАЖАТЕЛИ. Номенклатурный код НС-1609760.",
       "price": 1980,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11370,7 +11584,8 @@
       "category_code": "materials-consumables",
       "description": "ВАКУУМНЫЕ НАСОСЫ. Номенклатурный код НС-1650354.",
       "price": 5830,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11394,7 +11609,8 @@
       "category_code": "materials-consumables",
       "description": "ВАКУУМНЫЕ НАСОСЫ. Номенклатурный код НС-1667265.",
       "price": 11030,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11418,7 +11634,8 @@
       "category_code": "materials-consumables",
       "description": "ВАКУУМНЫЕ НАСОСЫ. Номенклатурный код НС-1667267.",
       "price": 11620,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11442,7 +11659,8 @@
       "category_code": "materials-consumables",
       "description": "ВАКУУМНЫЕ НАСОСЫ. Номенклатурный код НС-1594224.",
       "price": 285,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11466,7 +11684,8 @@
       "category_code": "materials-consumables",
       "description": "МАНОМЕТРИЧЕСКИЕ КОЛЛЕКТОРЫ. Номенклатурный код НС-1608305.",
       "price": 930,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11490,7 +11709,8 @@
       "category_code": "materials-consumables",
       "description": "МАНОМЕТРИЧЕСКИЕ КОЛЛЕКТОРЫ. Номенклатурный код НС-1608310.",
       "price": 1550,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11514,7 +11734,8 @@
       "category_code": "materials-consumables",
       "description": "МАНОМЕТРИЧЕСКИЕ КОЛЛЕКТОРЫ. Номенклатурный код НС-1432743.",
       "price": 1511,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11538,7 +11759,8 @@
       "category_code": "materials-consumables",
       "description": "МАНОМЕТРИЧЕСКИЕ КОЛЛЕКТОРЫ. Номенклатурный код НС-1432745.",
       "price": 1915,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11562,7 +11784,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1432746.",
       "price": 868,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11586,7 +11809,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1680155.",
       "price": 1340,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11610,7 +11834,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1608316.",
       "price": 2160,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11634,7 +11859,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1608327.",
       "price": 3220,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11658,7 +11884,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1701403.",
       "price": 330,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11682,7 +11909,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1608341.",
       "price": 80,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11706,7 +11934,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1608347.",
       "price": 120,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11730,7 +11959,8 @@
       "category_code": "materials-consumables",
       "description": "ШЛАНГИ И АКСЕССУАРЫ. Номенклатурный код НС-1702314.",
       "price": 850,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11754,7 +11984,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1608434.",
       "price": 2820,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11778,7 +12009,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1608436.",
       "price": 3810,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11802,7 +12034,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1608440.",
       "price": 1070,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11826,7 +12059,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1608443.",
       "price": 510,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11850,7 +12084,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1680156.",
       "price": 310,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11874,7 +12109,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1680157.",
       "price": 1340,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11898,7 +12134,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1489119.",
       "price": 477,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11922,7 +12159,8 @@
       "category_code": "materials-consumables",
       "description": "ИНСТРУМЕНТ РУЧНОЙ. Номенклатурный код НС-1608452.",
       "price": 560,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11946,7 +12184,8 @@
       "category_code": "materials-consumables",
       "description": "УНИВЕРСАЛЬНЫЕ ФИЛЬТРЫ. Номенклатурный код НС-1592848.",
       "price": 140,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11970,7 +12209,8 @@
       "category_code": "materials-consumables",
       "description": "УНИВЕРСАЛЬНЫЕ ФИЛЬТРЫ. Номенклатурный код НС-1592850.",
       "price": 190,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -11994,7 +12234,8 @@
       "category_code": "materials-consumables",
       "description": "УНИВЕРСАЛЬНЫЕ ФИЛЬТРЫ. Номенклатурный код НС-1592851.",
       "price": 250,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
@@ -12018,7 +12259,8 @@
       "category_code": "materials-consumables",
       "description": "ФРЕОН. Номенклатурный код НС-1734597.",
       "price": 13000,
-      "image_url": "assets/images/materials.jpg",
+      "image_url": "assets/images/hisense/accessory.png",
+      "photo_key": "accessory",
       "specifications": [
         [
           "Серия",
