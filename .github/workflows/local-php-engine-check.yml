@@ -53,6 +53,7 @@ jobs:
           test -f shared_hosting_php/assets/style.css
           test -f shared_hosting_php/app/ventilation_calculator_view.php
           test -f shared_hosting_php/app/refrigerant_ruler_view.php
+          test -f shared_hosting_php/app/installation_calculator_view.php
           test -f shared_hosting_php/data/price_pages.json
           test -f shared_hosting_php/maintenance/backup.php
           test -f shared_hosting_php/maintenance/.htaccess
