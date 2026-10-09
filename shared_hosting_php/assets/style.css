@@ -100,3 +100,18 @@
 .refrigerant-layout .table-panel{overflow-x:auto}
 .refrigerant-layout .table-panel table{min-width:620px}
 @media(max-width:980px){.refrigerant-layout{grid-template-columns:1fr}}
+
+/* Independent installation cost estimator */
+.installation-calc-layout{grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);align-items:start}
+.installation-calc-layout .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.installation-calc-layout .form-grid label{min-width:0}
+.installation-calc-layout .form-grid input,.installation-calc-layout .form-grid select{min-width:0}
+.installation-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0 22px}
+.installation-checks label{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid var(--line);border-radius:5px;color:var(--text);font-size:12px}
+.installation-checks input{accent-color:var(--accent)}
+.installation-calc-layout .calc-result table{width:100%;margin-top:16px;border-collapse:collapse}
+.installation-calc-layout .calc-result th,.installation-calc-layout .calc-result td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
+.installation-calc-layout .calc-result td:last-child{text-align:right;white-space:nowrap}
+.installation-calc-layout .calc-result td small{display:block;margin-top:3px;color:var(--muted);font-size:10px}
+@media(max-width:980px){.installation-calc-layout{grid-template-columns:1fr}}
+@media(max-width:680px){.installation-calc-layout .form-grid,.installation-checks{grid-template-columns:1fr}}
