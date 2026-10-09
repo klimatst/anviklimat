@@ -2,7 +2,8 @@
 setlocal
 chcp 65001 >nul
 title KlimaEco — обновление PHP-сайта
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tools\update-php-site.ps1"
+set "REPO_ROOT=%~dp0"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$script=Join-Path $env:TEMP 'klimaeco-update-php-site.ps1'; try { Invoke-WebRequest -UseBasicParsing 'https://raw.githubusercontent.com/klimatst/anviklimat/master/tools/update-php-site.ps1' -OutFile $script; & $script -RepoRoot '%REPO_ROOT%' } catch { Write-Host ('[ОШИБКА] Не удалось загрузить проверку обновления: ' + $_.Exception.Message) -ForegroundColor Red; exit 1 }"
 set "RESULT=%ERRORLEVEL%"
 echo.
 if not "%RESULT%"=="0" (
