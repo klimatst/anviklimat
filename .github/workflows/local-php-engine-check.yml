@@ -52,3 +52,4 @@ jobs:
           test -f shared_hosting_php/admin/index.php
           test -f shared_hosting_php/assets/style.css
           test -f shared_hosting_php/data/price_pages.json
+          test -f shared_hosting_php/app/ventilation_calculator_view.php
