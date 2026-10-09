@@ -1,0 +1,37 @@
+name: Local preview checks
+
+on:
+  pull_request:
+    paths:
+      - "local-site/**"
+      - "shared_hosting_php/data/categories.json"
+      - "shared_hosting_php/data/demo_catalog.json"
+      - ".github/workflows/local-preview-check.yml"
+  push:
+    branches: ["master"]
+    paths:
+      - "local-site/**"
+      - "shared_hosting_php/data/categories.json"
+      - "shared_hosting_php/data/demo_catalog.json"
+      - ".github/workflows/local-preview-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  node-and-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check JavaScript syntax
+        run: |
+          node --check local-site/server.mjs
+          node --check local-site/public/app.js
+      - name: Validate catalog JSON
+        run: |
+          node -e "for (const file of ['shared_hosting_php/data/categories.json', 'shared_hosting_php/data/demo_catalog.json']) { JSON.parse(require('node:fs').readFileSync(file, 'utf8')); console.log('Valid JSON:', file); }"
