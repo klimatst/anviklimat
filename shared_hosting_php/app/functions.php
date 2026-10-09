@@ -208,13 +208,14 @@ function public_header(string $title, string $active = ''): void
         </div>
       </div>
       <div class="eco-menu-group">
-        <a class="nav-link" href="<?= e(site_path('index.php?page=calculator')) ?>">Цены и расчёты <span aria-hidden="true">▾</span></a>
-        <div class="eco-dropdown"><strong>ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ</strong>
-          <a href="<?= e(site_path('index.php?page=calculator')) ?>">Предварительный расчёт кондиционирования</a>
-          <a href="<?= e(site_path('index.php?page=contact')) ?>">Запросить смету на монтаж</a>
-          <a href="<?= e(site_path('index.php?page=contact')) ?>">Запросить расчёт вентиляции</a>
+        <a class="nav-link" href="<?= e(site_path('index.php?page=content&slug=prices-conditioners')) ?>">Цены <span aria-hidden="true">▾</span></a>
+        <div class="eco-dropdown"><strong>ПРАЙС-ЛИСТЫ</strong>
+          <a href="<?= e(site_path('index.php?page=content&slug=prices-conditioners')) ?>">Монтаж кондиционеров</a>
+          <a href="<?= e(site_path('index.php?page=content&slug=prices-vrf')) ?>">Монтаж VRV / VRF</a>
+          <a href="<?= e(site_path('index.php?page=content&slug=prices-ventilation')) ?>">Монтаж вентиляции</a>
         </div>
       </div>
+      <a class="nav-link <?= $active === 'calculator' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=calculator')) ?>">Калькулятор</a>
       <a class="nav-link <?= in_array($active, ['news','article'], true) ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=news')) ?>">Новости</a>
       <a class="nav-link <?= $active === 'gallery' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=gallery')) ?>">Наши работы</a>
       <a class="nav-link <?= $active === 'contact' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=contact')) ?>">Сервис и контакты</a>
