@@ -1,0 +1,12 @@
+.local-note { margin-top: 1rem; color: #6e7779; font-size: .92rem; }
+.local-hero { min-height: 540px; }
+.local-hero .hero-photo { background-image: linear-gradient(90deg, rgba(14,21,23,.88), rgba(14,21,23,.2)), url('/assets/images/vrv-vrf.jpg'); }
+.product-card { cursor: pointer; }
+.product-card button { background: none; border: 0; padding: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; width: 100%; }
+.catalog-filters { display: flex; gap: .75rem; flex-wrap: wrap; margin: 0 0 2rem; }
+.catalog-filters input { flex: 1 1 280px; padding: .85rem 1rem; border: 1px solid #d9dddc; }
+.catalog-filters select { min-width: 220px; padding: .85rem 1rem; border: 1px solid #d9dddc; background: white; }
+.detail-back { display: inline-block; margin-bottom: 1.2rem; color: #aa6037; }
+.contact-result { margin-top: 1rem; }
+.error { color: #9d2d21; }
+@media (max-width: 700px) { .top-contact { display: none; } .main-nav .wrap { overflow-x: auto; } }
