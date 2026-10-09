@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         flash('Данные администратора обновлены.'); redirect_to(site_path('admin/?tab=settings'));
     }
     $user=admin_user();
-    if ($user && in_array($action, ['save_project','save_project_room','save_project_system','save_project_calculation','save_project_estimate','delete_project'], true)) {
+    if ($user && in_array($action, ['save_project','save_project_room','save_project_system','save_project_calculation','save_project_estimate','delete_project','delete_project_room','delete_project_system','delete_project_calculation','delete_project_estimate'], true)) {
         try {
             if ($action === 'save_project') {
                 $id = max(0, (int)($_POST['id'] ?? 0));
@@ -187,6 +187,22 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
             $projectCheck->execute([$projectId]);
             if ($projectId < 1 || !$projectCheck->fetchColumn()) throw new UserInputException('Проект не найден. Обновите страницу и повторите действие.');
 
+            if (in_array($action, ['delete_project_room','delete_project_system','delete_project_calculation','delete_project_estimate'], true)) {
+                $deleteMap = [
+                    'delete_project_room' => ['project_rooms','room_id'],
+                    'delete_project_system' => ['project_systems','system_id'],
+                    'delete_project_calculation' => ['project_calculations','calculation_id'],
+                    'delete_project_estimate' => ['project_estimates','estimate_id'],
+                ];
+                [$tableName,$idField] = $deleteMap[$action];
+                $recordId = (int)($_POST['record_id'] ?? 0);
+                if ($recordId < 1) throw new UserInputException('Не выбрана запись для удаления.');
+                $query = db()->prepare('DELETE FROM ' . $tableName . ' WHERE id=? AND project_id=?');
+                $query->execute([$recordId,$projectId]);
+                flash('Запись удалена из проекта.');
+                redirect_to(site_path('admin/?tab=engineering'));
+            }
+
             if ($action === 'save_project_room') {
                 $name = trim((string)($_POST['name'] ?? ''));
                 $purpose = trim((string)($_POST['purpose'] ?? ''));
@@ -195,8 +211,14 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 $occupants = (int)($_POST['occupants'] ?? 0);
                 if ($name === '') throw new UserInputException('Укажите название помещения.');
                 if (!is_numeric($areaRaw) || (float)$areaRaw < 0 || (float)$areaRaw > 100000 || !is_numeric($heightRaw) || (float)$heightRaw < 0 || (float)$heightRaw > 100 || $occupants < 0 || $occupants > 100000) throw new UserInputException('Проверьте площадь, высоту и количество людей.');
-                $query = db()->prepare('INSERT INTO project_rooms (project_id,name,purpose,area_m2,height_m,occupants,notes,created_at) VALUES (?,?,?,?,?,?,?,NOW())');
-                $query->execute([$projectId,$name,$purpose,(float)$areaRaw,(float)$heightRaw,$occupants,trim((string)($_POST['notes'] ?? ''))]);
+                $recordId = (int)($_POST['room_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_rooms SET name=?,purpose=?,area_m2=?,height_m=?,occupants=?,notes=? WHERE id=? AND project_id=?');
+                    $query->execute([$name,$purpose,(float)$areaRaw,(float)$heightRaw,$occupants,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_rooms (project_id,name,purpose,area_m2,height_m,occupants,notes,created_at) VALUES (?,?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$name,$purpose,(float)$areaRaw,(float)$heightRaw,$occupants,trim((string)($_POST['notes'] ?? ''))]);
+                }
                 db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
                 flash('Помещение добавлено.');
             } elseif ($action === 'save_project_system') {
@@ -211,8 +233,14 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 if (!in_array($type, ['air_conditioning','multi_split','vrv_vrf','ventilation','refrigeration'], true)) $type = 'air_conditioning';
                 if (!in_array($systemStatus, ['planned','selected','ordered','installed','service'], true)) $systemStatus = 'planned';
                 if (!is_numeric($capacityRaw) || (float)$capacityRaw < 0 || (float)$capacityRaw > 100000) throw new UserInputException('Проверьте мощность системы.');
-                $query = db()->prepare('INSERT INTO project_systems (project_id,system_type,title,brand,model,capacity_kw,quantity,status,notes,created_at) VALUES (?,?,?,?,?,?,?,?,?,NOW())');
-                $query->execute([$projectId,$type,$title,$brand,$model,(float)$capacityRaw,$quantity,$systemStatus,trim((string)($_POST['notes'] ?? ''))]);
+                $recordId = (int)($_POST['system_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_systems SET system_type=?,title=?,brand=?,model=?,capacity_kw=?,quantity=?,status=?,notes=? WHERE id=? AND project_id=?');
+                    $query->execute([$type,$title,$brand,$model,(float)$capacityRaw,$quantity,$systemStatus,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_systems (project_id,system_type,title,brand,model,capacity_kw,quantity,status,notes,created_at) VALUES (?,?,?,?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$type,$title,$brand,$model,(float)$capacityRaw,$quantity,$systemStatus,trim((string)($_POST['notes'] ?? ''))]);
+                }
                 db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
                 flash('Инженерная система добавлена.');
             } elseif ($action === 'save_project_calculation') {
@@ -227,8 +255,16 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 if (!is_array($inputs) || !is_array($results)) throw new UserInputException('Входные данные и результат должны быть корректным JSON-объектом или массивом.');
                 if (!in_array($type, ['air_conditioning','multi_split','vrv_vrf','ventilation','refrigeration'], true)) $type = 'air_conditioning';
                 if (!in_array($status, ['draft','completed','needs_review'], true)) $status = 'draft';
-                $query = db()->prepare('INSERT INTO project_calculations (project_id,system_type,title,input_json,result_json,status,created_at) VALUES (?,?,?,?,?,?,NOW())');
-                $query->execute([$projectId,$type,$title,json_encode($inputs,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR),json_encode($results,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR),$status]);
+                $inputJson = json_encode($inputs,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
+                $resultJson = json_encode($results,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
+                $recordId = (int)($_POST['calculation_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_calculations SET system_type=?,title=?,input_json=?,result_json=?,status=? WHERE id=? AND project_id=?');
+                    $query->execute([$type,$title,$inputJson,$resultJson,$status,$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_calculations (project_id,system_type,title,input_json,result_json,status,created_at) VALUES (?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$type,$title,$inputJson,$resultJson,$status]);
+                }
                 db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
                 flash('Расчёт добавлен в инженерную историю проекта.');
             } elseif ($action === 'save_project_estimate') {
@@ -238,8 +274,14 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 if ($title === '') throw new UserInputException('Укажите название сметы.');
                 if (!is_numeric($amountRaw) || (float)$amountRaw < 0 || (float)$amountRaw > 1000000000000) throw new UserInputException('Проверьте сумму сметы.');
                 if (!in_array($status, ['draft','sent','approved','accepted'], true)) $status = 'draft';
-                $query = db()->prepare('INSERT INTO project_estimates (project_id,title,amount,status,notes,created_at,updated_at) VALUES (?,?,?,?,?,NOW(),NOW())');
-                $query->execute([$projectId,$title,(float)$amountRaw,$status,trim((string)($_POST['notes'] ?? ''))]);
+                $recordId = (int)($_POST['estimate_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_estimates SET title=?,amount=?,status=?,notes=?,updated_at=NOW() WHERE id=? AND project_id=?');
+                    $query->execute([$title,(float)$amountRaw,$status,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_estimates (project_id,title,amount,status,notes,created_at,updated_at) VALUES (?,?,?,?,?,NOW(),NOW())');
+                    $query->execute([$projectId,$title,(float)$amountRaw,$status,trim((string)($_POST['notes'] ?? ''))]);
+                }
                 db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
                 flash('Смета добавлена.');
             }
