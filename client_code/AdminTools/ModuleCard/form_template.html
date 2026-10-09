@@ -12,6 +12,9 @@
   <div class="admin-module-card__rail"><span></span></div>
   <div class="admin-module-card__command">
     <span>WORKSPACE</span>
-    <anvil-component type="Button" name="open_button" prop:role="admin-module-open" prop:text="Открыть →"></anvil-component>
+    <div class="admin-module-card__actions">
+      <anvil-component type="Button" name="favorite_button" prop:role="admin-module-favorite" bind:text="self.item['favorite_label']"></anvil-component>
+      <anvil-component type="Button" name="open_button" prop:role="admin-module-open" prop:text="Открыть →"></anvil-component>
+    </div>
   </div>
 </anvil-form>
