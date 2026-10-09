@@ -27,6 +27,36 @@ $requirements = [
     'Папка storage/uploads доступна для записи' => is_writable($root . '/storage/uploads'),
 ];
 
+function installer_connect_database(string $host, int $port, string $dbName, string $dbUser, string $dbPassword): PDO
+{
+    $options = [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ];
+    $databaseDsn = 'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName . ';charset=utf8mb4';
+    try {
+        return new PDO($databaseDsn, $dbUser, $dbPassword, $options);
+    } catch (PDOException $initialError) {
+        // Local XAMPP installations often use root and can create the database
+        // automatically. Shared hosting can still use a pre-created database.
+        try {
+            $serverDsn = 'mysql:host=' . $host . ';port=' . $port . ';charset=utf8mb4';
+            $server = new PDO($serverDsn, $dbUser, $dbPassword, $options);
+            $server->exec('CREATE DATABASE IF NOT EXISTS `' . $dbName . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+            return new PDO($databaseDsn, $dbUser, $dbPassword, $options);
+        } catch (Throwable $creationError) {
+            throw new RuntimeException(
+                'Не удалось подключиться к базе данных. Проверьте имя базы, пользователя и пароль. '
+                . 'Если база ещё не создана, создайте её в phpMyAdmin либо используйте учётную запись с правом CREATE DATABASE. '
+                . 'Подробности: ' . $creationError->getMessage(),
+                0,
+                $initialError
+            );
+        }
+    }
+}
+
 function installer_schema(PDO $pdo): void
 {
     $statements = [
@@ -87,6 +117,25 @@ function installer_seed(PDO $pdo, bool $withDemo): void
     $settingInsert = $pdo->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
     foreach ($defaults as $key => $value) $settingInsert->execute([$key, $value]);
 
+    $pricePagesPath = $dataRoot . 'price_pages.json';
+    if (is_file($pricePagesPath)) {
+        $pricePages = json_decode((string)file_get_contents($pricePagesPath), true, 512, JSON_THROW_ON_ERROR);
+        $pageInsert = $pdo->prepare(
+            'INSERT INTO pages (title,slug,content,published,updated_at) VALUES (?,?,?,1,NOW()) '
+            . 'ON DUPLICATE KEY UPDATE title=VALUES(title), content=IF(content=\'\',VALUES(content),content)'
+        );
+        foreach ($pricePages as $pricePage) {
+            if (!is_array($pricePage) || empty($pricePage['slug']) || empty($pricePage['title']) || empty($pricePage['content'])) {
+                continue;
+            }
+            $pageInsert->execute([
+                (string)$pricePage['title'],
+                (string)$pricePage['slug'],
+                (string)$pricePage['content'],
+            ]);
+        }
+    }
+
     if (!$withDemo) return;
     $demo = json_decode((string)file_get_contents($dataRoot . 'demo_catalog.json'), true, 512, JSON_THROW_ON_ERROR);
     $brandInsert = $pdo->prepare("INSERT INTO brands (name,description,active) VALUES (?,'',1) ON DUPLICATE KEY UPDATE name=VALUES(name)");
@@ -129,8 +178,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             $error = 'Проверьте хостинг-реквизиты, адрес сайта и задайте пароль администратора не короче 10 символов.';
         } else {
             try {
-                $serverDsn = 'mysql:host=' . $host . ';port=' . $port . ';dbname=' . $dbName . ';charset=utf8mb4';
-                $pdo = new PDO($serverDsn, $dbUser, $dbPassword, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, PDO::ATTR_EMULATE_PREPARES => false]);
+                $pdo = installer_connect_database($host, $port, $dbName, $dbUser, $dbPassword);
                 installer_schema($pdo);
                 installer_seed($pdo, !empty($_POST['demo_catalog']));
                 $admin = $pdo->prepare('INSERT INTO admins (login,password_hash,created_at) VALUES (?,?,NOW()) ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash)');

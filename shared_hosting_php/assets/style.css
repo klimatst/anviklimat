@@ -7,3 +7,70 @@
 .account-panel{margin-top:15px}.editor-tools{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:-7px}.editor-tools button{padding:6px 9px;border:1px solid var(--line);border-radius:3px;background:#293435;color:#d7dfda;font-size:10px;cursor:pointer}.editor-tools button:hover{border-color:var(--accent);color:var(--accent-hi)}
 .admin-panel .inline-delete{display:inline;margin-left:9px}.admin-panel .inline-delete button{padding:0;border:0;background:none;color:#d18476;font-size:11px;cursor:pointer}
 
+
+
+/* Source-inspired KlimaEco engineering header — local PHP engine */
+.eco-header{overflow:visible;background:#111719;border-bottom:1px solid rgba(128,157,166,.22)}
+.eco-header__system{position:relative;display:grid;grid-template-columns:minmax(160px,230px) minmax(280px,1fr) 94px;align-items:center;gap:22px;min-height:132px;padding-block:22px 17px}
+.eco-header__route-map{position:absolute;inset:0 0 auto;width:100%;height:100px;pointer-events:none;opacity:.72}
+.eco-header__pipe-glow{fill:none;stroke:#d18b64;stroke-width:7;stroke-linecap:round;opacity:.13;filter:blur(3px)}
+.eco-header__pipe{fill:none;stroke:#607985;stroke-width:2;stroke-linecap:round;opacity:.8}
+.eco-header__flow{fill:none;stroke:#54b899;stroke-width:1.3;stroke-dasharray:8 15;stroke-linecap:round;animation:eco-pipe-flow 5s linear infinite}
+.eco-header__unit{position:relative;z-index:1;display:flex;align-items:center;min-width:0}
+.eco-header__unit--indoor{flex-direction:column;align-items:stretch;gap:0}
+.eco-header__unit--indoor>svg{width:100%;height:68px;overflow:visible;filter:drop-shadow(0 9px 12px rgba(0,0,0,.24))}
+.eco-header__brand{display:flex;flex-direction:column;gap:3px;padding:0 8px}
+.eco-header__brand strong{color:#e7f0ed;font-size:15px;letter-spacing:.13em;white-space:nowrap}
+.eco-header__brand small{color:#9baca8;font-size:9px;font-weight:700;letter-spacing:.16em}
+.eco-header__tools{position:relative;z-index:1;display:grid;gap:12px;min-width:0}
+.eco-search{display:flex;gap:8px;min-width:0}
+.eco-search input{min-width:0;min-height:40px;border-color:rgba(149,177,184,.25);border-radius:5px;background:#182124}
+.eco-search .button{flex:0 0 auto}
+.eco-header__utility{display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap}
+.eco-header__phone{color:#e0e9e5;font-size:14px;font-weight:750;letter-spacing:.02em;white-space:nowrap}
+.eco-header__action{color:#b9c8c3;font-size:12px}
+.eco-header__action:hover,.eco-header__phone:hover{color:#edaa7b}
+.eco-header__unit--outdoor{flex-direction:column;align-items:center;gap:3px;color:#9eb4ba;font-size:9px;font-weight:750;letter-spacing:.12em}
+.eco-header__unit--outdoor svg{width:83px;height:65px;overflow:visible;filter:drop-shadow(0 9px 12px rgba(0,0,0,.24))}
+.eco-header__fan{transform-origin:52px 39px;animation:eco-fan-spin 14s linear infinite}
+.eco-navigation{border-top:1px solid rgba(149,177,184,.12);background:#141b1e}
+.eco-navigation .nav-inner{min-height:56px;gap:4px}
+.eco-navigation .nav-link{display:inline-flex;align-items:center;gap:7px;padding:17px 13px;font-size:12px;white-space:nowrap}
+.eco-menu-group{position:relative;align-self:stretch;display:flex;align-items:center}
+.eco-dropdown{position:absolute;top:calc(100% - 1px);left:0;z-index:20;display:none;width:270px;max-height:min(70vh,480px);overflow:auto;padding:13px;border:1px solid rgba(149,177,184,.22);border-radius:0 0 7px 7px;background:#1a2427;box-shadow:0 20px 35px rgba(0,0,0,.38)}
+.eco-menu-group:hover .eco-dropdown,.eco-menu-group:focus-within .eco-dropdown{display:grid;gap:3px}
+.eco-dropdown strong{padding:9px 10px 11px;color:#7eaaa0;font-size:9px;letter-spacing:.13em}
+.eco-dropdown a{padding:9px 10px;border-radius:4px;color:#d0dbd6;font-size:12px}
+.eco-dropdown a:hover{background:#293638;color:#edaa7b}
+.eco-dropdown .eco-dropdown__all{margin-top:6px;border-top:1px solid rgba(149,177,184,.16);border-radius:0;color:#edaa7b}
+.eco-navigation .nav-admin{margin-left:auto;white-space:nowrap}
+@keyframes eco-pipe-flow{to{stroke-dashoffset:-92}}
+@keyframes eco-fan-spin{to{transform:rotate(360deg)}}
+@media(max-width:980px){
+ .eco-header__system{grid-template-columns:minmax(140px,190px) minmax(0,1fr);gap:16px;min-height:125px}
+ .eco-header__unit--outdoor{display:none}
+ .eco-header__utility{justify-content:flex-start;gap:12px}
+ .eco-navigation .nav-inner{flex-wrap:wrap;padding-block:7px}
+ .eco-navigation .nav-link{padding:10px 9px}
+ .eco-navigation .nav-admin{margin-left:0}
+}
+@media(max-width:640px){
+ .eco-header__system{grid-template-columns:minmax(0,1fr);gap:12px;padding-block:12px}
+ .eco-header__route-map{height:75px}
+ .eco-header__unit--indoor{display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:7px}
+ .eco-header__unit--indoor>svg{height:48px}
+ .eco-header__brand{padding-left:0}
+ .eco-header__brand strong{font-size:13px}
+ .eco-header__brand small{font-size:8px}
+ .eco-header__tools{gap:9px}
+ .eco-header__utility{justify-content:space-between;gap:8px}
+ .eco-header__phone{font-size:12px}
+ .eco-header__utility .button{min-height:34px;padding-inline:10px;font-size:10px}
+ .eco-navigation .nav-inner{gap:2px}
+ .eco-navigation .nav-link{padding:9px 8px;font-size:11px}
+ .eco-navigation .nav-admin{font-size:11px;padding:8px}
+ .eco-dropdown{position:fixed;top:auto;left:12px;right:12px;width:auto;max-height:60vh}
+}
+@media(prefers-reduced-motion:reduce){
+ .eco-header__flow,.eco-header__fan{animation:none}
+}
