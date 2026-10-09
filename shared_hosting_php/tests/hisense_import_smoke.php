@@ -41,6 +41,7 @@ $pdo->exec("CREATE TABLE products (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 require_once $root . '/app/engineering_schema.php';
+require_once $root . '/app/engineering_os.php';
 ensure_engineering_schema($pdo);
 $schemaTables = $pdo->query("SHOW TABLES LIKE 'project_%'")->fetchAll(PDO::FETCH_COLUMN);
 foreach (['projects','project_rooms','project_systems','project_calculations','project_estimates'] as $requiredTable) {
@@ -52,10 +53,17 @@ $pdo->exec("INSERT INTO projects (title,client_name,phone,email,address,profile,
 $schemaProjectId = (int)$pdo->lastInsertId();
 $roomInsert = $pdo->prepare('INSERT INTO project_rooms (project_id,name,area_m2,height_m,occupants,notes,created_at) VALUES (?,?,?,?,?,?,NOW())');
 $roomInsert->execute([$schemaProjectId,'Test room',20,3,2,'']);
+store_engineering_calculation($pdo, $schemaProjectId, 'ventilation', 'Test ventilation calculation', ['airflow_m3h'=>100], ['estimated_total'=>5000]);
+$calculationCheck = $pdo->prepare('SELECT COUNT(*) FROM project_calculations WHERE project_id=?');
+$calculationCheck->execute([$schemaProjectId]);
+if ((int)$calculationCheck->fetchColumn() !== 1) {
+    throw new RuntimeException('Engineering OS did not persist a calculation record.');
+}
 $pdo->prepare('DELETE FROM projects WHERE id=?')->execute([$schemaProjectId]);
 $remainingRooms = $pdo->prepare('SELECT COUNT(*) FROM project_rooms WHERE project_id=?');
 $remainingRooms->execute([$schemaProjectId]);
-if ((int)$remainingRooms->fetchColumn() !== 0) {
+$calculationCheck->execute([$schemaProjectId]);
+if ((int)$remainingRooms->fetchColumn() !== 0 || (int)$calculationCheck->fetchColumn() !== 0) {
     throw new RuntimeException('Engineering OS child rows do not cascade on project deletion.');
 }
 
