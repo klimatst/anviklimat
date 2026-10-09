@@ -50,8 +50,8 @@ jobs:
             $root = "shared_hosting_php/data/";
             $catalog = json_decode(file_get_contents($root . "hisense_catalog.json"), true, 512, JSON_THROW_ON_ERROR);
             $categories = json_decode(file_get_contents($root . "categories.json"), true, 512, JSON_THROW_ON_ERROR);
-            $codes = array_column($categories, "code");
             $photos = json_decode(file_get_contents("theme/assets/catalog/hisense/photo_sources.json"), true, 512, JSON_THROW_ON_ERROR);
+            $codes = array_column($categories, "code");
             $products = $catalog["products"] ?? [];
             $skus = array_column($products, "sku");
             if (count($products) !== 241 || (int)($catalog["product_count"] ?? 0) !== 241) { fwrite(STDERR, "Expected 241 Hisense rows.\n"); exit(1); }
@@ -76,8 +76,11 @@ jobs:
           test -f shared_hosting_php/app/functions.php
           test -f shared_hosting_php/admin/index.php
           test -f shared_hosting_php/assets/style.css
+          test -f shared_hosting_php/app/ventilation_calculator_view.php
+          test -f shared_hosting_php/app/refrigerant_ruler_view.php
           test -f shared_hosting_php/data/price_pages.json
           test -f shared_hosting_php/maintenance/backup.php
+          test -f shared_hosting_php/app/refrigerant_ruler_view.php
           test -f shared_hosting_php/maintenance/.htaccess
           grep -q "Require all denied" shared_hosting_php/maintenance/.htaccess
           test -f shared_hosting_php/storage/backups/.htaccess
