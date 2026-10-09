@@ -31,13 +31,13 @@ function import_hisense_catalog(PDO $pdo, string $catalogPath): int
         'INSERT INTO products (model,sku,brand_id,category_id,description,price,image_url,specifications,is_demo,active,created_at) '
         . 'VALUES (?,?,?,?,?,?,?,?,0,1,NOW()) '
         . 'ON DUPLICATE KEY UPDATE '
-        . 'model=IF(model=\\'\\',VALUES(model),model), '
+        . 'model=IF(model=\'\',VALUES(model),model), '
         . 'brand_id=IFNULL(brand_id,VALUES(brand_id)), '
         . 'category_id=IFNULL(category_id,VALUES(category_id)), '
-        . 'description=IF(description=\\'\\',VALUES(description),description), '
+        . 'description=IF(description=\'\',VALUES(description),description), '
         . 'price=IF(price=0,VALUES(price),price), '
-        . 'image_url=IF(image_url=\\'\\' OR image_url IN (\\'assets/images/conditioners.jpg\\',\\'assets/images/materials.jpg\\',\\'assets/images/ventilation.jpg\\'),VALUES(image_url),image_url), '
-        . 'specifications=IF(specifications=\\'\\' OR specifications=\\'[]\\',VALUES(specifications),specifications), '
+        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\'),VALUES(image_url),image_url), '
+        . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',VALUES(specifications),specifications), '
         . 'is_demo=0'
     );
 
