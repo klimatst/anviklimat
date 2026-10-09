@@ -1377,3 +1377,22 @@ html,body{overflow-x:hidden}
 .admin-os--premium .anvil-role-admin-module-grid .anvil-repeating-panel-gutter{display:contents}
 @media(max-width:1100px){.admin-os--premium .anvil-role-admin-module-grid .anvil-repeating-panel{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.admin-os--premium .anvil-role-admin-module-grid .anvil-repeating-panel{grid-template-columns:1fr}}
+
+/* KlimaEco Admin v3 — practical command center additions. */
+.admin-os--premium .admin-os__metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0 0 14px;overflow:hidden;border:1px solid rgba(142,226,194,.15);border-radius:5px 14px 5px 14px;background:rgba(142,226,194,.11)}
+.admin-os--premium .admin-os__metric{display:flex;align-items:center;gap:12px;min-width:0;min-height:78px;padding:15px 17px;background:linear-gradient(140deg,rgba(17,29,34,.99),rgba(10,17,22,.99))}
+.admin-os--premium .admin-os__metric-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border:1px solid rgba(142,226,194,.22);border-radius:4px 10px 4px 10px;color:#9be6cb;background:rgba(142,226,194,.055);font-size:15px}
+.admin-os--premium .admin-os__metric .anvil-role-admin-os__metric-value{display:block;color:#e6f5ef;font-size:20px;font-weight:850;line-height:1.15;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.admin-os--premium .admin-os__metric-label{display:block;margin-top:5px;color:#71878a;font:800 7px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em}
+.admin-os--premium .admin-os__quick-launch{margin:0 0 25px;padding:17px 18px;border:1px solid rgba(142,226,194,.12);border-radius:4px 13px 4px 13px;background:linear-gradient(110deg,rgba(16,27,32,.98),rgba(11,18,23,.98))}
+.admin-os--premium .admin-os__quick-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:11px}
+.admin-os--premium .admin-os__quick-heading .anvil-role-section-heading{margin:4px 0 0;font-size:16px}
+.admin-os--premium .admin-os__quick-actions{display:flex;flex-wrap:wrap;gap:7px}
+.admin-os--premium .anvil-button.admin-quick-action>button{min-height:36px;padding:0 12px;border:1px solid rgba(142,226,194,.15);border-radius:4px 9px 4px 9px;color:#a9c3bf;background:rgba(142,226,194,.035);font-size:9px;font-weight:750;box-shadow:none}
+.admin-os--premium .anvil-button.admin-quick-action>button:hover{border-color:rgba(142,226,194,.42);color:#effff8;background:rgba(142,226,194,.09);transform:translateY(-1px)}
+.admin-os--premium .anvil-button.admin-quick-action[style*="display: none"]{display:none!important}
+.admin-os--premium .admin-os__attention{position:relative}
+.admin-os--premium .admin-os__attention-mark{font-weight:800}
+.admin-os--premium .admin-os__status{white-space:nowrap}
+@media(max-width:850px){.admin-os--premium .admin-os__metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-os--premium .admin-os__metric{gap:8px;padding:12px}.admin-os--premium .admin-os__metric-icon{display:none}}
+@media(max-width:600px){.admin-os--premium .admin-os__metrics{grid-template-columns:1fr}.admin-os--premium .admin-os__metric{min-height:58px;padding:11px 14px}.admin-os--premium .admin-os__metric-icon{display:grid}.admin-os--premium .admin-os__quick-heading{align-items:flex-start;flex-direction:column}.admin-os--premium .admin-os__quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-os--premium .anvil-button.admin-quick-action>button{width:100%;padding:0 8px}}
