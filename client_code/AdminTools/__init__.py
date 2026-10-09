@@ -296,8 +296,17 @@ class AdminTools(AdminToolsTemplate):
     ]
     self.module_group_dropdown.selected_value = "Все"
     self._set_sidebar_active("sidebar_all")
+    self.workspace_modules_value.text = str(len(self._modules))
+    self.workspace_categories_value.text = str(len(set(item.get("group") for item in self._modules)))
+    role_label = "Администратор" if self._is_admin else "Сотрудник"
+    self.workspace_role_value.text = role_label
+    self.quick_cms.visible = self._module_available_by_id("pages")
+    self.quick_catalog.visible = self._module_available_by_id("catalog")
+    self.quick_calculations.visible = self._module_available_by_id("calculations")
+    self.quick_crm.visible = self._module_available_by_id("crm")
+    self.quick_diagnostics.visible = self._module_available_by_id("diagnostics")
     self._render_modules()
-    self.attention_summary.text = "Админка работает в быстром режиме"
+    self.attention_summary.text = "Рабочее пространство готово"
     self.attention_detail.text = (
       "Каталог, CMS, инженерия, CRM и системные инструменты загружаются только "
       "при открытии раздела. Это снижает стартовую нагрузку Anvil."
@@ -309,6 +318,12 @@ class AdminTools(AdminToolsTemplate):
       )
     else:
       self.engineering_status.text = "Инженерный контур доступен по правам projects.manage."
+
+  def _module_available_by_id(self, module_id):
+    return any(module.get("id") == module_id for module in self._modules)
+
+  def _open_module_by_id(self, module_id):
+    self._open_module_by_id(module_id)
 
   def _module_available_by_permission(self, permission):
     return self._is_admin or permission in self._permissions or "*" in self._permissions
@@ -336,7 +351,7 @@ class AdminTools(AdminToolsTemplate):
   def _render_modules(self):
     filtered = self._filtered_modules()
     self.module_rows.items = filtered
-    self.module_status.text = "{} разделов".format(len(filtered))
+    self.module_status.text = "{} из {} модулей".format(len(filtered), len(self._modules))
 
   def _set_sidebar_active(self, component_name):
     for name in (
@@ -388,6 +403,30 @@ class AdminTools(AdminToolsTemplate):
   @handle("sidebar_system", "click")
   def sidebar_system_click(self, **event_args):
     self._select_group("Настройки и безопасность", "sidebar_system")
+
+  @handle("quick_cms", "click")
+  def quick_cms_click(self, **event_args):
+    self._open_module_by_id("pages")
+
+  @handle("quick_catalog", "click")
+  def quick_catalog_click(self, **event_args):
+    self._open_module_by_id("catalog")
+
+  @handle("quick_calculations", "click")
+  def quick_calculations_click(self, **event_args):
+    self._open_module_by_id("calculations")
+
+  @handle("quick_crm", "click")
+  def quick_crm_click(self, **event_args):
+    self._open_module_by_id("crm")
+
+  @handle("quick_diagnostics", "click")
+  def quick_diagnostics_click(self, **event_args):
+    self._open_module_by_id("diagnostics")
+
+  @handle("module_group_dropdown", "change")
+  def module_group_dropdown_change(self, **event_args):
+    self._render_modules()
 
   @handle("refresh_button", "click")
   def refresh_button_click(self, **event_args):
