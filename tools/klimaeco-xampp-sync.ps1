@@ -38,7 +38,7 @@ function Sync-OneCycle {
     }
     Invoke-Git @("fetch", "--prune", "origin") | Out-Null
     $remoteRef = "origin/$branch"
-    Invoke-Git @("rev-parse", "--verify", $remoteRef) -AllowFailure | Out-Null
+    & git -C $RepoRoot show-ref --verify --quiet "refs/remotes/origin/$branch"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[INFO] Ветка $remoteRef отсутствует на GitHub; первая публикация только вручную через Mode Push." -ForegroundColor Yellow
         return
@@ -71,12 +71,11 @@ try {
     switch ($Mode) {
         "Status" {
             $branch = Get-Branch
-            $origin = ((Invoke-Git @("config", "--get", "remote.origin.url")) -join "").Trim()
             $changes = @(Invoke-Git @("status", "--porcelain"))
             Write-Host "KlimaEco Git sync"
             Write-Host "Repository: $RepoRoot"
             Write-Host "Branch: $branch"
-            Write-Host "Origin: $origin"
+            Write-Host "Origin: verified as klimatst/anviklimat (URL hidden)"
             Write-Host "Working tree: $(if ($changes.Count -eq 0) { 'clean' } else { "$($changes.Count) changed path(s); sync paused until saved" })"
             Write-Host "Policy: fast-forward pull only; push from non-main/master branches; never force-push."
         }
