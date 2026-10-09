@@ -305,6 +305,13 @@ class AdminTools(AdminToolsTemplate):
     self.quick_calculations.visible = self._module_available_by_id("calculations")
     self.quick_crm.visible = self._module_available_by_id("crm")
     self.quick_diagnostics.visible = self._module_available_by_id("diagnostics")
+    self.quick_projects.visible = self._module_available_by_id("projects")
+    self.quick_import.visible = self._module_available_by_id("import_center")
+    self.quick_media.visible = self._module_available_by_id("media_manager")
+    self.quick_backups.visible = self._module_available_by_id("backups")
+    self.quick_design.visible = self._module_available_by_id("design_studio")
+    self._last_module_id = None
+    self.recent_module_button.visible = False
     self._render_modules()
     self.attention_summary.text = "Рабочее пространство готово"
     self.attention_detail.text = (
@@ -325,6 +332,9 @@ class AdminTools(AdminToolsTemplate):
   def _open_module_by_id(self, module_id):
     module = next((item for item in self._modules if item["id"] == module_id), None)
     if module is not None:
+      self._last_module_id = module_id
+      self.recent_module_button.text = "↻ Повторить: {}".format(module["title"])
+      self.recent_module_button.visible = True
       Access.open_admin_window(module["form"], **dict(module["properties"]))
 
   def _module_available_by_permission(self, permission):
@@ -423,6 +433,31 @@ class AdminTools(AdminToolsTemplate):
   @handle("quick_diagnostics", "click")
   def quick_diagnostics_click(self, **event_args):
     self._open_module_by_id("diagnostics")
+
+  @handle("quick_projects", "click")
+  def quick_projects_click(self, **event_args):
+    self._open_module_by_id("projects")
+
+  @handle("quick_import", "click")
+  def quick_import_click(self, **event_args):
+    self._open_module_by_id("import_center")
+
+  @handle("quick_media", "click")
+  def quick_media_click(self, **event_args):
+    self._open_module_by_id("media_manager")
+
+  @handle("quick_backups", "click")
+  def quick_backups_click(self, **event_args):
+    self._open_module_by_id("backups")
+
+  @handle("quick_design", "click")
+  def quick_design_click(self, **event_args):
+    self._open_module_by_id("design_studio")
+
+  @handle("recent_module_button", "click")
+  def recent_module_button_click(self, **event_args):
+    if self._last_module_id:
+      self._open_module_by_id(self._last_module_id)
 
   @handle("module_group_dropdown", "change")
   def module_group_dropdown_change(self, **event_args):

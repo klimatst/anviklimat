@@ -1396,3 +1396,36 @@ html,body{overflow-x:hidden}
 .admin-os--premium .admin-os__status{white-space:nowrap}
 @media(max-width:850px){.admin-os--premium .admin-os__metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.admin-os--premium .admin-os__metric{gap:8px;padding:12px}.admin-os--premium .admin-os__metric-icon{display:none}}
 @media(max-width:600px){.admin-os--premium .admin-os__metrics{grid-template-columns:1fr}.admin-os--premium .admin-os__metric{min-height:58px;padding:11px 14px}.admin-os--premium .admin-os__metric-icon{display:grid}.admin-os--premium .admin-os__quick-heading{align-items:flex-start;flex-direction:column}.admin-os--premium .admin-os__quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.admin-os--premium .anvil-button.admin-quick-action>button{width:100%;padding:0 8px}}
+
+
+/* KlimaEco Admin v4 — recent-module replay and expanded operations launcher. */
+.admin-os--premium .admin-os__recent-action{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+  padding-top:12px;
+  border-top:1px solid rgba(142,226,194,.1);
+}
+.admin-os--premium .admin-os__recent-action>span{
+  color:#637b7e;
+  font:800 7px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.13em;
+}
+.admin-os--premium .admin-os__recent-action .anvil-button>button{
+  min-height:30px;
+  padding:0 10px;
+  border-color:rgba(142,226,194,.24);
+  color:#c0e9d9;
+  background:rgba(142,226,194,.07);
+  font-size:9px;
+}
+@media(max-width:600px){
+  .admin-os--premium .admin-os__recent-action{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .admin-os--premium .admin-os__recent-action .anvil-button>button{width:100%}
+}
