@@ -39,6 +39,21 @@
           </div>
           <div class="admin-os__hero-mark" aria-hidden="true"><div class="admin-os__orbit admin-os__orbit--outer"></div><div class="admin-os__orbit admin-os__orbit--inner"></div><div class="admin-os__core"><span>K</span><small>OS</small></div><span class="admin-os__orbit-dot"></span></div>
         </section>
+        <section class="admin-os__metrics" aria-label="Сводка рабочего пространства">
+          <div class="admin-os__metric">
+            <span class="admin-os__metric-icon">▦</span>
+            <div><anvil-component type="Label" name="workspace_modules_value" prop:role="admin-os__metric-value" prop:text="0"></anvil-component><span class="admin-os__metric-label">ДОСТУПНЫЕ МОДУЛИ</span></div>
+          </div>
+          <div class="admin-os__metric">
+            <span class="admin-os__metric-icon">⌘</span>
+            <div><anvil-component type="Label" name="workspace_categories_value" prop:role="admin-os__metric-value" prop:text="5"></anvil-component><span class="admin-os__metric-label">РАБОЧИЕ ПРОСТРАНСТВА</span></div>
+          </div>
+          <div class="admin-os__metric">
+            <span class="admin-os__metric-icon">◉</span>
+            <div><anvil-component type="Label" name="workspace_role_value" prop:role="admin-os__metric-value" prop:text="Сотрудник"></anvil-component><span class="admin-os__metric-label">ТЕКУЩАЯ РОЛЬ</span></div>
+          </div>
+        </section>
+
         <section class="admin-os__engineering">
           <div class="admin-os__engineering-copy">
             <anvil-component type="Label" name="engineering_eyebrow" prop:role="eyebrow" prop:text="ENGINEERING OS / LIVE WORKFLOW"></anvil-component>
@@ -46,6 +61,19 @@
             <anvil-component type="Label" name="engineering_status" prop:role="status-message" prop:text="Инженерный центр загружается только по запросу."></anvil-component>
           </div>
           <div class="admin-os__engineering-actions"><anvil-component type="Button" name="engineering_control_button" prop:text="Открыть Control Room ↗" prop:role="primary-action"></anvil-component></div>
+        </section>
+        <section class="admin-os__quick-launch">
+          <div class="admin-os__quick-heading">
+            <anvil-component type="Label" name="quick_eyebrow" prop:role="eyebrow" prop:text="QUICK LAUNCH / FREQUENT TASKS"></anvil-component>
+            <anvil-component type="Label" name="quick_heading" prop:role="section-heading" prop:text="Быстрый запуск"></anvil-component>
+          </div>
+          <div class="admin-os__quick-actions">
+            <anvil-component type="Button" name="quick_cms" prop:role="admin-quick-action" prop:text="▤  Редактор сайта  ↗"></anvil-component>
+            <anvil-component type="Button" name="quick_catalog" prop:role="admin-quick-action" prop:text="▦  Каталог  ↗"></anvil-component>
+            <anvil-component type="Button" name="quick_calculations" prop:role="admin-quick-action" prop:text="∑  Расчёты  ↗"></anvil-component>
+            <anvil-component type="Button" name="quick_crm" prop:role="admin-quick-action" prop:text="◎  CRM  ↗"></anvil-component>
+            <anvil-component type="Button" name="quick_diagnostics" prop:role="admin-quick-action" prop:text="⌁  Диагностика  ↗"></anvil-component>
+          </div>
         </section>
         <section class="admin-os__toolbar">
           <div class="admin-os__toolbar-title">
