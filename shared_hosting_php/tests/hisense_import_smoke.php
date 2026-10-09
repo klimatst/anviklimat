@@ -25,7 +25,7 @@ $pdo->exec('CREATE TABLE categories (
     code VARCHAR(140) NOT NULL UNIQUE,
     title VARCHAR(190) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
-$pdo->exec('CREATE TABLE products (
+$pdo->exec("CREATE TABLE products (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     model VARCHAR(190) NOT NULL,
     sku VARCHAR(120) NULL DEFAULT NULL UNIQUE,
@@ -38,7 +38,7 @@ $pdo->exec('CREATE TABLE products (
     is_demo TINYINT(1) NOT NULL DEFAULT 0,
     active TINYINT(1) NOT NULL DEFAULT 1,
     created_at DATETIME NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
 $catalogPath = $root . '/data/hisense_catalog.json';
 $catalog = json_decode((string)file_get_contents($catalogPath), true, 512, JSON_THROW_ON_ERROR);
