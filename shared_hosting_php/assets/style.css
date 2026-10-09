@@ -90,3 +90,13 @@
 .ventilation-calc-layout .calc-result td:last-child{text-align:right;white-space:nowrap}
 @media(max-width:980px){.ventilation-calc-layout{grid-template-columns:1fr}}
 @media(max-width:680px){.ventilation-calc-layout .form-grid{grid-template-columns:1fr}.vent-result-metrics b{max-width:62%}}
+
+/* Independent refrigerant pressure/temperature ruler */
+.refrigerant-layout{grid-template-columns:minmax(0,.8fr) minmax(300px,1.2fr);align-items:start}
+.refrigerant-layout .calc-card form{display:grid;gap:15px}
+.refrigerant-layout .calc-result{min-width:0}
+.refrigerant-layout .calc-result strong{font-size:clamp(42px,5vw,58px)}
+.refrigerant-layout .vent-result-metrics{margin-bottom:12px}
+.refrigerant-layout .table-panel{overflow-x:auto}
+.refrigerant-layout .table-panel table{min-width:620px}
+@media(max-width:980px){.refrigerant-layout{grid-template-columns:1fr}}
