@@ -23,7 +23,9 @@ class ProductItem(ProductItemTemplate):
 
     self.new_badge.visible = bool(self.item.get("series_is_new"))
     self.hit_badge.visible = bool(self.item.get("is_hit") or self.item.get("popular"))
-    self.discount_badge.visible = bool(self.item.get("active"))
+    discount_value = self.item.get("discount")
+    special_price = self.item.get("special_price")
+    self.discount_badge.visible = bool(discount_value) or special_price not in (None, "", 0, "0")
 
     can_edit = bool(self.item.get("can_edit"))
     self.select_checkbox.visible = can_edit
