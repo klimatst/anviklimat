@@ -1,0 +1,53 @@
+name: Local PHP engine checks
+
+on:
+  pull_request:
+    paths:
+      - "shared_hosting_php/**"
+      - ".github/workflows/php-engine-check.yml"
+  push:
+    branches: [master]
+    paths:
+      - "shared_hosting_php/**"
+      - ".github/workflows/php-engine-check.yml"
+
+jobs:
+  php-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: pdo, pdo_mysql
+          coverage: none
+
+      - name: Check PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find shared_hosting_php -type f -name '*.php' -print0)
+
+      - name: Validate import data
+        run: |
+          php -r '
+            $root = "shared_hosting_php/data/";
+            $categories = json_decode(file_get_contents($root . "categories.json"), true, 512, JSON_THROW_ON_ERROR);
+            $formulas = json_decode(file_get_contents($root . "formulas.json"), true, 512, JSON_THROW_ON_ERROR);
+            $catalog = json_decode(file_get_contents($root . "demo_catalog.json"), true, 512, JSON_THROW_ON_ERROR);
+            if (count($categories) !== 89) { fwrite(STDERR, "Expected 89 categories, got " . count($categories) . PHP_EOL); exit(1); }
+            if (count($formulas) !== 11) { fwrite(STDERR, "Expected 11 formulas, got " . count($formulas) . PHP_EOL); exit(1); }
+            if (count($catalog["products"] ?? []) !== 30) { fwrite(STDERR, "Expected 30 explicitly demo products, got " . count($catalog["products"] ?? []) . PHP_EOL); exit(1); }
+            echo "Validated 89 categories, 11 formulas and 30 demo-only products." . PHP_EOL;
+          '
+
+      - name: Ensure backup entrypoint is CLI-only
+        run: |
+          grep -q "PHP_SAPI !== 'cli'" shared_hosting_php/maintenance/backup.php
+          test -f shared_hosting_php/maintenance/.htaccess
+          grep -q "Require all denied" shared_hosting_php/maintenance/.htaccess
