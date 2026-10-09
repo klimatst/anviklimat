@@ -36,7 +36,7 @@ jobs:
           if not req.is_file():
               print('Missing root requirements.txt; Anvil server packages must be declared at the app root.')
               sys.exit(1)
-          declared = {line.split('=', 1)[0].strip().lower() for line in req.read_text(encoding='utf-8').splitlines() if line.strip() and not line.lstrip().startswith('#')}
+          declared = {re.split(r"[<=>!~\[]", line, maxsplit=1)[0].strip().lower() for line in req.read_text(encoding='utf-8').splitlines() if line.strip() and not line.lstrip().startswith('#')}
           imports = set()
           for path in pathlib.Path('server_code').rglob('*.py'):
               tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
