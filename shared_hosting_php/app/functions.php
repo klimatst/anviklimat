@@ -221,6 +221,7 @@ function public_header(string $title, string $active = ''): void
           <a href="<?= e(site_path('index.php?page=calculator')) ?>">Расчёт нагрузки кондиционирования</a>
           <a href="<?= e(site_path('index.php?page=ventilation-calculator')) ?>">Расчёт вентиляции</a>
           <a href="<?= e(site_path('index.php?page=refrigerant-ruler')) ?>">Линейка холодильщика</a>
+          <a href="<?= e(site_path('index.php?page=installation-calculator')) ?>">Расчёт монтажа кондиционеров / VRV / VRF</a>
         </div>
       </div>
       <a class="nav-link <?= in_array($active, ['news','article'], true) ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=news')) ?>">Новости</a>
