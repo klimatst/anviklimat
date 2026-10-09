@@ -40,13 +40,33 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          php -r 'foreach (["categories.json", "demo_catalog.json", "formulas.json", "price_pages.json"] as $file) { $path = "shared_hosting_php/data/" . $file; json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR); echo "OK: $path\n"; }'
+          php -r 'foreach (["categories.json", "demo_catalog.json", "formulas.json", "price_pages.json", "hisense_catalog.json"] as $file) { $path = "shared_hosting_php/data/" . $file; json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR); echo "OK: $path\n"; }'
+
+      - name: Validate real Hisense catalog snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r '
+            $root = "shared_hosting_php/data/";
+            $catalog = json_decode(file_get_contents($root . "hisense_catalog.json"), true, 512, JSON_THROW_ON_ERROR);
+            $categories = json_decode(file_get_contents($root . "categories.json"), true, 512, JSON_THROW_ON_ERROR);
+            $codes = array_column($categories, "code");
+            $products = $catalog["products"] ?? [];
+            $skus = array_column($products, "sku");
+            if (count($products) !== 241 || (int)($catalog["product_count"] ?? 0) !== 241) { fwrite(STDERR, "Expected 241 Hisense rows.\n"); exit(1); }
+            if (count(array_unique($skus)) !== 241) { fwrite(STDERR, "Hisense SKUs are not unique.\n"); exit(1); }
+            foreach ($products as $product) { if (!in_array($product["category_code"] ?? "", $codes, true)) { fwrite(STDERR, "Unknown category code: " . ($product["category_code"] ?? "") . "\n"); exit(1); } }
+            echo "Validated 241 real Hisense models and category mappings.\n";
+          '
 
       - name: Check local package has required installer assets
         shell: bash
         run: |
           set -euo pipefail
           test -f shared_hosting_php/install/index.php
+          test -f shared_hosting_php/app/hisense_import.php
+          test -f shared_hosting_php/maintenance/import-hisense.php
+          test -f shared_hosting_php/IMPORT-HISENSE.cmd
           test -f shared_hosting_php/app/bootstrap.php
           test -f shared_hosting_php/app/functions.php
           test -f shared_hosting_php/admin/index.php
