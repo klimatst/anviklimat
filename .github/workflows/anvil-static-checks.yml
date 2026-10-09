@@ -50,6 +50,16 @@ jobs:
               sys.exit(1)
           if 'bcrypt' in imports:
               print('bcrypt server dependency is declared in root requirements.txt.')
+      - name: Install declared server packages
+        shell: bash
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+      - name: Smoke-test bcrypt import and hashing
+        shell: python
+        run: |
+          import bcrypt
+          hashed = bcrypt.hashpw(b"klimaeco-ci-smoke-test", bcrypt.gensalt())
+          assert bcrypt.checkpw(b"klimaeco-ci-smoke-test", hashed)
+          print("bcrypt import/hash/verify passed.")
       - name: Compile Python sources
         shell: bash
         run: |
