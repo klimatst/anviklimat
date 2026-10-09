@@ -136,7 +136,7 @@ function image_upload(string $field = 'image'): ?string
 function public_header(string $title, string $active = ''): void
 {
     $flash = take_flash();
-    $brand = 'Климат'; // Visible repository sync test; can be restored to the CMS setting after verification.
+    $brand = 'Наш-Климат';
     $phone = setting('phone', '+7 (925) 787-38-48');
     $search = trim((string)($_GET['q'] ?? ''));
     $categories = [];
@@ -163,7 +163,7 @@ function public_header(string $title, string $active = ''): void
       <path d="M130 54 C168 54 165 14 205 14 H865 C900 14 914 54 950 54" class="eco-header__pipe"></path>
       <path d="M130 54 C168 54 165 14 205 14 H865 C900 14 914 54 950 54" class="eco-header__flow"></path>
     </svg>
-    <a class="eco-header__unit eco-header__unit--indoor" href="<?= e(site_path()) ?>" aria-label="Климат — главная">
+    <a class="eco-header__unit eco-header__unit--indoor" href="<?= e(site_path()) ?>" aria-label="Наш-Климат — главная">
       <svg viewBox="0 0 230 78" aria-hidden="true">
         <defs><linearGradient id="eco-unit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#61727b"/><stop offset=".3" stop-color="#34434c"/><stop offset="1" stop-color="#10171c"/></linearGradient></defs>
         <path d="M12 16Q12 7 24 7H205Q218 7 218 18V49Q218 58 207 61H23Q12 58 12 48Z" fill="url(#eco-unit)" stroke="#7e949c" stroke-width="1.5"/>
@@ -238,6 +238,7 @@ function public_header(string $title, string $active = ''): void
 
 function public_footer(): void
 {
+    $brand = 'Наш-Климат';
     ?>
 </main>
 <footer class="site-footer"><div class="wrap footer-grid"><div><a class="brand" href="<?= e(site_path()) ?>"><span class="brand-mark">ЭК</span><span><?= e($brand) ?><small>ИНЖЕНЕРНЫЙ КЛИМАТ</small></span></a><p class="muted"><?= e(setting('site_tagline', 'Оборудование, расчёты и профессиональный монтаж')) ?></p></div>
