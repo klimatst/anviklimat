@@ -1,0 +1,53 @@
+name: Local PHP engine checks
+
+on:
+  pull_request:
+    paths:
+      - "shared_hosting_php/**"
+      - ".github/workflows/local-php-engine-check.yml"
+  push:
+    branches: [master]
+    paths:
+      - "shared_hosting_php/**"
+      - ".github/workflows/local-php-engine-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint-and-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: none
+          coverage: none
+
+      - name: Check PHP syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find shared_hosting_php -type f -name '*.php' -print0 | while IFS= read -r -d '' file; do
+            php -l "$file"
+          done
+
+      - name: Validate installer JSON snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -r 'foreach (["categories.json", "demo_catalog.json", "formulas.json"] as $file) { $path = "shared_hosting_php/data/" . $file; json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR); echo "OK: $path\n"; }'
+
+      - name: Check local package has required installer assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f shared_hosting_php/install/index.php
+          test -f shared_hosting_php/app/bootstrap.php
+          test -f shared_hosting_php/app/functions.php
+          test -f shared_hosting_php/admin/index.php
+          test -f shared_hosting_php/assets/style.css
