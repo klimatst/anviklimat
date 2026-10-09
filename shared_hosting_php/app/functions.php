@@ -215,7 +215,13 @@ function public_header(string $title, string $active = ''): void
           <a href="<?= e(site_path('index.php?page=content&slug=prices-ventilation')) ?>">Монтаж вентиляции</a>
         </div>
       </div>
-      <a class="nav-link <?= $active === 'calculator' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=calculator')) ?>">Калькулятор</a>
+      <div class="eco-menu-group">
+        <a class="nav-link <?= $active === 'calculator' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=calculator')) ?>">Калькуляторы <span aria-hidden="true">▾</span></a>
+        <div class="eco-dropdown"><strong>НЕЗАВИСИМЫЕ ИНСТРУМЕНТЫ</strong>
+          <a href="<?= e(site_path('index.php?page=calculator')) ?>">Расчёт нагрузки кондиционирования</a>
+          <a href="<?= e(site_path('index.php?page=ventilation-calculator')) ?>">Расчёт вентиляции</a>
+        </div>
+      </div>
       <a class="nav-link <?= in_array($active, ['news','article'], true) ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=news')) ?>">Новости</a>
       <a class="nav-link <?= $active === 'gallery' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=gallery')) ?>">Наши работы</a>
       <a class="nav-link <?= $active === 'contact' ? 'active' : '' ?>" href="<?= e(site_path('index.php?page=contact')) ?>">Сервис и контакты</a>
