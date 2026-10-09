@@ -117,6 +117,25 @@ function installer_seed(PDO $pdo, bool $withDemo): void
     $settingInsert = $pdo->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
     foreach ($defaults as $key => $value) $settingInsert->execute([$key, $value]);
 
+    $pricePagesPath = $dataRoot . 'price_pages.json';
+    if (is_file($pricePagesPath)) {
+        $pricePages = json_decode((string)file_get_contents($pricePagesPath), true, 512, JSON_THROW_ON_ERROR);
+        $pageInsert = $pdo->prepare(
+            'INSERT INTO pages (title,slug,content,published,updated_at) VALUES (?,?,?,1,NOW()) '
+            . 'ON DUPLICATE KEY UPDATE title=VALUES(title), content=IF(content=\'\',VALUES(content),content)'
+        );
+        foreach ($pricePages as $pricePage) {
+            if (!is_array($pricePage) || empty($pricePage['slug']) || empty($pricePage['title']) || empty($pricePage['content'])) {
+                continue;
+            }
+            $pageInsert->execute([
+                (string)$pricePage['title'],
+                (string)$pricePage['slug'],
+                (string)$pricePage['content'],
+            ]);
+        }
+    }
+
     if (!$withDemo) return;
     $demo = json_decode((string)file_get_contents($dataRoot . 'demo_catalog.json'), true, 512, JSON_THROW_ON_ERROR);
     $brandInsert = $pdo->prepare("INSERT INTO brands (name,description,active) VALUES (?,'',1) ON DUPLICATE KEY UPDATE name=VALUES(name)");
