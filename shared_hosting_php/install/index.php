@@ -13,9 +13,11 @@ if (is_file($configPath)) {
     exit('<!doctype html><meta charset="utf-8"><h1>Установка уже завершена</h1><p>Удалите папку install с сервера и откройте <a href="../admin/">панель управления</a>.</p>');
 }
 require_once $root . '/app/functions.php';
+require_once $root . '/app/hisense_import.php';
 if (empty($_SESSION['install_csrf'])) $_SESSION['install_csrf'] = bin2hex(random_bytes(32));
 $error = '';
 $done = false;
+$hisenseCount = 0;
 $scriptName = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '/install/index.php'));
 $realScript = realpath($scriptName);
 if (str_starts_with($scriptName, $root . '/') || ($realScript && str_starts_with(str_replace('\\', '/', $realScript), $root . '/'))) $scriptName = '/install/index.php';
@@ -74,7 +76,7 @@ function installer_schema(PDO $pdo): void
     foreach ($statements as $statement) $pdo->exec($statement);
 }
 
-function installer_seed(PDO $pdo, bool $withDemo): void
+function installer_seed(PDO $pdo, bool $withDemo, bool $withHisense): int
 {
     $dataRoot = dirname(__DIR__) . '/data/';
     $categories = json_decode((string)file_get_contents($dataRoot . 'categories.json'), true, 512, JSON_THROW_ON_ERROR);
@@ -136,7 +138,8 @@ function installer_seed(PDO $pdo, bool $withDemo): void
         }
     }
 
-    if (!$withDemo) return;
+    $hisenseCount = $withHisense ? import_hisense_catalog($pdo, $dataRoot . 'hisense_catalog.json') : 0;
+    if (!$withDemo) return $hisenseCount;
     $demo = json_decode((string)file_get_contents($dataRoot . 'demo_catalog.json'), true, 512, JSON_THROW_ON_ERROR);
     $brandInsert = $pdo->prepare("INSERT INTO brands (name,description,active) VALUES (?,'',1) ON DUPLICATE KEY UPDATE name=VALUES(name)");
     foreach ($demo['brands'] as $brand) $brandInsert->execute([$brand]);
@@ -151,6 +154,7 @@ function installer_seed(PDO $pdo, bool $withDemo): void
         $image = is_file(dirname(__DIR__) . '/assets/images/' . $imageName) ? 'assets/images/' . $imageName : 'assets/images/conditioners.jpg';
         $productInsert->execute([$product['model'], $product['sku'], $brandId ?: null, $categoryId ?: null, $product['description'], $product['sale_price'], $image, json_encode($product['specifications'], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)]);
     }
+    return $hisenseCount;
 }
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
@@ -180,7 +184,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             try {
                 $pdo = installer_connect_database($host, $port, $dbName, $dbUser, $dbPassword);
                 installer_schema($pdo);
-                installer_seed($pdo, !empty($_POST['demo_catalog']));
+                $hisenseCount = installer_seed($pdo, !empty($_POST['demo_catalog']), !empty($_POST['hisense_catalog']));
                 $admin = $pdo->prepare('INSERT INTO admins (login,password_hash,created_at) VALUES (?,?,NOW()) ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash)');
                 $admin->execute([$adminLogin, password_hash($adminPassword, PASSWORD_DEFAULT)]);
                 $updateTitle = $pdo->prepare("INSERT INTO settings (setting_key,setting_value) VALUES ('site_title',?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)");
@@ -205,8 +209,8 @@ if (str_ends_with($guessedBase, '://')) $guessedBase .= 'localhost';
 ?>
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Установка ЭКО-КЛИМАТ</title><link rel="stylesheet" href="../assets/style.css"></head><body class="installer-body"><main class="installer wrap">
 <div class="installer-brand"><span class="brand-mark">ЭК</span><div><p class="eyebrow">ЭКО-КЛИМАТ / УСТАНОВЩИК</p><h1>Настройка сайта</h1></div></div>
-<?php if ($done): ?><section class="installer-card"><div class="install-success">✓</div><p class="eyebrow">ГОТОВО</p><h2>Сайт установлен</h2><p>База данных настроена, категории и формулы загружены. Панель администратора готова к работе.</p><div class="install-actions"><a class="button" href="../admin/">Открыть панель управления <span>↗</span></a><a class="button button-ghost" href="../">Открыть сайт</a></div><div class="notice warning">Удалите папку install с хостинга после входа. Сохраните логин и пароль администратора.</div></section>
+<?php if ($done): ?><section class="installer-card"><div class="install-success">✓</div><p class="eyebrow">ГОТОВО</p><h2>Сайт установлен</h2><p>База данных настроена, категории и формулы загружены. <?php if ($hisenseCount > 0): ?>Каталог Hisense: обработано <?= (int)$hisenseCount ?> моделей.<?php else: ?>Импорт каталога Hisense пропущен.<?php endif; ?> Панель администратора готова к работе.</p><div class="install-actions"><a class="button" href="../admin/">Открыть панель управления <span>↗</span></a><a class="button button-ghost" href="../">Открыть сайт</a></div><div class="notice warning">Удалите папку install с хостинга после входа. Сохраните логин и пароль администратора.</div></section>
 <?php else: ?>
 <div class="installer-columns"><section class="installer-card"><p class="eyebrow">ШАГ 1 / ПРОВЕРКА</p><h2>Требования хостинга</h2><ul class="requirements"><?php foreach ($requirements as $label => $ok): ?><li class="<?= $ok ? 'req-ok' : 'req-bad' ?>"><span><?= $ok ? '✓' : '!' ?></span><?= e($label) ?></li><?php endforeach; ?></ul><p class="muted small">Для обычного shared-хостинга нужны PHP 8.1+, PDO MySQL и база MySQL/MariaDB.</p></section>
-<section class="installer-card install-form-card"><p class="eyebrow">ШАГ 2 / ПОДКЛЮЧЕНИЕ</p><h2>Параметры сайта</h2><?php if ($error): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?><form method="post"><input type="hidden" name="_csrf" value="<?= e($_SESSION['install_csrf']) ?>"><div class="form-grid"><label>Хост базы данных<input name="db_host" required value="<?= e($_POST['db_host'] ?? 'localhost') ?>" placeholder="localhost"></label><label>Порт<input name="db_port" type="number" required value="<?= e($_POST['db_port'] ?? '3306') ?>"></label><label>Имя базы данных<input name="db_name" required value="<?= e($_POST['db_name'] ?? '') ?>" placeholder="account_climate"></label><label>Пользователь базы<input name="db_user" required value="<?= e($_POST['db_user'] ?? '') ?>" placeholder="account_climate"></label><label class="span-2">Пароль базы данных<input name="db_password" type="password" autocomplete="new-password"></label><label class="span-2">Адрес сайта<input name="base_url" value="<?= e($_POST['base_url'] ?? $guessedBase) ?>" placeholder="https://example.ru"><small>Можно оставить автоматически определённый адрес.</small></label><label class="span-2">Название сайта<input name="site_title" required maxlength="190" value="<?= e($_POST['site_title'] ?? 'ЭКО-КЛИМАТ') ?>"></label></div><hr><p class="eyebrow">ШАГ 3 / АДМИНИСТРАТОР</p><div class="form-grid"><label>Логин администратора<input name="admin_login" required maxlength="120" value="<?= e($_POST['admin_login'] ?? 'admin') ?>"></label><label>Пароль администратора<input name="admin_password" type="password" required minlength="10" autocomplete="new-password"><small>Не менее 10 символов.</small></label></div><label class="check-label demo-choice"><input type="checkbox" name="demo_catalog" value="1" <?= !isset($_POST['db_name']) || !empty($_POST['demo_catalog']) ? 'checked' : '' ?>> Загрузить демонстрационные бренды и 30 тестовых товаров</label><p class="muted small">Демо-записи явно отмечены на сайте и предназначены для проверки. Снимите галочку, если хотите начать с пустого каталога.</p><button class="button install-submit" <?= in_array(false, $requirements, true) ? 'disabled' : '' ?>>Проверить базу и установить сайт <span>↗</span></button></form></section></div>
+<section class="installer-card install-form-card"><p class="eyebrow">ШАГ 2 / ПОДКЛЮЧЕНИЕ</p><h2>Параметры сайта</h2><?php if ($error): ?><div class="notice error"><?= e($error) ?></div><?php endif; ?><form method="post"><input type="hidden" name="_csrf" value="<?= e($_SESSION['install_csrf']) ?>"><div class="form-grid"><label>Хост базы данных<input name="db_host" required value="<?= e($_POST['db_host'] ?? 'localhost') ?>" placeholder="localhost"></label><label>Порт<input name="db_port" type="number" required value="<?= e($_POST['db_port'] ?? '3306') ?>"></label><label>Имя базы данных<input name="db_name" required value="<?= e($_POST['db_name'] ?? '') ?>" placeholder="account_climate"></label><label>Пользователь базы<input name="db_user" required value="<?= e($_POST['db_user'] ?? '') ?>" placeholder="account_climate"></label><label class="span-2">Пароль базы данных<input name="db_password" type="password" autocomplete="new-password"></label><label class="span-2">Адрес сайта<input name="base_url" value="<?= e($_POST['base_url'] ?? $guessedBase) ?>" placeholder="https://example.ru"><small>Можно оставить автоматически определённый адрес.</small></label><label class="span-2">Название сайта<input name="site_title" required maxlength="190" value="<?= e($_POST['site_title'] ?? 'ЭКО-КЛИМАТ') ?>"></label></div><hr><p class="eyebrow">ШАГ 3 / АДМИНИСТРАТОР</p><div class="form-grid"><label>Логин администратора<input name="admin_login" required maxlength="120" value="<?= e($_POST['admin_login'] ?? 'admin') ?>"></label><label>Пароль администратора<input name="admin_password" type="password" required minlength="10" autocomplete="new-password"><small>Не менее 10 символов.</small></label></div><label class="check-label demo-choice"><input type="checkbox" name="demo_catalog" value="1" <?= !isset($_POST['db_name']) || !empty($_POST['demo_catalog']) ? 'checked' : '' ?>> Загрузить демонстрационные бренды и 30 тестовых товаров</label><p class="muted small">Демо-записи явно отмечены на сайте и предназначены для проверки. Снимите галочку, если хотите начать с пустого каталога.</p><label class="check-label demo-choice"><input type="checkbox" name="hisense_catalog" value="1" <?= !isset($_POST['db_name']) || !empty($_POST['hisense_catalog']) ? 'checked' : '' ?>> Импортировать 241 реальную модель Hisense из исходного каталога</label><p class="muted small">Включённый импорт использует исходные артикулы, цены, категории, характеристики и доступные фотографии. Уже заполненные вручную поля существующих товаров сохраняются.</p><button class="button install-submit" <?= in_array(false, $requirements, true) ? 'disabled' : '' ?>>Проверить базу и установить сайт <span>↗</span></button></form></section></div>
 <?php endif; ?><p class="installer-foot">Отдельный установочный пакет для PHP-хостинга · данные исходного Anvil-проекта не изменяются.</p></main></body></html>
