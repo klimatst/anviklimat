@@ -16,6 +16,7 @@ class Catalog(CatalogTemplate):
     self._active_category_code = None
     self._category_navigation_open = False
     self._filters_open = False
+    self._advanced_filters_open = False
     self._filters_loaded = False
     self._categories = []
     self._categories_by_code = {}
@@ -69,8 +70,11 @@ class Catalog(CatalogTemplate):
     self.sort_filter.selected_value = "popular"
     self.available_filter.checked = False
     self.catalog_navigation_toggle_button.text = "☰ Категории"
+    self.show_filters_button.text = "Фильтры"
+    self.advanced_filters_toggle_button.text = "＋ Доп. параметры"
     self.catalog_view.classes["catalog-navigation-open"] = False
     self.catalog_view.classes["catalog-filters-open"] = False
+    self.catalog_view.classes["catalog-advanced-filters-open"] = False
     self.new_category_panel.visible = False
     self.product_detail_overlay.visible = False
 
@@ -458,6 +462,15 @@ class Catalog(CatalogTemplate):
     self._filters_open = not self._filters_open
     self.catalog_view.classes["catalog-filters-open"] = self._filters_open
     self.show_filters_button.text = "Скрыть фильтры" if self._filters_open else "Фильтры"
+
+  @handle("advanced_filters_toggle_button", "click")
+  def advanced_filters_toggle_button_click(self, **event_args):
+    self._ensure_filter_options()
+    self._advanced_filters_open = not self._advanced_filters_open
+    self.catalog_view.classes["catalog-advanced-filters-open"] = self._advanced_filters_open
+    self.advanced_filters_toggle_button.text = (
+      "－ Скрыть параметры" if self._advanced_filters_open else "＋ Доп. параметры"
+    )
 
   @handle("apply_filters_button", "click")
   def apply_filters_button_click(self, **event_args):
