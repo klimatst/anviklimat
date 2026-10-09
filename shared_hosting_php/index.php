@@ -3,7 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/app/bootstrap.php';
 
 $page = (string)($_GET['page'] ?? 'home');
-$allowed = ['home', 'catalog', 'product', 'news', 'article', 'gallery', 'calculator', 'ventilation-calculator', 'refrigerant-ruler', 'contact', 'content'];
+$allowed = ['home', 'catalog', 'product', 'news', 'article', 'gallery', 'calculator', 'ventilation-calculator', 'refrigerant-ruler', 'installation-calculator', 'contact', 'content'];
 if (!in_array($page, $allowed, true)) {
     http_response_code(404);
     $page = 'home';
@@ -30,8 +30,8 @@ $categoryByCode = [];
 foreach ($categories as $category) {
     $categoryByCode[$category['code']] = $category;
 }
-$title = ['home' => 'Инженерный климат', 'catalog' => 'Каталог оборудования', 'product' => 'Карточка товара', 'news' => 'Новости', 'article' => 'Новости', 'gallery' => 'Наши работы', 'calculator' => 'Инженерные расчёты', 'ventilation-calculator' => 'Расчёт вентиляции', 'refrigerant-ruler' => 'Линейка холодильщика', 'contact' => 'Контакты', 'content' => 'Информация'][$page];
-$activeNav = in_array($page, ['catalog', 'product'], true) ? 'catalog' : (in_array($page, ['news', 'article'], true) ? 'news' : (in_array($page, ['calculator', 'ventilation-calculator', 'refrigerant-ruler'], true) ? 'calculator' : $page));
+$title = ['home' => 'Инженерный климат', 'catalog' => 'Каталог оборудования', 'product' => 'Карточка товара', 'news' => 'Новости', 'article' => 'Новости', 'gallery' => 'Наши работы', 'calculator' => 'Инженерные расчёты', 'ventilation-calculator' => 'Расчёт вентиляции', 'refrigerant-ruler' => 'Линейка холодильщика', 'installation-calculator' => 'Расчёт монтажа', 'contact' => 'Контакты', 'content' => 'Информация'][$page];
+$activeNav = in_array($page, ['catalog', 'product'], true) ? 'catalog' : (in_array($page, ['news', 'article'], true) ? 'news' : (in_array($page, ['calculator', 'ventilation-calculator', 'refrigerant-ruler', 'installation-calculator'], true) ? 'calculator' : $page));
 if ($page === 'home') $activeNav = 'home';
 public_header($title, $activeNav);
 ?>
@@ -85,6 +85,8 @@ $sql .= ' ORDER BY p.id DESC LIMIT 100'; $query = db()->prepare($sql); $query->e
 <?php require __DIR__ . '/app/ventilation_calculator_view.php'; ?>
 <?php elseif ($page === 'refrigerant-ruler'): ?>
 <?php require __DIR__ . '/app/refrigerant_ruler_view.php'; ?>
+<?php elseif ($page === 'installation-calculator'): ?>
+<?php require __DIR__ . '/app/installation_calculator_view.php'; ?>
 <?php elseif ($page === 'contact'): ?>
 <section class="page-hero"><div class="wrap"><p class="eyebrow">КОНСУЛЬТАЦИЯ / СЕРВИС</p><h1>Обсудим вашу задачу</h1><p>Оставьте контакты — поможем с подбором оборудования, монтажом или обслуживанием.</p></div></section><section class="section wrap contact-layout"><div class="contact-details"><p class="eyebrow">НА СВЯЗИ</p><h2>Ответим и подскажем следующий шаг</h2><p class="contact-big"><?= e(setting('phone', '+7 (000) 000-00-00')) ?></p><p><?= e(setting('email', 'info@example.ru')) ?></p><p class="muted"><?= e(setting('address', 'Ваш город · выезд по договорённости')) ?></p></div><form class="contact-form" method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><label>Как к вам обращаться<input name="name" maxlength="120" required></label><label>Телефон<input name="phone" maxlength="80" required></label><label>Электронная почта<input type="email" name="email" maxlength="190"></label><label>Что нужно сделать?<textarea name="message" rows="5" maxlength="4000" placeholder="Подбор, монтаж, обслуживание или ремонт"></textarea></label><button class="button">Отправить заявку <span>↗</span></button><small>Нажимая кнопку, вы соглашаетесь на обработку данных для ответа на заявку.</small></form></section>
 <?php elseif ($page === 'content'): ?>
