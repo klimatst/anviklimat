@@ -38,7 +38,8 @@ async function exists(path) {
 async function catalog() {
   const syncedDataRoot = join(syncRoot, 'shared_hosting_php', 'data');
   const localDataRoot = join(localProjectRoot, 'shared_hosting_php', 'data');
-  const dataRoot = await exists(syncedDataRoot) ? syncedDataRoot : localDataRoot;
+  const hasSyncedData = await exists(join(syncedDataRoot, 'categories.json')) && await exists(join(syncedDataRoot, 'demo_catalog.json'));
+  const dataRoot = hasSyncedData ? syncedDataRoot : localDataRoot;
   const [categories, demo] = await Promise.all([
     json(join(dataRoot, 'categories.json')),
     json(join(dataRoot, 'demo_catalog.json')),
