@@ -1,7 +1,8 @@
 [CmdletBinding()]
-param()
+param([string]$RepoRoot)
 $ErrorActionPreference = 'Stop'
-$repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+if ([string]::IsNullOrWhiteSpace($RepoRoot)) { $RepoRoot = Join-Path ([Environment]::GetFolderPath('Desktop')) 'KlimaEco' }
+$repoRoot = (Resolve-Path $RepoRoot).Path
 Set-Location $repoRoot
 
 function Invoke-Git([string[]]$GitArgs) {
