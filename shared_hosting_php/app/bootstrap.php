@@ -39,3 +39,45 @@ function db(): PDO
     ]);
     return $pdo;
 }
+
+/**
+ * Install built-in, source-derived price pages into existing local databases
+ * without overwriting content already edited by the site administrator.
+ */
+function ensure_builtin_price_pages(): void
+{
+    static $checked = false;
+    if ($checked) {
+        return;
+    }
+    $checked = true;
+    $path = dirname(__DIR__) . '/data/price_pages.json';
+    if (!is_file($path)) {
+        return;
+    }
+    try {
+        $pages = json_decode((string)file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        if (!is_array($pages)) {
+            return;
+        }
+        $known = db()->query('SELECT slug FROM pages')->fetchAll(PDO::FETCH_COLUMN);
+        $known = array_fill_keys(array_map('strval', $known), true);
+        $insert = db()->prepare('INSERT INTO pages (title,slug,content,published,updated_at) VALUES (?,?,?,1,NOW())');
+        foreach ($pages as $page) {
+            if (!is_array($page) || empty($page['slug']) || empty($page['title']) || empty($page['content'])) {
+                continue;
+            }
+            $slug = (string)$page['slug'];
+            if (isset($known[$slug])) {
+                continue;
+            }
+            $insert->execute([(string)$page['title'], $slug, (string)$page['content']]);
+            $known[$slug] = true;
+        }
+    } catch (Throwable $exception) {
+        // Do not take down an existing site if its DB account is read-only.
+        error_log('KlimaEco built-in page seed skipped: ' . $exception->getMessage());
+    }
+}
+
+ensure_builtin_price_pages();
