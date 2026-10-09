@@ -253,7 +253,21 @@ MODULES = [
 ]
 
 
-MODULE_GROUPS = ("Редакторы", "Каталог", "Инженерия", "Операции", "Система")
+MODULE_GROUPS = (
+  "Сайт и контент",
+  "Каталог и склад",
+  "Инженерные системы",
+  "CRM и сервис",
+  "Настройки и безопасность"
+)
+
+MODULE_GROUP_RENAMES = {
+  "Редакторы": "Сайт и контент",
+  "Каталог": "Каталог и склад",
+  "Инженерия": "Инженерные системы",
+  "Операции": "CRM и сервис",
+  "Система": "Настройки и безопасность"
+}
 
 class AdminTools(AdminToolsTemplate):
   """Compact, fast admin workspace. Heavy dashboards are deliberately opt-in."""
@@ -267,10 +281,15 @@ class AdminTools(AdminToolsTemplate):
     self._is_admin = self._context.get("role_code") == "admin"
     self._permissions = set(self._context.get("permissions") or [])
     hidden = {"widgets", "command_center"}
-    self._modules = [
-      module for module in MODULES
-      if module.get("id") not in hidden and self._module_available(module)
-    ]
+    self._modules = []
+    for source_module in MODULES:
+      if source_module.get("id") in hidden or not self._module_available(source_module):
+        continue
+      module = dict(source_module)
+      module["group"] = MODULE_GROUP_RENAMES.get(
+        module.get("group"), module.get("group", "Настройки и безопасность")
+      )
+      self._modules.append(module)
     self.module_group_dropdown.items = [("Все модули", "Все")] + [
       (group, group) for group in MODULE_GROUPS
       if any(module["group"] == group for module in self._modules)
@@ -352,23 +371,23 @@ class AdminTools(AdminToolsTemplate):
 
   @handle("sidebar_editors", "click")
   def sidebar_editors_click(self, **event_args):
-    self._select_group("Редакторы", "sidebar_editors")
+    self._select_group("Сайт и контент", "sidebar_editors")
 
   @handle("sidebar_catalog", "click")
   def sidebar_catalog_click(self, **event_args):
-    self._select_group("Каталог", "sidebar_catalog")
+    self._select_group("Каталог и склад", "sidebar_catalog")
 
   @handle("sidebar_engineering", "click")
   def sidebar_engineering_click(self, **event_args):
-    self._select_group("Инженерия", "sidebar_engineering")
+    self._select_group("Инженерные системы", "sidebar_engineering")
 
   @handle("sidebar_operations", "click")
   def sidebar_operations_click(self, **event_args):
-    self._select_group("Операции", "sidebar_operations")
+    self._select_group("CRM и сервис", "sidebar_operations")
 
   @handle("sidebar_system", "click")
   def sidebar_system_click(self, **event_args):
-    self._select_group("Система", "sidebar_system")
+    self._select_group("Настройки и безопасность", "sidebar_system")
 
   @handle("refresh_button", "click")
   def refresh_button_click(self, **event_args):

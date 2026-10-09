@@ -1,77 +1,72 @@
 <anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
   <anvil-block slot="actions">
-    <anvil-component type="Button" name="refresh_button" prop:text="Обновить" prop:role="secondary-button"></anvil-component>
+    <anvil-component type="Button" name="refresh_button" prop:text="↻ Обновить" prop:role="secondary-button"></anvil-component>
   </anvil-block>
   <anvil-block slot="title">
-    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Центр управления"></anvil-component>
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Пульт управления"></anvil-component>
   </anvil-block>
   <anvil-block slot="content">
-    <div class="admin-os">
+    <div class="admin-os admin-os--premium">
       <aside class="admin-os__sidebar">
         <div class="admin-os__brand">
           <span class="admin-os__brand-mark">K</span>
-          <div>
-            <strong>КЛИМАЭКО</strong>
-            <small>ENGINEERING OS</small>
-          </div>
+          <div><strong>КЛИМАЭКО</strong><small>ENGINEERING CONTROL</small></div>
         </div>
-        <div class="admin-os__section-label">РАЗДЕЛЫ</div>
-        <anvil-component type="Button" name="sidebar_all" prop:text="⌂  Обзор" prop:role="admin-sidebar-link admin-sidebar-link-active"></anvil-component>
-        <anvil-component type="Button" name="sidebar_editors" prop:text="✦  Контент и дизайн" prop:role="admin-sidebar-link"></anvil-component>
-        <anvil-component type="Button" name="sidebar_catalog" prop:text="▦  Каталог" prop:role="admin-sidebar-link"></anvil-component>
-        <anvil-component type="Button" name="sidebar_engineering" prop:text="⌬  Инженерия" prop:role="admin-sidebar-link"></anvil-component>
-        <anvil-component type="Button" name="sidebar_operations" prop:text="◌  Клиенты и CRM" prop:role="admin-sidebar-link"></anvil-component>
-        <anvil-component type="Button" name="sidebar_system" prop:text="⌁  Система" prop:role="admin-sidebar-link"></anvil-component>
-        <div class="admin-os__sidebar-foot">
-          <span class="admin-os__live-dot"></span>
-          <span>СИСТЕМА ГОТОВА</span>
-        </div>
+        <div class="admin-os__section-label">РАБОЧИЕ ПРОСТРАНСТВА</div>
+        <anvil-component type="Button" name="sidebar_all" prop:text="◈  Обзор системы" prop:role="admin-sidebar-link admin-sidebar-link-active"></anvil-component>
+        <anvil-component type="Button" name="sidebar_editors" prop:text="▤  Сайт и контент" prop:role="admin-sidebar-link"></anvil-component>
+        <anvil-component type="Button" name="sidebar_catalog" prop:text="▦  Каталог и склад" prop:role="admin-sidebar-link"></anvil-component>
+        <anvil-component type="Button" name="sidebar_engineering" prop:text="⌬  Инженерные системы" prop:role="admin-sidebar-link"></anvil-component>
+        <anvil-component type="Button" name="sidebar_operations" prop:text="◎  CRM и сервис" prop:role="admin-sidebar-link"></anvil-component>
+        <anvil-component type="Button" name="sidebar_system" prop:text="⚙  Настройки и защита" prop:role="admin-sidebar-link"></anvil-component>
+        <div class="admin-os__sidebar-divider"></div>
+        <div class="admin-os__sidebar-note"><span class="admin-os__live-dot"></span><div><strong>ENGINE READY</strong><small>МОДУЛИ ПО ЗАПРОСУ</small></div></div>
       </aside>
-
       <main class="admin-os__workspace">
         <section class="admin-os__topbar">
-          <div>
-            <anvil-component type="Label" name="admin_eyebrow" prop:role="eyebrow" prop:text="CONTROL CENTER · КЛИМАЭКО"></anvil-component>
-            <anvil-component type="Label" name="admin_intro" prop:role="lede" prop:text="Единое рабочее пространство без тяжёлых Dashboard-виджетов."></anvil-component>
+          <div class="admin-os__welcome">
+            <anvil-component type="Label" name="admin_eyebrow" prop:role="eyebrow" prop:text="KLIMA ECO / ADMINISTRATOR"></anvil-component>
+            <anvil-component type="Label" name="admin_intro" prop:role="lede" prop:text="Единая среда управления сайтом, инженерными проектами и операциями бизнеса."></anvil-component>
           </div>
-          <div class="admin-os__status">
-            <span>MODE</span>
-            <strong>FAST WORKSPACE</strong>
-          </div>
+          <div class="admin-os__status"><span>WORKSPACE STATUS</span><strong><i></i> БЫСТРЫЙ РЕЖИМ</strong></div>
         </section>
-
+        <section class="admin-os__hero">
+          <div class="admin-os__hero-copy">
+            <div class="admin-os__hero-kicker"><span>CONTROL / 01</span><span>KLIMAECO OS</span></div>
+            <anvil-component type="Label" name="hero_title" prop:role="admin-hero-title" prop:text="Управляйте всем. В одном месте."></anvil-component>
+            <anvil-component type="Label" name="hero_description" prop:role="admin-hero-description" prop:text="Контент, оборудование, инженерные расчёты, клиенты и системные параметры — без лишних переходов и тяжёлой загрузки."></anvil-component>
+            <div class="admin-os__hero-foot"><span class="admin-os__hero-line"></span><span>ПРЕМИАЛЬНАЯ СРЕДА УПРАВЛЕНИЯ</span></div>
+          </div>
+          <div class="admin-os__hero-mark" aria-hidden="true"><div class="admin-os__orbit admin-os__orbit--outer"></div><div class="admin-os__orbit admin-os__orbit--inner"></div><div class="admin-os__core"><span>K</span><small>OS</small></div><span class="admin-os__orbit-dot"></span></div>
+        </section>
         <section class="admin-os__engineering">
-          <div>
-            <anvil-component type="Label" name="engineering_eyebrow" prop:role="eyebrow" prop:text="ENGINEERING OS"></anvil-component>
+          <div class="admin-os__engineering-copy">
+            <anvil-component type="Label" name="engineering_eyebrow" prop:role="eyebrow" prop:text="ENGINEERING OS / LIVE WORKFLOW"></anvil-component>
             <anvil-component type="Label" name="engineering_heading" prop:role="section-heading" prop:text="Инженерный контур"></anvil-component>
             <anvil-component type="Label" name="engineering_status" prop:role="status-message" prop:text="Инженерный центр загружается только по запросу."></anvil-component>
           </div>
-          <div class="admin-os__engineering-actions">
-            <anvil-component type="Button" name="engineering_control_button" prop:text="Открыть Control Room →" prop:role="primary-action"></anvil-component>
-          </div>
+          <div class="admin-os__engineering-actions"><anvil-component type="Button" name="engineering_control_button" prop:text="Открыть Control Room ↗" prop:role="primary-action"></anvil-component></div>
         </section>
-
         <section class="admin-os__toolbar">
           <div class="admin-os__toolbar-title">
-            <anvil-component type="Label" name="module_eyebrow" prop:role="eyebrow" prop:text="WORKSPACE"></anvil-component>
-            <anvil-component type="Label" name="module_heading" prop:role="section-heading" prop:text="Рабочие разделы"></anvil-component>
+            <anvil-component type="Label" name="module_eyebrow" prop:role="eyebrow" prop:text="MODULE DIRECTORY / 05 WORKSPACES"></anvil-component>
+            <anvil-component type="Label" name="module_heading" prop:role="section-heading" prop:text="Центры управления"></anvil-component>
+            <anvil-component type="Label" name="module_status" prop:role="status-message" prop:text="Загрузка разделов…"></anvil-component>
           </div>
           <div class="admin-os__toolbar-controls">
-            <anvil-component type="TextBox" name="module_search_box" prop:role="admin-module-search" prop:placeholder="Поиск раздела…"></anvil-component>
-            <anvil-component type="DropDown" name="module_group_dropdown" prop:visible="false"></anvil-component>
-            <anvil-component type="Label" name="module_status" prop:role="status-message" prop:text=""></anvil-component>
+            <anvil-component type="TextBox" name="module_search_box" prop:role="admin-module-search" prop:placeholder="⌕  Найти настройку или модуль…"></anvil-component>
+            <anvil-component type="DropDown" name="module_group_dropdown" prop:role="admin-module-filter"></anvil-component>
           </div>
         </section>
-
         <anvil-component type="RepeatingPanel" name="module_rows" prop:role="admin-module-grid" prop:item_template="Minimal_Theme_4.AdminTools.ModuleCard"></anvil-component>
-
         <section class="admin-os__attention">
-          <div>
-            <anvil-component type="Label" name="health_eyebrow" prop:role="eyebrow" prop:text="СОСТОЯНИЕ"></anvil-component>
-            <anvil-component type="Label" name="health_heading" prop:role="section-heading" prop:text="Быстрый контроль"></anvil-component>
+          <div class="admin-os__attention-mark">✓</div>
+          <div class="admin-os__attention-copy">
+            <anvil-component type="Label" name="health_eyebrow" prop:role="eyebrow" prop:text="SYSTEM DESIGN / PERFORMANCE"></anvil-component>
+            <anvil-component type="Label" name="health_heading" prop:role="section-heading" prop:text="Система собрана для быстрой работы"></anvil-component>
+            <anvil-component type="Label" name="attention_summary" prop:role="admin-hub-attention-title" prop:text="Админка работает в быстром режиме"></anvil-component>
+            <anvil-component type="Label" name="attention_detail" prop:role="status-message" prop:text="Тяжёлые панели, диагностика и расширенные показатели открываются только по запросу."></anvil-component>
           </div>
-          <anvil-component type="Label" name="attention_summary" prop:role="admin-hub-attention-title" prop:text="Готово к работе"></anvil-component>
-          <anvil-component type="Label" name="attention_detail" prop:role="status-message" prop:text="Глубокая диагностика, Quality Gate и расширенные показатели запускаются только из соответствующих разделов."></anvil-component>
         </section>
       </main>
     </div>
