@@ -152,8 +152,11 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
                 $constraints = trim((string)($_POST['constraints_text'] ?? ''));
                 $notes = trim((string)($_POST['notes'] ?? ''));
                 $status = (string)($_POST['status'] ?? 'draft');
-                if ($title === '' || mb_strlen($title) > 220) throw new UserInputException('Название проекта обязательно (до 220 символов).');
-                if (mb_strlen($client) > 190 || mb_strlen($address) > 500) throw new UserInputException('Проверьте длину имени клиента или адреса объекта.');
+                $titleLength = function_exists('mb_strlen') ? mb_strlen($title, 'UTF-8') : strlen($title);
+                $clientLength = function_exists('mb_strlen') ? mb_strlen($client, 'UTF-8') : strlen($client);
+                $addressLength = function_exists('mb_strlen') ? mb_strlen($address, 'UTF-8') : strlen($address);
+                if ($title === '' || $titleLength > 220) throw new UserInputException('Название проекта обязательно (до 220 символов).');
+                if ($clientLength > 190 || $addressLength > 500) throw new UserInputException('Проверьте длину имени клиента или адреса объекта.');
                 if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) throw new UserInputException('Укажите корректный email или оставьте поле пустым.');
                 if (!in_array($priority, ['low','normal','high','urgent'], true)) $priority = 'normal';
                 if (!in_array($status, ['draft','active','installation','service','completed'], true)) $status = 'draft';
