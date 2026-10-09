@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/app/bootstrap.php';
-$tabs = ['dashboard'=>'Обзор','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы'];
+$tabs = ['dashboard'=>'Обзор','engineering'=>'Engineering OS','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы'];
 $ventilationSettingFields = [
     'ventilation_people_airflow' => ['ventilation.people_airflow','Воздухообмен на человека, м³/ч',40,0,1000],
     'ventilation_supply_factor' => ['ventilation.supply_factor','Коэффициент притока',1,0,5],
@@ -56,6 +56,57 @@ function slug_value(string $value): string {
     if ($ascii !== false) $value = strtolower($ascii);
     else $value = strtr(strtolower($value), $map);
     return trim(preg_replace('/[^a-z0-9]+/','-',$value) ?? '', '-') ?: 'page-'.bin2hex(random_bytes(3));
+}
+function engineering_project_health(array $project): array {
+    $rooms = (int)($project['room_count'] ?? 0);
+    $calculations = (int)($project['calculation_count'] ?? 0);
+    $systems = (int)($project['system_count'] ?? 0);
+    $equipment = (int)($project['equipment_count'] ?? 0);
+    $estimates = (int)($project['estimate_count'] ?? 0);
+    $score = 0;
+    $score += trim((string)($project['title'] ?? '')) !== '' ? 10 : 0;
+    $score += trim((string)($project['address'] ?? '')) !== '' ? 10 : 0;
+    $score += trim((string)($project['client_name'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['profile'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['goal'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['constraints_text'] ?? '')) !== '' ? 5 : 0;
+    $score += $rooms > 0 ? 15 : 0;
+    $score += $calculations > 0 ? 10 : 0;
+    $score += $systems > 0 ? 10 : 0;
+    $score += $equipment > 0 ? 5 : 0;
+    $score += $estimates > 0 ? 10 : 0;
+    $status = (string)($project['status'] ?? 'draft');
+    $score += $status !== 'draft' ? 10 : 0;
+
+    $risks = [];
+    if (trim((string)($project['address'] ?? '')) === '') $risks[] = 'Не указан объект';
+    if ($rooms === 0) $risks[] = 'Нет помещений';
+    if ($calculations === 0) $risks[] = 'Нет расчётов';
+    if ($systems === 0) $risks[] = 'Не выбрана система';
+    if ($systems > 0 && $equipment === 0) $risks[] = 'Не назначено оборудование';
+    if ($estimates === 0) $risks[] = 'Нет сметы';
+    if ($status === 'draft') $risks[] = 'Черновик';
+
+    if (trim((string)($project['address'] ?? '')) === '') {
+        $stage = 'Объект'; $next = 'Указать адрес и исходные данные объекта';
+    } elseif ($rooms === 0) {
+        $stage = 'Помещения'; $next = 'Добавить помещения, площадь и количество людей';
+    } elseif ($calculations === 0) {
+        $stage = 'Расчёты'; $next = 'Зафиксировать результаты инженерных расчётов';
+    } elseif ($systems === 0) {
+        $stage = 'Системы'; $next = 'Добавить VRV / VRF, вентиляцию или кондиционирование';
+    } elseif ($equipment === 0) {
+        $stage = 'Оборудование'; $next = 'Назначить модели и производителя оборудования';
+    } elseif ($estimates === 0) {
+        $stage = 'Смета'; $next = 'Сформировать предварительную смету проекта';
+    } elseif ($status === 'installation') {
+        $stage = 'Монтаж'; $next = 'Зафиксировать завершение монтажа и пусконаладки';
+    } elseif (in_array($status, ['service', 'completed'], true)) {
+        $stage = 'Сервис'; $next = 'Проверить регламент и назначить обслуживание';
+    } else {
+        $stage = 'Монтаж'; $next = 'Согласовать сроки и перевести проект в монтаж';
+    }
+    return ['score'=>min(100,$score),'stage'=>$stage,'next_action'=>$next,'risks'=>$risks];
 }
 if ($_SERVER['REQUEST_METHOD']==='POST') {
     verify_csrf();
