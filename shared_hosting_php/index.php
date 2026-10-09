@@ -3,7 +3,7 @@ declare(strict_types=1);
 require __DIR__ . '/app/bootstrap.php';
 
 $page = (string)($_GET['page'] ?? 'home');
-$allowed = ['home', 'catalog', 'product', 'news', 'article', 'gallery', 'calculator', 'ventilation-calculator', 'contact', 'content'];
+$allowed = ['home', 'catalog', 'product', 'news', 'article', 'gallery', 'calculator', 'ventilation-calculator', 'refrigerant-ruler', 'contact', 'content'];
 if (!in_array($page, $allowed, true)) {
     http_response_code(404);
     $page = 'home';
