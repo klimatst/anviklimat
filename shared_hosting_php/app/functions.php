@@ -102,7 +102,7 @@ function safe_html(string $html): string
         }
         if ($tag === 'a' && preg_match('/\bhref\s*=\s*(["\'])(.*?)\1/i', $tagText, $hrefMatch)) {
             $href = trim(html_entity_decode($hrefMatch[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-            if (preg_match('~^(https?://|mailto:|/|#)~i', $href)) {
+            if (preg_match('~^(https?://|mailto:|/|#|index\\.php(?:[?#]|$)|admin/)~i', $href) && !str_starts_with($href, '//')) {
                 return '<a href="' . e($href) . '" rel="nofollow noopener">';
             }
         }
