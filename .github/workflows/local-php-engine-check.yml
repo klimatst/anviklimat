@@ -92,6 +92,9 @@ jobs:
           set -euo pipefail
           test -f shared_hosting_php/install/index.php
           test -f shared_hosting_php/app/hisense_import.php
+          test -f shared_hosting_php/app/engineering_schema.php
+          test -f shared_hosting_php/maintenance/upgrade.php
+          test -f shared_hosting_php/tests/hisense_import_smoke.php
           test -f shared_hosting_php/maintenance/import-hisense.php
           test -f shared_hosting_php/IMPORT-HISENSE.cmd
           test -f shared_hosting_php/app/bootstrap.php

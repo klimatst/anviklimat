@@ -5,7 +5,6 @@ title KlimaEco — локальный движок
 
 cd /d "%~dp0"
 set "PHP_EXE="
-set "XAMPP_HOME="
 
 if defined XAMPP_HOME if exist "%XAMPP_HOME%\php\php.exe" set "PHP_EXE=%XAMPP_HOME%\php\php.exe"
 if not defined PHP_EXE if exist "C:\xampp\php\php.exe" (
@@ -57,6 +56,13 @@ if defined XAMPP_HOME if exist "%XAMPP_HOME%\mysql\bin\mysqladmin.exe" (
 :database_ready
 
 if exist "app\config.php" (
+  echo Проверяю схему локальной базы данных...
+  "%PHP_EXE%" "maintenance\upgrade.php"
+  if errorlevel 1 (
+    echo [ОШИБКА] Не удалось подготовить схему. Существующие данные не удалялись.
+    pause
+    exit /b 1
+  )
   set "OPEN_URL=http://127.0.0.1:4173/"
 ) else (
   set "OPEN_URL=http://127.0.0.1:4173/install/"

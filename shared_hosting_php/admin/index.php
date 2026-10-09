@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/app/bootstrap.php';
-$tabs = ['dashboard'=>'Обзор','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы'];
+$tabs = ['dashboard'=>'Обзор','engineering'=>'Engineering OS','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы'];
 $ventilationSettingFields = [
     'ventilation_people_airflow' => ['ventilation.people_airflow','Воздухообмен на человека, м³/ч',40,0,1000],
     'ventilation_supply_factor' => ['ventilation.supply_factor','Коэффициент притока',1,0,5],
@@ -57,6 +57,57 @@ function slug_value(string $value): string {
     else $value = strtr(strtolower($value), $map);
     return trim(preg_replace('/[^a-z0-9]+/','-',$value) ?? '', '-') ?: 'page-'.bin2hex(random_bytes(3));
 }
+function engineering_project_health(array $project): array {
+    $rooms = (int)($project['room_count'] ?? 0);
+    $calculations = (int)($project['calculation_count'] ?? 0);
+    $systems = (int)($project['system_count'] ?? 0);
+    $equipment = (int)($project['equipment_count'] ?? 0);
+    $estimates = (int)($project['estimate_count'] ?? 0);
+    $score = 0;
+    $score += trim((string)($project['title'] ?? '')) !== '' ? 10 : 0;
+    $score += trim((string)($project['address'] ?? '')) !== '' ? 10 : 0;
+    $score += trim((string)($project['client_name'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['profile'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['goal'] ?? '')) !== '' ? 5 : 0;
+    $score += trim((string)($project['constraints_text'] ?? '')) !== '' ? 5 : 0;
+    $score += $rooms > 0 ? 15 : 0;
+    $score += $calculations > 0 ? 10 : 0;
+    $score += $systems > 0 ? 10 : 0;
+    $score += $equipment > 0 ? 5 : 0;
+    $score += $estimates > 0 ? 10 : 0;
+    $status = (string)($project['status'] ?? 'draft');
+    $score += $status !== 'draft' ? 10 : 0;
+
+    $risks = [];
+    if (trim((string)($project['address'] ?? '')) === '') $risks[] = 'Не указан объект';
+    if ($rooms === 0) $risks[] = 'Нет помещений';
+    if ($calculations === 0) $risks[] = 'Нет расчётов';
+    if ($systems === 0) $risks[] = 'Не выбрана система';
+    if ($systems > 0 && $equipment === 0) $risks[] = 'Не назначено оборудование';
+    if ($estimates === 0) $risks[] = 'Нет сметы';
+    if ($status === 'draft') $risks[] = 'Черновик';
+
+    if (trim((string)($project['address'] ?? '')) === '') {
+        $stage = 'Объект'; $next = 'Указать адрес и исходные данные объекта';
+    } elseif ($rooms === 0) {
+        $stage = 'Помещения'; $next = 'Добавить помещения, площадь и количество людей';
+    } elseif ($calculations === 0) {
+        $stage = 'Расчёты'; $next = 'Зафиксировать результаты инженерных расчётов';
+    } elseif ($systems === 0) {
+        $stage = 'Системы'; $next = 'Добавить VRV / VRF, вентиляцию или кондиционирование';
+    } elseif ($equipment === 0) {
+        $stage = 'Оборудование'; $next = 'Назначить модели и производителя оборудования';
+    } elseif ($estimates === 0) {
+        $stage = 'Смета'; $next = 'Сформировать предварительную смету проекта';
+    } elseif ($status === 'installation') {
+        $stage = 'Монтаж'; $next = 'Зафиксировать завершение монтажа и пусконаладки';
+    } elseif (in_array($status, ['service', 'completed'], true)) {
+        $stage = 'Сервис'; $next = 'Проверить регламент и назначить обслуживание';
+    } else {
+        $stage = 'Монтаж'; $next = 'Согласовать сроки и перевести проект в монтаж';
+    }
+    return ['score'=>min(100,$score),'stage'=>$stage,'next_action'=>$next,'risks'=>$risks];
+}
 if ($_SERVER['REQUEST_METHOD']==='POST') {
     verify_csrf();
     $action=(string)($_POST['action']??'');
@@ -86,6 +137,167 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         flash('Данные администратора обновлены.'); redirect_to(site_path('admin/?tab=settings'));
     }
     $user=admin_user();
+    if ($user && in_array($action, ['save_project','save_project_room','save_project_system','save_project_calculation','save_project_estimate','delete_project','delete_project_room','delete_project_system','delete_project_calculation','delete_project_estimate'], true)) {
+        try {
+            if ($action === 'save_project') {
+                $id = max(0, (int)($_POST['id'] ?? 0));
+                $title = trim((string)($_POST['title'] ?? ''));
+                $client = trim((string)($_POST['client_name'] ?? ''));
+                $phone = trim((string)($_POST['phone'] ?? ''));
+                $email = trim((string)($_POST['email'] ?? ''));
+                $address = trim((string)($_POST['address'] ?? ''));
+                $profile = trim((string)($_POST['profile'] ?? ''));
+                $goal = trim((string)($_POST['goal'] ?? ''));
+                $priority = (string)($_POST['priority'] ?? 'normal');
+                $constraints = trim((string)($_POST['constraints_text'] ?? ''));
+                $notes = trim((string)($_POST['notes'] ?? ''));
+                $status = (string)($_POST['status'] ?? 'draft');
+                $titleLength = function_exists('mb_strlen') ? mb_strlen($title, 'UTF-8') : strlen($title);
+                $clientLength = function_exists('mb_strlen') ? mb_strlen($client, 'UTF-8') : strlen($client);
+                $addressLength = function_exists('mb_strlen') ? mb_strlen($address, 'UTF-8') : strlen($address);
+                if ($title === '' || $titleLength > 220) throw new UserInputException('Название проекта обязательно (до 220 символов).');
+                if ($clientLength > 190 || $addressLength > 500) throw new UserInputException('Проверьте длину имени клиента или адреса объекта.');
+                if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) throw new UserInputException('Укажите корректный email или оставьте поле пустым.');
+                if (!in_array($priority, ['low','normal','high','urgent'], true)) $priority = 'normal';
+                if (!in_array($status, ['draft','active','installation','service','completed'], true)) $status = 'draft';
+                $values = [$title,$client,$phone,$email,$address,$profile,$goal,$priority,$constraints,$notes,$status];
+                if ($id > 0) {
+                    $query = db()->prepare('UPDATE projects SET title=?,client_name=?,phone=?,email=?,address=?,profile=?,goal=?,priority=?,constraints_text=?,notes=?,status=?,updated_at=NOW() WHERE id=?');
+                    $query->execute([...$values,$id]);
+                    if ($query->rowCount() === 0) {
+                        $exists = db()->prepare('SELECT id FROM projects WHERE id=?'); $exists->execute([$id]);
+                        if (!$exists->fetchColumn()) throw new UserInputException('Проект не найден.');
+                    }
+                } else {
+                    $query = db()->prepare('INSERT INTO projects (title,client_name,phone,email,address,profile,goal,priority,constraints_text,notes,status,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,NOW(),NOW())');
+                    $query->execute($values);
+                }
+                flash('Инженерный проект сохранён.');
+                redirect_to(site_path('admin/?tab=engineering'));
+            }
+
+            if ($action === 'delete_project') {
+                $id = (int)($_POST['id'] ?? 0);
+                if ($id < 1) throw new UserInputException('Не выбран проект.');
+                $query = db()->prepare('DELETE FROM projects WHERE id=?');
+                $query->execute([$id]);
+                flash('Проект и его дочерние записи удалены.');
+                redirect_to(site_path('admin/?tab=engineering'));
+            }
+
+            $projectId = (int)($_POST['project_id'] ?? 0);
+            $projectCheck = db()->prepare('SELECT id FROM projects WHERE id=? LIMIT 1');
+            $projectCheck->execute([$projectId]);
+            if ($projectId < 1 || !$projectCheck->fetchColumn()) throw new UserInputException('Проект не найден. Обновите страницу и повторите действие.');
+
+            if (in_array($action, ['delete_project_room','delete_project_system','delete_project_calculation','delete_project_estimate'], true)) {
+                $deleteMap = [
+                    'delete_project_room' => ['project_rooms','room_id'],
+                    'delete_project_system' => ['project_systems','system_id'],
+                    'delete_project_calculation' => ['project_calculations','calculation_id'],
+                    'delete_project_estimate' => ['project_estimates','estimate_id'],
+                ];
+                [$tableName,$idField] = $deleteMap[$action];
+                $recordId = (int)($_POST['record_id'] ?? 0);
+                if ($recordId < 1) throw new UserInputException('Не выбрана запись для удаления.');
+                $query = db()->prepare('DELETE FROM ' . $tableName . ' WHERE id=? AND project_id=?');
+                $query->execute([$recordId,$projectId]);
+                flash('Запись удалена из проекта.');
+                redirect_to(site_path('admin/?tab=engineering'));
+            }
+
+            if ($action === 'save_project_room') {
+                $name = trim((string)($_POST['name'] ?? ''));
+                $purpose = trim((string)($_POST['purpose'] ?? ''));
+                $areaRaw = str_replace(',', '.', trim((string)($_POST['area_m2'] ?? '0')));
+                $heightRaw = str_replace(',', '.', trim((string)($_POST['height_m'] ?? '0')));
+                $occupants = (int)($_POST['occupants'] ?? 0);
+                if ($name === '') throw new UserInputException('Укажите название помещения.');
+                if (!is_numeric($areaRaw) || (float)$areaRaw < 0 || (float)$areaRaw > 100000 || !is_numeric($heightRaw) || (float)$heightRaw < 0 || (float)$heightRaw > 100 || $occupants < 0 || $occupants > 100000) throw new UserInputException('Проверьте площадь, высоту и количество людей.');
+                $recordId = (int)($_POST['room_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_rooms SET name=?,purpose=?,area_m2=?,height_m=?,occupants=?,notes=? WHERE id=? AND project_id=?');
+                    $query->execute([$name,$purpose,(float)$areaRaw,(float)$heightRaw,$occupants,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_rooms (project_id,name,purpose,area_m2,height_m,occupants,notes,created_at) VALUES (?,?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$name,$purpose,(float)$areaRaw,(float)$heightRaw,$occupants,trim((string)($_POST['notes'] ?? ''))]);
+                }
+                db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
+                flash('Помещение добавлено.');
+            } elseif ($action === 'save_project_system') {
+                $type = (string)($_POST['system_type'] ?? 'air_conditioning');
+                $title = trim((string)($_POST['title'] ?? ''));
+                $brand = trim((string)($_POST['brand'] ?? ''));
+                $model = trim((string)($_POST['model'] ?? ''));
+                $capacityRaw = str_replace(',', '.', trim((string)($_POST['capacity_kw'] ?? '0')));
+                $quantity = max(1, min(10000, (int)($_POST['quantity'] ?? 1)));
+                $systemStatus = (string)($_POST['system_status'] ?? 'planned');
+                if ($title === '') throw new UserInputException('Укажите название инженерной системы.');
+                if (!in_array($type, ['air_conditioning','multi_split','vrv_vrf','ventilation','refrigeration'], true)) $type = 'air_conditioning';
+                if (!in_array($systemStatus, ['planned','selected','ordered','installed','service'], true)) $systemStatus = 'planned';
+                if (!is_numeric($capacityRaw) || (float)$capacityRaw < 0 || (float)$capacityRaw > 100000) throw new UserInputException('Проверьте мощность системы.');
+                $recordId = (int)($_POST['system_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_systems SET system_type=?,title=?,brand=?,model=?,capacity_kw=?,quantity=?,status=?,notes=? WHERE id=? AND project_id=?');
+                    $query->execute([$type,$title,$brand,$model,(float)$capacityRaw,$quantity,$systemStatus,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_systems (project_id,system_type,title,brand,model,capacity_kw,quantity,status,notes,created_at) VALUES (?,?,?,?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$type,$title,$brand,$model,(float)$capacityRaw,$quantity,$systemStatus,trim((string)($_POST['notes'] ?? ''))]);
+                }
+                db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
+                flash('Инженерная система добавлена.');
+            } elseif ($action === 'save_project_calculation') {
+                $title = trim((string)($_POST['title'] ?? ''));
+                $type = (string)($_POST['system_type'] ?? 'air_conditioning');
+                $status = (string)($_POST['calculation_status'] ?? 'draft');
+                $inputRaw = trim((string)($_POST['input_json'] ?? '{}')) ?: '{}';
+                $resultRaw = trim((string)($_POST['result_json'] ?? '{}')) ?: '{}';
+                $inputs = json_decode($inputRaw, true);
+                $results = json_decode($resultRaw, true);
+                if ($title === '') throw new UserInputException('Укажите название расчёта.');
+                if (!is_array($inputs) || !is_array($results)) throw new UserInputException('Входные данные и результат должны быть корректным JSON-объектом или массивом.');
+                if (!in_array($type, ['air_conditioning','multi_split','vrv_vrf','ventilation','refrigeration'], true)) $type = 'air_conditioning';
+                if (!in_array($status, ['draft','completed','needs_review'], true)) $status = 'draft';
+                $inputJson = json_encode($inputs,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
+                $resultJson = json_encode($results,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_THROW_ON_ERROR);
+                $recordId = (int)($_POST['calculation_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_calculations SET system_type=?,title=?,input_json=?,result_json=?,status=? WHERE id=? AND project_id=?');
+                    $query->execute([$type,$title,$inputJson,$resultJson,$status,$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_calculations (project_id,system_type,title,input_json,result_json,status,created_at) VALUES (?,?,?,?,?,?,NOW())');
+                    $query->execute([$projectId,$type,$title,$inputJson,$resultJson,$status]);
+                }
+                db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
+                flash('Расчёт добавлен в инженерную историю проекта.');
+            } elseif ($action === 'save_project_estimate') {
+                $title = trim((string)($_POST['title'] ?? ''));
+                $amountRaw = str_replace(',', '.', trim((string)($_POST['amount'] ?? '0')));
+                $status = (string)($_POST['estimate_status'] ?? 'draft');
+                if ($title === '') throw new UserInputException('Укажите название сметы.');
+                if (!is_numeric($amountRaw) || (float)$amountRaw < 0 || (float)$amountRaw > 1000000000000) throw new UserInputException('Проверьте сумму сметы.');
+                if (!in_array($status, ['draft','sent','approved','accepted'], true)) $status = 'draft';
+                $recordId = (int)($_POST['estimate_id'] ?? 0);
+                if ($recordId > 0) {
+                    $query = db()->prepare('UPDATE project_estimates SET title=?,amount=?,status=?,notes=?,updated_at=NOW() WHERE id=? AND project_id=?');
+                    $query->execute([$title,(float)$amountRaw,$status,trim((string)($_POST['notes'] ?? '')),$recordId,$projectId]);
+                } else {
+                    $query = db()->prepare('INSERT INTO project_estimates (project_id,title,amount,status,notes,created_at,updated_at) VALUES (?,?,?,?,?,NOW(),NOW())');
+                    $query->execute([$projectId,$title,(float)$amountRaw,$status,trim((string)($_POST['notes'] ?? ''))]);
+                }
+                db()->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
+                flash('Смета добавлена.');
+            }
+            redirect_to(site_path('admin/?tab=engineering'));
+        } catch (UserInputException $exception) {
+            flash($exception->getMessage(), 'error');
+            redirect_to(site_path('admin/?tab=engineering'));
+        } catch (Throwable $exception) {
+            error_log('Engineering OS action failed: ' . $exception->getMessage());
+            flash('Не удалось сохранить данные инженерного проекта. Проверьте журнал PHP.', 'error');
+            redirect_to(site_path('admin/?tab=engineering'));
+        }
+    }
     if ($user && isset($_POST['save_record'])) {
         try {
         $id=(int)($_POST['id']??0);
@@ -172,6 +384,7 @@ if (!$user) {
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход · <?= e(setting('site_title','ЭКО-КЛИМАТ')) ?></title><link rel="stylesheet" href="<?= e(site_path('assets/style.css')) ?>"></head><body class="admin-login-body"><main class="login-card"><a class="brand" href="<?= e(site_path()) ?>"><span class="brand-mark">ЭК</span><span><?= e(setting('site_title','ЭКО-КЛИМАТ')) ?><small>ПАНЕЛЬ УПРАВЛЕНИЯ</small></span></a><p class="eyebrow">УПРАВЛЕНИЕ САЙТОМ</p><h1>Вход в админ-панель</h1><?php if ($message): ?><div class="notice error"><?= e($message['message']) ?></div><?php endif; ?><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="login"><label>Логин<input name="login" autocomplete="username" required autofocus></label><label>Пароль<input type="password" name="password" autocomplete="current-password" required></label><button class="button login-submit">Войти ↗</button></form><a class="login-back" href="<?= e(site_path()) ?>">← На сайт</a></main></body></html><?php exit;
 }
 $counts=[]; foreach (['categories','brands','products','news','pages','gallery','leads','formulas'] as $t) $counts[$t]=(int)db()->query('SELECT COUNT(*) FROM '.$t)->fetchColumn();
+$counts['engineering']=(int)db()->query('SELECT COUNT(*) FROM projects')->fetchColumn();
 $flashMessage=take_flash(); $edit=null;
 if (!empty($_GET['edit']) && in_array($tab,['categories','brands','products','news','pages','gallery'],true)) { $q=db()->prepare('SELECT * FROM '.$tab.' WHERE id=?'); $q->execute([(int)$_GET['edit']]); $edit=$q->fetch()?:null; }
 function admin_delete_control(int $id): void {
@@ -182,7 +395,36 @@ function admin_delete_control(int $id): void {
 <header class="admin-topbar"><a class="brand" href="<?= e(site_path()) ?>"><span class="brand-mark">ЭК</span><span><?= e(setting('site_title','ЭКО-КЛИМАТ')) ?><small>УПРАВЛЕНИЕ САЙТОМ</small></span></a><div class="admin-top-actions"><a class="button button-small button-ghost" href="<?= e(site_path()) ?>" target="_blank">Открыть сайт ↗</a><span><?= e($user['login']) ?></span><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="logout"><button class="logout-button">Выйти</button></form></div></header>
 <div class="admin-shell"><aside class="admin-sidebar"><div class="admin-sidebar-label">РАЗДЕЛЫ САЙТА</div><?php foreach ($tabs as $key=>$label): ?><a class="admin-nav <?= $tab===$key?'active':'' ?>" href="<?= e(site_path('admin/?tab='.$key)) ?>"><span><?= e($label) ?></span><?php if (isset($counts[$key])): ?><small><?= $counts[$key] ?></small><?php endif; ?></a><?php endforeach; ?><div class="admin-sidebar-bottom">PHP CMS · <?= date('Y') ?></div></aside><main class="admin-main">
 <?php if ($flashMessage): ?><div class="notice <?= e($flashMessage['kind']) ?>"><?= e($flashMessage['message']) ?></div><?php endif; ?><div class="admin-page-heading"><div><p class="eyebrow">ПАНЕЛЬ УПРАВЛЕНИЯ / <?= e(strtoupper($tab)) ?></p><h1><?= e($tabs[$tab]) ?></h1></div><?php if (in_array($tab,['categories','brands','products','news','pages','gallery'],true)): ?><a class="button button-small" href="<?= e(site_path('admin/?tab='.$tab.'&new=1')) ?>">＋ Добавить</a><?php endif; ?></div>
-<?php if ($tab==='dashboard'): ?><div class="stats-grid"><?php foreach (['categories'=>'Категорий','brands'=>'Брендов','products'=>'Товаров','news'=>'Публикаций','gallery'=>'Фотографий','leads'=>'Заявок'] as $key=>$label): ?><a class="stat-card" href="<?= e(site_path('admin/?tab='.$key)) ?>"><span><?= e($label) ?></span><strong><?= $counts[$key] ?></strong><i>Открыть ↗</i></a><?php endforeach; ?></div><section class="admin-panel welcome-panel"><p class="eyebrow">ВАШ САЙТ УСТАНОВЛЕН</p><h2>Добавьте своё оборудование и проекты</h2><p>Заполните контакты, замените тестовые карточки и загрузите фотографии работ. Демо-товары помечены и не предназначены для продажи.</p><div class="quick-links"><a href="<?= e(site_path('admin/?tab=settings')) ?>">Настройки сайта ↗</a><a href="<?= e(site_path('admin/?tab=products&new=1')) ?>">Добавить товар ↗</a><a href="<?= e(site_path('admin/?tab=gallery&new=1')) ?>">Добавить работу ↗</a></div></section>
+<?php if ($tab==='dashboard'): ?><div class="stats-grid"><?php foreach (['engineering'=>'Инженерных проектов','categories'=>'Категорий','brands'=>'Брендов','products'=>'Товаров','news'=>'Публикаций','gallery'=>'Фотографий','leads'=>'Заявок'] as $key=>$label): ?><a class="stat-card" href="<?= e(site_path('admin/?tab='.$key)) ?>"><span><?= e($label) ?></span><strong><?= $counts[$key] ?></strong><i>Открыть ↗</i></a><?php endforeach; ?></div><section class="admin-panel welcome-panel"><p class="eyebrow">ВАШ САЙТ УСТАНОВЛЕН</p><h2>Добавьте своё оборудование и проекты</h2><p>Заполните контакты, замените тестовые карточки и загрузите фотографии работ. Демо-товары помечены и не предназначены для продажи.</p><div class="quick-links"><a href="<?= e(site_path('admin/?tab=settings')) ?>">Настройки сайта ↗</a><a href="<?= e(site_path('admin/?tab=products&new=1')) ?>">Добавить товар ↗</a><a href="<?= e(site_path('admin/?tab=gallery&new=1')) ?>">Добавить работу ↗</a></div></section>
+<?php elseif ($tab==='engineering'):
+$projects = db()->query("SELECT p.*,
+    (SELECT COUNT(*) FROM project_rooms r WHERE r.project_id=p.id) AS room_count,
+    (SELECT COUNT(*) FROM project_calculations c WHERE c.project_id=p.id) AS calculation_count,
+    (SELECT COUNT(*) FROM project_systems s WHERE s.project_id=p.id) AS system_count,
+    (SELECT COUNT(*) FROM project_systems s WHERE s.project_id=p.id AND TRIM(s.model)<>'') AS equipment_count,
+    (SELECT COUNT(*) FROM project_estimates e WHERE e.project_id=p.id) AS estimate_count
+    FROM projects p ORDER BY p.updated_at DESC, p.id DESC")->fetchAll();
+$roomsByProject=[]; foreach (db()->query('SELECT * FROM project_rooms ORDER BY id DESC') as $row) $roomsByProject[(int)$row['project_id']][]=$row;
+$systemsByProject=[]; foreach (db()->query('SELECT * FROM project_systems ORDER BY id DESC') as $row) $systemsByProject[(int)$row['project_id']][]=$row;
+$calculationsByProject=[]; foreach (db()->query('SELECT * FROM project_calculations ORDER BY id DESC') as $row) $calculationsByProject[(int)$row['project_id']][]=$row;
+$estimatesByProject=[]; foreach (db()->query('SELECT * FROM project_estimates ORDER BY id DESC') as $row) $estimatesByProject[(int)$row['project_id']][]=$row;
+$activeProjects=count(array_filter($projects, static fn($p)=>!in_array($p['status'],['completed','service'],true)));
+$attentionProjects=count(array_filter($projects, static fn($p)=>(int)$p['room_count']===0 || (int)$p['calculation_count']===0 || trim((string)$p['address'])===''));
+?><section class="admin-panel engineering-control-room"><p class="eyebrow">ENGINEERING OS / CONTROL ROOM</p><h2>Жизненный цикл инженерного объекта</h2><p class="muted">Объект → помещения → расчёты → системы → оборудование → смета → монтаж → сервис. Проектный балл и следующий шаг рассчитываются из заполненности данных, а не вводятся вручную.</p><div class="stats-grid engineering-stats"><div class="stat-card"><span>Всего проектов</span><strong><?= count($projects) ?></strong></div><div class="stat-card"><span>Активные</span><strong><?= $activeProjects ?></strong></div><div class="stat-card"><span>Требуют внимания</span><strong><?= $attentionProjects ?></strong></div><div class="stat-card"><span>Инженерные системы</span><strong><?= array_sum(array_map(static fn($p)=>(int)$p['system_count'],$projects)) ?></strong></div></div></section>
+<section class="admin-panel engineering-create"><div class="panel-heading"><div><p class="eyebrow">НОВЫЙ ОБЪЕКТ</p><h2>Создать инженерный проект</h2></div></div><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project"><div class="form-grid"><label class="span-2">Название проекта<input name="title" maxlength="220" required placeholder="Например, Офис — система климатизации"></label><label>Заказчик<input name="client_name" maxlength="190"></label><label>Телефон<input name="phone" maxlength="80"></label><label>Email<input name="email" type="email" maxlength="190"></label><label>Адрес объекта<input name="address" maxlength="500" placeholder="Город, адрес, корпус"></label><label>Профиль объекта<select name="profile"><option value="">Не выбран</option><option value="residential">Жилой объект</option><option value="office">Офис</option><option value="retail">Торговля</option><option value="industrial">Промышленный</option><option value="hospitality">Гостиница / ресторан</option><option value="other">Другое</option></select></label><label>Приоритет<select name="priority"><option value="normal">Обычный</option><option value="low">Низкий</option><option value="high">Высокий</option><option value="urgent">Срочный</option></select></label><label class="span-2">Цель проекта<textarea name="goal" rows="2" placeholder="Что требуется обеспечить на объекте"></textarea></label><label class="span-2">Ограничения и исходные условия<textarea name="constraints_text" rows="2" placeholder="Бюджет, сроки, архитектурные и технические ограничения"></textarea></label><label class="span-2">Заметки<textarea name="notes" rows="2"></textarea></label></div><button class="button">＋ Создать проект</button></form></section>
+<?php if (!$projects): ?><section class="admin-panel empty-state"><h2>Проектов пока нет</h2><p>Создайте объект выше, затем добавьте помещения, расчёты, инженерные системы и смету. Данные сохраняются в локальной базе.</p></section><?php endif; ?>
+<?php foreach ($projects as $project): $health=engineering_project_health($project); $projectId=(int)$project['id']; ?>
+<section class="admin-panel engineering-project-card"><div class="engineering-project-heading"><div><p class="eyebrow">ОБЪЕКТ #<?= $projectId ?> · <?= e(strtoupper((string)$project['priority'])) ?> ПРИОРИТЕТ</p><h2><?= e($project['title']) ?></h2><p class="muted"><?= e($project['client_name'] ?: 'Заказчик не указан') ?> · <?= e($project['address'] ?: 'Адрес не заполнен') ?></p></div><div class="engineering-score"><strong><?= (int)$health['score'] ?><small>/100</small></strong><span>Engineering Score</span><div class="score-track"><i style="width:<?= (int)$health['score'] ?>%"></i></div></div></div>
+<div class="engineering-metrics"><span><b><?= (int)$project['room_count'] ?></b> помещений</span><span><b><?= (int)$project['calculation_count'] ?></b> расчётов</span><span><b><?= (int)$project['system_count'] ?></b> систем</span><span><b><?= (int)$project['equipment_count'] ?></b> назначений оборудования</span><span><b><?= (int)$project['estimate_count'] ?></b> смет</span></div>
+<div class="engineering-next-action"><span class="eyebrow">СЛЕДУЮЩИЙ ШАГ · <?= e($health['stage']) ?></span><strong><?= e($health['next_action']) ?></strong></div>
+<?php if ($health['risks']): ?><div class="engineering-risks"><span class="muted">Риски:</span><?php foreach ($health['risks'] as $risk): ?><span class="risk-tag"><?= e($risk) ?></span><?php endforeach; ?></div><?php else: ?><p class="success-line">Критические пробелы по базовым данным не обнаружены.</p><?php endif; ?>
+<details class="engineering-details"><summary>Редактировать объект и статус</summary><form method="post" class="engineering-edit-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project"><input type="hidden" name="id" value="<?= $projectId ?>"><div class="form-grid"><label class="span-2">Название<input name="title" maxlength="220" required value="<?= e($project['title']) ?>"></label><label>Заказчик<input name="client_name" maxlength="190" value="<?= e($project['client_name']) ?>"></label><label>Телефон<input name="phone" maxlength="80" value="<?= e($project['phone']) ?>"></label><label>Email<input name="email" type="email" maxlength="190" value="<?= e($project['email']) ?>"></label><label>Адрес объекта<input name="address" maxlength="500" value="<?= e($project['address']) ?>"></label><label>Профиль<select name="profile"><?php foreach ([''=>'Не выбран','residential'=>'Жилой объект','office'=>'Офис','retail'=>'Торговля','industrial'=>'Промышленный','hospitality'=>'Гостиница / ресторан','other'=>'Другое'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $project['profile']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label>Приоритет<select name="priority"><?php foreach (['low'=>'Низкий','normal'=>'Обычный','high'=>'Высокий','urgent'=>'Срочный'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $project['priority']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label>Стадия проекта<select name="status"><?php foreach (['draft'=>'Черновик','active'=>'Активный','installation'=>'Монтаж','service'=>'Сервис','completed'=>'Завершён'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $project['status']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label class="span-2">Цель<textarea name="goal" rows="2"><?= e($project['goal']) ?></textarea></label><label class="span-2">Ограничения<textarea name="constraints_text" rows="2"><?= e($project['constraints_text']) ?></textarea></label><label class="span-2">Заметки<textarea name="notes" rows="2"><?= e($project['notes']) ?></textarea></label></div><button class="button button-small">Сохранить проект</button></form></details>
+<div class="engineering-workstreams"><details class="engineering-details"><summary>Помещения · <?= (int)$project['room_count'] ?></summary><?php foreach (($roomsByProject[$projectId]??[]) as $room): ?><div class="engineering-record"><strong><?= e($room['name']) ?></strong><span><?= e($room['purpose']) ?> · <?= number_format((float)$room['area_m2'],1,',',' ') ?> м² · высота <?= number_format((float)$room['height_m'],1,',',' ') ?> м · людей: <?= (int)$room['occupants'] ?></span><?php if ($room['notes']!==''): ?><small><?= e($room['notes']) ?></small><?php endif; ?><details class="engineering-record-tools"><summary>Изменить / удалить</summary><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_room"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="room_id" value="<?= (int)$room['id'] ?>"><div class="form-grid"><label>Название<input name="name" required maxlength="190" value="<?= e($room['name']) ?>"></label><label>Назначение<input name="purpose" maxlength="190" value="<?= e($room['purpose']) ?>"></label><label>Площадь, м²<input name="area_m2" type="number" min="0" max="100000" step="0.1" value="<?= e($room['area_m2']) ?>"></label><label>Высота, м<input name="height_m" type="number" min="0" max="100" step="0.1" value="<?= e($room['height_m']) ?>"></label><label>Людей<input name="occupants" type="number" min="0" max="100000" value="<?= (int)$room['occupants'] ?>"></label><label class="span-2">Примечание<input name="notes" maxlength="2000" value="<?= e($room['notes']) ?>"></label></div><button class="button button-small">Сохранить помещение</button></form><form method="post" class="engineering-delete-form" onsubmit="return confirm('Удалить помещение?')"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete_project_room"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="record_id" value="<?= (int)$room['id'] ?>"><button class="button button-danger button-small">Удалить помещение</button></form></details></div><?php endforeach; ?><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_room"><input type="hidden" name="project_id" value="<?= $projectId ?>"><div class="form-grid"><label>Название помещения<input name="name" required maxlength="190" placeholder="Переговорная / зал"></label><label>Назначение<input name="purpose" maxlength="190"></label><label>Площадь, м²<input name="area_m2" type="number" min="0" max="100000" step="0.1" value="0"></label><label>Высота, м<input name="height_m" type="number" min="0" max="100" step="0.1" value="0"></label><label>Людей<input name="occupants" type="number" min="0" max="100000" value="0"></label><label class="span-2">Примечание<input name="notes" maxlength="2000"></label></div><button class="button button-small">＋ Добавить помещение</button></form></details>
+<details class="engineering-details"><summary>Инженерные системы · <?= (int)$project['system_count'] ?></summary><?php foreach (($systemsByProject[$projectId]??[]) as $system): ?><div class="engineering-record"><strong><?= e($system['title']) ?></strong><span><?= e(['air_conditioning'=>'Кондиционирование','multi_split'=>'Мульти-сплит','vrv_vrf'=>'VRV / VRF','ventilation'=>'Вентиляция','refrigeration'=>'Холодоснабжение'][$system['system_type']]??$system['system_type']) ?> · <?= e($system['brand'] ?: 'бренд не назначен') ?> <?= e($system['model']) ?> · <?= number_format((float)$system['capacity_kw'],2,',',' ') ?> кВт × <?= (int)$system['quantity'] ?> · <?= e($system['status']) ?></span><?php if ($system['notes']!==''): ?><small><?= e($system['notes']) ?></small><?php endif; ?><details class="engineering-record-tools"><summary>Изменить / удалить</summary><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_system"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="system_id" value="<?= (int)$system['id'] ?>"><div class="form-grid"><label>Название<input name="title" required maxlength="220" value="<?= e($system['title']) ?>"></label><label>Тип<select name="system_type"><?php foreach (['air_conditioning'=>'Кондиционирование','multi_split'=>'Мульти-сплит','vrv_vrf'=>'VRV / VRF','ventilation'=>'Вентиляция','refrigeration'=>'Холодоснабжение'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $system['system_type']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label>Бренд<input name="brand" maxlength="190" value="<?= e($system['brand']) ?>"></label><label>Модель<input name="model" maxlength="190" value="<?= e($system['model']) ?>"></label><label>Мощность, кВт<input name="capacity_kw" type="number" min="0" max="100000" step="0.01" value="<?= e($system['capacity_kw']) ?>"></label><label>Количество<input name="quantity" type="number" min="1" max="10000" value="<?= (int)$system['quantity'] ?>"></label><label>Статус<select name="system_status"><?php foreach (['planned'=>'Планируется','selected'=>'Подобрано','ordered'=>'Заказано','installed'=>'Установлено','service'=>'Сервис'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $system['status']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label class="span-2">Примечание<input name="notes" maxlength="2000" value="<?= e($system['notes']) ?>"></label></div><button class="button button-small">Сохранить систему</button></form><form method="post" class="engineering-delete-form" onsubmit="return confirm('Удалить систему?')"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete_project_system"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="record_id" value="<?= (int)$system['id'] ?>"><button class="button button-danger button-small">Удалить систему</button></form></details></div><?php endforeach; ?><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_system"><input type="hidden" name="project_id" value="<?= $projectId ?>"><div class="form-grid"><label>Тип системы<select name="system_type"><option value="air_conditioning">Кондиционирование</option><option value="multi_split">Мульти-сплит</option><option value="vrv_vrf">VRV / VRF</option><option value="ventilation">Вентиляция</option><option value="refrigeration">Холодоснабжение</option></select></label><label>Название системы<input name="title" required maxlength="220" placeholder="Приточно-вытяжная система №1"></label><label>Бренд<input name="brand" maxlength="190"></label><label>Модель<input name="model" maxlength="190"></label><label>Мощность, кВт<input name="capacity_kw" type="number" min="0" max="100000" step="0.01" value="0"></label><label>Количество<input name="quantity" type="number" min="1" max="10000" value="1"></label><label>Статус<select name="system_status"><option value="planned">Планируется</option><option value="selected">Подобрано</option><option value="ordered">Заказано</option><option value="installed">Установлено</option><option value="service">Сервис</option></select></label><label class="span-2">Примечание<input name="notes" maxlength="2000"></label></div><button class="button button-small">＋ Добавить систему</button></form></details>
+<details class="engineering-details"><summary>Расчёты · <?= (int)$project['calculation_count'] ?></summary><?php foreach (($calculationsByProject[$projectId]??[]) as $calc): ?><div class="engineering-record"><strong><?= e($calc['title']) ?></strong><span><?= e($calc['system_type']) ?> · <?= e($calc['status']) ?> · <?= e($calc['created_at']) ?></span><details class="engineering-record-tools"><summary>Изменить / удалить</summary><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_calculation"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="calculation_id" value="<?= (int)$calc['id'] ?>"><div class="form-grid"><label>Название<input name="title" required maxlength="220" value="<?= e($calc['title']) ?>"></label><label>Система<select name="system_type"><?php foreach (['air_conditioning'=>'Кондиционирование','multi_split'=>'Мульти-сплит','vrv_vrf'=>'VRV / VRF','ventilation'=>'Вентиляция','refrigeration'=>'Холодоснабжение'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $calc['system_type']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label>Статус<select name="calculation_status"><?php foreach (['draft'=>'Черновик','completed'=>'Завершён','needs_review'=>'Нужна проверка'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $calc['status']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label class="span-2">Входные JSON<textarea name="input_json" rows="2"><?= e($calc['input_json']) ?></textarea></label><label class="span-2">Результат JSON<textarea name="result_json" rows="2"><?= e($calc['result_json']) ?></textarea></label></div><button class="button button-small">Сохранить расчёт</button></form><form method="post" class="engineering-delete-form" onsubmit="return confirm('Удалить запись расчёта?')"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete_project_calculation"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="record_id" value="<?= (int)$calc['id'] ?>"><button class="button button-danger button-small">Удалить расчёт</button></form></details></div><?php endforeach; ?><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_calculation"><input type="hidden" name="project_id" value="<?= $projectId ?>"><div class="form-grid"><label>Название расчёта<input name="title" required maxlength="220" placeholder="Расчёт воздухообмена"></label><label>Система<select name="system_type"><option value="air_conditioning">Кондиционирование</option><option value="multi_split">Мульти-сплит</option><option value="vrv_vrf">VRV / VRF</option><option value="ventilation">Вентиляция</option><option value="refrigeration">Холодоснабжение</option></select></label><label>Статус<select name="calculation_status"><option value="draft">Черновик</option><option value="completed">Завершён</option><option value="needs_review">Нужна проверка</option></select></label><label class="span-2">Входные данные JSON<textarea name="input_json" rows="2">{}</textarea></label><label class="span-2">Результат JSON<textarea name="result_json" rows="2">{}</textarea></label></div><button class="button button-small">＋ Записать расчёт</button><small class="muted">Сюда можно сохранить входные данные и результат существующего независимого калькулятора.</small></form></details>
+<details class="engineering-details"><summary>Сметы · <?= (int)$project['estimate_count'] ?></summary><?php foreach (($estimatesByProject[$projectId]??[]) as $estimate): ?><div class="engineering-record"><strong><?= e($estimate['title']) ?></strong><span><?= number_format((float)$estimate['amount'],0,',',' ') ?> ₽ · <?= e($estimate['status']) ?> · <?= e($estimate['created_at']) ?></span><?php if ($estimate['notes']!==''): ?><small><?= e($estimate['notes']) ?></small><?php endif; ?><details class="engineering-record-tools"><summary>Изменить / удалить</summary><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_estimate"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="estimate_id" value="<?= (int)$estimate['id'] ?>"><div class="form-grid"><label>Название<input name="title" required maxlength="220" value="<?= e($estimate['title']) ?>"></label><label>Сумма, ₽<input name="amount" type="number" min="0" max="1000000000000" step="0.01" value="<?= e($estimate['amount']) ?>"></label><label>Статус<select name="estimate_status"><?php foreach (['draft'=>'Черновик','sent'=>'Отправлена','approved'=>'Согласована','accepted'=>'Принята'] as $value=>$label): ?><option value="<?= e($value) ?>" <?= $estimate['status']===$value?'selected':'' ?>><?= e($label) ?></option><?php endforeach; ?></select></label><label class="span-2">Примечание<input name="notes" maxlength="2000" value="<?= e($estimate['notes']) ?>"></label></div><button class="button button-small">Сохранить смету</button></form><form method="post" class="engineering-delete-form" onsubmit="return confirm('Удалить смету?')"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete_project_estimate"><input type="hidden" name="project_id" value="<?= $projectId ?>"><input type="hidden" name="record_id" value="<?= (int)$estimate['id'] ?>"><button class="button button-danger button-small">Удалить смету</button></form></details></div><?php endforeach; ?><form method="post" class="engineering-inline-form"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="save_project_estimate"><input type="hidden" name="project_id" value="<?= $projectId ?>"><div class="form-grid"><label>Название сметы<input name="title" required maxlength="220" placeholder="Предварительная смета"></label><label>Сумма, ₽<input name="amount" type="number" min="0" max="1000000000000" step="0.01" value="0"></label><label>Статус<select name="estimate_status"><option value="draft">Черновик</option><option value="sent">Отправлена</option><option value="approved">Согласована</option><option value="accepted">Принята</option></select></label><label class="span-2">Примечание<input name="notes" maxlength="2000"></label></div><button class="button button-small">＋ Добавить смету</button></form></details></div>
+<form method="post" class="engineering-delete-form" onsubmit="return confirm('Удалить проект и все связанные помещения, системы, расчёты и сметы?')"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="delete_project"><input type="hidden" name="id" value="<?= $projectId ?>"><button class="button button-danger button-small">Удалить проект</button></form>
+</section><?php endforeach; ?>
 <?php elseif ($tab==='settings'): ?><section class="admin-panel"><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="save_record" value="1"><div class="form-grid"><label>Название сайта<input name="site_title" value="<?= e(setting('site_title')) ?>"></label><label>Телефон<input name="phone" value="<?= e(setting('phone')) ?>"></label><label>Электронная почта<input name="email" value="<?= e(setting('email')) ?>"></label><label>Адрес<input name="address" value="<?= e(setting('address')) ?>"></label><label class="span-2">Краткое описание<textarea name="site_tagline" rows="3"><?= e(setting('site_tagline')) ?></textarea></label></div><button class="button">Сохранить настройки сайта</button></form></section><section class="admin-panel"><p class="eyebrow">ENGINEERING / VENTILATION</p><h2>Настройки калькулятора вентиляции</h2><p class="muted">Тарифы и коэффициенты используются только независимым калькулятором вентиляции. Они не изменяют расчёт кондиционирования или другие инструменты.</p><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="save_record" value="1"><div class="form-grid"><?php foreach ($ventilationSettingFields as $field => [$key,$label,$default,$minimum,$maximum]): ?><label><?= e($label) ?><input type="number" name="<?= e($field) ?>" min="<?= e($minimum) ?>" max="<?= e($maximum) ?>" step="any" required value="<?= e(setting($key,(string)$default)) ?>"></label><?php endforeach; ?></div><button class="button">Сохранить тарифы вентиляции</button></form></section><section class="admin-panel"><p class="eyebrow">ENGINEERING / INSTALLATION</p><h2>Тарифы монтажа кондиционеров и VRV / VRF</h2><p class="muted">Эти расценки используются только отдельным калькулятором монтажа. Изменение ставок не влияет на калькулятор вентиляции или холодильную линейку.</p><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="save_record" value="1"><div class="form-grid"><?php foreach ($installationSettingFields as $field => [$key,$label,$default,$minimum,$maximum]): ?><label><?= e($label) ?><input type="number" name="<?= e($field) ?>" min="<?= e($minimum) ?>" max="<?= e($maximum) ?>" step="any" required value="<?= e(setting($key,(string)$default)) ?>"></label><?php endforeach; ?></div><button class="button">Сохранить тарифы монтажа</button></form></section><section class="admin-panel account-panel"><p class="eyebrow">УЧЁТНАЯ ЗАПИСЬ</p><h2>Логин и пароль администратора</h2><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="change_credentials"><div class="form-grid"><label>Новый логин<input name="login" maxlength="120" required value="<?= e($user['login']) ?>"></label><label>Текущий пароль<input name="current_password" type="password" autocomplete="current-password" required></label><label class="span-2">Новый пароль<input name="new_password" type="password" minlength="10" autocomplete="new-password"><small>Оставьте пустым, если меняете только логин. Новый пароль — не менее 10 символов.</small></label></div><button class="button">Обновить данные администратора</button></form></section>
 <?php elseif (in_array($tab,['categories','brands','products','news','pages','gallery'],true) && (!empty($_GET['new'])||$edit)): $f=$edit?:[]; ?><section class="admin-panel edit-panel"><div class="panel-heading"><h2><?= $edit?'Редактировать':'Создать' ?> запись</h2><a href="<?= e(site_path('admin/?tab='.$tab)) ?>">Закрыть ×</a></div><form method="post" enctype="multipart/form-data"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="save_record" value="1"><input type="hidden" name="id" value="<?= (int)($f['id']??0) ?>">
 <?php if ($tab==='categories'): ?><div class="form-grid"><label>Название<input name="title" required value="<?= e($f['title']??'') ?>"></label><label>Код / адрес<input name="code" value="<?= e($f['code']??'') ?>" placeholder="создастся автоматически"></label><label>Родительская категория<select name="parent_code"><option value="">Верхний уровень</option><?php foreach (db()->query('SELECT id,code,title FROM categories ORDER BY title') as $c): if ((int)$c['id']===(int)($f['id']??0)) continue; ?><option value="<?= e($c['code']) ?>" <?= (int)($f['parent_id']??0)===(int)$c['id']?'selected':'' ?>><?= e($c['title']) ?></option><?php endforeach; ?></select></label><label>Порядок<input type="number" name="sort_order" value="<?= e($f['sort_order']??100) ?>"></label><label class="span-2">Изображение<input type="file" name="image" accept="image/jpeg,image/png,image/webp"><input class="secondary-input" name="image_url" value="<?= e($f['image_url']??'') ?>" placeholder="или URL изображения"></label></div><label class="check-label"><input type="checkbox" name="active" <?= !isset($f['active'])||$f['active']?'checked':'' ?>> Показывать</label>

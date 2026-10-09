@@ -40,6 +40,25 @@ $pdo->exec("CREATE TABLE products (
     created_at DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
+require_once $root . '/app/engineering_schema.php';
+ensure_engineering_schema($pdo);
+$schemaTables = $pdo->query("SHOW TABLES LIKE 'project_%'")->fetchAll(PDO::FETCH_COLUMN);
+foreach (['projects','project_rooms','project_systems','project_calculations','project_estimates'] as $requiredTable) {
+    if (!in_array($requiredTable, $schemaTables, true)) {
+        throw new RuntimeException('Engineering OS table is missing: ' . $requiredTable);
+    }
+}
+$pdo->exec("INSERT INTO projects (title,client_name,phone,email,address,profile,goal,priority,constraints_text,notes,status,created_at,updated_at) VALUES ('Schema test','Test','','','Test address','office','Test goal','normal','','','draft',NOW(),NOW())");
+$schemaProjectId = (int)$pdo->lastInsertId();
+$roomInsert = $pdo->prepare('INSERT INTO project_rooms (project_id,name,area_m2,height_m,occupants,notes,created_at) VALUES (?,?,?,?,?,?,NOW())');
+$roomInsert->execute([$schemaProjectId,'Test room',20,3,2,'']);
+$pdo->prepare('DELETE FROM projects WHERE id=?')->execute([$schemaProjectId]);
+$remainingRooms = $pdo->prepare('SELECT COUNT(*) FROM project_rooms WHERE project_id=?');
+$remainingRooms->execute([$schemaProjectId]);
+if ((int)$remainingRooms->fetchColumn() !== 0) {
+    throw new RuntimeException('Engineering OS child rows do not cascade on project deletion.');
+}
+
 $catalogPath = $root . '/data/hisense_catalog.json';
 $catalog = json_decode((string)file_get_contents($catalogPath), true, 512, JSON_THROW_ON_ERROR);
 $categories = json_decode((string)file_get_contents($root . '/data/categories.json'), true, 512, JSON_THROW_ON_ERROR);
