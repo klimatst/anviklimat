@@ -93,6 +93,7 @@ jobs:
           test -f shared_hosting_php/install/index.php
           test -f shared_hosting_php/app/hisense_import.php
           test -f shared_hosting_php/app/engineering_schema.php
+          test -f shared_hosting_php/app/engineering_os.php
           test -f shared_hosting_php/maintenance/upgrade.php
           test -f shared_hosting_php/tests/hisense_import_smoke.php
           test -f shared_hosting_php/maintenance/import-hisense.php
