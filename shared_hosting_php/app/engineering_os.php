@@ -12,11 +12,8 @@ function engineering_projects_for_current_admin(): array
     }
 }
 
-function save_engineering_calculation(PDO $pdo, int $projectId, string $systemType, string $title, array $inputs, array $result): void
+function store_engineering_calculation(PDO $pdo, int $projectId, string $systemType, string $title, array $inputs, array $result): void
 {
-    if (!admin_user()) {
-        throw new RuntimeException('Войдите в админ-панель, чтобы сохранять расчёты в проекты.');
-    }
     if ($projectId < 1) {
         throw new InvalidArgumentException('Выберите проект для сохранения расчёта.');
     }
@@ -38,4 +35,12 @@ function save_engineering_calculation(PDO $pdo, int $projectId, string $systemTy
         json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
     ]);
     $pdo->prepare('UPDATE projects SET updated_at=NOW() WHERE id=?')->execute([$projectId]);
+}
+
+function save_engineering_calculation(PDO $pdo, int $projectId, string $systemType, string $title, array $inputs, array $result): void
+{
+    if (!admin_user()) {
+        throw new RuntimeException('Войдите в админ-панель, чтобы сохранять расчёты в проекты.');
+    }
+    store_engineering_calculation($pdo, $projectId, $systemType, $title, $inputs, $result);
 }
