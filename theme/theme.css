@@ -1483,7 +1483,7 @@ html,body{overflow-x:hidden}
   border:1px solid var(--u-line)!important;
   border-radius:18px!important;
   box-shadow:0 22px 58px rgba(0,0,0,.14)!important;
-  overflow:clip;
+  overflow:visible;
 }
 .eco-site-shell[class*="site-theme--"] .catalog-reference-layout .catalog-view,
 .eco-site-shell[class*="site-theme--"] .catalog-reference-layout .catalog-main,
@@ -1966,5 +1966,27 @@ html,body{overflow-x:hidden}
   .eco-site-shell[class*="site-theme--"] .anvil-role-catalog-product-dialog *{
     transition:none!important;
     animation:none!important;
+  }
+}
+
+
+/* RepeatingPanel role selectors: Anvil prefixes custom roles with anvil-role-. */
+.eco-site-shell[class*="site-theme--"] .catalog-reference-layout .anvil-role-catalog-product-grid .anvil-repeating-panel-gutter{
+  display:contents!important;
+}
+.eco-site-shell[class*="site-theme--"] .catalog-reference-layout .anvil-role-catalog-product-grid .anvil-repeating-panel{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  align-items:stretch;
+  gap:12px;
+}
+@media(max-width:1050px){
+  .eco-site-shell[class*="site-theme--"] .catalog-reference-layout .anvil-role-catalog-product-grid .anvil-repeating-panel{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:520px){
+  .eco-site-shell[class*="site-theme--"] .catalog-reference-layout .anvil-role-catalog-product-grid .anvil-repeating-panel{
+    grid-template-columns:1fr!important;
   }
 }
