@@ -6,6 +6,7 @@ from .. import Access
 
 
 MAX_XLSX_UPLOAD_BYTES = 1024 * 1024 * 1024
+MAX_PDF_UPLOAD_BYTES = 50 * 1024 * 1024
 
 
 class ImportEngine(ImportEngineTemplate):
@@ -41,6 +42,9 @@ class ImportEngine(ImportEngineTemplate):
     self.start_button.enabled = False
     self.preview_rows.items = []
     self._pdf_draft_id = None
+    self._pdf_selected_file = None
+    self._pdf_upload_id = None
+    self._pdf_pause_requested = False
     self._pdf_categories = []
     self._pdf_image_options = []
     self._pdf_page_count = 0
@@ -377,32 +381,121 @@ class ImportEngine(ImportEngineTemplate):
 
   @handle("parse_pdf_button", "click")
   def parse_pdf_button_click(self, **event_args):
-    uploaded_files = list(self.pdf_file_loader.files or [])
-    if not uploaded_files and self.pdf_file_loader.file is not None:
-      uploaded_files = [self.pdf_file_loader.file]
-    if not uploaded_files:
-      self.pdf_intake_message.text = "Выберите PDF-файл перед обработкой."
+    browser_file = self._pdf_selected_file
+    if browser_file is None:
+      self.pdf_intake_message.text = "Выберите PDF-файл перед загрузкой."
       return
-    if len(uploaded_files) > 5:
-      self.pdf_intake_message.text = "За один запуск можно отправить не более пяти PDF. Остальные выберите следующим запуском."
+    if int(browser_file.size) > MAX_PDF_UPLOAD_BYTES:
+      self.pdf_intake_message.text = "PDF не должен превышать 50 МБ."
       return
+    self._pdf_pause_requested = False
     self.parse_pdf_button.enabled = False
-    started_ids = []
-    messages = []
+    self.pdf_pause_upload_button.visible = True
+    self.pdf_pause_upload_button.enabled = True
     try:
-      for uploaded_file in uploaded_files:
-        result = anvil.server.call("start_catalog_file_draft", uploaded_file)
-        messages.append("{}: {}".format(uploaded_file.name or "Файл", result["message"]))
-        if result["ok"]:
-          started_ids.append(result["draft_id"])
+      result = anvil.server.call(
+        "begin_pdf_catalog_upload", browser_file.name,
+        int(browser_file.size), int(browser_file.lastModified)
+      )
+      self._pdf_upload_id = result.get("upload_id")
+      if not result["ok"]:
+        self.pdf_intake_message.text = result["message"]
+        return
+      self.pdf_pause_upload_button.visible = result.get("status") == "pdf_uploading"
+      if result.get("status") != "pdf_uploading":
+        self.pdf_intake_message.text = result["message"]
+        self._load_pdf_drafts()
+        self._open_pdf_draft(result.get("upload_id") or result.get("draft_id"))
+        if result.get("status") == "pdf_processing":
+          self._start_pdf_status_polling()
+        return
+
+      chunk_size = int(result["chunk_size"])
+      total_size = int(browser_file.size)
+      total_chunks = (total_size + chunk_size - 1) // chunk_size
+      start_chunk = max(0, int(result.get("next_chunk", 0) or 0))
+      current_result = result
+      upload_allowed = True
+
+      if start_chunk:
+        saved_hashes = []
+        for chunk_index in range(start_chunk):
+          if self._pdf_pause_requested:
+            paused = anvil.server.call(
+              "cancel_pdf_catalog_upload", self._pdf_upload_id
+            )
+            self.pdf_intake_message.text = paused["message"]
+            upload_allowed = False
+            break
+          saved_hashes.append(self._hash_pdf_chunk(
+            browser_file, chunk_index, chunk_size, total_size
+          ))
+          self.pdf_intake_message.text = (
+            "Проверено сохранённых частей: {} из {}."
+          ).format(chunk_index + 1, start_chunk)
+        if upload_allowed:
+          verified = anvil.server.call(
+            "verify_pdf_catalog_chunks", self._pdf_upload_id, saved_hashes
+          )
+          if not verified["ok"]:
+            self.pdf_intake_message.text = verified["message"]
+            upload_allowed = False
+          else:
+            start_chunk = int(verified.get("next_chunk", start_chunk) or 0)
+            self.pdf_intake_message.text = verified["message"]
+
+      if upload_allowed:
+        for chunk_index in range(start_chunk, total_chunks):
+          if self._pdf_pause_requested:
+            paused = anvil.server.call(
+              "cancel_pdf_catalog_upload", self._pdf_upload_id
+            )
+            self.pdf_intake_message.text = paused["message"]
+            current_result = None
+            break
+          offset = chunk_index * chunk_size
+          end = min(total_size, offset + chunk_size)
+          chunk_buffer = browser_file.slice(offset, end).arrayBuffer()
+          chunk_data = bytes(Uint8Array(chunk_buffer))
+          chunk_media = BlobMedia(
+            "application/octet-stream", chunk_data,
+            name="pdf-{}-{}.part".format(self._pdf_upload_id, chunk_index)
+          )
+          current_result = anvil.server.call(
+            "upload_pdf_catalog_chunk",
+            self._pdf_upload_id, chunk_index, chunk_media
+          )
+          if not current_result["ok"]:
+            self.pdf_intake_message.text = current_result["message"]
+            break
+          uploaded_bytes = current_result.get("uploaded_bytes", end)
+          percent = int(uploaded_bytes * 100 / total_size)
+          self.pdf_intake_message.text = (
+            "Передано {percent}% · {done:.1f}/{total:.1f} МБ. "
+            "PDF передаётся частями и затем автоматически распознаётся."
+          ).format(
+            percent=percent,
+            done=uploaded_bytes / (1024.0 * 1024.0),
+            total=total_size / (1024.0 * 1024.0)
+          )
+          if current_result.get("complete"):
+            break
+
+      if current_result and current_result.get("complete"):
+        self.pdf_intake_message.text = current_result["message"]
+        self._load_pdf_drafts()
+        self._open_pdf_draft(self._pdf_upload_id)
+        self._start_pdf_status_polling()
+      elif current_result and current_result.get("status") == "pdf_uploading":
+        self._load_pdf_drafts()
+    except Exception as exc:
+      self.pdf_intake_message.text = "Ошибка загрузки PDF: {}".format(exc)
     finally:
-      self.parse_pdf_button.enabled = True
-    self.pdf_intake_message.text = "\n".join(messages)
-    self.pdf_file_loader.clear()
-    if started_ids:
-      self._load_pdf_drafts()
-      self._open_pdf_draft(started_ids[-1])
-      self._start_pdf_status_polling()
+      self.parse_pdf_button.enabled = self._pdf_selected_file is not None
+      self.pdf_pause_upload_button.visible = False
+      self.pdf_pause_upload_button.enabled = True
+      if self._pdf_upload_id:
+        self._load_pdf_drafts()
 
   def xlsx_file_change(self, event):
     files = event.target.files
@@ -534,6 +627,12 @@ class ImportEngine(ImportEngineTemplate):
       self.xlsx_upload_button.enabled = self._xlsx_selected_file is not None
       self.xlsx_pause_button.visible = False
       self.xlsx_pause_button.enabled = True
+
+  @handle("pdf_pause_upload_button", "click")
+  def pdf_pause_upload_button_click(self, **event_args):
+    self._pdf_pause_requested = True
+    self.pdf_pause_upload_button.enabled = False
+    self.pdf_intake_message.text = "Остановка после сохранения текущей части…"
 
   @handle("xlsx_pause_button", "click")
   def xlsx_pause_button_click(self, **event_args):

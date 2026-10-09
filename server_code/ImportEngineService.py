@@ -40,6 +40,8 @@ MAX_UNPACKED_BYTES = 8 * 1024 * 1024
 MAX_XLSX_SOURCE_BYTES = 1024 * 1024 * 1024
 MAX_XLSX_UNPACKED_BYTES = 2 * 1024 * 1024 * 1024
 XLSX_UPLOAD_CHUNK_BYTES = 4 * 1024 * 1024
+PDF_UPLOAD_CHUNK_BYTES = 4 * 1024 * 1024
+PDF_UPLOAD_MAX_CHUNKS = (MAX_PDF_SOURCE_BYTES + PDF_UPLOAD_CHUNK_BYTES - 1) // PDF_UPLOAD_CHUNK_BYTES
 XLSX_BATCH_PAUSE_SECONDS = 0.2
 MAX_XLSX_SHARED_STRINGS_BYTES = 128 * 1024 * 1024
 MAX_RECORDS = 2500
@@ -1137,7 +1139,7 @@ def _trim_import_history():
 
 def _has_active_import_capacity():
   active = 0
-  for status in ("draft", "running", "pdf_processing", "xlsx_uploading", "xlsx_processing",
+  for status in ("draft", "running", "pdf_uploading", "pdf_processing", "xlsx_uploading", "xlsx_processing",
                  "xlsx_images_processing"):
     rows = list(app_tables.imports.search(
       q.fetch_only("status"), status=status
@@ -2629,17 +2631,26 @@ def process_pdf_catalog_draft(draft_id):
   if import_row is None or import_row["format"] != "pdf" or import_row["status"] != "pdf_processing":
     return
   try:
-    source = import_row["source_file"]
-    if source is None:
-      raise ImportInputError("Исходный PDF недоступен для обработки.")
-    data = source.get_bytes()
+    checkpoint = import_row["checkpoint"] or {}
     max_pdf_bytes = _pdf_setting_int(
       "pdf.max_file_size_mb", 50, 1, MAX_PDF_SOURCE_BYTES // (1024 * 1024)
     ) * 1024 * 1024
-    if not isinstance(data, bytes) or len(data) > max_pdf_bytes:
-      raise ImportInputError("Размер PDF превышает установленный предел {} МБ.".format(max_pdf_bytes // (1024 * 1024)))
+    if import_row["source_file"] is not None:
+      data = import_row["source_file"].get_bytes()
+      if not isinstance(data, bytes) or len(data) > max_pdf_bytes:
+        raise ImportInputError(
+          "Размер PDF превышает установленный предел {} МБ."
+          .format(max_pdf_bytes // (1024 * 1024))
+        )
+    else:
+      source_stream, digest = _materialize_pdf_source(import_row)
+      if digest != checkpoint.get("sha256"):
+        source_stream.close()
+        raise ImportInputError("Контрольная сумма PDF изменилась после загрузки.")
+      data = source_stream.read()
+      source_stream.close()
     digest = hashlib.sha256(data).hexdigest()
-    if digest != (import_row["checkpoint"] or {}).get("sha256"):
+    if digest != checkpoint.get("sha256"):
       raise ImportInputError("Исходный PDF изменился после загрузки.")
     return _process_pdf_pages(import_row, data)
   except ImportInputError as error:
@@ -2867,6 +2878,386 @@ def _materialize_xlsx_source(import_row):
     raise ImportInputError("Контрольная сумма XLSX не совпала после сборки частей.")
   output.seek(0)
   return output, value
+
+
+def _pdf_chunk_rows(import_row):
+  return app_tables.pdf_upload_chunks.search(
+    q.fetch_only("chunk_index", "content", "byte_count", "sha256"),
+    order_by("chunk_index"), **{"import": import_row}
+  )
+
+
+def _delete_pdf_upload_chunks(import_row):
+  if import_row is None:
+    return
+  for chunk_row in list(_pdf_chunk_rows(import_row)):
+    chunk_row.delete()
+
+
+def _materialize_pdf_source(import_row):
+  """Reassemble a chunked PDF with per-chunk and whole-file checksum validation."""
+  checkpoint = import_row["checkpoint"] or {}
+  expected_size = int(checkpoint.get("source_size", 0) or 0)
+  expected_chunks = int(checkpoint.get("expected_chunks", 0) or 0)
+  if expected_size < 1 or expected_size > MAX_PDF_SOURCE_BYTES:
+    raise ImportInputError("Размер PDF превышает допустимый предел.")
+  if expected_chunks < 1 or expected_chunks > PDF_UPLOAD_MAX_CHUNKS:
+    raise ImportInputError("Количество частей PDF имеет неверное значение.")
+  rows = list(_pdf_chunk_rows(import_row))
+  if len(rows) != expected_chunks:
+    raise ImportInputError(
+      "В загрузке PDF не хватает частей: {} из {}.".format(
+        len(rows), expected_chunks
+      )
+    )
+  output = tempfile.TemporaryFile(mode="w+b")
+  digest = hashlib.sha256()
+  byte_count = 0
+  try:
+    for expected_index, chunk_row in enumerate(rows):
+      if chunk_row["chunk_index"] != expected_index:
+        raise ImportInputError(
+          "Нарушен порядок частей PDF: ожидалась часть {}."
+          .format(expected_index + 1)
+        )
+      chunk_data = chunk_row["content"].get_bytes()
+      if (
+        not isinstance(chunk_data, bytes)
+        or len(chunk_data) != chunk_row["byte_count"]
+        or hashlib.sha256(chunk_data).hexdigest() != chunk_row["sha256"]
+      ):
+        raise ImportInputError(
+          "Часть {} загрузки PDF повреждена.".format(expected_index + 1)
+        )
+      output.write(chunk_data)
+      digest.update(chunk_data)
+      byte_count += len(chunk_data)
+    if byte_count != expected_size:
+      raise ImportInputError(
+        "Размер PDF не совпадает с сохранённой контрольной точкой."
+      )
+    output.seek(0)
+    if output.read(5) != b"%PDF-":
+      raise ImportInputError("Собранный файл не имеет корректной сигнатуры PDF.")
+    output.seek(0)
+    actual_digest = digest.hexdigest()
+    expected_digest = checkpoint.get("sha256", "")
+    if expected_digest and actual_digest != expected_digest:
+      raise ImportInputError(
+        "Контрольная сумма PDF не совпала после сборки частей."
+      )
+    return output, actual_digest
+  except Exception:
+    output.close()
+    raise
+
+
+def _new_pdf_catalog_upload(user, filename, source_size, upload_signature):
+  now = datetime.now(timezone.utc)
+  expected_chunks = (
+    source_size + PDF_UPLOAD_CHUNK_BYTES - 1
+  ) // PDF_UPLOAD_CHUNK_BYTES
+  return app_tables.imports.add_row(
+    source_type="upload", source_name=filename[:120], source_url="",
+    format="pdf", status="pdf_uploading", source_file=None,
+    checkpoint={
+      "format": "pdf", "source_size": source_size,
+      "upload_signature": upload_signature, "expected_chunks": expected_chunks,
+      "next_chunk": 0, "uploaded_bytes": 0, "sha256": "",
+      "warnings": [], "page_progress": 0, "page_total": 0,
+      "image_count": 0, "image_uploaded": 0, "image_bytes": 0,
+      "failed_pages": [], "failed_image_pages": [],
+      "pause_requested": False, "needs_cloud_retry": False
+    },
+    total=0, processed=0, imported=0, skipped=0,
+    created_by=user, created_at=now, updated_at=now
+  )
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def begin_pdf_catalog_upload(filename, source_size, last_modified):
+  user = Core.require_permission("import.manage")
+  if user is None:
+    raise anvil.server.PermissionDenied("Недостаточно прав для импорта каталога.")
+  if not isinstance(filename, str) or not filename.strip() or len(filename) > 180:
+    return {"ok": False, "message": "Проверьте имя PDF."}
+  filename = filename.replace("\\", "/").rsplit("/", 1)[-1].strip()
+  if not filename.casefold().endswith(".pdf"):
+    return {"ok": False, "message": "Выберите PDF-файл."}
+  if (
+    isinstance(source_size, bool)
+    or not isinstance(source_size, (int, float))
+    or int(source_size) < 1
+    or int(source_size) > MAX_PDF_SOURCE_BYTES
+  ):
+    return {
+      "ok": False,
+      "message": "PDF должен занимать не более {} МБ."
+        .format(MAX_PDF_SOURCE_BYTES // (1024 * 1024))
+    }
+  if (
+    isinstance(last_modified, bool)
+    or not isinstance(last_modified, (int, float))
+    or not 0 <= last_modified <= 4102444800000
+  ):
+    return {"ok": False, "message": "Не удалось проверить выбранный файл."}
+  source_size = int(source_size)
+  upload_signature = hashlib.sha256(
+    "{}|{}|{}".format(filename.casefold(), source_size, int(last_modified))
+    .encode("utf-8")
+  ).hexdigest()
+  for row in app_tables.imports.search(
+    q.fetch_only("checkpoint", "status", "total", "format", "source_name"),
+    order_by("created_at", ascending=False), created_by=user
+  )[:MAX_PDF_DRAFTS * 2]:
+    checkpoint = row["checkpoint"] or {}
+    if (
+      row["format"] == "pdf"
+      and checkpoint.get("upload_signature") == upload_signature
+      and row["status"] in (
+        "pdf_uploading", "pdf_processing", "pdf_paused", "pdf_failed",
+        "pdf_draft", "pdf_approved", "pdf_rejected"
+      )
+    ):
+      next_chunk = max(
+        0,
+        int(checkpoint.get(
+          "next_chunk",
+          (checkpoint.get("uploaded_bytes", 0) or 0) // PDF_UPLOAD_CHUNK_BYTES
+        ) or 0)
+      )
+      checkpoint.pop("upload_paused", None)
+      row.update(checkpoint=checkpoint, updated_at=datetime.now(timezone.utc))
+      return {
+        "ok": True, "upload_id": row.get_id(), "status": row["status"],
+        "chunk_size": PDF_UPLOAD_CHUNK_BYTES,
+        "next_chunk": next_chunk,
+        "uploaded_bytes": checkpoint.get("uploaded_bytes", 0),
+        "message": (
+          "Найдена предыдущая загрузка PDF. Продолжаем с части {}."
+          .format(next_chunk + 1)
+        )
+      }
+  if not _has_active_import_capacity():
+    return {
+      "ok": False,
+      "message": "Достигнут лимит активных импортов. Дождитесь завершения текущих задач."
+    }
+  import_row = _new_pdf_catalog_upload(user, filename, source_size, upload_signature)
+  _trim_pdf_import_history()
+  return {
+    "ok": True, "upload_id": import_row.get_id(),
+    "status": "pdf_uploading", "chunk_size": PDF_UPLOAD_CHUNK_BYTES,
+    "next_chunk": 0, "uploaded_bytes": 0,
+    "message": (
+      "Загрузка PDF началась частями по 4 МБ. После последней части "
+      "автоматически запускается распознавание."
+    )
+  }
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def upload_pdf_catalog_chunk(upload_id, chunk_index, chunk_data):
+  Core.require_permission("import.manage")
+  if not isinstance(upload_id, str) or not upload_id:
+    return {"ok": False, "message": "Загрузка PDF не найдена."}
+  if (
+    isinstance(chunk_index, bool)
+    or not isinstance(chunk_index, int)
+    or chunk_index < 0
+    or chunk_index >= PDF_UPLOAD_MAX_CHUNKS
+  ):
+    return {"ok": False, "message": "Проверьте номер части PDF."}
+  if isinstance(chunk_data, anvil.Media):
+    chunk_data = chunk_data.get_bytes()
+  if (
+    not isinstance(chunk_data, bytes)
+    or not 1 <= len(chunk_data) <= PDF_UPLOAD_CHUNK_BYTES
+  ):
+    return {
+      "ok": False,
+      "message": "Размер части PDF должен быть от 1 байта до 4 МБ."
+    }
+  import_row = app_tables.imports.get_by_id(upload_id)
+  if import_row is None or import_row["format"] != "pdf":
+    return {"ok": False, "message": "Загрузка PDF не найдена."}
+  if import_row["status"] != "pdf_uploading":
+    checkpoint = import_row["checkpoint"] or {}
+    return {
+      "ok": True, "status": import_row["status"],
+      "uploaded_bytes": checkpoint.get("uploaded_bytes", 0),
+      "source_size": checkpoint.get("source_size", 0),
+      "message": "Этот PDF уже передан серверу."
+    }
+  checkpoint = import_row["checkpoint"] or {}
+  expected_chunks = int(checkpoint.get("expected_chunks", 0) or 0)
+  expected_size = int(checkpoint.get("source_size", 0) or 0)
+  if chunk_index >= expected_chunks:
+    return {"ok": False, "message": "Номер части выходит за пределы PDF."}
+  expected_length = min(
+    PDF_UPLOAD_CHUNK_BYTES,
+    expected_size - chunk_index * PDF_UPLOAD_CHUNK_BYTES
+  )
+  if len(chunk_data) != expected_length:
+    return {
+      "ok": False,
+      "message": "Размер полученной части не совпадает с ожидаемым."
+    }
+  if chunk_index == 0 and not chunk_data.startswith(b"%PDF-"):
+    return {"ok": False, "message": "Файл не имеет корректной сигнатуры PDF."}
+  chunk_digest = hashlib.sha256(chunk_data).hexdigest()
+  existing = next(iter(app_tables.pdf_upload_chunks.search(
+    **{"import": import_row, "chunk_index": chunk_index}
+  )), None)
+  if existing is not None and existing["sha256"] == chunk_digest:
+    return {
+      "ok": True, "status": "pdf_uploading",
+      "uploaded_bytes": min(
+        expected_size, (chunk_index + 1) * PDF_UPLOAD_CHUNK_BYTES
+      ),
+      "source_size": expected_size,
+      "message": "Часть уже сохранена и проверена."
+    }
+  if existing is not None:
+    for later in list(_pdf_chunk_rows(import_row)):
+      if later["chunk_index"] >= chunk_index:
+        later.delete()
+    checkpoint["next_chunk"] = chunk_index
+    checkpoint["uploaded_bytes"] = chunk_index * PDF_UPLOAD_CHUNK_BYTES
+  next_chunk = int(checkpoint.get("next_chunk", 0) or 0)
+  if chunk_index != next_chunk:
+    return {
+      "ok": False,
+      "message": (
+        "Ожидается часть {}. Выберите тот же файл, чтобы продолжить."
+        .format(next_chunk + 1)
+      )
+    }
+  now = datetime.now(timezone.utc)
+  cast(Any, app_tables.pdf_upload_chunks).add_row(
+    **{
+      "import": import_row, "chunk_index": chunk_index,
+      "content": anvil.BlobMedia(
+        "application/octet-stream", chunk_data,
+        name="pdf-{}-{}.part".format(upload_id, chunk_index)
+      ),
+      "byte_count": len(chunk_data), "sha256": chunk_digest,
+      "created_at": now
+    }
+  )
+  next_chunk = chunk_index + 1
+  uploaded_bytes = min(expected_size, next_chunk * PDF_UPLOAD_CHUNK_BYTES)
+  checkpoint.update(next_chunk=next_chunk, uploaded_bytes=uploaded_bytes)
+  checkpoint["upload_paused"] = False
+  complete = next_chunk >= expected_chunks and uploaded_bytes == expected_size
+  import_row.update(
+    checkpoint=checkpoint,
+    status="pdf_processing" if complete else "pdf_uploading",
+    updated_at=now
+  )
+  if complete:
+    materialized, digest = _materialize_pdf_source(import_row)
+    materialized.close()
+    checkpoint["sha256"] = digest
+    import_row.update(checkpoint=checkpoint, updated_at=now)
+    _launch_pdf_processing(import_row)
+  return {
+    "ok": True, "status": import_row["status"],
+    "uploaded_bytes": uploaded_bytes, "source_size": expected_size,
+    "complete": complete,
+    "message": (
+      "Загрузка завершена. Начато поэтапное распознавание PDF."
+      if complete else "Часть {} сохранена.".format(next_chunk)
+    )
+  }
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def verify_pdf_catalog_chunks(upload_id, chunk_hashes):
+  Core.require_permission("import.manage")
+  if not isinstance(upload_id, str) or not upload_id:
+    return {"ok": False, "message": "Загрузка PDF не найдена."}
+  if (
+    not isinstance(chunk_hashes, list)
+    or len(chunk_hashes) > PDF_UPLOAD_MAX_CHUNKS
+  ):
+    return {"ok": False, "message": "Не удалось проверить контрольные суммы PDF."}
+  if any(
+    not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value)
+    for value in chunk_hashes
+  ):
+    return {"ok": False, "message": "Контрольная сумма части PDF имеет неверный формат."}
+  import_row = app_tables.imports.get_by_id(upload_id)
+  if (
+    import_row is None
+    or import_row["format"] != "pdf"
+    or import_row["status"] != "pdf_uploading"
+  ):
+    return {
+      "ok": False,
+      "message": "Продолжить можно только незавершённую загрузку PDF."
+    }
+  checkpoint = import_row["checkpoint"] or {}
+  saved_count = max(0, int(checkpoint.get("next_chunk", 0) or 0))
+  if len(chunk_hashes) != saved_count:
+    return {
+      "ok": False,
+      "message": "Контрольная точка изменилась. Обновите список черновиков."
+    }
+  saved_rows = {row["chunk_index"]: row for row in _pdf_chunk_rows(import_row)}
+  mismatch = None
+  for index, expected_hash in enumerate(chunk_hashes):
+    saved_row = saved_rows.get(index)
+    if saved_row is None or saved_row["sha256"] != expected_hash:
+      mismatch = index
+      break
+  if mismatch is None:
+    return {
+      "ok": True, "match": True, "next_chunk": saved_count,
+      "message": "Сохранённые части PDF сверены."
+    }
+  for index, saved_row in list(saved_rows.items()):
+    if index >= mismatch:
+      saved_row.delete()
+  checkpoint.update(
+    next_chunk=mismatch,
+    uploaded_bytes=mismatch * PDF_UPLOAD_CHUNK_BYTES
+  )
+  import_row.update(checkpoint=checkpoint, updated_at=datetime.now(timezone.utc))
+  return {
+    "ok": True, "match": False, "next_chunk": mismatch,
+    "uploaded_bytes": checkpoint["uploaded_bytes"],
+    "message": (
+      "Обнаружено расхождение с части {}. Продолжаем с неё."
+      .format(mismatch + 1)
+    )
+  }
+
+
+@anvil.server.callable(require_user=True)
+@Core.permission_guard("import.manage")
+def cancel_pdf_catalog_upload(upload_id):
+  Core.require_permission("import.manage")
+  if not isinstance(upload_id, str) or not upload_id:
+    return {"ok": False, "message": "Загрузка PDF не найдена."}
+  import_row = app_tables.imports.get_by_id(upload_id)
+  if import_row is None or import_row["format"] != "pdf":
+    return {"ok": False, "message": "Загрузка PDF не найдена."}
+  checkpoint = import_row["checkpoint"] or {}
+  if import_row["status"] != "pdf_uploading":
+    return {
+      "ok": True, "status": import_row["status"],
+      "message": "Загрузка PDF уже завершена или обрабатывается."
+    }
+  checkpoint["upload_paused"] = True
+  import_row.update(checkpoint=checkpoint, updated_at=datetime.now(timezone.utc))
+  return {
+    "ok": True, "status": "pdf_uploading",
+    "message": "Загрузка PDF остановлена. Сохранённые части останутся на месте."
+  }
 
 
 def _new_xlsx_catalog_upload(user, filename, source_size, upload_signature):
@@ -3561,7 +3952,7 @@ def get_pdf_catalog_drafts(page=1, page_size=50):
     page_total = checkpoint.get("page_total", 0) or 0
     page_progress = checkpoint.get("page_progress", 0) or 0
     is_xlsx = row["format"] == "xlsx"
-    if is_xlsx and row["status"] == "xlsx_uploading":
+    if row["status"] in ("xlsx_uploading", "pdf_uploading"):
       progress_total = checkpoint.get("source_size", 0) or 0
       progress_done = checkpoint.get("uploaded_bytes", 0) or 0
     else:
