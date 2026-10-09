@@ -42,7 +42,3 @@
 
 Для полноценной работы сайта, админки, прав доступа, CRM, инженерных расчётов и Anvil Data Tables запускайте оригинальное приложение через Anvil Runtime/Anvil Cloud по инструкции в `../deployment/README_RU.md`.
 
-
-## Обновление Git checkout в папке XAMPP
-
-В корне клона репозитория запустите PowerShell-команду: `powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\sync-xampp.ps1`. Скрипт проверяет origin, ветку и чистоту рабочего дерева, обновляет только master через fast-forward и останавливается при локальных изменениях или расхождении истории. Локальные правки не перезаписываются.
