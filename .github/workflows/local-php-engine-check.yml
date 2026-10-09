@@ -51,12 +51,17 @@ jobs:
             $catalog = json_decode(file_get_contents($root . "hisense_catalog.json"), true, 512, JSON_THROW_ON_ERROR);
             $categories = json_decode(file_get_contents($root . "categories.json"), true, 512, JSON_THROW_ON_ERROR);
             $codes = array_column($categories, "code");
+            $photos = json_decode(file_get_contents("theme/assets/catalog/hisense/photo_sources.json"), true, 512, JSON_THROW_ON_ERROR);
             $products = $catalog["products"] ?? [];
             $skus = array_column($products, "sku");
             if (count($products) !== 241 || (int)($catalog["product_count"] ?? 0) !== 241) { fwrite(STDERR, "Expected 241 Hisense rows.\n"); exit(1); }
             if (count(array_unique($skus)) !== 241) { fwrite(STDERR, "Hisense SKUs are not unique.\n"); exit(1); }
-            foreach ($products as $product) { if (!in_array($product["category_code"] ?? "", $codes, true)) { fwrite(STDERR, "Unknown category code: " . ($product["category_code"] ?? "") . "\n"); exit(1); } }
-            echo "Validated 241 real Hisense models and category mappings.\n";
+            foreach ($products as $product) {
+              if (!in_array($product["category_code"] ?? "", $codes, true)) { fwrite(STDERR, "Unknown category code: " . ($product["category_code"] ?? "") . "\n"); exit(1); }
+              $key = $product["photo_key"] ?? "";
+              if (!isset($photos[$key]) || ($product["image_url"] ?? "") !== "assets/images/hisense/" . $key . ".png") { fwrite(STDERR, "Invalid repository image mapping: " . $key . "\n"); exit(1); }
+            }
+            echo "Validated 241 real Hisense models, categories and repository image mappings.\n";
           '
 
       - name: Check local package has required installer assets
