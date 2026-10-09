@@ -28,6 +28,28 @@ jobs:
               print('Anvil editor configuration does not register theme.css.')
               sys.exit(1)
           print(f'Anvil theme asset present ({stylesheet.stat().st_size} bytes).')
+      - name: Check server package requirements
+        shell: python
+        run: |
+          import ast, pathlib, re, sys
+          req = pathlib.Path('requirements.txt')
+          if not req.is_file():
+              print('Missing root requirements.txt; Anvil server packages must be declared at the app root.')
+              sys.exit(1)
+          declared = {line.split('=', 1)[0].strip().lower() for line in req.read_text(encoding='utf-8').splitlines() if line.strip() and not line.lstrip().startswith('#')}
+          imports = set()
+          for path in pathlib.Path('server_code').rglob('*.py'):
+              tree = ast.parse(path.read_text(encoding='utf-8'), filename=str(path))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      imports.update(alias.name.split('.')[0].lower() for alias in node.names)
+                  elif isinstance(node, ast.ImportFrom) and node.module:
+                      imports.add(node.module.split('.')[0].lower())
+          if 'bcrypt' in imports and not any(name == 'bcrypt' or name.startswith('bcrypt[') for name in declared):
+              print('server_code imports bcrypt but root requirements.txt does not declare it.')
+              sys.exit(1)
+          if 'bcrypt' in imports:
+              print('bcrypt server dependency is declared in root requirements.txt.')
       - name: Compile Python sources
         shell: bash
         run: |
