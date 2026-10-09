@@ -74,3 +74,19 @@
 @media(prefers-reduced-motion:reduce){
  .eco-header__flow,.eco-header__fan{animation:none}
 }
+
+/* Independent ventilation calculator */
+.ventilation-calc-layout{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);align-items:start}
+.ventilation-calc-layout .calc-card{min-width:0}
+.ventilation-calc-layout .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.ventilation-calc-layout .form-grid label{min-width:0}
+.ventilation-calc-layout .form-grid input,.ventilation-calc-layout .form-grid select{min-width:0}
+.vent-result-metrics{display:grid;gap:0;margin-top:18px}
+.vent-result-metrics>div{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid var(--line)}
+.vent-result-metrics span{color:var(--muted);font-size:12px}
+.vent-result-metrics b{max-width:58%;text-align:right;font-size:12px}
+.ventilation-calc-layout .calc-result table{width:100%;margin-top:16px;border-collapse:collapse}
+.ventilation-calc-layout .calc-result th,.ventilation-calc-layout .calc-result td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}
+.ventilation-calc-layout .calc-result td:last-child{text-align:right;white-space:nowrap}
+@media(max-width:980px){.ventilation-calc-layout{grid-template-columns:1fr}}
+@media(max-width:680px){.ventilation-calc-layout .form-grid{grid-template-columns:1fr}.vent-result-metrics b{max-width:62%}}
