@@ -30,6 +30,10 @@ $rawValue = trim((string)($_POST['value'] ?? '10'));
 $rulerResult = null;
 $rulerError = '';
 $rulerClamped = false;
+$calcSaveMessage = ''; $calcSaveError = '';
+$engineeringAdmin = (bool)admin_user();
+$engineeringProjects = $engineeringAdmin ? engineering_projects_for_current_admin() : [];
+$selectedProjectId = (int)($_POST['project_id'] ?? 0);
 $pressureAbs = static function (array $ref, float $temperature) use ($atmosphericPressure): float {
     $boilingK = $ref['bp'] + 273.15;
     $criticalK = $ref['tc'] + 273.15;
@@ -74,12 +78,23 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
             'maximum_temp'=>$maximumTemp, 'minimum_pressure'=>$minimumPressure,
             'maximum_pressure'=>$maximumPressure, 'zone'=>$zone,
         ];
+        if (!empty($_POST['save_to_project']) && $engineeringAdmin) {
+            try {
+                save_engineering_calculation(db(), $selectedProjectId, 'refrigeration', 'Линейка холодильщика — ' . $selectedCode, ['refrigerant'=>$selectedCode,'mode'=>$mode,'value'=>$rawValue], $rulerResult);
+                $calcSaveMessage = 'Результат сохранён в инженерную историю проекта.';
+            } catch (Throwable $saveException) {
+                error_log('Save refrigerant calculation failed: ' . $saveException->getMessage());
+                $calcSaveError = $saveException->getMessage();
+            }
+        }
     }
 }
 ?>
 <section class="page-hero"><div class="wrap"><p class="eyebrow">ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / ХОЛОД</p><h1>Линейка холодильщика</h1><p>Приближённый пересчёт давления насыщения и температуры для распространённых хладагентов.</p></div></section>
 <section class="section wrap">
   <?php if ($rulerError !== ''): ?><div class="notice error"><?= e($rulerError) ?></div><?php endif; ?>
+  <?php if ($calcSaveMessage !== ''): ?><div class="notice success"><?= e($calcSaveMessage) ?></div><?php endif; ?>
+  <?php if ($calcSaveError !== ''): ?><div class="notice error"><?= e($calcSaveError) ?></div><?php endif; ?>
   <div class="calc-layout refrigerant-layout">
     <div class="calc-card"><p class="eyebrow">ПАРАМЕТРЫ</p><h2>Давление ↔ температура</h2>
       <form method="post" action="<?= e(site_path('index.php?page=refrigerant-ruler')) ?>">
@@ -87,6 +102,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
         <label>Хладагент<select name="refrigerant"><?php foreach ($refrigerants as $ref): ?><option value="<?= e($ref['code']) ?>" <?= $selectedCode === $ref['code'] ? 'selected' : '' ?>><?= e($ref['code'] . ' — ' . $ref['name']) ?></option><?php endforeach; ?></select></label>
         <label>Что известно<select name="mode"><option value="temperature" <?= $mode === 'temperature' ? 'selected' : '' ?>>Температура насыщения, °C</option><option value="pressure" <?= $mode === 'pressure' ? 'selected' : '' ?>>Манометрическое давление, bar</option></select></label>
         <label><?= $mode === 'pressure' ? 'Давление по манометру, bar' : 'Температура, °C' ?><input type="number" name="value" step="any" required value="<?= e($rawValue) ?>"></label>
+        <?php if ($engineeringAdmin): ?><?php if ($engineeringProjects): ?><div class="engineering-save-to-project"><label>Проект для сохранения результата<select name="project_id"><option value="0">Не выбран</option><?php foreach ($engineeringProjects as $engineeringProject): ?><option value="<?= (int)$engineeringProject['id'] ?>" <?= $selectedProjectId===(int)$engineeringProject['id']?'selected':'' ?>><?= e($engineeringProject['title']) ?></option><?php endforeach; ?></select></label><label class="check-label"><input type="checkbox" name="save_to_project" value="1" <?= !empty($_POST['save_to_project'])?'checked':'' ?>> Сохранить результат в Engineering OS</label></div><?php else: ?><p class="muted small">Создайте проект во вкладке Engineering OS, чтобы сохранять расчёты.</p><?php endif; ?><?php endif; ?>
         <button class="button">Пересчитать ↗</button>
       </form>
     </div>
