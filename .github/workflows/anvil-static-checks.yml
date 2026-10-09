@@ -77,6 +77,54 @@ jobs:
               sys.exit(1)
           print("Server syntax and duplicate-definition checks passed.")
 
+      - name: Check client form component references
+        shell: python
+        run: |
+          import ast, pathlib, re, sys
+          root = pathlib.Path("client_code")
+          ui_properties = {
+              "text", "visible", "items", "enabled", "source", "selected_value",
+              "checked", "role", "classes", "placeholder", "tooltip", "background",
+              "foreground", "border", "bold", "italic", "html", "icon", "url",
+              "height", "width", "spacing", "align", "hide_text", "format",
+              "rows", "columns", "font_size", "spacing_above", "spacing_below",
+              "read_only", "selected", "image", "enabled", "displayed", "expanded"
+          }
+          ignored = {
+              "item", "parent", "tag", "role", "visible", "layout", "component",
+              "form", "window", "session", "context", "data", "properties",
+              "permissions", "settings", "project", "room", "system", "quote",
+              "client", "task", "service", "estimate", "calculation", "formula"
+          }
+          layout = root / "Layouts" / "BaseLayout" / "form_template.html"
+          inherited = set(re.findall(r'\b(?:name|anvil:name)="([^"]+)"', layout.read_text(encoding="utf-8"))) if layout.exists() else set()
+          errors = []
+          checked = 0
+          for source in root.rglob("__init__.py"):
+              template = source.with_name("form_template.html")
+              if not template.exists():
+                  continue
+              names = inherited | set(re.findall(r'\b(?:name|anvil:name)="([^"]+)"', template.read_text(encoding="utf-8")))
+              try:
+                  tree = ast.parse(source.read_text(encoding="utf-8"), filename=str(source))
+              except SyntaxError:
+                  continue
+              checked += 1
+              for node in ast.walk(tree):
+                  if not isinstance(node, ast.Attribute) or node.attr not in ui_properties:
+                      continue
+                  base = node.value
+                  if not (isinstance(base, ast.Attribute) and isinstance(base.value, ast.Name) and base.value.id == "self"):
+                      continue
+                  component = base.attr
+                  if component.startswith("_") or component in ignored or component in names:
+                      continue
+                  errors.append(f"{source}:{node.lineno}: self.{component}.{node.attr} not found in form_template.html")
+          if errors:
+              print("\n".join(errors[:200]))
+              print(f"Potential missing UI components: {len(errors)} across {checked} forms.")
+              sys.exit(1)
+          print(f"Form component reference check passed across {checked} forms.")
       - name: Check client/server callable contract
         shell: python
         run: |
