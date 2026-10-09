@@ -40,7 +40,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          php -r 'foreach (["categories.json", "demo_catalog.json", "formulas.json"] as $file) { $path = "shared_hosting_php/data/" . $file; json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR); echo "OK: $path\n"; }'
+          php -r 'foreach (["categories.json", "demo_catalog.json", "formulas.json", "price_pages.json"] as $file) { $path = "shared_hosting_php/data/" . $file; json_decode(file_get_contents($path), true, 512, JSON_THROW_ON_ERROR); echo "OK: $path\n"; }'
 
       - name: Check local package has required installer assets
         shell: bash
@@ -51,3 +51,4 @@ jobs:
           test -f shared_hosting_php/app/functions.php
           test -f shared_hosting_php/admin/index.php
           test -f shared_hosting_php/assets/style.css
+          test -f shared_hosting_php/data/price_pages.json
