@@ -323,7 +323,9 @@ class AdminTools(AdminToolsTemplate):
     return any(module.get("id") == module_id for module in self._modules)
 
   def _open_module_by_id(self, module_id):
-    self._open_module_by_id(module_id)
+    module = next((item for item in self._modules if item["id"] == module_id), None)
+    if module is not None:
+      Access.open_admin_window(module["form"], **dict(module["properties"]))
 
   def _module_available_by_permission(self, permission):
     return self._is_admin or permission in self._permissions or "*" in self._permissions
@@ -376,9 +378,7 @@ class AdminTools(AdminToolsTemplate):
 
   @handle("module_rows", "x-open-admin-module")
   def module_rows_open_admin_module(self, module_id, **event_args):
-    module = next((item for item in self._modules if item["id"] == module_id), None)
-    if module is not None:
-      Access.open_admin_window(module["form"], **dict(module["properties"]))
+    self._open_module_by_id(module_id)
 
   @handle("sidebar_all", "click")
   def sidebar_all_click(self, **event_args):
