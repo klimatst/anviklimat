@@ -32,6 +32,10 @@ $ventDefaults = [
 $ventValues = $ventDefaults;
 $ventResult = null;
 $ventError = '';
+$calcSaveMessage = ''; $calcSaveError = '';
+$engineeringAdmin = (bool)admin_user();
+$engineeringProjects = $engineeringAdmin ? engineering_projects_for_current_admin() : [];
+$selectedProjectId = (int)($_POST['project_id'] ?? 0);
 $ventPrices = [
     'ventilation.people_airflow' => 40,
     'ventilation.supply_factor' => 1,
@@ -171,6 +175,15 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
             'recuperators' => $estimatedRecuperators, 'cooling_units' => $coolingUnits,
             'total' => $ventMoney($total), 'breakdown' => $breakdown,
         ];
+        if (!empty($_POST['save_to_project']) && $engineeringAdmin) {
+            try {
+                save_engineering_calculation(db(), $selectedProjectId, 'ventilation', 'Расчёт вентиляции — ' . $roomName, $ventValues, $ventResult);
+                $calcSaveMessage = 'Расчёт вентиляции сохранён в Engineering OS.';
+            } catch (Throwable $saveException) {
+                error_log('Save ventilation calculation failed: ' . $saveException->getMessage());
+                $calcSaveError = $saveException->getMessage();
+            }
+        }
     } catch (InvalidArgumentException $exception) {
         $ventError = $exception->getMessage();
     }
@@ -179,6 +192,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
 <section class="page-hero"><div class="wrap"><p class="eyebrow">ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / ВЕНТИЛЯЦИЯ</p><h1>Расчёт вентиляции</h1><p>Отдельный предварительный расчёт воздухообмена, сечения воздуховода и бюджета оборудования с монтажом.</p></div></section>
 <section class="section wrap">
   <?php if ($ventError !== ''): ?><div class="notice error"><?= e($ventError) ?></div><?php endif; ?>
+  <?php if ($calcSaveMessage !== ''): ?><div class="notice success"><?= e($calcSaveMessage) ?></div><?php endif; ?>
+  <?php if ($calcSaveError !== ''): ?><div class="notice error"><?= e($calcSaveError) ?></div><?php endif; ?>
   <div class="calc-layout ventilation-calc-layout">
     <div class="calc-card">
       <p class="eyebrow">ВХОДНЫЕ ДАННЫЕ</p><h2>Параметры объекта</h2>
@@ -208,6 +223,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
           <label>Монтаж<select name="mounting"><option value="1" <?= $ventValues['mounting'] === '1' ? 'selected' : '' ?>>Включить 100%</option><option value="0.5" <?= $ventValues['mounting'] === '0.5' ? 'selected' : '' ?>>Условно 50%</option><option value="0" <?= $ventValues['mounting'] === '0' ? 'selected' : '' ?>>Без монтажа</option></select></label>
           <label>Дополнительные работы, ₽<input type="number" name="additional_work" min="0" max="100000000" step="100" value="<?= e($ventValues['additional_work']) ?>"></label>
         </div>
+        <?php if ($engineeringAdmin): ?><?php if ($engineeringProjects): ?><div class="engineering-save-to-project"><label>Проект для сохранения результата<select name="project_id"><option value="0">Не выбран</option><?php foreach ($engineeringProjects as $engineeringProject): ?><option value="<?= (int)$engineeringProject['id'] ?>" <?= $selectedProjectId===(int)$engineeringProject['id']?'selected':'' ?>><?= e($engineeringProject['title']) ?></option><?php endforeach; ?></select></label><label class="check-label"><input type="checkbox" name="save_to_project" value="1" <?= !empty($_POST['save_to_project'])?'checked':'' ?>> Сохранить результат в Engineering OS</label></div><?php else: ?><p class="muted small">Создайте проект во вкладке Engineering OS, чтобы сохранять расчёты.</p><?php endif; ?><?php endif; ?>
         <button class="button">Рассчитать вентиляцию ↗</button>
       </form>
     </div>
