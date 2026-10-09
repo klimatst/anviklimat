@@ -45,8 +45,11 @@
         <div class="catalog-reference-body">
           <aside class="catalog-reference-filters">
             <div class="catalog-filter-panel-head">
-              <strong>Фильтр</strong>
-              <anvil-component type="Button" name="reset_filters_button" prop:text="Сбросить" prop:role="catalog-filter-reset"></anvil-component>
+              <strong>Фильтры</strong>
+              <div class="catalog-filter-head-actions">
+                <anvil-component type="Button" name="advanced_filters_toggle_button" prop:text="＋ Доп. параметры" prop:role="catalog-filter-reset"></anvil-component>
+                <anvil-component type="Button" name="reset_filters_button" prop:text="Сбросить" prop:role="catalog-filter-reset"></anvil-component>
+              </div>
             </div>
             <div class="catalog-filter-section">
               <anvil-component type="Label" name="price_filter_heading" prop:role="catalog-filter-heading" prop:text="Розничная цена"></anvil-component>
@@ -63,6 +66,7 @@
               <anvil-component type="Label" name="brand_filter_heading" prop:role="catalog-filter-heading" prop:text="Производитель"></anvil-component>
               <anvil-component type="DropDown" name="brand_filter" prop:role="catalog-filter"></anvil-component>
             </div>
+            <div class="catalog-advanced-filters">
             <div class="catalog-filter-section">
               <anvil-component type="Label" name="area_filter_heading" prop:role="catalog-filter-heading" prop:text="Площадь помещения, м²"></anvil-component>
               <div class="catalog-range-row">
@@ -154,10 +158,11 @@
               <anvil-component type="Label" name="indoor_type_filter_heading" prop:role="catalog-filter-heading" prop:text="Тип внутреннего блока"></anvil-component>
               <anvil-component type="DropDown" name="indoor_type_filter" prop:role="catalog-filter"></anvil-component>
             </div>
-            <div class="catalog-filter-section">
+            </div>
+            <div class="catalog-filter-section catalog-filter-availability">
               <anvil-component type="CheckBox" name="available_filter" prop:text="Только в наличии" prop:role="catalog-availability-filter"></anvil-component>
             </div>
-            <anvil-component type="Button" name="apply_filters_button" prop:text="Показать товары" prop:role="primary-action"></anvil-component>
+            <anvil-component type="Button" name="apply_filters_button" prop:text="Применить фильтры" prop:role="primary-action"></anvil-component>
           </aside>
 
           <div class="catalog-reference-products">
