@@ -8,6 +8,7 @@ if (!is_file($configFile)) {
 }
 $config = require $configFile;
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/engineering_os.php';
 
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
