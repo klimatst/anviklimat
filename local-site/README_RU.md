@@ -34,7 +34,7 @@
 - `../shared_hosting_php/data/demo_catalog.json` — демонстрационные товары;
 - `../shared_hosting_php/data/categories.json` — категории.
 
-После изменения файлов в GitHub нажмите Commit changes в ветке `master`; локальная копия обновится автоматически. При изменении `server.mjs` остановите сервер и запустите `START-LOCAL.cmd) заново.
+После изменения файлов в GitHub нажмите Commit changes в ветке `master`; локальная копия обновится автоматически. При изменении `server.mjs` остановите сервер и запустите `START-LOCAL.cmd` заново.
 
 ## Локальные заявки и приватность
 
