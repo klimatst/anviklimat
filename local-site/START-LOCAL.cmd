@@ -20,11 +20,11 @@ if errorlevel 1 (
 echo.
 echo ============================================
 echo  KlimaEco — локальный просмотр репозитория
-echo  Адрес: http://localhost:4173
+echo  Адрес: http://localhost:4174
 echo  Синхронизация GitHub: /api/sync
 echo  Остановка: Ctrl+C
 echo ============================================
 echo.
 
-start "" /b powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:4173'"
+start "" /b powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://localhost:4174'"
 node server.mjs
