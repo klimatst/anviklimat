@@ -68,8 +68,14 @@ if (!$legacyRow || !$legacyRow['brand_id'] || !$legacyRow['category_id'] || (int
 }
 
 $manual = $catalog['products'][1];
-$manualUpdate = $pdo->prepare("UPDATE products SET description='Manual admin edit',price=12345,image_url='storage/uploads/custom.png',specifications='[[\"Manual\",\"yes\",\"\"]]' WHERE sku=?");
-$manualUpdate->execute([(string)$manual['sku']]);
+$manualUpdate = $pdo->prepare('UPDATE products SET description=?,price=?,image_url=?,specifications=? WHERE sku=?');
+$manualUpdate->execute([
+    'Manual admin edit',
+    12345,
+    'storage/uploads/custom.png',
+    json_encode([['Manual', 'yes', '']], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
+    (string)$manual['sku'],
+]);
 $oldImage = $catalog['products'][2];
 $oldImageUpdate = $pdo->prepare('UPDATE products SET image_url=? WHERE sku=?');
 $oldImageUpdate->execute(['https://images.breez.ru/catalog/hisense/old-image.png', (string)$oldImage['sku']]);
