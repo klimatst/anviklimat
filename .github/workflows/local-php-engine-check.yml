@@ -52,3 +52,8 @@ jobs:
           test -f shared_hosting_php/admin/index.php
           test -f shared_hosting_php/assets/style.css
           test -f shared_hosting_php/data/price_pages.json
+          test -f shared_hosting_php/maintenance/backup.php
+          test -f shared_hosting_php/maintenance/.htaccess
+          grep -q "Require all denied" shared_hosting_php/maintenance/.htaccess
+          test -f shared_hosting_php/storage/backups/.htaccess
+          grep -q "Require all denied" shared_hosting_php/storage/backups/.htaccess
