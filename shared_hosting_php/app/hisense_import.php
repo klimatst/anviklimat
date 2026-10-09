@@ -32,7 +32,7 @@ function import_hisense_catalog(PDO $pdo, string $catalogPath): int
         'UPDATE products SET '
         . 'brand_id=IFNULL(brand_id,?), category_id=IFNULL(category_id,?), '
         . 'description=IF(description=\'\',?,description), price=IF(price=0,?,price), '
-        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\'),?,image_url), '
+        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\') OR image_url LIKE \'%breez.ru/catalog/hisense/%\' OR image_url LIKE \'assets/images/catalog/hisense/%\' OR image_url LIKE \'theme/assets/catalog/hisense/%\',?,image_url), '
         . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',?,specifications), is_demo=0 WHERE id=?'
     );
     $productInsert = $pdo->prepare(
@@ -41,7 +41,7 @@ function import_hisense_catalog(PDO $pdo, string $catalogPath): int
         . 'ON DUPLICATE KEY UPDATE '
         . 'brand_id=IFNULL(brand_id,VALUES(brand_id)), category_id=IFNULL(category_id,VALUES(category_id)), '
         . 'description=IF(description=\'\',VALUES(description),description), price=IF(price=0,VALUES(price),price), '
-        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\'),VALUES(image_url),image_url), '
+        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\') OR image_url LIKE \'%breez.ru/catalog/hisense/%\' OR image_url LIKE \'assets/images/catalog/hisense/%\' OR image_url LIKE \'theme/assets/catalog/hisense/%\',VALUES(image_url),image_url), '
         . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',VALUES(specifications),specifications), is_demo=0'
     );
 
