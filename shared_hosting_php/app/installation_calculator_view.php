@@ -34,6 +34,10 @@ $installDefaults = [
 $installValues = $installDefaults;
 $installResult = null;
 $installError = '';
+$calcSaveMessage = ''; $calcSaveError = '';
+$engineeringAdmin = (bool)admin_user();
+$engineeringProjects = $engineeringAdmin ? engineering_projects_for_current_admin() : [];
+$selectedProjectId = (int)($_POST['project_id'] ?? 0);
 $installNumber = static function (array $source, string $key, float $min, float $max, bool $integer = false): float|int {
     $raw = trim((string)($source[$key] ?? ''));
     if ($raw === '' || !is_numeric(str_replace(',', '.', $raw))) throw new InvalidArgumentException('Проверьте числовое поле «' . $key . '».');
@@ -98,6 +102,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
             'route_length'=>$routeLength,'branches'=>$branches,'factor'=>$complexityFactor,
             'lines'=>$lines,'total'=>round($total,2),
         ];
+        if (!empty($_POST['save_to_project']) && $engineeringAdmin) {
+            try {
+                $systemType = $profile === 'vrf_vrv' ? 'vrv_vrf' : 'air_conditioning';
+                $systemTitle = $profile === 'vrf_vrv' ? 'Монтаж VRV / VRF' : 'Монтаж кондиционирования';
+                save_engineering_calculation(db(), $selectedProjectId, $systemType, $systemTitle, $installValues, $installResult);
+                $calcSaveMessage = 'Расчёт стоимости монтажа сохранён в Engineering OS.';
+            } catch (Throwable $saveException) {
+                error_log('Save installation calculation failed: ' . $saveException->getMessage());
+                $calcSaveError = $saveException->getMessage();
+            }
+        }
     } catch (InvalidArgumentException $exception) {
         $installError = $exception->getMessage();
     }
@@ -106,6 +121,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
 <section class="page-hero"><div class="wrap"><p class="eyebrow">ИНЖЕНЕРНЫЕ ИНСТРУМЕНТЫ / МОНТАЖ</p><h1>Расчёт стоимости монтажа</h1><p>Отдельный калькулятор монтажных работ для сплит-систем и VRV / VRF. Все ставки настраиваются в админ-панели.</p></div></section>
 <section class="section wrap">
   <?php if ($installError !== ''): ?><div class="notice error"><?= e($installError) ?></div><?php endif; ?>
+  <?php if ($calcSaveMessage !== ''): ?><div class="notice success"><?= e($calcSaveMessage) ?></div><?php endif; ?>
+  <?php if ($calcSaveError !== ''): ?><div class="notice error"><?= e($calcSaveError) ?></div><?php endif; ?>
   <div class="calc-layout installation-calc-layout">
     <div class="calc-card"><p class="eyebrow">ПАРАМЕТРЫ МОНТАЖА</p><h2>Состав работ</h2>
       <form method="post" action="<?= e(site_path('index.php?page=installation-calculator')) ?>">
@@ -131,6 +148,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] 
           <label><input type="checkbox" name="vacuum" value="1" <?= $installValues['vacuum']==='1'?'checked':'' ?>> Вакуумирование</label>
           <label><input type="checkbox" name="electrical" value="1" <?= $installValues['electrical']==='1'?'checked':'' ?>> Электрическое подключение</label>
         </div>
+        <?php if ($engineeringAdmin): ?><?php if ($engineeringProjects): ?><div class="engineering-save-to-project"><label>Проект для сохранения результата<select name="project_id"><option value="0">Не выбран</option><?php foreach ($engineeringProjects as $engineeringProject): ?><option value="<?= (int)$engineeringProject['id'] ?>" <?= $selectedProjectId===(int)$engineeringProject['id']?'selected':'' ?>><?= e($engineeringProject['title']) ?></option><?php endforeach; ?></select></label><label class="check-label"><input type="checkbox" name="save_to_project" value="1" <?= !empty($_POST['save_to_project'])?'checked':'' ?>> Сохранить результат в Engineering OS</label></div><?php else: ?><p class="muted small">Создайте проект во вкладке Engineering OS, чтобы сохранять расчёты.</p><?php endif; ?><?php endif; ?>
         <button class="button">Рассчитать монтаж ↗</button>
       </form>
     </div>
