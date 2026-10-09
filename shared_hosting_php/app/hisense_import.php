@@ -27,18 +27,22 @@ function import_hisense_catalog(PDO $pdo, string $catalogPath): int
     }
 
     $categoryQuery = $pdo->prepare('SELECT id FROM categories WHERE code=? LIMIT 1');
+    $existingQuery = $pdo->prepare('SELECT id FROM products WHERE sku=? OR model=? ORDER BY (sku=?) DESC, id ASC LIMIT 1');
+    $existingUpdate = $pdo->prepare(
+        'UPDATE products SET '
+        . 'brand_id=IFNULL(brand_id,?), category_id=IFNULL(category_id,?), '
+        . 'description=IF(description=\'\',?,description), price=IF(price=0,?,price), '
+        . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\'),?,image_url), '
+        . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',?,specifications), is_demo=0 WHERE id=?'
+    );
     $productInsert = $pdo->prepare(
         'INSERT INTO products (model,sku,brand_id,category_id,description,price,image_url,specifications,is_demo,active,created_at) '
         . 'VALUES (?,?,?,?,?,?,?,?,0,1,NOW()) '
         . 'ON DUPLICATE KEY UPDATE '
-        . 'model=IF(model=\'\',VALUES(model),model), '
-        . 'brand_id=IFNULL(brand_id,VALUES(brand_id)), '
-        . 'category_id=IFNULL(category_id,VALUES(category_id)), '
-        . 'description=IF(description=\'\',VALUES(description),description), '
-        . 'price=IF(price=0,VALUES(price),price), '
+        . 'brand_id=IFNULL(brand_id,VALUES(brand_id)), category_id=IFNULL(category_id,VALUES(category_id)), '
+        . 'description=IF(description=\'\',VALUES(description),description), price=IF(price=0,VALUES(price),price), '
         . 'image_url=IF(image_url=\'\' OR image_url IN (\'assets/images/conditioners.jpg\',\'assets/images/materials.jpg\',\'assets/images/ventilation.jpg\'),VALUES(image_url),image_url), '
-        . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',VALUES(specifications),specifications), '
-        . 'is_demo=0'
+        . 'specifications=IF(specifications=\'\' OR specifications=\'[]\',VALUES(specifications),specifications), is_demo=0'
     );
 
     $processed = 0;
@@ -65,16 +69,15 @@ function import_hisense_catalog(PDO $pdo, string $catalogPath): int
         if (!is_array($specifications)) {
             $specifications = [];
         }
-        $productInsert->execute([
-            $model,
-            $sku,
-            (int)$brandId,
-            (int)$categoryId,
-            trim((string)($product['description'] ?? '')),
-            $price,
-            $image,
-            json_encode($specifications, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
-        ]);
+        $description = trim((string)($product['description'] ?? ''));
+        $specJson = json_encode($specifications, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        $existingQuery->execute([$sku, $model, $sku]);
+        $existingId = $existingQuery->fetchColumn();
+        if ($existingId) {
+            $existingUpdate->execute([(int)$brandId, (int)$categoryId, $description, $price, $image, $specJson, (int)$existingId]);
+        } else {
+            $productInsert->execute([$model, $sku, (int)$brandId, (int)$categoryId, $description, $price, $image, $specJson]);
+        }
         $processed++;
     }
 
