@@ -33,7 +33,7 @@ function save_engineering_calculation(PDO $pdo, int $projectId, string $systemTy
     $insert->execute([
         $projectId,
         $systemType,
-        mb_substr($title, 0, 220, 'UTF-8'),
+        (function_exists('mb_substr') ? mb_substr($title, 0, 220, 'UTF-8') : substr($title, 0, 220)),
         json_encode($inputs, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
         json_encode($result, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR),
     ]);
