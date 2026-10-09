@@ -3,6 +3,7 @@ name: Sync Hisense catalog photos
 on:
   workflow_dispatch:
   push:
+    branches: [master]
     paths:
       - theme/assets/catalog/hisense/photo_sources.json
       - server_code/HisenseLovableCatalogData.py
@@ -80,10 +81,15 @@ jobs:
                   url,
                   headers={"User-Agent": "klimatst-anviklimat-hisense-sync/2.0"},
               )
-              with urllib.request.urlopen(request, timeout=45) as response:
-                  data = response.read()
+              try:
+                  with urllib.request.urlopen(request, timeout=45) as response:
+                      data = response.read()
+              except Exception as error:
+                  print(f"WARNING: {key} image unavailable ({url}): {error}; will use a local fallback")
+                  continue
               if len(data) < 100:
-                  raise RuntimeError(f"{key}: downloaded image is unexpectedly small")
+                  print(f"WARNING: {key} image is unexpectedly small; will use a local fallback")
+                  continue
 
               image = Image.open(BytesIO(data))
               image.load()
@@ -103,6 +109,24 @@ jobs:
               shutil.copyfile(output, php_output)
               if php_output.stat().st_size != output.stat().st_size:
                   raise RuntimeError(f"{key}: PHP package image copy is incomplete")
+
+          available = [
+              path for path in php_target.glob("*.png")
+              if path.is_file() and path.stat().st_size >= 100
+          ]
+          if not available:
+              raise RuntimeError("No usable Hisense images downloaded; cannot create safe fallbacks")
+          fallback = next(
+              (php_target / f"{key}.png" for key in ("vibe", "sensation", "vision", "city", "accessory")
+               if (php_target / f"{key}.png").is_file() and (php_target / f"{key}.png").stat().st_size >= 100),
+              available[0],
+          )
+          for key in sources:
+              for folder in (target, php_target):
+                  output = folder / f"{key}.png"
+                  if not output.is_file() or output.stat().st_size < 100:
+                      shutil.copyfile(fallback, output)
+                      print(f"WARNING: {key} uses fallback artwork from {fallback.name}")
 
       - name: Commit GitHub photo assets
         shell: bash
