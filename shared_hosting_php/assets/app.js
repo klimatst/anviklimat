@@ -35,3 +35,39 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+
+
+/* Motion is opt-in at runtime; content remains visible if observers are unavailable. */
+(function () {
+  'use strict';
+  var header = document.querySelector('.eco-header');
+  if (header) {
+    var updateHeader = function () {
+      header.classList.toggle('is-scrolled', window.scrollY > 24);
+    };
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true });
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var revealTargets = document.querySelectorAll(
+    '.hero-content, .section-heading, .category-card, .product-card, .feature-card, .admin-panel, .metric-card, .stat-card, .engineering-workstream, .formula-item'
+  );
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '0px 0px -36px 0px', threshold: 0.06 });
+
+    Array.prototype.forEach.call(revealTargets, function (element, index) {
+      if (element.closest('.eco-header')) return;
+      element.setAttribute('data-reveal', '');
+      element.style.setProperty('--reveal-delay', (index % 5) * 45 + 'ms');
+      observer.observe(element);
+    });
+  }
+})();
