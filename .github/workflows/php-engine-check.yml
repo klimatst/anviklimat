@@ -6,7 +6,7 @@ on:
       - "shared_hosting_php/**"
       - ".github/workflows/php-engine-check.yml"
   push:
-    branches: [master]
+    branches: ['**']
     paths:
       - "shared_hosting_php/**"
       - ".github/workflows/php-engine-check.yml"
