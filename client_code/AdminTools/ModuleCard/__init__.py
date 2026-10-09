@@ -11,3 +11,9 @@ class ModuleCard(ModuleCardTemplate):
     self.parent.raise_event(
       "x-open-admin-module", module_id=self.item.get("id")
     )
+
+  @handle("favorite_button", "click")
+  def favorite_button_click(self, **event_args):
+    self.parent.raise_event(
+      "x-toggle-admin-favorite", module_id=self.item.get("id")
+    )

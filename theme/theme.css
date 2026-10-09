@@ -1429,3 +1429,41 @@ html,body{overflow-x:hidden}
   }
   .admin-os--premium .admin-os__recent-action .anvil-button>button{width:100%}
 }
+
+
+/* KlimaEco Admin v5 — session favorites, intentionally not persisted across logins. */
+.admin-os--premium .admin-module-card__command{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.admin-os--premium .admin-module-card__actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.admin-os--premium .anvil-button.admin-module-favorite>button{
+  min-height:29px;
+  padding:0 8px;
+  border:1px solid rgba(142,226,194,.14);
+  border-radius:4px 8px 4px 8px;
+  color:#829d99;
+  background:rgba(142,226,194,.025);
+  font-size:8px;
+  font-weight:750;
+}
+.admin-os--premium .anvil-button.admin-module-favorite>button:hover{
+  border-color:rgba(142,226,194,.4);
+  color:#d7ffed;
+  background:rgba(142,226,194,.09);
+}
+.admin-os--premium .admin-module-card__actions .anvil-button.admin-module-open>button{
+  white-space:nowrap;
+}
+@media(max-width:600px){
+  .admin-os--premium .admin-module-card__command{align-items:flex-start}
+  .admin-os--premium .admin-module-card__actions{flex-wrap:wrap}
+}

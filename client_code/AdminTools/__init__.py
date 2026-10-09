@@ -290,7 +290,10 @@ class AdminTools(AdminToolsTemplate):
         module.get("group"), module.get("group", "Настройки и безопасность")
       )
       self._modules.append(module)
-    self.module_group_dropdown.items = [("Все модули", "Все")] + [
+    self._favorite_module_ids = set()
+    self.module_group_dropdown.items = [
+      ("Все модули", "Все"), ("★ Избранное", "__favorites__")
+    ] + [
       (group, group) for group in MODULE_GROUPS
       if any(module["group"] == group for module in self._modules)
     ]
@@ -348,7 +351,12 @@ class AdminTools(AdminToolsTemplate):
     term = str(self.module_search_box.text or "").strip().lower()
     selected_group = self.module_group_dropdown.selected_value or "Все"
     modules = self._modules
-    if selected_group != "Все":
+    if selected_group == "__favorites__":
+      modules = [
+        module for module in modules
+        if module.get("id") in self._favorite_module_ids
+      ]
+    elif selected_group != "Все":
       modules = [module for module in modules if module["group"] == selected_group]
     if term:
       modules = [
@@ -362,8 +370,14 @@ class AdminTools(AdminToolsTemplate):
 
   def _render_modules(self):
     filtered = self._filtered_modules()
+    for module in filtered:
+      is_favorite = module.get("id") in self._favorite_module_ids
+      module["is_favorite"] = is_favorite
+      module["favorite_label"] = "★ В избранном" if is_favorite else "☆ В избранное"
     self.module_rows.items = filtered
-    self.module_status.text = "{} из {} модулей".format(len(filtered), len(self._modules))
+    self.module_status.text = "{} из {} модулей · избранное: {}".format(
+      len(filtered), len(self._modules), len(self._favorite_module_ids)
+    )
 
   def _set_sidebar_active(self, component_name):
     for name in (
@@ -389,6 +403,16 @@ class AdminTools(AdminToolsTemplate):
   @handle("module_rows", "x-open-admin-module")
   def module_rows_open_admin_module(self, module_id, **event_args):
     self._open_module_by_id(module_id)
+
+  @handle("module_rows", "x-toggle-admin-favorite")
+  def module_rows_toggle_admin_favorite(self, module_id, **event_args):
+    if not any(module.get("id") == module_id for module in self._modules):
+      return
+    if module_id in self._favorite_module_ids:
+      self._favorite_module_ids.remove(module_id)
+    else:
+      self._favorite_module_ids.add(module_id)
+    self._render_modules()
 
   @handle("sidebar_all", "click")
   def sidebar_all_click(self, **event_args):
