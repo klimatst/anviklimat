@@ -263,9 +263,9 @@ class AdminTools(AdminToolsTemplate):
     if not Access.require_staff_form():
       return
 
-    self._context = Access.get_session_context()
-    self._is_admin = self._context["role_code"] == "admin"
-    self._permissions = set(self._context["permissions"])
+    self._context = Access.get_session_context() or {}
+    self._is_admin = self._context.get("role_code") == "admin"
+    self._permissions = set(self._context.get("permissions") or [])
     hidden = {"widgets", "command_center"}
     self._modules = [
       module for module in MODULES
@@ -299,7 +299,7 @@ class AdminTools(AdminToolsTemplate):
     return self._is_admin if permission is None else self._module_available_by_permission(permission)
 
   def _filtered_modules(self):
-    term = str(self.module_search_box.text or "").strip().casefold()
+    term = str(self.module_search_box.text or "").strip().lower()
     selected_group = self.module_group_dropdown.selected_value or "Все"
     modules = self._modules
     if selected_group != "Все":
@@ -310,7 +310,7 @@ class AdminTools(AdminToolsTemplate):
         if term in str(" ".join((
           module.get("title") or "", module.get("description") or "",
           module.get("badge") or "", module.get("group") or ""
-        ))).casefold()
+        ))).lower()
       ]
     return [dict(module) for module in modules]
 
