@@ -14,6 +14,7 @@ if (is_file($configPath)) {
 }
 require_once $root . '/app/functions.php';
 require_once $root . '/app/hisense_import.php';
+require_once $root . '/app/engineering_schema.php';
 if (empty($_SESSION['install_csrf'])) $_SESSION['install_csrf'] = bin2hex(random_bytes(32));
 $error = '';
 $done = false;
@@ -74,6 +75,7 @@ function installer_schema(PDO $pdo): void
         "CREATE TABLE IF NOT EXISTS formulas (id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, code VARCHAR(140) NOT NULL UNIQUE, module VARCHAR(100) NOT NULL, title VARCHAR(220) NOT NULL, expression TEXT NOT NULL, input_schema LONGTEXT NOT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
     ];
     foreach ($statements as $statement) $pdo->exec($statement);
+    ensure_engineering_schema($pdo);
 }
 
 function installer_seed(PDO $pdo, bool $withDemo, bool $withHisense): int
