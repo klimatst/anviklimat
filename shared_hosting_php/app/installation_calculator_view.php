@@ -46,6 +46,7 @@ $installNumber = static function (array $source, string $key, float $min, float 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST' && (string)($_POST['tool'] ?? '') === 'installation') {
     verify_csrf();
     foreach ($installDefaults as $key => $default) $installValues[$key] = is_string($_POST[$key] ?? null) ? trim((string)$_POST[$key]) : $default;
+    foreach (['commissioning','pressure_test','vacuum','electrical'] as $key) $installValues[$key] = isset($_POST[$key]) ? '1' : '0';
     try {
         $profile = (string)$installValues['profile'];
         $complexity = (string)$installValues['complexity'];
