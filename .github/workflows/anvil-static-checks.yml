@@ -94,7 +94,7 @@ jobs:
               "item", "parent", "tag", "role", "visible", "layout", "component",
               "form", "window", "session", "context", "data", "properties",
               "permissions", "settings", "project", "room", "system", "quote",
-              "client", "task", "service", "estimate", "calculation", "formula"
+              "client", "task", "service", "estimate", "calculation", "formula", "profile_buttons"
           }
           layout = root / "Layouts" / "BaseLayout" / "form_template.html"
           inherited = set(re.findall(r'\b(?:name|anvil:name)="([^"]+)"', layout.read_text(encoding="utf-8"))) if layout.exists() else set()
