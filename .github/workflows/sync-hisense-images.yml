@@ -6,6 +6,7 @@ on:
     paths:
       - theme/assets/catalog/hisense/photo_sources.json
       - server_code/HisenseLovableCatalogData.py
+      - shared_hosting_php/data/hisense_catalog.json
       - .github/workflows/sync-hisense-images.yml
 
 permissions:
@@ -26,6 +27,7 @@ jobs:
         run: |
           import json
           import pathlib
+          import shutil
           import urllib.request
           from collections import deque
           from io import BytesIO
@@ -36,6 +38,8 @@ jobs:
           ).read_text(encoding="utf-8"))
           target = pathlib.Path("theme/assets/catalog/hisense")
           target.mkdir(parents=True, exist_ok=True)
+          php_target = pathlib.Path("shared_hosting_php/assets/images/hisense")
+          php_target.mkdir(parents=True, exist_ok=True)
 
           def remove_connected_white(img):
               rgba = img.convert("RGBA")
@@ -95,13 +99,17 @@ jobs:
                 )
               if output.stat().st_size < 100:
                   raise RuntimeError(f"{key}: processed image is unexpectedly small")
+              php_output = php_target / output.name
+              shutil.copyfile(output, php_output)
+              if php_output.stat().st_size != output.stat().st_size:
+                  raise RuntimeError(f"{key}: PHP package image copy is incomplete")
 
       - name: Commit GitHub photo assets
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add theme/assets/catalog/hisense/*.png
+          git add theme/assets/catalog/hisense/*.png shared_hosting_php/assets/images/hisense/*.png
           if git diff --cached --quiet; then
             echo "No photo changes"
             exit 0
