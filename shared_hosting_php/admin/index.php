@@ -108,7 +108,11 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
             if ($id) { $q=db()->prepare('UPDATE gallery SET title=?,alt_text=?,image_url=?,location=?,sort_order=?,published=? WHERE id=?'); $q->execute([...$vals,$id]); } else { $q=db()->prepare('INSERT INTO gallery (title,alt_text,image_url,location,sort_order,published) VALUES (?,?,?,?,?,?)'); $q->execute($vals); }
         } elseif ($tab==='settings') {
             $q=db()->prepare('INSERT INTO settings (setting_key,setting_value) VALUES (?,?) ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value)');
-            foreach (['site_title','site_tagline','phone','email','address'] as $key) $q->execute([$key,trim((string)($_POST[$key]??''))]);
+            if (array_intersect(['site_title','site_tagline','phone','email','address'], array_keys($_POST))) {
+                foreach (['site_title','site_tagline','phone','email','address'] as $key) {
+                    if (array_key_exists($key, $_POST)) $q->execute([$key,trim((string)$_POST[$key])]);
+                }
+            }
             foreach ($ventilationSettingFields as $field => [$key, $label, $default, $minimum, $maximum]) {
                 $raw = trim((string)($_POST[$field] ?? (string)$default));
                 $normalised = str_replace(',', '.', $raw);
