@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    container_name: klimaeco-app
+    restart: unless-stopped
+    ports:
+      - "3030:3030"
+    volumes:
+      - klimaeco-data:/data
+    environment:
+      PYTHONUNBUFFERED: "1"
+    # For production HTTPS, follow the official Anvil App Server guide.
+    # Do not expose a production instance publicly before security review.
+
+volumes:
+  klimaeco-data:
