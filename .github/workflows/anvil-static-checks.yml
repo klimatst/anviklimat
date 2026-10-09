@@ -12,6 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Check required Anvil theme asset
+        shell: python
+        run: |
+          import pathlib, sys
+          stylesheet = pathlib.Path('theme/theme.css')
+          editor_config = pathlib.Path('.anvil_editor.yaml')
+          if not stylesheet.is_file() or stylesheet.stat().st_size == 0:
+              print('Missing required theme/theme.css referenced by Anvil editor configuration.')
+              sys.exit(1)
+          if not editor_config.is_file() or 'theme.css:' not in editor_config.read_text(encoding='utf-8'):
+              print('Anvil editor configuration does not register theme.css.')
+              sys.exit(1)
+          print(f'Anvil theme asset present ({stylesheet.stat().st_size} bytes).')
       - name: Compile Python sources
         shell: bash
         run: |
