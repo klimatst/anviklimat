@@ -133,10 +133,26 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Another concurrent Codex merge may advance master while images are downloading.
+          # Rebase the generated assets onto the latest master before committing.
+          git fetch origin master
+          git reset --hard origin/master
           git add theme/assets/catalog/hisense/*.png shared_hosting_php/assets/images/hisense/*.png
           if git diff --cached --quiet; then
             echo "No photo changes"
             exit 0
           fi
           git commit -m "Optimize Hisense catalog photos"
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin master
+            git rebase origin/master
+            if git push origin HEAD:master; then
+              exit 0
+            fi
+            echo "Master moved during photo sync; retrying push ($attempt/3)"
+            sleep 2
+          done
+          echo "Unable to push optimized photo assets after three retries."
+          exit 1
