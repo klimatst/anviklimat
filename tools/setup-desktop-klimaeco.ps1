@@ -43,3 +43,9 @@ Write-Host 'Локальные изменения будут фиксирова�
 Write-Host 'Изменения НЕ отправляются автоматически прямо в master.'
 Start-Process explorer.exe $target
 Start-Process powershell.exe -ArgumentList @('-NoExit','-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $target 'tools\desktop-sync-watch.ps1'))
+
+# Open both local site modes after clone/setup. PHP/XAMPP engine uses 4173; lightweight preview uses 4174.
+$phpLauncher = Join-Path $target 'shared_hosting_php\START-LOCAL.cmd'
+$previewLauncher = Join-Path $target 'local-site\START-LOCAL.cmd'
+if (Test-Path $phpLauncher) { Start-Process -FilePath $phpLauncher -WorkingDirectory (Split-Path $phpLauncher) }
+if (Test-Path $previewLauncher) { Start-Process -FilePath $previewLauncher -WorkingDirectory (Split-Path $previewLauncher) }
