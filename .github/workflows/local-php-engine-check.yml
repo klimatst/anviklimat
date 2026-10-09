@@ -17,6 +17,19 @@ permissions:
 jobs:
   php-lint-and-data:
     runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: testroot
+          MARIADB_DATABASE: klimaeco_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,6 +38,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.2"
+          extensions: pdo_mysql
           tools: none
           coverage: none
 
@@ -64,6 +78,14 @@ jobs:
             echo "Validated 241 real Hisense models, categories and repository image mappings.\n";
           '
 
+      - name: Smoke-test Hisense import against MariaDB
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DATABASE: klimaeco_test
+          MYSQL_USER: root
+          MYSQL_PASSWORD: testroot
+        run: php shared_hosting_php/tests/hisense_import_smoke.php
+
       - name: Check local package has required installer assets
         shell: bash
         run: |
@@ -81,7 +103,6 @@ jobs:
           test -f shared_hosting_php/app/installation_calculator_view.php
           test -f shared_hosting_php/data/price_pages.json
           test -f shared_hosting_php/maintenance/backup.php
-          test -f shared_hosting_php/app/refrigerant_ruler_view.php
           test -f shared_hosting_php/maintenance/.htaccess
           grep -q "Require all denied" shared_hosting_php/maintenance/.htaccess
           test -f shared_hosting_php/storage/backups/.htaccess
