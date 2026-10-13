@@ -286,9 +286,10 @@ class AdminTools(AdminToolsTemplate):
       if source_module.get("id") in hidden or not self._module_available(source_module):
         continue
       module = dict(source_module)
-      module["group"] = MODULE_GROUP_RENAMES.get(
-        module.get("group"), module.get("group", "Настройки и безопасность")
-      )
+      group = module.get("group")
+      if not isinstance(group, str) or not group:
+        group = "Настройки и безопасность"
+      module["group"] = MODULE_GROUP_RENAMES.get(group, group)
       self._modules.append(module)
     self._favorite_module_ids = set()
     self.module_group_dropdown.items = [

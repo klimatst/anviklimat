@@ -11,10 +11,10 @@ class Constructor(ConstructorTemplate):
     super().__init__(**properties)
     if not Access.require_user_form():
       return
-    context = Access.get_session_context()
-    permissions = set(context["permissions"])
+    context = Access.get_session_context() or {}
+    permissions = set(context.get("permissions") or [])
     self.can_manage_engineering = (
-      context["role_code"] == "admin"
+      context.get("role_code") == "admin"
       or "engineering.manage" in permissions
       or "projects.manage" in permissions
     )

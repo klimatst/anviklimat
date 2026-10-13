@@ -90,15 +90,32 @@ function require_admin(): array
 
 function safe_html(string $html): string
 {
-    $allowedTags = '<p><h2><h3><h4><ul><ol><li><strong><b><em><i><blockquote><br><hr><a><table><thead><tbody><tr><th><td>';
+    $allowedTags = '<p><h2><h3><h4><ul><ol><li><strong><b><em><i><blockquote><br><hr><a><img><table><thead><tbody><tr><th><td>';
     $html = strip_tags($html, $allowedTags);
     $html = preg_replace_callback('/<\/?([a-z0-9]+)(?:\s+[^>]*)?>/i', static function (array $match): string {
         $tagText = $match[0];
         $closing = str_starts_with($tagText, '</');
         $tag = strtolower($match[1]);
-        $void = in_array($tag, ['br', 'hr'], true);
+        $void = in_array($tag, ['br', 'hr', 'img'], true);
         if ($closing) {
             return $void ? '' : '</' . $tag . '>';
+        }
+        if ($tag === 'img') {
+            if (!preg_match('/\bsrc\s*=\s*(["\'])(.*?)\1/i', $tagText, $srcMatch)) {
+                return '';
+            }
+            $src = trim(html_entity_decode($srcMatch[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+            $safeSource = preg_match('~^https?://~i', $src)
+                ? filter_var($src, FILTER_VALIDATE_URL) !== false
+                : (bool)preg_match('~^(?:assets|storage/uploads)/[A-Za-z0-9._/-]+$~D', $src) && !str_contains($src, '..');
+            if (!$safeSource || str_starts_with($src, '//')) {
+                return '';
+            }
+            $alt = '';
+            if (preg_match('/\balt\s*=\s*(["\'])(.*?)\1/i', $tagText, $altMatch)) {
+                $alt = trim(html_entity_decode($altMatch[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+            }
+            return '<img src="' . e($src) . '" alt="' . e($alt) . '" loading="lazy">';
         }
         if ($tag === 'a' && preg_match('/\bhref\s*=\s*(["\'])(.*?)\1/i', $tagText, $hrefMatch)) {
             $href = trim(html_entity_decode($hrefMatch[2], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
@@ -165,11 +182,11 @@ function public_header(string $title, string $active = ''): void
     </svg>
     <a class="eco-header__unit eco-header__unit--indoor" href="<?= e(site_path()) ?>" aria-label="Климат — главная">
       <svg viewBox="0 0 230 78" aria-hidden="true">
-        <defs><linearGradient id="eco-unit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#61727b"/><stop offset=".3" stop-color="#34434c"/><stop offset="1" stop-color="#10171c"/></linearGradient></defs>
-        <path d="M12 16Q12 7 24 7H205Q218 7 218 18V49Q218 58 207 61H23Q12 58 12 48Z" fill="url(#eco-unit)" stroke="#7e949c" stroke-width="1.5"/>
-        <path d="M20 18Q20 12 28 12H202Q210 12 210 20V40Q115 46 20 40Z" fill="#27353d" stroke="#536a74"/>
-        <path d="M24 18Q115 13 205 18" fill="none" stroke="#e0eef0" stroke-opacity=".28"/>
-        <path d="M27 49H202" stroke="#0c1216" stroke-width="3"/><circle cx="202" cy="21" r="2.7" fill="#0797b2"/>
+        <defs><linearGradient id="eco-unit" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3a44"/><stop offset=".3" stop-color="#141c23"/><stop offset="1" stop-color="#090d12"/></linearGradient></defs>
+        <path d="M12 16Q12 7 24 7H205Q218 7 218 18V49Q218 58 207 61H23Q12 58 12 48Z" fill="url(#eco-unit)" stroke="#2b3a44" stroke-width="1.5"/>
+        <path d="M20 18Q20 12 28 12H202Q210 12 210 20V40Q115 46 20 40Z" fill="#18232b" stroke="#2b3a44"/>
+        <path d="M24 18Q115 13 205 18" fill="none" stroke="#e7f0f3" stroke-opacity=".28"/>
+        <path d="M27 49H202" stroke="#090d12" stroke-width="3"/><circle cx="202" cy="21" r="2.7" fill="#0797b2"/>
       </svg>
       <span class="eco-header__brand"><strong><?= e($brand) ?></strong><small>ИНЖЕНЕРНЫЙ КЛИМАТ</small></span>
     </a>
@@ -187,12 +204,12 @@ function public_header(string $title, string $active = ''): void
     </div>
     <div class="eco-header__unit eco-header__unit--outdoor" aria-label="Наружный климатический блок">
       <svg viewBox="0 0 104 78" aria-hidden="true">
-        <defs><linearGradient id="eco-outdoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#394750"/><stop offset="1" stop-color="#11191e"/></linearGradient></defs>
-        <rect x="8" y="5" width="88" height="68" rx="8" fill="url(#eco-outdoor)" stroke="#58717b" stroke-width="1.5"/>
-        <rect x="15" y="11" width="74" height="56" rx="6" fill="#202a31" stroke="#40545d"/>
-        <circle cx="52" cy="39" r="22" fill="#26343c" stroke="#77939d" stroke-width="1.4"/>
+        <defs><linearGradient id="eco-outdoor" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3a44"/><stop offset="1" stop-color="#090d12"/></linearGradient></defs>
+        <rect x="8" y="5" width="88" height="68" rx="8" fill="url(#eco-outdoor)" stroke="#2b3a44" stroke-width="1.5"/>
+        <rect x="15" y="11" width="74" height="56" rx="6" fill="#18232b" stroke="#2b3a44"/>
+        <circle cx="52" cy="39" r="22" fill="#17232b" stroke="#91a4ad" stroke-width="1.4"/>
         <circle cx="52" cy="39" r="3" fill="#0797b2"/>
-        <path d="M52 36c-5-11-2-15 2-15 5 0 6 7 2 15m-1 6c11-5 15-2 15 2 0 5-7 6-15 2m-6-1c5 11 2 15-2 15-5 0-6-7-2-15m1-6c-11 5-15 2-15-2 0-5 7-6 15-2" fill="#7b9ba6" class="eco-header__fan"/>
+        <path d="M52 36c-5-11-2-15 2-15 5 0 6 7 2 15m-1 6c11-5 15-2 15 2 0 5-7 6-15 2m-6-1c5 11 2 15-2 15-5 0-6-7-2-15m1-6c-11 5-15 2-15-2 0-5 7-6 15-2" fill="#91a4ad" class="eco-header__fan"/>
       </svg>
       <span>VRV / VRF</span>
     </div>

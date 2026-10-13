@@ -266,14 +266,17 @@ def get_operations_bootstrap():
       "project_title": _project_label(row["project"])
     } for row in tasks]
   if can_service:
-    projects = payload["projects"] if payload["projects"] else app_tables.projects.search(
-      q.fetch_only("code", "title", "status", "updated_at"),
-      order_by("updated_at", ascending=False)
-    )[:100]
-    payload["service_projects"] = [{
-      "id": row.get_id(), "code": row["code"] or "",
-      "title": row["title"] or "", "status": row["status"] or ""
-    } for row in projects]
+    if can_operations:
+      payload["service_projects"] = [dict(row) for row in payload["projects"]]
+    else:
+      projects = app_tables.projects.search(
+        q.fetch_only("code", "title", "status", "updated_at"),
+        order_by("updated_at", ascending=False)
+      )[:100]
+      payload["service_projects"] = [{
+        "id": row.get_id(), "code": row["code"] or "",
+        "title": row["title"] or "", "status": row["status"] or ""
+      } for row in projects]
   else:
     payload["service_projects"] = []
   return payload

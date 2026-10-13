@@ -3,7 +3,17 @@ declare(strict_types=1);
 
 $configFile = __DIR__ . '/config.php';
 if (!is_file($configFile)) {
-    header('Location: ../install/');
+    // Build the installer URL from the actual entry point so installations in
+    // a subdirectory (for example /klimaeco/) do not escape to the web root.
+    $scriptPath = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+    $scriptDirectory = rtrim(str_replace('\\', '/', dirname($scriptPath)), '/');
+    if (preg_match('~/admin$~i', $scriptDirectory)) {
+        $scriptDirectory = substr($scriptDirectory, 0, -6);
+    }
+    if ($scriptDirectory === '.' || $scriptDirectory === '/') {
+        $scriptDirectory = '';
+    }
+    header('Location: ' . $scriptDirectory . '/install/');
     exit;
 }
 $config = require $configFile;

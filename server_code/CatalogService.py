@@ -421,8 +421,10 @@ def _cached_catalog_menu(include_counts=True, include_series=True):
   if cached and now - cached["at"] < _MENU_CACHE_TTL_SECONDS:
     return cached["value"]
   categories = _category_options()
-  by_id = {row["id"]: dict(row, children=[]) for row in categories}
-  roots = []
+  by_id: dict[Any, dict[str, Any]] = {
+    row["id"]: dict(row, children=[]) for row in categories
+  }
+  roots: list[dict[str, Any]] = []
   direct_product_counts = {}
   if include_counts:
     for product in app_tables.products.search(
@@ -499,6 +501,63 @@ def _category_image_url(category_code, media=None):
     if matches:
       filename = max(matches, key=lambda pair: len(pair[0]))[1]
   return "_/theme/catalog/" + filename if filename else ""
+
+
+def _series_rows_for_category(category=None, active_only=True):
+  rows = list(app_tables.catalog_series.search(
+    q.fetch_only(
+      "code", "title", "category", "description", "status", "is_new",
+      "power_range", "image", "sort_order", "active",
+      category=q.fetch_only("code", "title")
+    ),
+    order_by("sort_order")
+  )[:5000])
+  if category is not None:
+    category_id = category.get_id() if hasattr(category, "get_id") else category
+    rows = [
+      row for row in rows
+      if row["category"] is not None and row["category"].get_id() == category_id
+    ]
+  if active_only:
+    rows = [
+      row for row in rows
+      if bool(row["active"]) and (row["status"] or "active") == "active"
+    ]
+  return rows
+
+
+def _series_image_url(row):
+  image = row["image"]
+  if isinstance(image, anvil.Media):
+    return image.get_url()
+  category = row["category"]
+  if category is not None:
+    return _category_image_url(category["code"])
+  return ""
+
+
+def _series_payload(row):
+  category = row["category"]
+  active = bool(row["active"])
+  return {
+    "id": row.get_id(),
+    "code": row["code"] or "",
+    "title": row["title"] or "Без названия",
+    "category_id": category.get_id() if category is not None else None,
+    "category_code": category["code"] if category is not None else "",
+    "category_title": category["title"] if category is not None else "",
+    "description": row["description"] or "",
+    "status": row["status"] or ("active" if active else "draft"),
+    "is_new": bool(row["is_new"]),
+    "power_range": row["power_range"] or "",
+    "image_url": _series_image_url(row),
+    "sort_order": row["sort_order"] or 0,
+    "active": active,
+  }
+
+
+def _series_options():
+  return [_series_payload(row) for row in _series_rows_for_category(active_only=True)]
 
 
 def _safe_product_image_url(value):

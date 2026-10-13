@@ -5,7 +5,7 @@
   <anvil-block slot="content">
     <div class="hvac-view">
       <anvil-component type="ColumnPanel" name="backup_panel" prop:role="card">
-        <anvil-component type="Label" name="backup_intro" prop:role="lede" prop:text="Резервная копия шифруется секретом HVAC_BACKUP_KEY в настройках Anvil и сразу скачивается. Большие файлы не входят: сохраняются только ссылки и метаданные."></anvil-component>
+        <anvil-component type="Label" name="backup_intro" prop:role="lede" prop:text="Резервная копия шифруется секретом HVAC_BACKUP_KEY в настройках Anvil и сразу скачивается. Медиафайлы включаются в архив; общий предел файла — 20 МБ."></anvil-component>
         <anvil-component type="Label" name="backup_scope" prop:role="status-message" prop:text="Включены данные приложения и медиафайлы. Ключи API и данные входа пользователей не экспортируются."></anvil-component>
         <anvil-component type="Button" name="create_backup_button" prop:text="Создать и скачать зашифрованную копию" prop:role="primary-action"></anvil-component>
         <anvil-component type="Label" name="backup_message" prop:role="status-message" prop:text=""></anvil-component>

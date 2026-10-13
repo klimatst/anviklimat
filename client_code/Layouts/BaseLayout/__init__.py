@@ -62,9 +62,10 @@ class BaseLayout(BaseLayoutTemplate):
     context = Access.get_cached_session_context() or {}
     if email and context.get("role_code", "user") == "user":
       try:
-        context = Access.get_session_context()
+        context = Access.get_session_context() or {}
       except anvil.server.RuntimeUnavailableError:
-        context = Access.get_cached_session_context()
+        context = Access.get_cached_session_context() or {}
+      context = context or {}
     self.admin_panel_nav.visible = context.get("role_code") == "admin" or (
       context.get("role_code") == "moderator"
       and "dashboard.view" in (context.get("permissions") or [])
@@ -83,11 +84,12 @@ class BaseLayout(BaseLayoutTemplate):
     self.admin_breadcrumb.text = str(Access.get_admin_window_title() or "Обзор проекта")
 
     try:
-      context = Access.get_session_context()
+      context = Access.get_session_context() or {}
     except anvil.server.RuntimeUnavailableError:
       # This fallback only controls the client-side navigation. Server-side
       # permission checks remain authoritative for every protected action.
-      context = Access.get_cached_session_context()
+      context = Access.get_cached_session_context() or {}
+    context = context or {}
     self._admin_role = context.get("role_code", "user")
     self._admin_permissions = set(context.get("permissions") or [])
     allowed = {
@@ -178,14 +180,17 @@ class BaseLayout(BaseLayoutTemplate):
     for row in result.get("results") or []:
       if not isinstance(row, dict):
         continue
-      route = route_map.get(row.get("kind"))
+      kind = row.get("kind")
+      if not isinstance(kind, str):
+        continue
+      route = route_map.get(kind)
       if route is None:
         continue
       form_name, permission, property_name = route
       if not row.get("id"):
         continue
       properties = {property_name: row.get("id")}
-      if row.get("kind") in ("order", "user"):
+      if kind in ("order", "user"):
         properties[property_name] = term
       properties["window_title"] = row.get("title") or "Запись"
       options.append((
@@ -479,6 +484,11 @@ class BaseLayout(BaseLayoutTemplate):
   def installation_nav_click(self, **event_args):
     self._close_dropdowns()
     Access.open_window("InstallationCalculator")
+
+  @handle("archives_nav", "click")
+  def archives_nav_click(self, **event_args):
+    self._close_dropdowns()
+    Access.open_window("Archives")
 
   @handle("news_nav", "click")
   def news_nav_click(self, **event_args):

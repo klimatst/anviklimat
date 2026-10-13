@@ -123,7 +123,7 @@ def get_project_engineering_snapshot(project_id):
       system_family_counts["Другое"] += 1
   for system in systems:
     component_count += len(list(app_tables.system_components.search(system=system)[:500]))
-    bom_line_count += len(list(app_tables.bom_lines.search(q.fetch_only("line_key"), system=system)[:600]))
+    bom_line_count += len(list(app_tables.bom.search(q.fetch_only("line_key"), system=system)[:600]))
 
   object_parameters = (obj["parameters"] or {}) if obj is not None else {}
   engineering_profile = object_parameters.get("engineering_profile", "combined")
@@ -218,7 +218,7 @@ def get_engineering_quality_gate(project_limit=250):
   user = anvil.users.get_user()
   if user is None:
     return {"ok": False, "message": "Требуется вход."}
-  context = Core.get_access_context()
+  context = Core.build_access_context(user)
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
 
@@ -263,7 +263,7 @@ def get_engineering_quality_gate(project_limit=250):
       if component_count == 0:
         counts["systems_without_components"] += 1
         issues.append({"severity": "high", "project": code, "message": "Система без компонентов."})
-      bom_count = len(list(app_tables.bom_lines.search(system=system)[:600]))
+      bom_count = len(list(app_tables.bom.search(system=system)[:600]))
       if component_count and bom_count == 0:
         counts["systems_without_bom"] += 1
         issues.append({"severity": "medium", "project": code, "message": "Система собрана, но BOM не сформирован."})
@@ -414,11 +414,14 @@ def _selection_candidates(project_id, system_id):
   target_kw = 0.0
   target_airflow = 0.0
   for row in calculation_rows:
-    payload = row["result"] if "result" in row else {}
+    payload = row["details"] or {}
     payload = payload if isinstance(payload, dict) else {}
-    parameters = row["parameters"] if "parameters" in row else {}
+    parameters = row["inputs"] or {}
     parameters = parameters if isinstance(parameters, dict) else {}
-    merged = dict(parameters)
+    coefficients = row["coefficients"] or {}
+    coefficients = coefficients if isinstance(coefficients, dict) else {}
+    merged = dict(coefficients)
+    merged.update(parameters)
     merged.update(payload)
     for key in ("required_kw", "cooling_kw", "cooling_capacity_kw", "load_kw", "capacity_kw"):
       value = merged.get(key)
@@ -759,7 +762,7 @@ def get_engineering_control_room():
   user = anvil.users.get_user()
   if user is None:
     return {"ok": False, "message": "Требуется вход."}
-  context = Core.get_access_context()
+  context = Core.build_access_context(user)
   if context["role_code"] != "admin" and "projects.manage" not in context["permissions"]:
     return {"ok": False, "message": "Недостаточно прав."}
   projects = list(app_tables.projects.search(
@@ -775,7 +778,7 @@ def get_engineering_control_room():
   calculations = list(app_tables.calculations.search(q.fetch_only("project"))[:1000])
   estimates = list(app_tables.estimates.search(q.fetch_only("project"))[:300])
   components = list(app_tables.system_components.search(q.fetch_only("system"))[:5000])
-  bom_lines = list(app_tables.bom_lines.search(q.fetch_only("system"))[:6000])
+  bom_lines = list(app_tables.bom.search(q.fetch_only("system"))[:6000])
 
   systems_by_project = {}
   for row in systems:

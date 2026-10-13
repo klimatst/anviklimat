@@ -40,17 +40,17 @@ PROVIDER_TITLES = {
 class AIOperator(AIOperatorTemplate):
   def __init__(self, **properties):
     super().__init__(**properties)
-    context = Access.get_session_context()
-    self._is_admin = context["role_code"] == "admin"
+    context = Access.get_session_context() or {}
+    self._is_admin = context.get("role_code") == "admin"
     self._chat_messages = []
     self._pending_image = None
     self.home_button.text = "В админ-панель" if self._is_admin else "На главную"
     self.provider_settings_panel.visible = self._is_admin
-    self.send_button.enabled = bool(context["email"])
+    self.send_button.enabled = bool(context.get("email"))
     self.chat_history.items = []
     self.chat_empty_label.visible = True
     self.attachment_preview.visible = False
-    if not context["email"]:
+    if not context.get("email"):
       self.ai_status.text = "Войдите в профиль, чтобы открыть AI-помощника."
       self.chat_status.text = ""
       self.question_box.enabled = False

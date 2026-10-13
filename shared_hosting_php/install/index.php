@@ -34,6 +34,7 @@ $requirements = [
     'PHP 8.1 или новее' => PHP_VERSION_ID >= 80100,
     'Расширение PDO' => extension_loaded('pdo'),
     'Драйвер MySQL для PDO' => extension_loaded('pdo_mysql'),
+    'Расширение zlib для импорта данных Anvil' => extension_loaded('zlib'),
     'Папка app доступна для создания config.php' => is_writable($root . '/app'),
     'Папка storage/uploads доступна для записи' => $storageReady && is_writable($root . '/storage/uploads'),
     'Папка storage/imports доступна для записи' => $storageReady && is_writable($root . '/storage/imports'),

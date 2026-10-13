@@ -44,8 +44,19 @@ try {
     ]);
     $result = import_anvil_export($pdo, $realInputPath);
     printf("Перенос Anvil завершён. Таблиц: %d; строк: %d.\n", $result['tables'], $result['rows']);
+    printf(
+        "В рабочие разделы перенесено: категорий %d; брендов %d; товаров %d; проектов %d; помещений %d; систем %d; расчётов %d; смет %d.\n",
+        $result['public']['categories'],
+        $result['public']['brands'],
+        $result['public']['products'],
+        $result['public']['projects'],
+        $result['public']['rooms'],
+        $result['public']['systems'],
+        $result['public']['calculations'],
+        $result['public']['estimates']
+    );
     printf("Контрольная сумма SHA-256: %s\n", $result['checksum']);
-    echo "Исходные записи сохранены в зеркальных таблицах anvil_export_rows без потери структуры.\n";
+    echo "Исходные записи всех 44 таблиц и фото сохранены в зеркале anvil_export_rows; сопоставление можно повторно применить в админке.\n";
     echo "Пароли пользователей и ключи API не импортируются.\n";
 } catch (Throwable $error) {
     fwrite(STDERR, "Импорт не завершён: " . $error->getMessage() . "\n");

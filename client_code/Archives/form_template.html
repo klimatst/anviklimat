@@ -1,0 +1,39 @@
+<anvil-form layout="Minimal_Theme_4.Layouts.BaseLayout">
+  <anvil-block slot="actions">
+    <anvil-component type="Button" name="home_button" prop:text="На главную" prop:role="secondary-button"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="title">
+    <anvil-component type="Label" name="page_title" prop:role="h1" prop:text="Архивы и загрузки"></anvil-component>
+  </anvil-block>
+  <anvil-block slot="content">
+    <section class="archives-view">
+      <div class="archives-intro">
+        <anvil-component type="Label" name="archives_eyebrow" prop:role="eyebrow" prop:text="КЛИМАЭКО / ФАЙЛЫ ПРОЕКТА"></anvil-component>
+        <anvil-component type="Label" name="archives_description" prop:role="lede" prop:text="Скачайте автономную версию сайта для XAMPP и отдельную инструкцию по установке. Архив можно использовать на локальном компьютере или сервере в локальной сети."></anvil-component>
+      </div>
+      <div class="archives-grid">
+        <article class="archive-card">
+          <span class="archive-card__eyebrow">ДВИЖОК САЙТА · ZIP</span>
+          <h2>КлимаЭко для XAMPP</h2>
+          <p>Установщик, админ-панель, каталог, калькуляторы, база схемы и средства импорта данных Anvil.</p>
+          <p class="archive-card__meta">Версия от 13 октября 2026 · 7,9 МБ</p>
+          <a class="archive-card__link" href="_/theme/downloads/KlimaEco-XAMPP-2026-10-13.zip" download="KlimaEco-XAMPP-2026-10-13.zip">Скачать ZIP <span aria-hidden="true">↓</span></a>
+          <details class="archive-card__details">
+            <summary>Контрольная сумма SHA-256</summary>
+            <code>1af00e52624484fcdef5608b3c8240610fd3dea97c768218b582c92b925ca554</code>
+          </details>
+        </article>
+        <article class="archive-card">
+          <span class="archive-card__eyebrow">УСТАНОВКА · ИНСТРУКЦИЯ</span>
+          <h2>Установка и перенос данных</h2>
+          <p>Как распаковать проект в XAMPP, настроить MySQL и администратора, открыть сайт в локальной сети и перенести экспорт из Anvil.</p>
+          <p class="archive-card__meta">Формат Markdown · инструкция также входит в ZIP</p>
+          <a class="archive-card__link archive-card__link--secondary" href="_/theme/downloads/INSTALL_XAMPP_RU.md" download="INSTALL_XAMPP_RU.md">Скачать инструкцию <span aria-hidden="true">↓</span></a>
+        </article>
+      </div>
+      <div class="archive-note">
+        <strong>После скачивания:</strong> распакуйте ZIP в <code>C:\xampp\htdocs\klimaeco</code> и откройте <code>http://localhost/klimaeco/install/</code>. Production-данные Anvil переносятся отдельным экспортом из модуля «Резервные копии».
+      </div>
+    </section>
+  </anvil-block>
+</anvil-form>

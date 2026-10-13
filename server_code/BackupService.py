@@ -123,7 +123,7 @@ def _is_sensitive_object_key(key):
   )
 
 
-def _encode_value(value, target=None):
+def _encode_value(value, target=None, redact_sensitive=False):
   if value is None or isinstance(value, (str, int, float, bool)):
     return value
   if target is not None:
@@ -140,11 +140,14 @@ def _encode_value(value, target=None):
     return {"$type": "date", "value": value.isoformat()}
   if isinstance(value, dict):
     return {"$type": "object", "value": {
-      str(key): _encode_value(item) for key, item in value.items()
-      if not _is_sensitive_object_key(key)
+      str(key): _encode_value(item, redact_sensitive=redact_sensitive)
+      for key, item in value.items()
+      if not redact_sensitive or not _is_sensitive_object_key(key)
     }}
   if isinstance(value, (list, tuple)):
-    return {"$type": "list", "value": [_encode_value(item) for item in value]}
+    return {"$type": "list", "value": [
+      _encode_value(item, redact_sensitive=redact_sensitive) for item in value
+    ]}
   raise BackupInputError("В таблице найдено значение неподдерживаемого типа.")
 
 
@@ -181,7 +184,7 @@ def _decode_value(value):
   raise BackupInputError("В архиве найден неизвестный тип значения.")
 
 
-def _snapshot():
+def _snapshot(include_sensitive=False):
   tables = {}
   row_count = 0
   for table_name in BACKUP_TABLES:
@@ -190,10 +193,12 @@ def _snapshot():
     for row in table.search():
       values = {}
       for column, value in row:
-        if column in SENSITIVE_EXPORT_COLUMNS.get(table_name, set()):
+        if not include_sensitive and column in SENSITIVE_EXPORT_COLUMNS.get(table_name, set()):
           continue
         target = LINK_TARGETS.get(table_name, {}).get(column)
-        values[column] = _encode_value(value, target=target)
+        values[column] = _encode_value(
+          value, target=target, redact_sensitive=not include_sensitive
+        )
       records.append({"id": row.get_id(), "values": values})
       row_count += 1
       if row_count > MAX_ROWS:
@@ -378,6 +383,8 @@ def create_xampp_export():
   try:
     tables, row_count = _snapshot()
     table_payload = _canonical_json(tables)
+    if len(table_payload) > MAX_DATA_BYTES:
+      raise BackupInputError("Переносимый экспорт превышает 40 МБ до сжатия.")
     raw = _canonical_json({
       "format": PORTABLE_EXPORT_FORMAT,
       "schema_version": 1,
@@ -385,6 +392,8 @@ def create_xampp_export():
       "sha256": hashlib.sha256(table_payload).hexdigest(),
       "tables": tables
     })
+    if len(raw) > MAX_DATA_BYTES:
+      raise BackupInputError("Переносимый экспорт превышает 40 МБ до сжатия.")
     compressed = gzip.compress(raw, compresslevel=6)
     if len(compressed) > PORTABLE_EXPORT_MAX_BYTES:
       raise BackupInputError(
@@ -422,7 +431,7 @@ def create_database_backup():
   if not key_exists:
     return {"ok": False, "message": "Добавьте секрет HVAC_BACKUP_KEY в Anvil Secrets перед созданием backup."}
   try:
-    tables, row_count = _snapshot()
+    tables, row_count = _snapshot(include_sensitive=True)
     plain, digest = _archive_string(tables)
   except BackupInputError as error:
     return {"ok": False, "message": str(error)}

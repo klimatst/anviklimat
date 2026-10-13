@@ -11,9 +11,10 @@ class Projects(ProjectsTemplate):
     super().__init__(**properties)
     if not Access.require_user_form():
       return
-    context = Access.get_session_context()
+    context = Access.get_session_context() or {}
     self.compatibility_button.visible = (
-      context["role_code"] == "admin" or "catalog.manage" in context["permissions"]
+      context.get("role_code") == "admin"
+      or "catalog.manage" in (context.get("permissions") or [])
     )
     self._project_id = None
     self._room_id = None
@@ -297,7 +298,9 @@ class Projects(ProjectsTemplate):
     for system in result.get("systems", []):
       for item in system.get("candidates", []):
         candidate = dict(item)
-        candidate["decision_label"] = "{} · {}".format(system.get("system_title", "Система"), labels.get(candidate.get("decision"), "Кандидат"))
+        decision = candidate.get("decision")
+        decision_label = labels.get(decision, "Кандидат") if isinstance(decision, str) else "Кандидат"
+        candidate["decision_label"] = "{} · {}".format(system.get("system_title", "Система"), decision_label)
         candidate["score_label"] = "Decision Score: {}/100".format(candidate.get("score", 0))
         capacity, target, unit = candidate.get("capacity"), candidate.get("target"), candidate.get("capacity_unit") or ""
         if capacity is not None and target is not None:

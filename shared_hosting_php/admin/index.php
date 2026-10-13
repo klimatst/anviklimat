@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 require dirname(__DIR__) . '/app/bootstrap.php';
-$tabs = ['dashboard'=>'Обзор','engineering'=>'Engineering OS','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы'];
+require_once dirname(__DIR__) . '/app/anvil_import.php';
+$tabs = ['dashboard'=>'Обзор','engineering'=>'Engineering OS','categories'=>'Категории','brands'=>'Бренды','products'=>'Товары','news'=>'Новости','pages'=>'Страницы','gallery'=>'Галерея','leads'=>'Заявки','settings'=>'Настройки','formulas'=>'Формулы','anvil_source'=>'Данные Anvil'];
 $ventilationSettingFields = [
     'ventilation_people_airflow' => ['ventilation.people_airflow','Воздухообмен на человека, м³/ч',40,0,1000],
     'ventilation_supply_factor' => ['ventilation.supply_factor','Коэффициент притока',1,0,5],
@@ -108,6 +109,40 @@ function engineering_project_health(array $project): array {
     }
     return ['score'=>min(100,$score),'stage'=>$stage,'next_action'=>$next,'risks'=>$risks];
 }
+function validate_anvil_source_refs(PDO $pdo, mixed $value, array &$cache): void {
+    if ($value instanceof stdClass) {
+        if (($value->{'$type'} ?? null) === 'ref') {
+            $table = $value->table ?? null;
+            $id = $value->id ?? null;
+            if (!is_string($table) || !in_array($table, KLIMA_ANVIL_EXPORT_TABLES, true) || !is_string($id) || $id === '') {
+                throw new UserInputException('Ссылка в JSON имеет неверный формат.');
+            }
+            $key = $table . ':' . $id;
+            if (!array_key_exists($key, $cache)) {
+                static $queries = [];
+                if (!isset($queries[$table])) {
+                    $queries[$table] = $pdo->prepare('SELECT 1 FROM anvil_export_rows WHERE source_table=? AND source_id=? LIMIT 1');
+                }
+                $queries[$table]->execute([$table, $id]);
+                $cache[$key] = (bool)$queries[$table]->fetchColumn();
+            }
+            if (!$cache[$key]) {
+                throw new UserInputException('Ссылка ведёт на отсутствующую запись «' . $table . ' / ' . $id . '».');
+            }
+            return;
+        }
+        foreach (get_object_vars($value) as $key => $item) {
+            if (preg_match('~(?:api[_-]?key|secret|password|token|remembered_logins)~i', (string)$key)) {
+                throw new UserInputException('Пароли и ключи доступа запрещено сохранять в переносимом зеркале.');
+            }
+            validate_anvil_source_refs($pdo, $item, $cache);
+        }
+    } elseif (is_array($value)) {
+        foreach ($value as $item) {
+            validate_anvil_source_refs($pdo, $item, $cache);
+        }
+    }
+}
 if ($_SERVER['REQUEST_METHOD']==='POST') {
     verify_csrf();
     $action=(string)($_POST['action']??'');
@@ -137,6 +172,56 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         flash('Данные администратора обновлены.'); redirect_to(site_path('admin/?tab=settings'));
     }
     $user=admin_user();
+    if ($user) {
+        ensure_anvil_export_schema(db());
+    }
+    if ($user && isset($_POST['save_anvil_export_row'])) {
+        $sourceTable = (string)($_POST['source_table'] ?? '');
+        $sourceId = (string)($_POST['source_id'] ?? '');
+        $pageNumber = max(1, (int)($_POST['page'] ?? 1));
+        try {
+            if (!in_array($sourceTable, KLIMA_ANVIL_EXPORT_TABLES, true) || $sourceId === '') {
+                throw new UserInputException('Не выбрана исходная запись Anvil.');
+            }
+            $raw = (string)($_POST['record_json'] ?? '');
+            if ($raw === '' || strlen($raw) > 2 * 1024 * 1024) {
+                throw new UserInputException('JSON записи пустой или превышает 2 МБ.');
+            }
+            try {
+                $record = json_decode($raw, false, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $error) {
+                throw new UserInputException('Проверьте JSON: ' . $error->getMessage());
+            }
+            if (!$record instanceof stdClass || !is_string($record->id ?? null) || $record->id !== $sourceId
+                || !(($record->values ?? null) instanceof stdClass)
+                || count(get_object_vars($record)) !== 2
+            ) {
+                throw new UserInputException('JSON должен содержать прежний id записи и объект values.');
+            }
+            $referenceCache = [];
+            validate_anvil_source_refs(db(), $record->values, $referenceCache);
+            $encoded = json_encode($record, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+            $update = db()->prepare('UPDATE anvil_export_rows SET record_json=?, imported_at=NOW() WHERE source_table=? AND source_id=?');
+            $update->execute([$encoded, $sourceTable, $sourceId]);
+            flash('Исходная запись обновлена. Сопоставленные разделы PHP-сайта обновляются отдельным импортом.');
+        } catch (UserInputException $error) {
+            flash($error->getMessage(), 'error');
+        }
+        redirect_to(site_path('admin/?tab=anvil_source&source_table=' . rawurlencode($sourceTable) . '&page=' . $pageNumber));
+    }
+    if ($user && $action === 'sync_anvil_mirror') {
+        try {
+            $synced = sync_anvil_export_mirror_to_site(db());
+            flash('Зеркальные данные применены: категорий ' . $synced['categories']
+                . ', брендов ' . $synced['brands'] . ', товаров ' . $synced['products']
+                . ', проектов ' . $synced['projects'] . ', помещений ' . $synced['rooms']
+                . ', систем ' . $synced['systems'] . ', расчётов ' . $synced['calculations']
+                . ', смет ' . $synced['estimates'] . '.');
+        } catch (RuntimeException $error) {
+            flash($error->getMessage(), 'error');
+        }
+        redirect_to(site_path('admin/?tab=anvil_source'));
+    }
     if ($user && in_array($action, ['save_project','save_project_room','save_project_system','save_project_calculation','save_project_estimate','delete_project','delete_project_room','delete_project_system','delete_project_calculation','delete_project_estimate'], true)) {
         try {
             if ($action === 'save_project') {
@@ -383,8 +468,11 @@ if (!$user) {
     $message=take_flash(); ?>
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Вход · <?= e(setting('site_title','ЭКО-КЛИМАТ')) ?></title><link rel="stylesheet" href="<?= e(site_path('assets/style.css')) ?>"></head><body class="admin-login-body"><main class="login-card"><a class="brand" href="<?= e(site_path()) ?>"><span class="brand-mark">ЭК</span><span><?= e(setting('site_title','ЭКО-КЛИМАТ')) ?><small>ПАНЕЛЬ УПРАВЛЕНИЯ</small></span></a><p class="eyebrow">УПРАВЛЕНИЕ САЙТОМ</p><h1>Вход в админ-панель</h1><?php if ($message): ?><div class="notice error"><?= e($message['message']) ?></div><?php endif; ?><form method="post"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="action" value="login"><label>Логин<input name="login" autocomplete="username" required autofocus></label><label>Пароль<input type="password" name="password" autocomplete="current-password" required></label><button class="button login-submit">Войти ↗</button></form><a class="login-back" href="<?= e(site_path()) ?>">← На сайт</a></main></body></html><?php exit;
 }
+ensure_anvil_export_schema(db());
+$sourceMirrorCount = (int)db()->query('SELECT COUNT(*) FROM anvil_export_rows')->fetchColumn();
 $counts=[]; foreach (['categories','brands','products','news','pages','gallery','leads','formulas'] as $t) $counts[$t]=(int)db()->query('SELECT COUNT(*) FROM '.$t)->fetchColumn();
 $counts['engineering']=(int)db()->query('SELECT COUNT(*) FROM projects')->fetchColumn();
+$counts['anvil_source']=$sourceMirrorCount;
 $flashMessage=take_flash(); $edit=null;
 if (!empty($_GET['edit']) && in_array($tab,['categories','brands','products','news','pages','gallery'],true)) { $q=db()->prepare('SELECT * FROM '.$tab.' WHERE id=?'); $q->execute([(int)$_GET['edit']]); $edit=$q->fetch()?:null; }
 function admin_delete_control(int $id): void {
@@ -439,4 +527,70 @@ $attentionProjects=count(array_filter($projects, static fn($p)=>(int)$p['room_co
 <?php elseif ($tab==='gallery'): $rows=db()->query('SELECT * FROM gallery ORDER BY sort_order,id DESC')->fetchAll(); ?><div class="admin-panel table-panel"><table><thead><tr><th>Работа</th><th>Место</th><th>Статус</th><th></th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= e($r['title']) ?></td><td><?= e($r['location']) ?></td><td><?= $r['published']?'Опубликована':'Скрыта' ?></td><td><a href="<?= e(site_path('admin/?tab=gallery&edit='.$r['id'])) ?>">Изменить</a><?php admin_delete_control((int)$r['id']); ?></td></tr><?php endforeach; ?></tbody></table></div>
 <?php elseif ($tab==='leads'): $rows=db()->query('SELECT * FROM leads ORDER BY created_at DESC LIMIT 500')->fetchAll(); ?><div class="admin-panel table-panel"><table><thead><tr><th>Имя и дата</th><th>Контакты</th><th>Сообщение</th><th>Статус</th></tr></thead><tbody><?php foreach($rows as $r): ?><tr><td><?= e($r['name']) ?><small><?= e($r['created_at']) ?></small></td><td><?= e($r['phone']) ?><small><?= e($r['email']) ?></small></td><td><?= e($r['message']) ?></td><td><form method="post" class="inline-status"><input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>"><input type="hidden" name="save_record" value="1"><input type="hidden" name="id" value="<?= (int)$r['id'] ?>"><select name="status"><option value="new" <?= $r['status']==='new'?'selected':'' ?>>Новая</option><option value="in_progress" <?= $r['status']==='in_progress'?'selected':'' ?>>В работе</option><option value="done" <?= $r['status']==='done'?'selected':'' ?>>Завершена</option></select><button class="mini-button">OK</button></form></td></tr><?php endforeach; ?></tbody></table></div>
 <?php elseif ($tab==='formulas'): ?><div class="formula-list"><?php foreach(db()->query('SELECT * FROM formulas ORDER BY module,title') as $r): ?><details class="admin-panel formula-item"><summary><?= e($r['title']) ?> <small><?= e($r['module']) ?></small></summary><p class="code-cell"><?= e($r['expression']) ?></p></details><?php endforeach; ?></div><div class="notice">Это исходные расчётные формулы из пакета. Публичный предварительный калькулятор упрощён и служит только для ориентировочной оценки.</div>
+<?php elseif ($tab==='anvil_source'):
+$sourceTable = (string)($_GET['source_table'] ?? 'catalog_categories');
+if (!in_array($sourceTable, KLIMA_ANVIL_EXPORT_TABLES, true)) $sourceTable = 'catalog_categories';
+$sourceSearch = trim((string)($_GET['q'] ?? ''));
+$sourcePage = max(1, (int)($_GET['page'] ?? 1));
+$sourcePageSize = 50;
+$sourceWhere = 'source_table=?';
+$sourceParams = [$sourceTable];
+if ($sourceSearch !== '') {
+    $sourceWhere .= ' AND (source_id LIKE ? OR record_json LIKE ?)';
+    $sourceParams[] = '%' . $sourceSearch . '%';
+    $sourceParams[] = '%' . $sourceSearch . '%';
+}
+$sourceCountQuery = db()->prepare('SELECT COUNT(*) FROM anvil_export_rows WHERE ' . $sourceWhere);
+$sourceCountQuery->execute($sourceParams);
+$sourceTotal = (int)$sourceCountQuery->fetchColumn();
+$sourcePageCount = max(1, (int)ceil($sourceTotal / $sourcePageSize));
+$sourcePage = min($sourcePage, $sourcePageCount);
+$sourceOffset = ($sourcePage - 1) * $sourcePageSize;
+$sourceRowsQuery = db()->prepare('SELECT source_id,record_json FROM anvil_export_rows WHERE ' . $sourceWhere . ' ORDER BY source_id LIMIT ' . $sourcePageSize . ' OFFSET ' . $sourceOffset);
+$sourceRowsQuery->execute($sourceParams);
+$sourceRows = $sourceRowsQuery->fetchAll();
+$sourceQueryTail = '&source_table=' . rawurlencode($sourceTable) . '&q=' . rawurlencode($sourceSearch);
+?>
+<section class="admin-panel source-data-tools">
+  <p class="eyebrow">ЗЕРКАЛО ДАННЫХ ИЗ ANVIL</p>
+  <p class="muted">Исходные записи всех перенесённых таблиц. Каталог, формулы, страницы, галерея и Engineering OS дополнительно доступны в своих обычных разделах. После редактирования JSON нажмите «Применить зеркало к сайту», чтобы обновить эти разделы без повторной загрузки исходного файла.</p>
+  <form method="post" class="source-sync-form">
+    <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
+    <input type="hidden" name="action" value="sync_anvil_mirror">
+    <button class="button button-small">Применить зеркало к сайту</button>
+    <small class="muted">Все изменения зеркала перезапишут соответствующие сопоставленные поля PHP-сайта.</small>
+  </form>
+  <form method="get" class="source-data-filter">
+    <input type="hidden" name="tab" value="anvil_source">
+    <label>Таблица<select name="source_table"><?php foreach (KLIMA_ANVIL_EXPORT_TABLES as $tableName): ?><option value="<?= e($tableName) ?>" <?= $sourceTable === $tableName ? 'selected' : '' ?>><?= e($tableName) ?></option><?php endforeach; ?></select></label>
+    <label>Поиск по ID и JSON<input name="q" value="<?= e($sourceSearch) ?>" maxlength="190" placeholder="ID, название или значение"></label>
+    <button class="button button-small">Найти</button>
+  </form>
+  <p class="muted small">Таблица <strong><?= e($sourceTable) ?></strong> · записей: <?= $sourceTotal ?> · страница <?= $sourcePage ?> из <?= $sourcePageCount ?> · по 50 строк.</p>
+</section>
+<?php if (!$sourceRows): ?><div class="empty-state">В этой таблице пока нет импортированных записей. Сначала выполните перенос из раздела «Резервные копии» Anvil.</div><?php endif; ?>
+<div class="source-record-list">
+<?php foreach ($sourceRows as $sourceRow):
+    $sourceRecord = json_decode((string)$sourceRow['record_json'], false, 512, JSON_THROW_ON_ERROR);
+    $sourceJson = json_encode($sourceRecord, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+?>
+  <details class="admin-panel source-record">
+    <summary><strong><?= e($sourceRow['source_id']) ?></strong><small>Открыть поля</small></summary>
+    <form method="post" class="source-record-form">
+      <input type="hidden" name="_csrf" value="<?= e(csrf_token()) ?>">
+      <input type="hidden" name="save_anvil_export_row" value="1">
+      <input type="hidden" name="source_table" value="<?= e($sourceTable) ?>">
+      <input type="hidden" name="source_id" value="<?= e($sourceRow['source_id']) ?>">
+      <input type="hidden" name="page" value="<?= $sourcePage ?>">
+      <label>Запись JSON<textarea class="source-json-editor" name="record_json" rows="18" spellcheck="false" required><?= e($sourceJson) ?></textarea><small>Оставьте поле id без изменений. JSON-поля и ссылки проверяются перед сохранением; парольные и API-секреты запрещены.</small></label>
+      <button class="button button-small">Сохранить запись</button>
+    </form>
+  </details>
+<?php endforeach; ?>
+</div>
+<?php if ($sourcePageCount > 1): ?><nav class="pagination-actions" aria-label="Страницы данных Anvil">
+  <?php if ($sourcePage > 1): ?><a class="button button-small button-ghost" href="<?= e(site_path('admin/?tab=anvil_source' . $sourceQueryTail . '&page=' . ($sourcePage - 1))) ?>">← Назад</a><?php endif; ?>
+  <span class="muted">Страница <?= $sourcePage ?> / <?= $sourcePageCount ?></span>
+  <?php if ($sourcePage < $sourcePageCount): ?><a class="button button-small button-ghost" href="<?= e(site_path('admin/?tab=anvil_source' . $sourceQueryTail . '&page=' . ($sourcePage + 1))) ?>">Далее →</a><?php endif; ?>
+</nav><?php endif; ?>
 <?php endif; ?></main></div><script src="<?= e(site_path('assets/app.js')) ?>" defer></script></body></html>

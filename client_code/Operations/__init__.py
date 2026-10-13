@@ -9,13 +9,13 @@ from .. import Access
 class Operations(OperationsTemplate):
   def __init__(self, section=None, **properties):
     super().__init__(**properties)
-    context = Access.get_session_context()
-    permissions = set(context["permissions"])
+    context = Access.get_session_context() or {}
+    permissions = set(context.get("permissions") or [])
     self._can_manage_operations = (
-      context["role_code"] == "admin" or "operations.manage" in permissions
+      context.get("role_code") == "admin" or "operations.manage" in permissions
     )
     self._can_manage_service = (
-      context["role_code"] == "admin" or "service.manage" in permissions
+      context.get("role_code") == "admin" or "service.manage" in permissions
     )
     if not (self._can_manage_operations or self._can_manage_service):
       Access.require_permission_form("operations.manage")
