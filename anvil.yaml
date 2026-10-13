@@ -1112,6 +1112,37 @@ db_schema:
     indexes: []
     server: full
     title: Страницы PDF-черновиков
+  pdf_upload_chunks:
+    client: none
+    columns:
+    - admin_ui: {}
+      client_hidden: null
+      name: import
+      target: imports
+      type: link_single
+    - admin_ui: {}
+      client_hidden: null
+      name: chunk_index
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: content
+      type: media
+    - admin_ui: {}
+      client_hidden: null
+      name: byte_count
+      type: number
+    - admin_ui: {}
+      client_hidden: null
+      name: sha256
+      type: string
+    - admin_ui: {}
+      client_hidden: null
+      name: created_at
+      type: datetime
+    indexes: []
+    server: full
+    title: Части загрузки PDF
   product_media:
     client: none
     columns:

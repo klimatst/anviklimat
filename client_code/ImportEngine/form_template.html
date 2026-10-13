@@ -40,9 +40,11 @@
           <anvil-component type="Label" name="xlsx_upload_progress" prop:role="status-message" prop:text=""></anvil-component>
         </div>
         <div class="pdf-intake-actions">
-          <anvil-component type="FileLoader" name="pdf_file_loader" prop:text="Выбрать PDF" prop:file_types=".pdf" prop:multiple="true"></anvil-component>
-          <anvil-component type="Button" name="parse_pdf_button" prop:text="Обработать в черновики" prop:role="primary-action"></anvil-component>
-          <anvil-component type="Label" name="pdf_intake_message" prop:role="status-message" prop:text="Для распознавания сканов PDF нужен подключённый мультимодальный ИИ. Изображения загружаются в Cloudinary с резервом ImageKit; ключи задаются только в серверных настройках Anvil."></anvil-component>
+          <input type="file" accept=".pdf,application/pdf" anvil:dom-node="pdf_file_input" anvil:on-dom:change="self.pdf_file_change" multiple>
+          <anvil-component type="Button" name="parse_pdf_button" prop:text="Загрузить / продолжить PDF" prop:role="primary-action" prop:enabled="false"></anvil-component>
+          <anvil-component type="Button" name="pdf_pause_upload_button" prop:text="Пауза загрузки" prop:role="secondary-button" prop:visible="false"></anvil-component>
+          <anvil-component type="Label" name="pdf_file_label" prop:role="status-message" prop:text="Файл не выбран"></anvil-component>
+          <anvil-component type="Label" name="pdf_intake_message" prop:role="status-message" prop:text="Большие PDF передаются частями по 4 МБ. После загрузки автоматически запускается распознавание."></anvil-component>
         </div>
         </anvil-component>
         <div class="pdf-draft-workspace">
