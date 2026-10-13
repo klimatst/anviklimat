@@ -14,12 +14,15 @@ from anvil.tables import app_tables
 
 
 FORMAT_NAME = "hvac-studio-backup"
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 LEGACY_SCHEMA_VERSION = 1
+V2_SCHEMA_VERSION = 2
 BACKUP_SECRET = "HVAC_BACKUP_KEY"
 MAX_FILE_BYTES = 20 * 1024 * 1024
 MAX_DATA_BYTES = 40 * 1024 * 1024
 MAX_ROWS = 20000
+PORTABLE_EXPORT_FORMAT = "klimaeco-anvil-export"
+PORTABLE_EXPORT_MAX_BYTES = 20 * 1024 * 1024
 LEGACY_BACKUP_TABLES = (
   "ai_providers", "bom", "brands", "calculations", "catalog_categories",
   "cms_modules", "cms_pages", "compatibility", "crm_clients", "crm_contacts",
@@ -29,7 +32,7 @@ LEGACY_BACKUP_TABLES = (
   "quotes", "roles", "rooms", "service", "system_components",
   "system_connections", "system_settings", "systems", "users"
 )
-BACKUP_TABLES = (
+V2_BACKUP_TABLES = (
   "ai_providers", "bom", "brands", "calculations", "catalog_categories",
   "catalog_documents", "catalog_orders", "catalog_series", "cms_modules", "cms_pages", "compatibility", "crm_clients",
   "crm_contacts", "crm_tasks", "estimate_lines", "estimates", "formulas",
@@ -39,7 +42,24 @@ BACKUP_TABLES = (
   "service", "system_components", "system_connections", "system_settings",
   "systems", "users"
 )
+BACKUP_TABLES = (
+  "ai_providers", "ai_usage", "audit_logs", "bom", "brands", "calculations",
+  "catalog_categories", "catalog_documents", "catalog_orders", "catalog_series",
+  "cms_modules", "cms_pages", "compatibility", "crm_clients", "crm_contacts",
+  "crm_tasks", "estimate_lines", "estimates", "files", "formulas", "gallery_items",
+  "imports", "import_logs", "media_objects", "objects", "pdf_draft_items",
+  "pdf_draft_pages", "product_media", "product_prices", "product_sources", "product_specs",
+  "product_stock", "products", "projects", "quotes", "roles", "rooms", "service",
+  "system_components", "system_connections", "system_settings", "systems", "users",
+  "xlsx_upload_chunks"
+)
+SENSITIVE_EXPORT_COLUMNS = {
+  "ai_providers": {"api_key", "secret_ref"},
+  "users": {"password_hash", "remembered_logins", "n_password_failures"}
+}
 LINK_TARGETS = {
+  "ai_usage": {"actor": "users"},
+  "audit_logs": {"actor": "users"},
   "bom": {"system": "systems", "product": "products"},
   "calculations": {"formula": "formulas", "project": "projects", "system": "systems", "created_by": "users"},
   "catalog_documents": {"product": "products", "series": "catalog_series"},
@@ -65,6 +85,8 @@ LINK_TARGETS = {
   "product_specs": {"product": "products"},
   "product_stock": {"product": "products"},
   "products": {"brand": "brands", "category": "catalog_categories", "subcategory": "catalog_categories", "series": "catalog_series"},
+  "pdf_draft_items": {"import": "imports"},
+  "pdf_draft_pages": {"import": "imports"},
   "projects": {"client": "crm_clients", "object": "objects", "owner": "users"},
   "quotes": {"project": "projects", "client": "crm_clients", "estimate": "estimates"},
   "rooms": {"object": "objects"},
@@ -73,7 +95,8 @@ LINK_TARGETS = {
   "system_connections": {"system": "systems", "source_component": "system_components", "target_component": "system_components"},
   "system_settings": {"updated_by": "users"},
   "systems": {"project": "projects"},
-  "users": {"role": "roles"}
+  "users": {"role": "roles"},
+  "xlsx_upload_chunks": {"import": "imports"}
 }
 
 
@@ -151,7 +174,7 @@ def _snapshot():
     for row in table.search():
       values = {}
       for column, value in row:
-        if table_name == "users" and column == "remembered_logins":
+        if column in SENSITIVE_EXPORT_COLUMNS.get(table_name, set()):
           continue
         target = LINK_TARGETS.get(table_name, {}).get(column)
         values[column] = _encode_value(value, target=target)
@@ -217,7 +240,7 @@ def _read_archive(uploaded_file):
     if (
       envelope.get("format") != FORMAT_NAME
       or isinstance(schema_version, bool)
-      or schema_version not in (LEGACY_SCHEMA_VERSION, SCHEMA_VERSION)
+      or schema_version not in (LEGACY_SCHEMA_VERSION, V2_SCHEMA_VERSION, SCHEMA_VERSION)
     ):
       raise BackupInputError("Формат или версия архива не поддерживается.")
     compressed = base64.b64decode(envelope["payload"], validate=True)
@@ -231,8 +254,13 @@ def _read_archive(uploaded_file):
     if schema_version == LEGACY_SCHEMA_VERSION:
       if not isinstance(snapshot, dict) or set(snapshot) != set(LEGACY_BACKUP_TABLES):
         raise BackupInputError("Состав таблиц старого архива не совпадает с версией 1.")
-      snapshot["catalog_orders"] = []
-      snapshot["import_logs"] = []
+      for table_name in BACKUP_TABLES:
+        snapshot.setdefault(table_name, [])
+    elif schema_version == V2_SCHEMA_VERSION:
+      if not isinstance(snapshot, dict) or set(snapshot) != set(V2_BACKUP_TABLES):
+        raise BackupInputError("Состав таблиц архива не совпадает с версией 2.")
+      for table_name in BACKUP_TABLES:
+        snapshot.setdefault(table_name, [])
   except BackupInputError:
     raise
   except (KeyError, TypeError, ValueError, OSError, EOFError):
@@ -323,6 +351,46 @@ def _remap_embedded_ids(table_name, row, row_map):
         row["line_key"] = "route:{}:{}:{}".format(
           source.get_id(), target.get_id(), parts[3]
         )
+
+
+@anvil.server.callable(require_user=True)
+@Core.admin_guard
+def create_xampp_export():
+  user = _admin_user()
+  if user is None:
+    return {"ok": False, "message": "Экспортировать данные может только администратор."}
+  try:
+    tables, row_count = _snapshot()
+    table_payload = _canonical_json(tables)
+    raw = _canonical_json({
+      "format": PORTABLE_EXPORT_FORMAT,
+      "schema_version": 1,
+      "exported_at": datetime.now(timezone.utc).isoformat(),
+      "sha256": hashlib.sha256(table_payload).hexdigest(),
+      "tables": tables
+    })
+    compressed = gzip.compress(raw, compresslevel=6)
+    if len(compressed) > PORTABLE_EXPORT_MAX_BYTES:
+      raise BackupInputError(
+        "Переносимый архив больше 20 МБ. Для этого объёма подготовьте экспорт по частям."
+      )
+  except BackupInputError as error:
+    return {"ok": False, "message": str(error)}
+  stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+  media = anvil.BlobMedia(
+    "application/gzip", compressed,
+    name="klimaeco-anvil-export-{}.json.gz".format(stamp)
+  )
+  Core.log_audit(
+    actor=user, action="backup.exported_for_xampp", entity_type="database",
+    entity_id="", details={"rows": row_count, "tables": len(tables)},
+    created_at=datetime.now(timezone.utc)
+  )
+  return {
+    "ok": True, "file": media, "rows": row_count, "tables": len(tables),
+    "checksum": hashlib.sha256(raw).hexdigest(),
+    "message": "Подготовлен переносимый экспорт: {} строк в {} таблицах. Пароли пользователей и ключи API исключены.".format(row_count, len(tables))
+  }
 
 
 @anvil.server.callable(require_user=True)
@@ -427,8 +495,6 @@ def restore_database_backup(uploaded_file):
           links[column] = None
         else:
           links[column] = row_map[(target, value["id"])]
-      if table_name == "users":
-        links.pop("remembered_logins", None)
       if links:
         row.update(**links)
       _remap_embedded_ids(table_name, row, row_map)

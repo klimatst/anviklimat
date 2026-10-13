@@ -35,6 +35,21 @@ class Backup(BackupTemplate):
       result["message"], result["checksum"]
     )
 
+  @handle("create_xampp_export_button", "click")
+  def create_xampp_export_button_click(self, **event_args):
+    self.create_xampp_export_button.enabled = False
+    try:
+      result = anvil.server.call("create_xampp_export")
+      if not result["ok"]:
+        self.xampp_export_message.text = result["message"]
+        return
+      anvil.media.download(result["file"])
+      self.xampp_export_message.text = "{} SHA-256: {}".format(
+        result["message"], result["checksum"]
+      )
+    finally:
+      self.create_xampp_export_button.enabled = True
+
   @handle("inspect_backup_button", "click")
   def inspect_backup_button_click(self, **event_args):
     if self.restore_file.file is None:
