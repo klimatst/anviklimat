@@ -55,6 +55,16 @@ if defined XAMPP_HOME if exist "%XAMPP_HOME%\mysql\bin\mysqladmin.exe" (
 )
 :database_ready
 
+set "BIND_HOST=127.0.0.1"
+set "LAN_IP="
+choice /C 12 /N /T 12 /D 1 /M "Запускать только на этом компьютере (1) или открыть доступ в локальной сети (2)? [1] "
+if errorlevel 2 set "BIND_HOST=0.0.0.0"
+if "%BIND_HOST%"=="0.0.0.0" for /f "usebackq delims=" %%I in (`powershell -NoProfile -Command "Get-NetIPAddress -AddressFamily IPv4 -AddressState Preferred | Where-Object { $_.IPAddress -notlike '127.*' -and $_.InterfaceAlias -notmatch 'Loopback' } | Select-Object -First 1 -ExpandProperty IPAddress"`) do set "LAN_IP=%%I"
+if "%BIND_HOST%"=="0.0.0.0" if not defined LAN_IP (
+  echo [ВНИМАНИЕ] Не удалось определить IPv4-адрес локальной сети. Запускаю только на этом компьютере.
+  set "BIND_HOST=127.0.0.1"
+)
+
 if exist "app\config.php" (
   echo Проверяю схему локальной базы данных...
   "%PHP_EXE%" "maintenance\upgrade.php"
@@ -69,12 +79,19 @@ if exist "app\config.php" (
 )
 
 echo.
-echo KlimaEco запускается только на этом компьютере.
+if "%BIND_HOST%"=="0.0.0.0" (
+  echo KlimaEco открыт в локальной сети.
+  echo На этом компьютере: http://127.0.0.1:4173/
+  echo С других устройств: http://%LAN_IP%:4173/
+  echo Разрешите входящие подключения к PHP в брандмауэре Windows для частной сети.
+) else (
+  echo KlimaEco доступен только на этом компьютере.
+)
 echo Адрес: %OPEN_URL%
 echo Для остановки нажмите Ctrl+C в этом окне.
 echo.
 start "" "%OPEN_URL%"
-"%PHP_EXE%" -S 127.0.0.1:4173 -t "%~dp0"
+"%PHP_EXE%" -S %BIND_HOST%:4173 -t "%~dp0" "%~dp0router.php"
 if errorlevel 1 (
   echo.
   echo Сервер остановлен с ошибкой. Возможно, порт 4173 уже занят.

@@ -6,9 +6,15 @@
     <div class="hvac-view">
       <anvil-component type="ColumnPanel" name="backup_panel" prop:role="card">
         <anvil-component type="Label" name="backup_intro" prop:role="lede" prop:text="Резервная копия шифруется секретом HVAC_BACKUP_KEY в настройках Anvil и сразу скачивается. Большие файлы не входят: сохраняются только ссылки и метаданные."></anvil-component>
-        <anvil-component type="Label" name="backup_scope" prop:role="status-message" prop:text="Включены каталог, проекты, CRM, сервис, сметы, CMS, формулы и настройки ИИ. Большие журналы аудита и ИИ не включаются."></anvil-component>
+        <anvil-component type="Label" name="backup_scope" prop:role="status-message" prop:text="Включены данные приложения и медиафайлы. Ключи API и данные входа пользователей не экспортируются."></anvil-component>
         <anvil-component type="Button" name="create_backup_button" prop:text="Создать и скачать зашифрованную копию" prop:role="primary-action"></anvil-component>
         <anvil-component type="Label" name="backup_message" prop:role="status-message" prop:text=""></anvil-component>
+      </anvil-component>
+      <anvil-component type="ColumnPanel" name="xampp_export_panel" prop:role="card">
+        <anvil-component type="Label" name="xampp_export_heading" prop:role="section-heading" prop:text="Перенос сайта на XAMPP / PHP"></anvil-component>
+        <anvil-component type="Label" name="xampp_export_intro" prop:role="lede" prop:text="Скачайте данные приложения вместе с фотографиями в совместимом формате. Файл не зашифрован и содержит персональные данные заявок и проектов: храните его отдельно и удалите после импорта. Пароли пользователей Anvil и ключи API не переносятся; локального администратора задайте в установщике."></anvil-component>
+        <anvil-component type="Button" name="create_xampp_export_button" prop:text="Скачать переносимый экспорт для XAMPP" prop:role="secondary-button"></anvil-component>
+        <anvil-component type="Label" name="xampp_export_message" prop:role="status-message" prop:text=""></anvil-component>
       </anvil-component>
       <anvil-component type="ColumnPanel" name="restore_panel" prop:role="card">
         <anvil-component type="Label" name="restore_heading" prop:role="section-heading" prop:text="Проверка и восстановление"></anvil-component>

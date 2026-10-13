@@ -150,7 +150,7 @@ function public_header(string $title, string $active = ''): void
 <html lang="ru">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111719">
+  <meta name="theme-color" content="#090d12">
   <title><?= e($title) ?> · <?= e($brand) ?></title>
   <meta name="description" content="<?= e(setting('site_tagline', 'Инженерные климатические системы, оборудование и монтаж')) ?>">
   <link rel="stylesheet" href="<?= e(site_path('assets/style.css')) ?>">
@@ -169,7 +169,7 @@ function public_header(string $title, string $active = ''): void
         <path d="M12 16Q12 7 24 7H205Q218 7 218 18V49Q218 58 207 61H23Q12 58 12 48Z" fill="url(#eco-unit)" stroke="#7e949c" stroke-width="1.5"/>
         <path d="M20 18Q20 12 28 12H202Q210 12 210 20V40Q115 46 20 40Z" fill="#27353d" stroke="#536a74"/>
         <path d="M24 18Q115 13 205 18" fill="none" stroke="#e0eef0" stroke-opacity=".28"/>
-        <path d="M27 49H202" stroke="#0c1216" stroke-width="3"/><circle cx="202" cy="21" r="2.7" fill="#53b797"/>
+        <path d="M27 49H202" stroke="#0c1216" stroke-width="3"/><circle cx="202" cy="21" r="2.7" fill="#0797b2"/>
       </svg>
       <span class="eco-header__brand"><strong><?= e($brand) ?></strong><small>ИНЖЕНЕРНЫЙ КЛИМАТ</small></span>
     </a>
@@ -191,7 +191,7 @@ function public_header(string $title, string $active = ''): void
         <rect x="8" y="5" width="88" height="68" rx="8" fill="url(#eco-outdoor)" stroke="#58717b" stroke-width="1.5"/>
         <rect x="15" y="11" width="74" height="56" rx="6" fill="#202a31" stroke="#40545d"/>
         <circle cx="52" cy="39" r="22" fill="#26343c" stroke="#77939d" stroke-width="1.4"/>
-        <circle cx="52" cy="39" r="3" fill="#53b797"/>
+        <circle cx="52" cy="39" r="3" fill="#0797b2"/>
         <path d="M52 36c-5-11-2-15 2-15 5 0 6 7 2 15m-1 6c11-5 15-2 15 2 0 5-7 6-15 2m-6-1c5 11 2 15-2 15-5 0-6-7-2-15m1-6c-11 5-15 2-15-2 0-5 7-6 15-2" fill="#7b9ba6" class="eco-header__fan"/>
       </svg>
       <span>VRV / VRF</span>

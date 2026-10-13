@@ -2,8 +2,49 @@ unique_ids:
   assets:
     catalog/ATTRIBUTION.txt: '1790955907179.19441524459516712'
     catalog/conditioners.jpg: '1790955907180.3769402411743126'
+    catalog/hisense/accessory.png: E2RG367SSXIW2IXIT6D2AJCXLRCM23BK
+    catalog/hisense/cassette.png: JZHTQM6KM6ADYZG2ZBEH57U5E4HK5DBT
+    catalog/hisense/city-2.png: 6OX5FB4QNA6F5YIKCU6RGCRNNCWUA6WW
+    catalog/hisense/city.png: SBOCKUV66V3Y6E2OSOQNHT255R4LJJDC
+    catalog/hisense/column.png: CNX5ZUZSLM37FM3CKD7K6RQNXRTRDJJU
+    catalog/hisense/console.png: HTTF7GTTZNAULBLY55EIBW7ULI5UAXII
+    catalog/hisense/dehumidifier.png: YPS7Z6SGBD6BPGILFSDCWC5W3L2GTW4Z
+    catalog/hisense/duct.png: ZTYIAGW4HYMK5IL2NGERNNUBXPOXGAWX
+    catalog/hisense/expert.png: IKTX5WEBJFJ33OWG3N4ZM6G6D4HB7PJZ
+    catalog/hisense/floor.png: 5BV6ECIMEOLTEEJTUJN7VP5PM43M3VKL
+    catalog/hisense/goal-classic.png: GKXRKCJFU2NS3CML2FGHG77J7WLSK2W2
+    catalog/hisense/goal.png: EK2XQMMBWLD24WYJTXVOFCCPNGZRGQ6X
+    catalog/hisense/mobileC.png: V3P53UKD4IC3LDPHSCL5NZOITKMEUHEP
+    catalog/hisense/mobileV.png: MD7MSAF3I5XL26Y7J7VUMQNRWROJ4E2A
+    catalog/hisense/mobileW.png: 2DDILLHPWKRSSKGQJGE633D45PAI6IDS
+    catalog/hisense/multi-cassette.png: RTSJNB2QNTPOFCFKF2BDSMVXUGJUTRCB
+    catalog/hisense/multi-console.png: ZODN6AHTFILGPEXNXEEYIVAMN5EAW2MB
+    catalog/hisense/multi-duct.png: 7LGNLER4D4OH5NSKYHNJCYVXRTPHOECD
+    catalog/hisense/multi-floor.png: NCD657ISBIJ74N7Q6MRG63QJNM6FIDPL
+    catalog/hisense/multi-outdoor.png: FR4X2MSK7HT2EQQAS7XRKMQCEQGH7QLR
+    catalog/hisense/multi-premium-black.png: BMOWXCWNZSBMHHLTU4MJPYI23VKZJVJ3
+    catalog/hisense/multi-sensation-carbon.png: QPIW7AT5C2VY54W34WQA47M3EHAEELUB
+    catalog/hisense/multi-sensation.png: D4DUCCY67A56VEDTF22XGRSPNOGTTI7X
+    catalog/hisense/multi-vibe-pro-carbon.png: 74M7IYBG67FXGX5Z6WOXOQFGAE5WDWOR
+    catalog/hisense/multi-vibe-pro-champagne.png: TVPHHX2H6SACNR2EZBSSHKM67FWR3MKX
+    catalog/hisense/multi-vibe-pro-silver.png: FIMRLGMKX7J47PZXC2PRDGSXLWSJDAON
+    catalog/hisense/multi-vibe-pro.png: 5JAT5K332SE4Q2S5H6LRYYC7SATVO4AR
+    catalog/hisense/multi-vision-carbon.png: XUXX4KQRV7XKIUFKSVO5JDZ2XEAKE65J
+    catalog/hisense/multi-vision.png: WJBG56GAMYATO3A2DRKK2YDRXZO3CR5J
+    catalog/hisense/multi-zoom.png: Z6SHURANDYA34VVZAKUFMRUHRSCRQGRX
     catalog/hisense/photo_sources.json: BFIDFEHNGMTPGA4I5HWWAMHMFYTPRJ67
+    catalog/hisense/sensation-carbon.png: WDNLXAK2MV5OM2ORCFMMENSTSYZXMFAS
+    catalog/hisense/sensation.png: SEY7PAJH4RLMMQFIF7K5RSLR2FHHRIC6
+    catalog/hisense/strong-vibe.png: YMFMUAKSJDZZGJ2N42MOL2HL3KU4PVBM
+    catalog/hisense/vibe-pro-carbon.png: MFBA676KAGYP72G53VR7XCGAOQPORFRZ
+    catalog/hisense/vibe-pro-champagne.png: B6CCY7OLMIXB2ALCTKESFAZM7XMOWTCL
+    catalog/hisense/vibe-pro-silver.png: KPYIHI5TSJSCEPK4YDAYVAJ6EZERFUW3
+    catalog/hisense/vibe.png: XDWLTCUPSBW4MPM5G22WJNAHGYGVCASA
+    catalog/hisense/vision-carbon.png: B4PGQO4FP6DCUCS2MGLBHDJXWA3BP2JA
+    catalog/hisense/vision.png: PRAPJDJVCH3VEBAEMIRPPYSKML5ULC6S
     catalog/hisense/xlsx/README.md: WOHD4CAGQMOAB375VRNVJHK4OUT4GMAX
+    catalog/hisense/zoom-classic.png: PEOOSAHC5BK6YSJDR35OV2CFCGCFM2TQ
+    catalog/hisense/zoom.png: GZZK5XO2PKXBEKZFFSZDXGSHABSVV4RI
     catalog/materials.jpg: '1790955907182.7479804080154114'
     catalog/refrigeration.jpg: '1790955907184.2753408064605857'
     catalog/ventilation.jpg: '1790955907185.3714861981145142'

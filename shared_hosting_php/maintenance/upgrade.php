@@ -17,6 +17,7 @@ if (!is_array($config) || !isset($config['db_host'], $config['db_port'], $config
     exit(2);
 }
 require_once $root . '/app/engineering_schema.php';
+require_once $root . '/app/anvil_import.php';
 try {
     $dsn = 'mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name'] . ';charset=utf8mb4';
     $pdo = new PDO($dsn, $config['db_user'], $config['db_password'], [
@@ -25,7 +26,8 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false,
     ]);
     ensure_engineering_schema($pdo);
-    echo "Engineering OS schema is ready. Existing data was not deleted or modified.\n";
+    ensure_anvil_export_schema($pdo);
+    echo "Engineering OS and Anvil export schemas are ready. Existing data was not deleted or modified.\n";
 } catch (Throwable $error) {
     fwrite(STDERR, "Обновление схемы не выполнено: " . $error->getMessage() . "\n");
     exit(1);
