@@ -218,3 +218,46 @@ input:focus,select:focus,textarea:focus{border-color:rgba(36,212,237,.72)!import
 }
 .rich-content img{max-width:100%;height:auto;margin:18px 0;border:1px solid var(--line);border-radius:7px}
 .source-data-tools{margin-bottom:14px}.source-data-filter{display:grid;grid-template-columns:minmax(190px,.7fr) minmax(260px,1.3fr) auto;align-items:end;gap:12px;margin:18px 0 8px}.source-data-filter label,.source-record-form label{display:grid;gap:7px;color:var(--muted);font-size:12px}.source-sync-form{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:14px 0}.source-sync-form small{color:var(--muted);font-size:11px}.source-record-list{display:grid;gap:9px}.source-record{padding:14px 17px}.source-record>summary{display:flex;justify-content:space-between;gap:15px;cursor:pointer;overflow-wrap:anywhere}.source-record>summary small{color:var(--muted)}.source-record-form{display:grid;gap:12px;margin-top:16px}.source-json-editor{min-height:240px;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}.source-record-form label small{color:var(--muted);font-size:11px}@media(max-width:720px){.source-data-filter{grid-template-columns:1fr}.source-data-filter .button,.source-sync-form .button{width:100%}.source-sync-form{align-items:stretch;flex-direction:column}}
+
+
+/* Admin control room: tablet and mobile layout hardening */
+.admin-topbar .brand{min-width:0}
+.admin-topbar .brand>span:last-child{line-height:1.25}
+.admin-nav{position:relative;transition:background-color .2s ease,color .2s ease,transform .2s ease}
+.admin-nav.active{box-shadow:inset 3px 0 var(--accent);background:linear-gradient(90deg,rgba(36,212,237,.12),rgba(36,212,237,.025))}
+.admin-nav:focus-visible,.quick-links a:focus-visible{outline:2px solid var(--accent-hi);outline-offset:2px}
+.admin-main table{width:100%;border-collapse:separate;border-spacing:0}
+.admin-main th{color:var(--muted);font-size:10px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.admin-main td,.admin-main th{vertical-align:top}
+.admin-main td small{display:block;margin-top:3px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+.admin-main .table-panel{min-width:0;overflow-x:auto}
+.admin-main .table-panel table{min-width:620px}
+.admin-main .admin-panel h2{letter-spacing:-.02em}
+.admin-main .admin-panel input,.admin-main .admin-panel select,.admin-main .admin-panel textarea{min-width:0}
+.admin-main .button{max-width:100%}
+@media(max-width:760px){
+  .admin-topbar{position:relative;align-items:flex-start;flex-wrap:wrap;gap:12px;padding:14px 16px}
+  .admin-top-actions{width:100%;flex-wrap:wrap;justify-content:space-between;gap:10px}
+  .admin-shell{display:flex;flex-direction:column;min-height:0}
+  .admin-sidebar{position:relative;top:auto;display:flex;flex-direction:row;align-items:center;gap:5px;min-height:0;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+  .admin-sidebar-label,.admin-sidebar-bottom{display:none}
+  .admin-nav{flex:0 0 auto;white-space:nowrap;margin:0;padding:9px 12px}
+  .admin-nav.active{box-shadow:inset 0 -2px var(--accent)}
+  .admin-main{padding:22px 15px 36px}
+  .admin-page-heading{align-items:flex-start;flex-direction:column;gap:10px}
+  .admin-page-heading h1{font-size:clamp(24px,6vw,30px)}
+  .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .form-grid{grid-template-columns:1fr!important}
+  .admin-panel{padding:15px}
+  .quick-links{gap:8px}
+  .quick-links a{flex:1 1 140px}
+  .source-data-filter{grid-template-columns:1fr}
+}
+@media(max-width:420px){
+  .admin-topbar .brand{font-size:15px}
+  .admin-top-actions .button{min-height:34px;padding-inline:10px}
+  .admin-top-actions{font-size:11px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .stat-card{padding:12px}
+  .stat-card strong{font-size:23px}
+}
