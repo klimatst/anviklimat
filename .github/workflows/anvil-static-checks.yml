@@ -19,10 +19,10 @@ jobs:
         shell: python
         run: |
           import pathlib, sys
-          stylesheet = pathlib.Path('theme/theme.css')
+          stylesheet = pathlib.Path('theme/assets/theme.css')
           editor_config = pathlib.Path('.anvil_editor.yaml')
           if not stylesheet.is_file() or stylesheet.stat().st_size == 0:
-              print('Missing required theme/theme.css referenced by Anvil editor configuration.')
+              print('Missing required theme/assets/theme.css referenced by Anvil editor configuration.')
               sys.exit(1)
           if not editor_config.is_file() or 'theme.css:' not in editor_config.read_text(encoding='utf-8'):
               print('Anvil editor configuration does not register theme.css.')
