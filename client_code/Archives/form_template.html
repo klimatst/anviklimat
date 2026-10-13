@@ -9,30 +9,41 @@
     <section class="archives-view">
       <div class="archives-intro">
         <anvil-component type="Label" name="archives_eyebrow" prop:role="eyebrow" prop:text="КЛИМАЭКО / ФАЙЛЫ ПРОЕКТА"></anvil-component>
-        <anvil-component type="Label" name="archives_description" prop:role="lede" prop:text="Скачайте автономную версию сайта для XAMPP и отдельную инструкцию по установке. Архив можно использовать на локальном компьютере или сервере в локальной сети."></anvil-component>
+        <anvil-component type="Label" name="archives_description" prop:role="lede" prop:text="Скачайте готовый сайт, отдельную MySQL-базу для импорта и инструкцию. После распаковки сайт открывается напрямую — мастер установки не нужен."></anvil-component>
       </div>
       <div class="archives-grid">
         <article class="archive-card">
           <span class="archive-card__eyebrow">ДВИЖОК САЙТА · ZIP</span>
-          <h2>КлимаЭко для XAMPP</h2>
-          <p>Установщик, админ-панель, каталог, калькуляторы, база схемы и средства импорта данных Anvil.</p>
-          <p class="archive-card__meta">Версия от 13 октября 2026 · 7,9 МБ</p>
+          <h2>Готовый сайт КлимаЭко</h2>
+          <p>Сайт, админ-панель, калькуляторы и XAMPP-конфигурация. Первая загрузка создаёт локальную базу автоматически.</p>
+          <p class="archive-card__meta">Версия от 13 октября 2026 · 8,3 МБ</p>
           <a class="archive-card__link" href="_/theme/downloads/KlimaEco-XAMPP-2026-10-13.zip" download="KlimaEco-XAMPP-2026-10-13.zip">Скачать ZIP <span aria-hidden="true">↓</span></a>
           <details class="archive-card__details">
             <summary>Контрольная сумма SHA-256</summary>
-            <code>1af00e52624484fcdef5608b3c8240610fd3dea97c768218b582c92b925ca554</code>
+            <code>1b7ae3532b21d7eaba8b265ce35c788eba0a68bb0637573324ba915fcda830fd</code>
           </details>
         </article>
         <article class="archive-card">
-          <span class="archive-card__eyebrow">УСТАНОВКА · ИНСТРУКЦИЯ</span>
-          <h2>Установка и перенос данных</h2>
-          <p>Как распаковать проект в XAMPP, настроить MySQL и администратора, открыть сайт в локальной сети и перенести экспорт из Anvil.</p>
-          <p class="archive-card__meta">Формат Markdown · инструкция также входит в ZIP</p>
+          <span class="archive-card__eyebrow">MYSQL / MARIADB · SQL</span>
+          <h2>База данных для импорта</h2>
+          <p>Полная схема, 89 категорий, формулы, страницы прайсов, 241 модель Hisense и начальная учётная запись администратора.</p>
+          <p class="archive-card__meta">SQL · 0,5 МБ · импортируйте в пустую базу</p>
+          <a class="archive-card__link" href="_/theme/downloads/KlimaEco-Database-2026-10-13.sql" download="KlimaEco-Database-2026-10-13.sql">Скачать SQL <span aria-hidden="true">↓</span></a>
+          <details class="archive-card__details">
+            <summary>Контрольная сумма SHA-256</summary>
+            <code>50d90182324223b74659f8995359c0a8e3ae9268241c28872b11dda694f8b408</code>
+          </details>
+        </article>
+        <article class="archive-card">
+          <span class="archive-card__eyebrow">ЗАПУСК · ИНСТРУКЦИЯ</span>
+          <h2>Запуск и перенос данных</h2>
+          <p>Как открыть сайт сразу после распаковки, при необходимости импортировать SQL через phpMyAdmin, запустить локальную сеть и перенести экспорт Anvil.</p>
+          <p class="archive-card__meta">Markdown · инструкция также входит в ZIP</p>
           <a class="archive-card__link archive-card__link--secondary" href="_/theme/downloads/INSTALL_XAMPP_RU.md" download="INSTALL_XAMPP_RU.md">Скачать инструкцию <span aria-hidden="true">↓</span></a>
         </article>
       </div>
       <div class="archive-note">
-        <strong>После скачивания:</strong> распакуйте ZIP в <code>C:\xampp\htdocs\klimaeco</code> и откройте <code>http://localhost/klimaeco/install/</code>. Production-данные Anvil переносятся отдельным экспортом из модуля «Резервные копии».
+        <strong>Быстрый запуск:</strong> запустите Apache и MySQL, распакуйте ZIP в <code>C:\xampp\htdocs\klimaeco</code> и откройте <code>http://localhost/klimaeco/</code>. При первом запуске база создаётся автоматически; SQL можно импортировать вручную через phpMyAdmin. Начальный вход в админку: <code>admin / admin</code> — смените пароль после входа.
       </div>
     </section>
   </anvil-block>

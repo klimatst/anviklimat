@@ -14,7 +14,7 @@ if not defined PHP_EXE (
   exit /b 1
 )
 if not exist "app\config.php" (
-  echo [ОШИБКА] Сайт ещё не установлен. Сначала запустите START-LOCAL.cmd и мастер установки.
+  echo [ОШИБКА] Не найден app\config.php. Проверьте комплектность архива.
   pause
   exit /b 1
 )

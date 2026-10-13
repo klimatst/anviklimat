@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
         $q=db()->prepare('SELECT id,login,password_hash FROM admins WHERE login=? LIMIT 1'); $q->execute([trim((string)($_POST['login']??''))]); $admin=$q->fetch();
         if ((int)$attempt['n']>=8 || !$admin || !password_verify((string)($_POST['password']??''),$admin['password_hash'])) {
             $attempt['n']=(int)$attempt['n']+1; $attempt['time']=time(); $_SESSION['login_attempt']=$attempt;
-            flash('Неверный логин или пароль. Проверьте реквизиты, заданные в установщике.','error'); redirect_to(site_path('admin/'));
+            flash('Неверный логин или пароль. Для новой локальной базы используйте admin / admin, затем измените пароль в настройках.','error'); redirect_to(site_path('admin/'));
         }
         session_regenerate_id(true); unset($_SESSION['login_attempt']); $_SESSION['admin_id']=(int)$admin['id']; redirect_to(site_path('admin/'));
     }

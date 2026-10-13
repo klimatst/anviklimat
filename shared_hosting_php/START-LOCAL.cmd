@@ -65,18 +65,7 @@ if "%BIND_HOST%"=="0.0.0.0" if not defined LAN_IP (
   set "BIND_HOST=127.0.0.1"
 )
 
-if exist "app\config.php" (
-  echo Проверяю схему локальной базы данных...
-  "%PHP_EXE%" "maintenance\upgrade.php"
-  if errorlevel 1 (
-    echo [ОШИБКА] Не удалось подготовить схему. Существующие данные не удалялись.
-    pause
-    exit /b 1
-  )
-  set "OPEN_URL=http://127.0.0.1:4173/"
-) else (
-  set "OPEN_URL=http://127.0.0.1:4173/install/"
-)
+set "OPEN_URL=http://127.0.0.1:4173/"
 
 echo.
 if "%BIND_HOST%"=="0.0.0.0" (
@@ -88,6 +77,7 @@ if "%BIND_HOST%"=="0.0.0.0" (
   echo KlimaEco доступен только на этом компьютере.
 )
 echo Адрес: %OPEN_URL%
+echo При первом открытии сайт автоматически создаст базу и заполнит стартовые данные.
 echo Для остановки нажмите Ctrl+C в этом окне.
 echo.
 start "" "%OPEN_URL%"

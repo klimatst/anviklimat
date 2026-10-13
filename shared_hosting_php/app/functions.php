@@ -23,6 +23,16 @@ function setting(string $key, string $default = ''): string
 function site_path(string $path = ''): string
 {
     $base = rtrim((string)($GLOBALS['config']['base_url'] ?? ''), '/');
+    if ($base === '') {
+        $scriptPath = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+        $base = rtrim(str_replace('\\', '/', dirname($scriptPath)), '/');
+        if (preg_match('~/admin$~i', $base)) {
+            $base = substr($base, 0, -6);
+        }
+        if ($base === '.' || $base === '/') {
+            $base = '';
+        }
+    }
     return $base . '/' . ltrim($path, '/');
 }
 

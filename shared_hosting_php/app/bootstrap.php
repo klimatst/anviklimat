@@ -3,20 +3,11 @@ declare(strict_types=1);
 
 $configFile = __DIR__ . '/config.php';
 if (!is_file($configFile)) {
-    // Build the installer URL from the actual entry point so installations in
-    // a subdirectory (for example /klimaeco/) do not escape to the web root.
-    $scriptPath = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
-    $scriptDirectory = rtrim(str_replace('\\', '/', dirname($scriptPath)), '/');
-    if (preg_match('~/admin$~i', $scriptDirectory)) {
-        $scriptDirectory = substr($scriptDirectory, 0, -6);
-    }
-    if ($scriptDirectory === '.' || $scriptDirectory === '/') {
-        $scriptDirectory = '';
-    }
-    header('Location: ' . $scriptDirectory . '/install/');
-    exit;
+    http_response_code(500);
+    exit('Не найден app/config.php. Восстановите его из архива и проверьте параметры MySQL.');
 }
 $config = require $configFile;
+require_once __DIR__ . '/database_setup.php';
 require_once __DIR__ . '/functions.php';
 
 header('X-Content-Type-Options: nosniff');
@@ -37,17 +28,70 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 function db(): PDO
 {
     static $pdo = null;
+    static $initialized = false;
     global $config;
     if ($pdo instanceof PDO) {
         return $pdo;
     }
-    $dsn = 'mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name'] . ';charset=utf8mb4';
-    $pdo = new PDO($dsn, $config['db_user'], $config['db_password'], [
+    $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
-    ]);
+    ];
+    $dsn = 'mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';dbname=' . $config['db_name'] . ';charset=utf8mb4';
+    try {
+        $pdo = new PDO($dsn, $config['db_user'], $config['db_password'], $options);
+    } catch (PDOException $error) {
+        $mysqlCode = (int)($error->errorInfo[1] ?? 0);
+        if ($mysqlCode !== 1049 || !preg_match('/^[A-Za-z0-9_$-]+$/D', (string)$config['db_name'])) {
+            throw $error;
+        }
+        $serverDsn = 'mysql:host=' . $config['db_host'] . ';port=' . $config['db_port'] . ';charset=utf8mb4';
+        $server = new PDO($serverDsn, $config['db_user'], $config['db_password'], $options);
+        $server->exec('CREATE DATABASE IF NOT EXISTS `' . $config['db_name'] . '` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+        $pdo = new PDO($dsn, $config['db_user'], $config['db_password'], $options);
+    }
+    if (!$initialized) {
+        initialize_local_database($pdo);
+        $initialized = true;
+    }
     return $pdo;
+}
+
+/** Prepare a fresh or partially upgraded local database without deleting data. */
+function initialize_local_database(PDO $pdo): void
+{
+    $requiredTables = [
+        'admins', 'settings', 'categories', 'brands', 'products', 'news', 'pages',
+        'gallery', 'leads', 'formulas', 'projects', 'project_rooms', 'project_systems',
+        'project_calculations', 'project_estimates', 'anvil_export_rows',
+        'anvil_export_imports', 'anvil_export_site_map',
+    ];
+    $existingTables = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+    if (array_diff($requiredTables, array_map('strval', $existingTables))) {
+        ensure_app_schema($pdo);
+    }
+
+    $needsSeed = (int)$pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn() === 0;
+    $needsAdmin = (int)$pdo->query('SELECT COUNT(*) FROM admins')->fetchColumn() === 0;
+    if ($needsSeed || $needsAdmin) {
+        $pdo->beginTransaction();
+        try {
+            if ($needsSeed) {
+                seed_app_data($pdo, false, true);
+            }
+            if ($needsAdmin) {
+                $admin = $pdo->prepare('INSERT INTO admins (login,password_hash,created_at) VALUES (?,?,NOW())');
+                $admin->execute(['admin', password_hash('admin', PASSWORD_DEFAULT)]);
+            }
+            $pdo->commit();
+        } catch (Throwable $error) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $error;
+        }
+    }
 }
 
 /**
